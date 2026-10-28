@@ -62,11 +62,43 @@
 
 .sidebar-nav {
   flex: 1;
+  min-height: 0;
   padding: 16px 12px;
   overflow-y: auto;
+  scrollbar-color: #CBD5E1 transparent;
+  scrollbar-width: thin;
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: #CBD5E1;
+}
+
+@media (max-height: 680px) {
+  .sidebar-brand {
+    height: 56px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-nav {
+    gap: 2px;
+    padding-block: 8px;
+  }
+
+  .nav-item-link {
+    padding-block: 6px;
+  }
+
+  .sidebar-user-bottom {
+    padding-block: 8px;
+  }
 }
 
 .nav-section-title {
