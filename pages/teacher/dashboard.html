@@ -89,7 +89,7 @@
     </aside>
 
     <!-- KHÔNG GIAN LÀM VIỆC CHÍNH -->
-    <main class="app-main">
+    <main class="app-main teacher-dashboard">
       <header class="app-header">
         <div class="header-breadcrumbs">
           <span>Không gian giáo viên</span>
@@ -113,7 +113,7 @@
         </div>
       </header>
 
-      <div class="app-content">
+      <div class="app-content teacher-dashboard-content">
         <!-- Chào buổi sáng & Thao tác nhanh -->
         <div class="page-header-row" style="margin-bottom: 20px;">
           <div>
@@ -173,14 +173,14 @@
           </div>
         </div>
 
-        <!-- Bố cục lưới 2 cột: Trái (Lịch dạy, Điểm danh, Học phí) - Phải (Thao tác nhanh, Thông báo) -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+        <!-- Dashboard cards -->
+        <div class="teacher-dashboard-grid">
           
           <!-- CỘT TRÁI -->
           <div style="display: flex; flex-direction: column; gap: 24px;">
             
             <!-- 1. Lịch dạy hôm nay -->
-            <div class="card">
+            <div class="card teacher-dashboard-card--schedule">
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Lịch dạy hôm nay</h3>
@@ -217,7 +217,7 @@
             </div>
 
             <!-- 2. Điểm danh gần đây -->
-            <div class="card">
+            <div class="card teacher-dashboard-card--attendance">
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Điểm danh gần đây</h3>
@@ -261,7 +261,7 @@
             </div>
 
             <!-- 3. Học phí cần theo dõi -->
-            <div class="card">
+            <div class="card teacher-dashboard-card--tuition">
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Học phí cần theo dõi</h3>
@@ -310,7 +310,7 @@
           <div style="display: flex; flex-direction: column; gap: 24px;">
             
             <!-- Thao tác nhanh -->
-            <div class="card">
+            <div class="card teacher-dashboard-card--quick-actions">
               <h3 class="title-card" style="margin-bottom: 16px;">Thao tác nhanh</h3>
               <div class="quick-action-list">
                 <a href="classes.html#create" class="quick-action-btn">
@@ -333,7 +333,7 @@
             </div>
 
             <!-- Thông báo mới -->
-            <div class="card">
+            <div class="card teacher-dashboard-card--notifications">
               <div class="card-header" style="margin-bottom: 8px;">
                 <h3 class="title-card">Thông báo mới</h3>
                 <span class="badge badge-neutral" style="font-size:11px;">3 chưa đọc</span>

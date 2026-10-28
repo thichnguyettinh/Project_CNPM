@@ -453,3 +453,159 @@
   color: #166534;
   margin-bottom: 24px;
 }
+
+@media (min-width: 1100px) and (min-height: 740px) {
+  .teacher-dashboard .teacher-dashboard-content {
+    height: calc(100vh - var(--header-height));
+    min-height: 0;
+    max-width: none;
+    padding: 16px 24px;
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 12px;
+    overflow: hidden;
+  }
+
+  .teacher-dashboard .page-header-row {
+    min-height: 0;
+    margin-bottom: 0 !important;
+  }
+
+  .teacher-dashboard .page-header-row .title-page {
+    font-size: 22px !important;
+  }
+
+  .teacher-dashboard .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 0 !important;
+  }
+
+  .teacher-dashboard .stat-card {
+    min-width: 0;
+    padding: 12px;
+  }
+
+  .teacher-dashboard .stat-value {
+    font-size: 22px;
+  }
+
+  .teacher-dashboard-grid {
+    min-height: 0;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "schedule schedule quick"
+      "attendance tuition notifications";
+    gap: 12px !important;
+  }
+
+  .teacher-dashboard-grid > div {
+    display: contents !important;
+  }
+
+  .teacher-dashboard-grid .teacher-dashboard-card--schedule {
+    grid-area: schedule;
+  }
+
+  .teacher-dashboard-grid .teacher-dashboard-card--attendance {
+    grid-area: attendance;
+  }
+
+  .teacher-dashboard-grid .teacher-dashboard-card--tuition {
+    grid-area: tuition;
+  }
+
+  .teacher-dashboard-grid .teacher-dashboard-card--quick-actions {
+    grid-area: quick;
+  }
+
+  .teacher-dashboard-grid .teacher-dashboard-card--notifications {
+    grid-area: notifications;
+  }
+
+  .teacher-dashboard-grid .card {
+    min-width: 0;
+    min-height: 0;
+    padding: 12px;
+    overflow: hidden;
+  }
+
+  .teacher-dashboard-grid .card-header {
+    gap: 8px;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+
+  .teacher-dashboard-grid .card-header .text-caption {
+    font-size: 11px;
+  }
+
+  .teacher-dashboard-grid .title-card {
+    font-size: 14px;
+  }
+
+  .teacher-dashboard-card--schedule > div:last-child {
+    gap: 8px !important;
+  }
+
+  .teacher-dashboard-card--schedule > div:last-child > div {
+    padding: 8px 10px !important;
+  }
+
+  .teacher-dashboard-grid .table-container {
+    overflow: auto;
+  }
+
+  .teacher-dashboard-grid .table-custom th {
+    height: 34px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .teacher-dashboard-grid .table-custom td {
+    height: 42px;
+    padding: 6px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .teacher-dashboard-card--attendance .table-custom {
+    min-width: 390px;
+  }
+
+  .teacher-dashboard-card--tuition .table-custom {
+    min-width: 600px;
+  }
+
+  .teacher-dashboard-card--quick-actions .title-card {
+    margin-bottom: 8px !important;
+  }
+
+  .teacher-dashboard-card--quick-actions .quick-action-list {
+    gap: 6px;
+  }
+
+  .teacher-dashboard-card--quick-actions .quick-action-btn {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .teacher-dashboard-card--notifications .widget-notify-item {
+    padding: 7px 0;
+  }
+
+  .teacher-dashboard-card--notifications .widget-notify-title {
+    font-size: 12px;
+  }
+
+  .teacher-dashboard-card--notifications .widget-notify-desc {
+    font-size: 11px;
+  }
+
+  .teacher-dashboard .feature-slot,
+  .teacher-dashboard .page-mini-footer {
+    display: none;
+  }
+}
