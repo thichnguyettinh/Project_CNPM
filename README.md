@@ -183,6 +183,7 @@ Dự án (project_cnpm/)
   * [`pages/teacher/classes.html`](file:///d:/project_cnpm/pages/teacher/classes.html) (Trang 3, 12, 13, 14, 21 PDF): Danh sách 6 lớp học; Modal Tạo lớp mới (Sĩ số ban đầu 0); Modal Chỉnh sửa lớp; Modal Chi tiết lớp học (TO10A - 20 học sinh); Modal Xác nhận lưu trữ/đóng lớp học.
   * [`pages/teacher/schedule.html`](file:///d:/project_cnpm/pages/teacher/schedule.html) (Trang 5, 16 PDF): Lưới thời khóa biểu tuần 19-25/10; Modal popup xem chi tiết buổi học (phòng học, nội dung, nút chuyển sang điểm danh).
   * [`pages/parent/schedule.html`](file:///d:/project_cnpm/pages/parent/schedule.html) & [`pages/student/schedule.html`](file:///d:/project_cnpm/pages/student/schedule.html) (Trang 25, 32, 33 PDF): Tra cứu TKB cho học sinh và phụ huynh.
+* **Thẻ Tổng quan phụ trách:** Giáo viên: tổng số lớp và lịch dạy sắp tới; học sinh: lịch học sắp tới; phụ huynh: lịch học sắp tới của con.
 * **Code khoét lỗ:** `assets/js/modules/teacher/class-management.js`, `assets/js/modules/teacher/schedule.js`.
 
 #### 3. Nguyễn Châu Thanh Thảo
@@ -190,6 +191,7 @@ Dự án (project_cnpm/)
   * [`pages/teacher/attendance.html`](file:///d:/project_cnpm/pages/teacher/attendance.html) (Trang 6 PDF): Sổ điểm danh điện tử 1 chạm với 4 nút (`Có mặt`, `Vắng`, `Trễ`, `Có phép`), 4 thẻ đếm sĩ số chuyên cần, nút `Tất cả có mặt`, ô nhập ghi chú từng học sinh.
   * [`pages/parent/attendance.html`](file:///d:/project_cnpm/pages/parent/attendance.html) (Trang 26 PDF): Lịch sử điểm danh của con, thanh tiến trình tỷ lệ chuyên cần 4 màu, bảng chi tiết 12 buổi học.
   * [`pages/student/attendance.html`](file:///d:/project_cnpm/pages/student/attendance.html) (Trang 30, 34 PDF): Cổng điểm danh chuyên cần của học sinh (77.8% chuyên cần).
+* **Thẻ Tổng quan phụ trách:** Giáo viên: số học sinh và điểm danh gần đây; học sinh: tình trạng tham gia/chuyên cần; phụ huynh: tóm tắt tình hình điểm danh của con.
 * **Code khoét lỗ:** `assets/js/modules/teacher/attendance.js`, `assets/js/modules/teacher/student-list.js`.
 
 #### 4. Nguyễn Duy Khánh Lân
@@ -200,6 +202,7 @@ Dự án (project_cnpm/)
     - Tiến bộ học sinh (Trang 9): Biểu đồ đường thời gian, bảng lịch sử thay đổi điểm (Ai sửa, lúc nào, điểm cũ -> điểm mới, lý do).
   * [`pages/student/grades.html`](file:///d:/project_cnpm/pages/student/grades.html) (Trang 35, 36 PDF): Xem kết quả học tập & phân tích điểm chi tiết từng câu trong bài kiểm tra (Câu 1, 2, 3, 4).
   * [`pages/student/assignments.html`](file:///d:/project_cnpm/pages/student/assignments.html) (Trang 37, 38 PDF): Danh sách bài tập và khu vực Drag & Drop nộp file bài làm PDF/ảnh.
+* **Thẻ Tổng quan phụ trách:** Giáo viên: tóm tắt điểm/bài tập của lớp nếu có dữ liệu tương ứng; học sinh: điểm trung bình, điểm gần đây, tiến bộ và bài tập chưa nộp; phụ huynh: điểm trung bình/điểm mới nhất và tiến bộ học tập của con.
 * **Code khoét lỗ:** `assets/js/modules/teacher/exam-homework.js`, `assets/js/modules/teacher/grade-entry.js`, `assets/js/modules/student/grade-progress.js`.
 
 #### 5. Võ Trần Gia Bảo
@@ -210,6 +213,7 @@ Dự án (project_cnpm/)
     - Modal chi tiết học phí học sinh và lịch sử các lần nộp (Trang 17, 18).
   * [`pages/parent/tuition.html`](file:///d:/project_cnpm/pages/parent/tuition.html) (Trang 27 PDF): Cổng học phí phụ huynh, thanh đối soát tiến độ đóng 66.7%, bảng lịch sử đóng phí minh bạch.
   * [`pages/parent/notifications.html`](file:///d:/project_cnpm/pages/parent/notifications.html) (Trang 28 PDF): Báo phí và nhắc nhở hạn nộp học phí gửi tới phụ huynh.
+* **Thẻ Tổng quan phụ trách:** Giáo viên: tổng học phí phải thu/đã thu/còn lại và học sinh cần theo dõi; phụ huynh: học phí còn phải đóng và hạn thanh toán. Dashboard học sinh hiện không có thẻ học phí.
 * **Code khoét lỗ:** `assets/js/modules/teacher/tuition-fee.js`, `assets/js/modules/parent/tuition-invoice.js`.
 
 ---
