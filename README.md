@@ -16,7 +16,7 @@ Hệ thống **"Lớp Mình"** có giao diện cho cả 3 tác nhân: **Giáo vi
 
 ### Cấu trúc thư mục
 
-Tên thư mục và tệp bên dưới giữ nguyên như trong mã nguồn; phần mô tả được viết bằng tiếng Việt:
+Tên thư mục và tệp bên dưới giữ nguyên như trong mã nguồn:
 
 ```text
 Dự án (project_cnpm/)
