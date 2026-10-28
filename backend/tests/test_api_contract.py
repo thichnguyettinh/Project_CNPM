@@ -5,7 +5,7 @@ from unittest.mock import patch
 from fastapi import HTTPException
 from pydantic import ValidationError
 
-from backend.app.main import app, login
+from backend.app.main import app, login, unread_notification_count
 from backend.app.schemas import (
     InvoiceGenerate,
     LoginRequest,
@@ -110,6 +110,17 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_unread_notification_count_uses_authenticated_user(self):
+        connection = unittest.mock.Mock()
+        user = {"user_id": "user-1"}
+
+        with patch("backend.app.main.fetch_one", return_value={"count": 4}) as fetch:
+            result = unread_notification_count(connection, user)
+
+        self.assertEqual(result, {"count": 4})
+        self.assertIn("read_at IS NULL", fetch.call_args.args[1])
+        self.assertEqual(fetch.call_args.args[2], ("user-1",))
+
     def test_openapi_contains_core_role_apis(self):
         paths = app.openapi()["paths"]
         expected = {
@@ -120,6 +131,7 @@ class ApiContractTests(unittest.TestCase):
             "/api/assignments",
             "/api/tuition/invoices",
             "/api/notifications",
+            "/api/notifications/unread-count",
             "/api/dashboard",
         }
         self.assertTrue(expected.issubset(paths))

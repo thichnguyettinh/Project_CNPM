@@ -1676,6 +1676,20 @@ def list_notifications(
     )
 
 
+@app.get("/api/notifications/unread-count")
+def unread_notification_count(connection: Connection, user: Annotated[dict, Depends(current_user)]):
+    row = fetch_one(
+        connection,
+        """
+        SELECT COUNT(*) AS count
+        FROM notifications
+        WHERE recipient_user_id = %s AND read_at IS NULL
+        """,
+        (user["user_id"],),
+    )
+    return {"count": row["count"]}
+
+
 @app.post("/api/notifications/{notification_id}/read")
 def mark_notification_read(
     notification_id: int,

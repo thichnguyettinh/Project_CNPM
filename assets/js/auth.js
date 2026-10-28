@@ -39,6 +39,29 @@ const AuthService = {
     return result;
   },
 
+  updateNotificationIndicators() {
+    const badges = document.querySelectorAll(
+      'a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge'
+    );
+    const dots = document.querySelectorAll('.notify-dot');
+    [...badges, ...dots].forEach(indicator => { indicator.hidden = true; });
+
+    return this.api('/notifications/unread-count')
+      .then(result => {
+        if (!Number.isInteger(result.count) || result.count < 0) {
+          throw new Error('Dữ liệu số thông báo chưa đọc từ máy chủ không hợp lệ.');
+        }
+        badges.forEach(badge => {
+          badge.textContent = String(result.count);
+          badge.hidden = result.count === 0;
+        });
+        dots.forEach(dot => { dot.hidden = result.count === 0; });
+      })
+      .catch(error => {
+        console.error('Không thể cập nhật số thông báo chưa đọc:', error);
+      });
+  },
+
   async login(identity, password, remember = false) {
     const trimmedIdentity = (identity || '').trim();
     if (!trimmedIdentity || !password) {
@@ -105,6 +128,7 @@ const AuthService = {
       return null;
     }
 
+    this.updateNotificationIndicators();
     this.api('/auth/me')
       .then(serverUser => {
         localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(serverUser));

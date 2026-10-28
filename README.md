@@ -38,7 +38,7 @@ Dự án (project_cnpm/)
 │   │   └── Trang thông báo (notifications.css)
 │   └── Mã giao diện (js/)
 │       ├── Xác thực và gọi API (auth.js)
-│       ├── Tương tác thông báo mẫu (notifications.js)
+│       ├── Hiển thị thông báo và badge chưa đọc từ API (notifications.js, auth.js)
 │       └── Tích hợp nghiệp vụ (modules/)
 │           ├── Giáo viên (teacher/)
 │           ├── Học sinh (student/)
@@ -101,7 +101,7 @@ Dự án (project_cnpm/)
 - **Chính sách mật khẩu:** Mật khẩu mới phải có ít nhất 8 ký tự, chữ hoa A-Z, chữ số 0-9 và ký tự đặc biệt (không tính khoảng trắng). API kiểm tra các điều kiện này khi tạo tài khoản hoặc đổi mật khẩu.
 - **Đổi mật khẩu:** Giáo viên, phụ huynh và học sinh có trang/tab đổi mật khẩu riêng trong hồ sơ (`profile.html#password`). Biểu mẫu hiển thị checklist cập nhật theo lúc gõ và thanh đo độ mạnh (Yếu/Trung bình/Mạnh); cần nhập mật khẩu hiện tại, mật khẩu mới đạt chính sách và xác nhận mật khẩu. Các phiên đăng nhập bị thu hồi sau khi đổi.
 - **Trung tâm hướng dẫn:** Mỗi vai trò có trang trợ giúp riêng tại `pages/teacher/help.html`, `pages/student/help.html` và `pages/parent/help.html`; liên kết được đặt trong thanh điều hướng của các trang cùng vai trò.
-- **Thông báo:** Có trang giao diện riêng cho giáo viên, học sinh và phụ huynh tại `pages/teacher/notifications.html`, `pages/student/notifications.html` và `pages/parent/notifications.html`. Bộ lọc tất cả/chưa đọc/đã đọc, lọc danh mục (nếu có) và thao tác đánh dấu đã đọc hoạt động trên dữ liệu minh họa của giao diện; API backend `/api/notifications` và các endpoint đánh dấu đã đọc sẵn có, nhưng các trang hiện chưa nạp dữ liệu động từ API.
+- **Thông báo:** Các trang của giáo viên, học sinh và phụ huynh nạp danh sách từ `/api/notifications`; bộ lọc và trạng thái đã đọc đồng bộ với backend. Badge trên thanh điều hướng và chấm chuông hiển thị theo số chưa đọc từ `/api/notifications/unread-count`.
 - **Đăng xuất:** Nút đăng xuất ở cuối thanh bên trên các trang giáo viên, học sinh và phụ huynh gọi API thu hồi phiên rồi quay về trang đăng nhập; biểu tượng đã được đồng bộ giữa các vai trò.
 - **Số liệu tổng hợp:** Sĩ số, điểm trung bình, chuyên cần và công nợ được tính từ dữ liệu gốc, không lưu trùng.
 
@@ -137,7 +137,7 @@ Dự án (project_cnpm/)
 
 - Schema chỉ tạo cấu trúc, chưa nhập dữ liệu mockup; seed demo tạo ba tài khoản thử nghiệm và liên kết học sinh-phụ huynh nhưng không tạo dữ liệu lớp học.
 - Kiểm thử backend (bao gồm hash/salt và khóa đăng nhập sau 3 lần sai): `python -m unittest discover -s backend\tests -v`.
-- **Trạng thái giao diện:** Đăng nhập và xác thực phiên đã dùng API; các module JavaScript nghiệp vụ có hàm gọi API. Tuy nhiên, một số màn hình vẫn hiển thị dữ liệu mẫu hoặc nút thông báo mẫu và chưa nối toàn bộ form/bảng vào API. Có thể kiểm tra và thao tác trực tiếp các endpoint qua `/docs`; không xem dữ liệu mẫu trên những màn hình đó là dữ liệu PostgreSQL.
+- **Trạng thái giao diện:** Đăng nhập, xác thực phiên và thông báo đã dùng API. Một số màn hình nghiệp vụ khác vẫn hiển thị dữ liệu mẫu hoặc chưa nối toàn bộ form/bảng vào API. Có thể kiểm tra và thao tác trực tiếp các endpoint qua `/docs`; không xem dữ liệu mẫu trên những màn hình đó là dữ liệu PostgreSQL.
 
 ---
 
@@ -164,10 +164,9 @@ Dự án (project_cnpm/)
   * **Backend và dữ liệu nền tảng:** FastAPI kết nối PostgreSQL; schema tài khoản/hồ sơ và các nhóm API nghiệp vụ được triển khai trong `backend/app/`; script tạo tài khoản demo ở `database/seed_test_accounts.sql`.
   * **Hồ sơ và đổi mật khẩu:** các trang hồ sơ cho giáo viên, học sinh, phụ huynh; checklist và thanh đo độ mạnh mật khẩu.
   * **Trung tâm hướng dẫn và điều hướng:** trang hướng dẫn theo từng vai trò; liên kết trong sidebar; biểu tượng đăng xuất học sinh/phụ huynh đồng bộ.
-  * **Thông báo (giao diện mẫu):** trang thông báo cho cả ba vai trò, giữ sidebar hiện có, có lọc trạng thái/danh mục và thao tác đánh dấu đã đọc trên giao diện. Mục thông báo trong sidebar điều hướng tới trang tương ứng.
+  * **Thông báo:** trang của cả ba vai trò gọi API `/api/notifications`, lọc trạng thái/danh mục và lưu trạng thái đã đọc qua API. Mục thông báo trong sidebar điều hướng tới trang tương ứng.
   * **Tài liệu và kiểm thử bảo mật:** README hướng dẫn chạy hệ thống; có kiểm thử backend cho hashing/salt, khóa đăng nhập và kiểm tra một số hợp đồng API.
 * **Chưa hoàn thành:**
-  * Trang thông báo chưa gọi API `/api/notifications`; danh sách và trạng thái đọc là dữ liệu mẫu phía trình duyệt, không được lưu qua lần tải lại.
   * Chưa xác minh toàn bộ các luồng đăng nhập/nghiệp vụ chạy end-to-end trên PostgreSQL với dữ liệu thật.
   * Một số trang dashboard và nghiệp vụ vẫn hiển thị dữ liệu minh họa; cần nối dữ liệu/API và kiểm thử tích hợp trước khi ghi nhận hoàn tất toàn hệ thống.
 * **Trang phụ trách:**
