@@ -92,8 +92,6 @@ Dự án (project_cnpm/)
     └── Tài khoản thử nghiệm local (seed_test_accounts.sql)
 ```
 
-> Đây là cây mô tả bằng tiếng Việt; tên trong ngoặc là đường dẫn thật trong dự án. Chỉ liệt kê các tệp nguồn chính, không liệt kê `.venv/`, `__pycache__/` hay tệp sinh ra khi chạy. Không chia sẻ hoặc commit `backend/.env`; chỉ dùng `backend/.env.example` làm mẫu cấu hình.
-
 ### Cơ sở dữ liệu SQL
 - **Lược đồ:** [`database/schema.sql`](./database/schema.sql) dành cho PostgreSQL 14 trở lên.
 - **Backend:** FastAPI ở `backend/app/`, dùng psycopg để kết nối PostgreSQL. API hiện có cho đăng nhập/phiên, tài khoản và hồ sơ, lớp/ghi danh, buổi học/điểm danh, bài tập/bài nộp/điểm, học phí/thanh toán, thông báo và dashboard theo vai trò.
