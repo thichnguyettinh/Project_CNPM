@@ -7,10 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const markAllButton = document.querySelector('[data-mark-all-read]');
   const emptyState = document.querySelector('[data-notification-empty]');
   const countSummary = document.querySelector('[data-notification-summary]');
-  const isParentLayout = list.dataset.notificationVariant === 'parent';
-  const detailPanel = isParentLayout
-    ? document.querySelector('.parent-notification-layout > .card')
-    : null;
   const errorElement = document.createElement('p');
   errorElement.className = 'notification-error';
   errorElement.setAttribute('role', 'alert');
@@ -25,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   let notifications = [];
   let activeFilter = 'all';
-  let selectedNotificationId = null;
   let loading = true;
 
   function setError(message = '') {
@@ -54,52 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function createNotificationItem(notification) {
     const category = categoryLabels[notification.category] || 'Thông báo';
     const unread = isUnread(notification);
-    const item = document.createElement(isParentLayout ? 'div' : 'article');
+    const item = document.createElement('article');
     item.className = `notification-item${unread ? ' is-unread' : ''}`;
     item.dataset.category = notification.category;
     item.dataset.read = String(!unread);
     item.dataset.notificationId = String(notification.notification_id);
-
-    if (isParentLayout) {
-      const meta = document.createElement('div');
-      meta.className = 'parent-notification-meta';
-      meta.append(
-        createTextElement('span', 'parent-notification-category', category.toUpperCase()),
-        createTextElement(
-          'span',
-          `badge ${unread ? 'badge-warning' : 'badge-success'}`,
-          unread ? 'Chưa đọc' : 'Đã đọc'
-        )
-      );
-      item.append(
-        meta,
-        createTextElement('h4', 'parent-notification-title', notification.title),
-        createTextElement('p', 'text-caption', notification.body),
-        createTextElement('time', 'notification-time', formatDate(notification.created_at))
-      );
-
-      const actions = document.createElement('div');
-      actions.className = 'parent-notification-actions';
-      const selectButton = createTextElement('button', 'notification-select', 'Xem chi tiết');
-      selectButton.type = 'button';
-      selectButton.dataset.selectNotification = '';
-      selectButton.setAttribute('aria-pressed', String(
-        String(notification.notification_id) === String(selectedNotificationId)
-      ));
-      actions.append(selectButton);
-      if (unread) {
-        const readButton = createTextElement(
-          'button',
-          'notification-mark-read',
-          'Đánh dấu đã đọc'
-        );
-        readButton.type = 'button';
-        readButton.dataset.markRead = '';
-        actions.append(readButton);
-      }
-      item.append(actions);
-      return item;
-    }
 
     const copy = document.createElement('div');
     copy.className = 'notification-copy';
@@ -134,38 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     item.append(copy, state);
     return item;
-  }
-
-  function renderParentDetail() {
-    if (!detailPanel) return;
-    const selected = notifications.find(
-      item => String(item.notification_id) === String(selectedNotificationId)
-    );
-    detailPanel.replaceChildren();
-    if (!selected) {
-      detailPanel.append(createTextElement(
-        'p',
-        'text-caption',
-        loading ? 'Đang tải thông báo...' : 'Chọn một thông báo để xem chi tiết.'
-      ));
-      return;
-    }
-
-    const meta = document.createElement('div');
-    meta.className = 'notification-detail-meta';
-    meta.append(
-      createTextElement(
-        'span',
-        'text-caption',
-        `${categoryLabels[selected.category] || 'Thông báo'} · ${isUnread(selected) ? 'Chưa đọc' : 'Đã đọc'}`
-      ),
-      createTextElement('time', 'text-caption', formatDate(selected.created_at))
-    );
-    detailPanel.append(
-      meta,
-      createTextElement('h3', 'notification-detail-title', selected.title),
-      createTextElement('p', 'notification-detail-body', selected.body)
-    );
   }
 
   function update() {
@@ -218,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (markAllButton) markAllButton.disabled = unreadCount === 0 || loading;
-    renderParentDetail();
   }
 
   async function loadNotifications() {
@@ -230,9 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Dữ liệu thông báo từ máy chủ không hợp lệ.');
       }
       notifications = result;
-      if (notifications.length) {
-        selectedNotificationId = String(notifications[0].notification_id);
-      }
       setError();
     } catch (error) {
       notifications = [];
@@ -262,12 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       entry => String(entry.notification_id) === item.dataset.notificationId
     );
     if (!notification) return;
-
-    if (button.hasAttribute('data-select-notification')) {
-      selectedNotificationId = String(notification.notification_id);
-      update();
-      return;
-    }
 
     if (!button.hasAttribute('data-mark-read')) return;
     button.disabled = true;
@@ -310,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   list.replaceChildren();
-  if (detailPanel) detailPanel.replaceChildren();
   update();
   loadNotifications();
 });

@@ -90,18 +90,8 @@
           </select>
         </div>
 
-        <!-- Bố cục 2 cột -->
-        <div class="parent-notification-layout">
-          <!-- Cột trái: Danh sách thông báo -->
-          <div class="parent-notification-list" data-notification-list data-notification-variant="parent" aria-label="Danh sách thông báo">
-            <div class="notification-empty" data-notification-empty>Không có thông báo phù hợp với bộ lọc.</div>
-          </div>
-
-          <!-- Cột phải: Chi tiết thông báo đang chọn -->
-          <div class="card notification-detail-panel" style="padding:24px;">
-            <p class="text-caption">Chọn một thông báo để xem chi tiết.</p>
-          </div>
-        </div>
+        <section class="notification-list" data-notification-list aria-label="Danh sách thông báo"></section>
+        <div class="notification-empty" data-notification-empty>Không có thông báo phù hợp với bộ lọc.</div>
         <p class="notification-count-summary" data-notification-summary></p>
         <aside class="notification-system-note" data-system-note><span aria-hidden="true">ⓘ</span><div><strong>Thông báo trong hệ thống</strong><p>Các cập nhật chỉ hiển thị trong Lớp Mình. Hệ thống không tự động gửi SMS hoặc email cho học sinh, phụ huynh.</p></div><button type="button" aria-label="Đóng thông báo" data-dismiss-note>×</button></aside>
 
