@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Điểm danh lớp học - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <h2>Lớp Mình</h2>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="classes.html" class="nav-item-link">
+          <span>Lớp học</span>
+        </a>
+        <a href="users.html" class="nav-item-link">
+          <span>Tài khoản</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link active">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link">
+          <span>Điểm số</span>
+        </a>
+        <a href="tuition.html" class="nav-item-link">
+          <span>Học phí</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link">
+          <span>Trung tâm hướng dẫn</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge">HL</div>
+          <div class="user-mini-meta">
+            <h5>Nguyễn Hà Linh</h5>
+            <p>Giáo viên</p>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs">
+          <span>Không gian giáo viên</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">Điểm danh</span>
+        </div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Header Điểm danh -->
+        <div class="page-header-row">
+          <div>
+            <h1 class="title-page" style="font-size:24px;">Điểm danh lớp học</h1>
+            <p class="text-secondary" style="margin-top:4px;">Ghi nhận tình hình tham gia của học sinh theo từng buổi học.</p>
+          </div>
+          <a href="javascript:void(0)" onclick="alert('Đang xem lịch sử toàn bộ các buổi điểm danh')" class="btn btn-secondary btn-sm">
+            <i data-feather="clock" class="feather-sm"></i> <span>Lịch sử điểm danh</span>
+          </a>
+        </div>
+
+        <!-- Chọn Lớp học & Buổi học -->
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom: 20px; flex-wrap:wrap; background:#FFFFFF; padding:16px 20px; border:1px solid var(--color-border); border-radius:var(--radius-card);">
+          <div>
+            <label class="form-label">Lớp học</label>
+            <select class="form-control" style="width: 240px; font-weight:600;">
+              <option>Toán 10 - Nền tảng (TO10A)</option>
+              <option>Toán 11 - Nâng cao (TO11A)</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Buổi học</label>
+            <select class="form-control" style="width: 280px;">
+              <option>23/10/2026 · 17:30–19:00 · Buổi 21</option>
+              <option>21/10/2026 · 17:30–19:00 · Buổi 20</option>
+            </select>
+          </div>
+          <div style="margin-left:auto; text-align:right;">
+            <div style="font-size:12px; color:#64748B;">Phòng 201 · Nguyễn Hà Linh</div>
+            <span class="badge badge-success" style="margin-top:4px;"><span class="badge-dot"></span>Đã lưu điểm danh</span>
+          </div>
+        </div>
+
+        <!-- Banner thông báo kết quả lưu -->
+        <div class="alert alert-success">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <div>
+            <strong>Đã lưu điểm danh cho 20 học sinh:</strong> Người lưu: Nguyễn Hà Linh · 23/10/2026, 19:02. Bạn có thể điều chỉnh trạng thái và lưu lại khi cần.
+          </div>
+        </div>
+
+        <!-- 4 Thống kê sĩ số chuyên cần -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+          <div class="stat-card" style="padding:16px; border-left:4px solid #15803D;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="stat-value" id="countPresent" style="font-size:24px; color:#15803D;">17</div>
+              <div style="font-weight:600; font-size:13px; color:#15803D;">Có mặt</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding:16px; border-left:4px solid #DC2626;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="stat-value" id="countAbsent" style="font-size:24px; color:#DC2626;">1</div>
+              <div style="font-weight:600; font-size:13px; color:#DC2626;">Vắng</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding:16px; border-left:4px solid #D97706;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="stat-value" id="countLate" style="font-size:24px; color:#D97706;">1</div>
+              <div style="font-weight:600; font-size:13px; color:#D97706;">Trễ</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding:16px; border-left:4px solid #2563EB;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="stat-value" id="countExcused" style="font-size:24px; color:#2563EB;">1</div>
+              <div style="font-weight:600; font-size:13px; color:#2563EB;">Có phép</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SỔ ĐIỂM DANH ĐIỆN TỬ 1 CHẠM -->
+        <div class="card" style="padding: 20px; margin-bottom: 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+              <h3 class="title-card">Danh sách điểm danh</h3>
+              <p class="text-caption">20 học sinh · Chọn một trạng thái cho mỗi học sinh</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="setAllPresent()">
+              ✓ Tất cả có mặt
+            </button>
+          </div>
+
+          <div class="search-box-wrap" style="max-width:320px; margin-bottom: 16px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="form-control" placeholder="Tìm học sinh trong lớp...">
+          </div>
+
+          <div class="table-container" style="box-shadow:none;">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">Học sinh</th>
+                  <th style="width: 45%;">Trạng thái</th>
+                  <th style="width: 30%;">Ghi chú</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Trần Minh Anh</strong><br><span class="text-caption">HS001</span></td>
+                  <td>
+                    <div class="attendance-btn-group" id="grp-HS001">
+                      <button type="button" class="att-btn active-present" onclick="setRowStatus('HS001', 'present', this)">Có mặt</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS001', 'absent', this)">Vắng</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS001', 'late', this)">Trễ</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS001', 'excused', this)">Có phép</button>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control" style="height:34px; font-size:12.5px;" placeholder="Thêm ghi chú..."></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Nguyễn Đức Bảo</strong><br><span class="text-caption">HS002</span></td>
+                  <td>
+                    <div class="attendance-btn-group" id="grp-HS002">
+                      <button type="button" class="att-btn active-present" onclick="setRowStatus('HS002', 'present', this)">Có mặt</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS002', 'absent', this)">Vắng</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS002', 'late', this)">Trễ</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS002', 'excused', this)">Có phép</button>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control" style="height:34px; font-size:12.5px;" value="Tham gia phát biểu sôi nổi"></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Lê Ngọc Chi</strong><br><span class="text-caption">HS003</span></td>
+                  <td>
+                    <div class="attendance-btn-group" id="grp-HS003">
+                      <button type="button" class="att-btn active-present" onclick="setRowStatus('HS003', 'present', this)">Có mặt</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS003', 'absent', this)">Vắng</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS003', 'late', this)">Trễ</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS003', 'excused', this)">Có phép</button>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control" style="height:34px; font-size:12.5px;" placeholder="Thêm ghi chú..."></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Phạm Hải Đăng</strong><br><span class="text-caption">HS004</span></td>
+                  <td>
+                    <div class="attendance-btn-group" id="grp-HS004">
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS004', 'present', this)">Có mặt</button>
+                      <button type="button" class="att-btn active-absent" onclick="setRowStatus('HS004', 'absent', this)">Vắng</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS004', 'late', this)">Trễ</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS004', 'excused', this)">Có phép</button>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control" style="height:34px; font-size:12.5px;" value="Chưa có lý do"></td>
+                </tr>
+
+                <tr>
+                  <td><strong>Hoàng Thu Hà</strong><br><span class="text-caption">HS005</span></td>
+                  <td>
+                    <div class="attendance-btn-group" id="grp-HS005">
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS005', 'present', this)">Có mặt</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS005', 'absent', this)">Vắng</button>
+                      <button type="button" class="att-btn active-late" onclick="setRowStatus('HS005', 'late', this)">Trễ</button>
+                      <button type="button" class="att-btn" onclick="setRowStatus('HS005', 'excused', this)">Có phép</button>
+                    </div>
+                  </td>
+                  <td><input type="text" class="form-control" style="height:34px; font-size:12.5px;" value="Vào muộn 15 phút"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 20px;">
+            <span class="text-caption">Chỉ giáo viên được thay đổi kết quả điểm danh.</span>
+            <div style="display:flex; gap:12px;">
+              <button class="btn btn-secondary" onclick="alert('Đã hoàn tác các thay đổi điểm danh.')">Hủy thay đổi</button>
+              <button class="btn btn-primary" onclick="alert('Đã lưu kết quả điểm danh buổi học ngày 23/10/2026 vào CSDL thành công!')">
+                <i data-feather="save" class="feather-sm"></i> <span>Lưu điểm danh</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: UC-06 ATTENDANCE RECORDING</span>
+          <p class="slot-desc">Đã thiết lập khung hàm: markAttendance(), saveAttendanceSheet(), calculateAttendanceRate().</p>
+          <span class="code-hint">window.AttendanceModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/attendance.js"></script>
+  <script>
+    feather.replace();
+    AuthService.requireAuth('teacher');
+
+    function setRowStatus(studentId, status, btn) {
+      const container = document.getElementById('grp-' + studentId);
+      container.querySelectorAll('.att-btn').forEach(b => {
+        b.className = 'att-btn';
+      });
+      if (status === 'present') btn.className = 'att-btn active-present';
+      if (status === 'absent') btn.className = 'att-btn active-absent';
+      if (status === 'late') btn.className = 'att-btn active-late';
+      if (status === 'excused') btn.className = 'att-btn active-excused';
+    }
+
+    function setAllPresent() {
+      document.querySelectorAll('.attendance-btn-group').forEach(group => {
+        group.querySelectorAll('.att-btn').forEach(b => b.className = 'att-btn');
+        group.querySelectorAll('.att-btn')[0].className = 'att-btn active-present';
+      });
+      document.getElementById('countPresent').innerText = '20';
+      document.getElementById('countAbsent').innerText = '0';
+      document.getElementById('countLate').innerText = '0';
+      document.getElementById('countExcused').innerText = '0';
+      alert('Đã đặt tất cả 20 học sinh trạng thái: Có mặt');
+    }
+  </script>
+</body>
+</html>

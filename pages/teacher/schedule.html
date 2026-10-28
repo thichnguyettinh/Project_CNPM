@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch học - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <h2>Lớp Mình</h2>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="classes.html" class="nav-item-link">
+          <span>Lớp học</span>
+        </a>
+        <a href="users.html" class="nav-item-link">
+          <span>Tài khoản</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link active">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link">
+          <span>Điểm số</span>
+        </a>
+        <a href="tuition.html" class="nav-item-link">
+          <span>Học phí</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link">
+          <span>Trung tâm hướng dẫn</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge">HL</div>
+          <div class="user-mini-meta">
+            <h5>Nguyễn Hà Linh</h5>
+            <p>Giáo viên</p>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs">
+          <span>Không gian giáo viên</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">Lịch học</span>
+        </div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Header Lịch học -->
+        <div class="page-header-row">
+          <div>
+            <h1 class="title-page" style="font-size:24px;">Lịch học</h1>
+            <p class="text-secondary" style="margin-top:4px;">Theo dõi toàn bộ lịch giảng dạy trong tuần của cô Hà Linh.</p>
+          </div>
+          <button class="btn btn-primary" onclick="alert('Mở form thêm buổi học mới')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Thêm buổi học</span>
+          </button>
+        </div>
+
+        <!-- Toolbar điều hướng lịch -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <button class="btn btn-secondary btn-sm">Hôm nay</button>
+            <div style="font-weight:600; font-size:15px; color:var(--color-text-main); display:flex; align-items:center; gap:8px;">
+              <span style="cursor:pointer;">&lt;</span>
+              <span>19–25 tháng 10, 2026</span>
+              <span style="cursor:pointer;">&gt;</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <select class="form-control" style="width:160px;"><option>Tất cả lớp học</option><option>Toán 10 - Nền tảng</option></select>
+            <select class="form-control" style="width:150px;"><option>Xem theo tuần</option><option>Xem theo tháng</option></select>
+          </div>
+        </div>
+
+        <!-- LƯỚI THỜI KHÓA BIỂU TUẦN -->
+        <div class="calendar-week-grid" style="margin-bottom: 24px;">
+          <div class="calendar-header-col" style="background:#F8FAFC;"></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Hai</div><div class="cal-day-num">19</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Ba</div><div class="cal-day-num">20</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Tư</div><div class="cal-day-num">21</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Năm</div><div class="cal-day-num">22</div></div>
+          <div class="calendar-header-col" style="background:#EFF6FF;"><div class="cal-day-title" style="color:var(--color-primary); font-weight:700;">Thứ Sáu</div><div class="cal-day-num today">23</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Bảy</div><div class="cal-day-num">24</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Chủ Nhật</div><div class="cal-day-num">25</div></div>
+
+          <!-- Dòng 08:00 -->
+          <div class="calendar-time-cell">08:00</div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nền tảng', 'P.201', '08:00–10:00')">
+              <h5>Toán 11 - Nền tảng</h5>
+              <p>TO11B · P.201</p>
+              <span>Nguyễn Hà Linh</span>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 9 - Vào lớp 10', 'P.201', '08:00–10:00')">
+              <h5>Toán 9 - Vào lớp 10</h5>
+              <p>TO9A · P.201</p>
+              <span>Nguyễn Hà Linh</span>
+            </div>
+          </div>
+
+          <!-- Dòng 17:30 -->
+          <div class="calendar-time-cell">17:30</div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
+              <h5>Toán 10 - Nền tảng</h5>
+              <p>TO10A · P.201</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nâng cao', 'P.201', '17:30–19:00')">
+              <h5>Toán 11 - Nâng cao</h5>
+              <p>TO11A · P.201</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
+              <h5>Toán 10 - Nền tảng</h5>
+              <p>TO10A · P.201</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nâng cao', 'P.201', '17:30–19:00')">
+              <h5>Toán 11 - Nâng cao</h5>
+              <p>TO11A · P.201</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell" style="background:#F0F7FF;">
+            <!-- Buổi học hôm nay active -->
+            <div class="cal-class-card active-now" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
+              <h5>Toán 10 - Nền tảng</h5>
+              <p>TO10A · P.201</p>
+              <span>Sắp diễn ra</span>
+            </div>
+          </div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+
+          <!-- Dòng 19:15 -->
+          <div class="calendar-time-cell">19:15</div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
+              <h5>Toán 12 - Luyện thi</h5>
+              <p>TO12A · P.202</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Củng cố', 'P.202', '19:15–20:45')">
+              <h5>Toán 10 - Củng cố</h5>
+              <p>TO10B · P.202</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
+              <h5>Toán 12 - Luyện thi</h5>
+              <p>TO12A · P.202</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Củng cố', 'P.202', '19:15–20:45')">
+              <h5>Toán 10 - Củng cố</h5>
+              <p>TO10B · P.202</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
+              <h5>Toán 12 - Luyện thi</h5>
+              <p>TO12A · P.202</p>
+            </div>
+          </div>
+          <div class="calendar-slot-cell"></div>
+          <div class="calendar-slot-cell"></div>
+        </div>
+
+        <!-- Khung khoét lỗ Module Thời khóa biểu -->
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: UC-04 TIMETABLE & SCHEDULING</span>
+          <p class="slot-desc">Đã thiết lập khung hàm: getSchedules(), addScheduleSession(), checkConflict().</p>
+          <span class="code-hint">window.ScheduleModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL: CHI TIẾT BUỔI HỌC -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalSessionDetail">
+    <div class="modal-container" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Chi tiết buổi học</h3>
+          <p class="text-caption">Thứ Sáu, 23/10/2026 · Buổi 21</p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modalSessionDetail')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+          <div>
+            <h4 style="font-size:16px; font-weight:700;" id="sessionModalTitle">Toán 10 - Nền tảng</h4>
+            <p class="text-caption">TO10A · Nguyễn Hà Linh</p>
+          </div>
+          <span class="badge badge-info">Sắp diễn ra</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:16px; background:#F8FAFC; padding:12px; border-radius:8px;">
+          <div>
+            <div style="font-size:11px; color:#64748B;">Thời gian</div>
+            <div style="font-weight:600; font-size:13.5px;" id="sessionModalTime">17:30–19:00 · 90 phút</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:#64748B;">Phòng học</div>
+            <div style="font-weight:600; font-size:13.5px;" id="sessionModalRoom">Phòng 201 · 20 học sinh</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Nội dung buổi học</div>
+          <p style="font-size:13px; color:#475569; line-height:1.5;">
+            Hàm số bậc hai: đồ thị và ứng dụng. Ôn tập dạng bài tìm giá trị lớn nhất, nhỏ nhất.
+          </p>
+        </div>
+
+        <div class="alert alert-warning" style="margin-bottom:0;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>
+            <strong>Chưa điểm danh:</strong> Danh sách 20 học sinh đã sẵn sàng. Điểm danh sẽ được lưu cho buổi học ngày 23/10/2026.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalSessionDetail')">Đóng</button>
+        <a href="attendance.html" class="btn btn-primary">
+          Điểm danh buổi học
+        </a>
+      </div>
+    </div>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/schedule.js"></script>
+  <script>
+    AuthService.requireAuth('teacher');
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function openSessionModal(title, room, time) {
+      document.getElementById('sessionModalTitle').innerText = title;
+      document.getElementById('sessionModalRoom').innerText = room + ' · 20 học sinh';
+      document.getElementById('sessionModalTime').innerText = time + ' · 90 phút';
+      openModal('modalSessionDetail');
+    }
+  </script>
+</body>
+</html>

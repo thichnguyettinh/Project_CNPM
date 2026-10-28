@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập tài khoản - Lớp Mình</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Design System & Components -->
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/login.css">
+</head>
+<body>
+
+  <div class="login-page-wrapper">
+    <!-- CỘT TRÁI: BANNER GIỚI THIỆU HỆ THỐNG -->
+    <div class="login-banner-side">
+      <!-- Thương hiệu -->
+      <div class="login-brand-header">
+        <div class="brand-icon-box">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="brand-title-wrap">
+          <h1>Lớp Mình</h1>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+
+      <!-- Nội dung giới thiệu trọng tâm -->
+      <div class="login-banner-content">
+        <span class="banner-tag">— KHÔNG GIAN GIÁO VIÊN & HỌC TẬP</span>
+        <h2 class="banner-title">Dành thời gian dạy tốt.<br>Để việc quản lý nhẹ<br>nhàng hơn.</h2>
+        <p class="banner-desc">
+          Hệ thống quản lý lớp học thêm — kết nối lớp học, học sinh và phụ huynh trong một không gian rõ ràng, an toàn.
+        </p>
+
+        <!-- 3 Điểm nổi bật -->
+        <div class="feature-list">
+          <div class="feature-item">
+            <div class="feature-icon-card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+            </div>
+            <div class="feature-info">
+              <h4>Lịch học tập trung</h4>
+              <p>Theo dõi lịch dạy và điểm danh từng buổi.</p>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon-card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"/>
+                <line x1="12" y1="20" x2="12" y2="4"/>
+                <line x1="6" y1="20" x2="6" y2="14"/>
+              </svg>
+            </div>
+            <div class="feature-info">
+              <h4>Theo sát tiến bộ học tập</h4>
+              <p>Quản lý bài tập, điểm số và nhận xét.</p>
+            </div>
+          </div>
+
+          <div class="feature-item">
+            <div class="feature-icon-card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+            </div>
+            <div class="feature-info">
+              <h4>Học phí minh bạch</h4>
+              <p>Ghi nhận khoản thu và đối chiếu công nợ.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chân trang banner -->
+      <div class="banner-footer">
+        © 2026 Lớp Mình · Đồng hành cùng từng lớp học
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI: FORM ĐĂNG NHẬP (Chính xác theo thiết kế) -->
+    <div class="login-form-side">
+      <div class="login-form-container">
+        <!-- Tiêu đề form -->
+        <div class="form-header-badge">CHÀO MỪNG TRỞ LẠI</div>
+        <h2 class="form-header-title">Đăng nhập tài khoản</h2>
+        <p class="form-header-sub">Tiếp tục quản lý lớp học của bạn hôm nay.</p>
+
+        <!-- Thông báo lỗi (nếu có) -->
+        <div id="loginAlert" class="alert alert-danger" style="display: none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span id="loginAlertText">Tên đăng nhập hoặc mật khẩu không chính xác. Vui lòng kiểm tra lại.</span>
+        </div>
+
+        <!-- Form nhập liệu -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="usernameOrEmail">Tên đăng nhập hoặc email</label>
+            <div class="input-wrapper input-icon-right">
+              <input 
+                type="text" 
+                id="usernameOrEmail" 
+                class="form-control" 
+                placeholder="Nhập tài khoản" 
+                value="giaovien@lopminh.edu.vn"
+                required
+              >
+              <span class="input-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Mật khẩu</label>
+            <div class="input-wrapper input-icon-right">
+              <input 
+                type="password" 
+                id="password" 
+                class="form-control" 
+                placeholder="Nhập mật khẩu" 
+                value="123"
+                required
+              >
+              <span class="input-icon right-clickable" onclick="togglePasswordVisibility()" title="Ẩn/hiện mật khẩu">
+                <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Tùy chọn Ghi nhớ & Quên mật khẩu -->
+          <div class="form-options-row">
+            <label class="form-checkbox">
+              <input type="checkbox" id="rememberMe">
+              <span>Ghi nhớ đăng nhập</span>
+            </label>
+            <a href="javascript:void(0)" onclick="alert('Vui lòng liên hệ Giáo viên để được cấp lại mật khẩu mới.')" class="forgot-link">Quên mật khẩu?</a>
+          </div>
+
+          <!-- Nút Đăng nhập -->
+          <button type="submit" class="btn btn-primary btn-login-submit">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+              <polyline points="10 17 15 12 10 7"/>
+              <line x1="15" y1="12" x2="3" y2="12"/>
+            </svg>
+            <span>Đăng nhập</span>
+          </button>
+        </form>
+
+        <!-- Hộp lưu ý quy tắc nghiệp vụ (Không đăng ký công khai) -->
+        <div class="notice-box">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" style="flex-shrink:0; margin-top:1px;">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <p>Không có đăng ký công khai. Tài khoản học sinh và phụ huynh do giáo viên tạo và cấp phát.</p>
+        </div>
+
+        <!-- Chân form -->
+        <div class="form-footer-action">
+          <p>Bạn chưa có tài khoản hoặc cần đặt lại mật khẩu?</p>
+          <a href="javascript:void(0)" onclick="alert('Hệ thống quản lý nội bộ: Tài khoản do Giáo viên phụ trách trực tiếp tạo và cấp quyền.')" class="contact-admin-link">
+            Liên hệ giáo viên hoặc quản trị viên →
+          </a>
+        </div>
+
+        <p class="security-caption">Thông tin đăng nhập được bảo mật trong hệ thống.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+    feather.replace();
+
+    // Ẩn / hiện mật khẩu
+    function togglePasswordVisibility() {
+      const passField = document.getElementById('password');
+      if (passField.type === 'password') {
+        passField.type = 'text';
+      } else {
+        passField.type = 'password';
+      }
+    }
+
+    // Xử lý nộp form đăng nhập
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const identity = document.getElementById('usernameOrEmail').value;
+      const pass = document.getElementById('password').value;
+      const remember = document.getElementById('rememberMe').checked;
+      const alertBox = document.getElementById('loginAlert');
+      const alertText = document.getElementById('loginAlertText');
+      const submitButton = document.querySelector('.btn-login-submit');
+
+      alertBox.style.display = 'none';
+      submitButton.disabled = true;
+
+      try {
+        const result = await AuthService.login(identity, pass, remember);
+        if (result.success) {
+          window.location.href = AuthService.getDashboardPath(result.user.role);
+          return;
+        }
+        alertText.innerText = result.message;
+        alertBox.style.display = 'flex';
+      } finally {
+        submitButton.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch học của con - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        
+        <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG PHỤ HUYNH</span></div>
+      </div>
+      <div class="sidebar-sub-brand">Đồng hành cùng học tập của con</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link"><span>Tổng quan</span></a>
+        <a href="schedule.html" class="nav-item-link active"><span>Lịch học</span></a>
+        <a href="attendance.html" class="nav-item-link"><span>Điểm danh</span></a>
+        <a href="tuition.html" class="nav-item-link"><span>Học phí</span></a>
+        <a href="notifications.html" class="nav-item-link"><span>Thông báo</span><span class="sidebar-nav-badge">2</span></a>
+        <a href="profile.html" class="nav-item-link"><span>Hồ sơ phụ huynh</span></a>
+        <a href="help.html" class="nav-item-link"><span>Trung tâm hướng dẫn</span></a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge" style="background:#FFFBEB; color:#A16207;">TM</div>
+          <div class="user-mini-meta"><h5>Nguyễn Thị Mai</h5><p>Phụ huynh</p></div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs"><span>Cổng phụ huynh</span><span class="crumb-sep">/</span><span class="crumb-active">Lịch học</span></div>
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-sm" onclick="alert('Hotline trung tâm: 028 3822 8888')">📞 Liên hệ trung tâm</button>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;">TM</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Thị Mai · Phụ huynh</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom: 20px;">
+          <div>
+            <h1 class="title-page" style="font-size:24px;">Lịch học của con</h1>
+            <p class="text-secondary" style="font-size:13px; margin-top:4px;">Cổng phụ huynh / Lịch học</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; background:#FFFFFF; border:1px solid var(--color-border); padding:6px 14px; border-radius:30px;">
+            <div class="avatar-badge" style="width:26px; height:26px; font-size:11px; background:#E0F2FE; color:#0284C7;">MA</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Minh Anh (Lớp 8 · Toán 8A)</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <div style="font-weight:700; font-size:16px;">19–25 tháng 10, 2026</div>
+          <button class="btn btn-secondary btn-sm">Hôm nay</button>
+        </div>
+
+        <!-- Lưới lịch tuần của con -->
+        <div class="calendar-week-grid" style="margin-bottom:20px;">
+          <div class="calendar-header-col" style="background:#F8FAFC;"></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Hai</div><div class="cal-day-num">19</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Ba</div><div class="cal-day-num">20</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Tư</div><div class="cal-day-num">21</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Năm</div><div class="cal-day-num">22</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Thứ Sáu</div><div class="cal-day-num">23</div></div>
+          <div class="calendar-header-col" style="background:#EFF6FF;"><div class="cal-day-title" style="color:var(--color-primary); font-weight:700;">Thứ Bảy</div><div class="cal-day-num today">24</div></div>
+          <div class="calendar-header-col"><div class="cal-day-title">Chủ Nhật</div><div class="cal-day-num">25</div></div>
+
+          <div class="calendar-time-cell">18:00</div>
+          <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có</span></div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card">
+              <h5>Toán 8A</h5>
+              <p>18:00–19:30 · P.203</p>
+              <span>Đã kết thúc</span>
+            </div>
+          </div>
+          <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có</span></div>
+          <div class="calendar-slot-cell">
+            <div class="cal-class-card">
+              <h5>Toán 8A</h5>
+              <p>18:00–19:30 · P.203</p>
+              <span>Đã kết thúc</span>
+            </div>
+          </div>
+          <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có</span></div>
+          <div class="calendar-slot-cell" style="background:#F0F7FF;">
+            <!-- Ca học sắp tới active -->
+            <div class="cal-class-card active-now">
+              <h5>Toán 8A</h5>
+              <p>18:00–19:30</p>
+              <span>Phòng 203 · Đang chờ</span>
+            </div>
+          </div>
+          <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có</span></div>
+        </div>
+
+        <!-- Khối chi tiết buổi học & ca tiếp theo -->
+        <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:20px; margin-bottom:20px;">
+          <div class="card" style="padding:20px;">
+            <div class="text-caption" style="color:var(--color-primary); font-weight:600;">Thứ Bảy, 24/10/2026</div>
+            <h3 style="font-size:16px; font-weight:700; margin:4px 0 12px;">Toán 8A</h3>
+            <div style="font-size:13px; line-height:1.8; color:#475569;">
+              <div>Thời gian: <strong>18:00–19:30</strong></div>
+              <div>Địa điểm: <strong>Phòng 203</strong></div>
+              <div>Giáo viên: <strong>Trần Hoàng Nam</strong></div>
+              <div>Học sinh: <strong>Nguyễn Minh Anh</strong></div>
+            </div>
+            <div class="alert alert-info" style="margin-top:12px; margin-bottom:0; font-size:12px;">
+              Nội dung: Phân tích đa thức thành nhân tử. Con mang theo vở bài tập và dụng cụ học tập.
+            </div>
+          </div>
+
+          <div class="card" style="padding:20px;">
+            <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Buổi học tiếp theo</h4>
+            <div style="font-size:13.5px; font-weight:700; color:var(--color-primary);">Thứ Ba, 27/10/2026</div>
+            <div class="text-caption" style="margin:4px 0 12px;">18:00–19:30 · Toán 8A · Phòng 203</div>
+            <p style="font-size:12px; color:#475569; line-height:1.5;">
+              Luyện tập tổng hợp và chữa bài tập cuối chương cùng thầy Trần Hoàng Nam.
+            </p>
+            <div class="alert alert-warning" style="margin-top:12px; font-size:11.5px;">
+              Nếu con cần nghỉ học, phụ huynh vui lòng liên hệ trung tâm trước buổi học.
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: UC-10 PARENT TIMETABLE VIEW</span>
+          <p class="slot-desc">Khung kết nối API: fetchChildWeekSchedule().</p>
+          <span class="code-hint">window.ParentScheduleModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/parent/schedule-view.js"></script>
+  <script>
+    AuthService.requireAuth('parent');
+  </script>
+</body>
+</html>

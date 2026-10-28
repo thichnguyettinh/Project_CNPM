@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý điểm số - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <h2>Lớp Mình</h2>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="classes.html" class="nav-item-link">
+          <span>Lớp học</span>
+        </a>
+        <a href="users.html" class="nav-item-link">
+          <span>Tài khoản</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link active">
+          <span>Điểm số</span>
+        </a>
+        <a href="tuition.html" class="nav-item-link">
+          <span>Học phí</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link">
+          <span>Trung tâm hướng dẫn</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge">HL</div>
+          <div class="user-mini-meta">
+            <h5>Nguyễn Hà Linh</h5>
+            <p>Giáo viên</p>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs">
+          <span>Không gian giáo viên</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">Điểm số</span>
+        </div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Header Quản lý điểm số -->
+        <div class="page-header-row">
+          <div>
+            <h1 class="title-page" style="font-size:24px;">Quản lý điểm số</h1>
+            <p class="text-secondary" style="margin-top:4px;">Theo dõi bài tập, bài kiểm tra và kết quả học tập theo lớp.</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" onclick="alert('Mở form tạo bài tập mới')">+ Tạo bài tập</button>
+            <button class="btn btn-primary" onclick="alert('Mở form tạo bài kiểm tra mới')">+ Tạo bài kiểm tra</button>
+          </div>
+        </div>
+
+        <!-- Bộ lọc lớp & học kỳ -->
+        <div style="display:flex; gap:12px; margin-bottom: 20px;">
+          <select class="form-control" style="width:240px; font-weight:600;">
+            <option>Toán 10 - Nền tảng (TO10A)</option>
+            <option>Toán 11 - Nâng cao (TO11A)</option>
+          </select>
+          <select class="form-control" style="width:180px;"><option>Học kỳ I · 2026-2027</option></select>
+          <select class="form-control" style="width:160px;"><option>Tháng 10/2026</option></select>
+        </div>
+
+        <!-- 3 Thẻ thống kê -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Bài tập đã giao</div>
+              <div class="stat-value" style="font-size:24px;">6</div>
+              <div class="stat-desc">2 bài tập trong tháng 10</div>
+            </div>
+            <div class="stat-icon primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            </div>
+          </div>
+
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Bài kiểm tra</div>
+              <div class="stat-value" style="font-size:24px;">4</div>
+              <div class="stat-desc">Đánh giá theo thang điểm 10</div>
+            </div>
+            <div class="stat-icon success">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+          </div>
+
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Điểm TB bài kiểm tra gần nhất</div>
+              <div class="stat-value" style="font-size:24px; color:var(--color-primary);">7,9 / 10</div>
+              <div class="stat-desc">20 / 20 học sinh đã có điểm</div>
+            </div>
+            <div class="stat-icon accent">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Tabs điều hướng các màn hình con (Pages 7, 8, 9) -->
+        <div class="subnav-tabs">
+          <button class="subnav-tab-item active" id="tabBtn1" onclick="switchGradeView('viewExams', this)">Bài kiểm tra (4)</button>
+          <button class="subnav-tab-item" id="tabBtn2" onclick="switchGradeView('viewHomework', this)">Bài tập (6)</button>
+          <button class="subnav-tab-item" id="tabBtn3" onclick="switchGradeView('viewEntry', this)">Nhập điểm & nhận xét (Page 8)</button>
+          <button class="subnav-tab-item" id="tabBtn4" onclick="switchGradeView('viewStudentProgress', this)">Tiến bộ học sinh (Page 9)</button>
+        </div>
+
+        <!-- VIEW 1: BÀI KIỂM TRA -->
+        <div id="viewExams" class="grade-subview">
+          <div class="card" style="padding:20px; margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 class="title-card">Danh sách bài kiểm tra</h3>
+              <button class="btn btn-secondary btn-sm" onclick="alert('Đã xuất bảng điểm ra Excel!')">Xuất bảng điểm</button>
+            </div>
+            <div class="table-container" style="box-shadow:none;">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Tên bài kiểm tra</th>
+                    <th>Ngày kiểm tra</th>
+                    <th>Thang điểm</th>
+                    <th>Đã nhập</th>
+                    <th>Trạng thái</th>
+                    <th style="text-align:right;">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Kiểm tra chương I - Hàm số</strong></td>
+                    <td>21/10/2026</td>
+                    <td>10</td>
+                    <td>20 / 20</td>
+                    <td><span class="badge badge-success"><span class="badge-dot"></span>Hoàn tất</span></td>
+                    <td style="text-align:right;">
+                      <button class="btn btn-primary btn-sm" onclick="switchGradeView('viewEntry', document.getElementById('tabBtn3'))">Nhập / sửa điểm →</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Kiểm tra 15 phút - Tập hợp</strong></td>
+                    <td>14/10/2026</td>
+                    <td>10</td>
+                    <td>20 / 20</td>
+                    <td><span class="badge badge-success"><span class="badge-dot"></span>Hoàn tất</span></td>
+                    <td style="text-align:right;"><button class="btn btn-link btn-sm" onclick="switchGradeView('viewStudentProgress', document.getElementById('tabBtn4'))">Xem bảng điểm →</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Khảo sát đầu tháng 10</strong></td>
+                    <td>02/10/2026</td>
+                    <td>10</td>
+                    <td>20 / 20</td>
+                    <td><span class="badge badge-success"><span class="badge-dot"></span>Hoàn tất</span></td>
+                    <td style="text-align:right;"><button class="btn btn-link btn-sm" onclick="switchGradeView('viewStudentProgress', document.getElementById('tabBtn4'))">Xem bảng điểm →</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 2: BÀI TẬP -->
+        <div id="viewHomework" class="grade-subview" style="display:none;">
+          <div class="card" style="padding:20px; margin-bottom:24px;">
+            <h3 class="title-card" style="margin-bottom:16px;">Bài tập đã giao</h3>
+            <div class="table-container" style="box-shadow:none;">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Tên bài tập</th>
+                    <th>Hạn nộp</th>
+                    <th>Đã nộp</th>
+                    <th>Nhận xét</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Đồ thị hàm số bậc hai</strong></td>
+                    <td>26/10/2026 · 17:00</td>
+                    <td>12 / 20</td>
+                    <td>Đã nhận xét 8 học sinh</td>
+                    <td><span class="badge badge-info">Đang giao</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ôn tập tập hợp & mệnh đề</strong></td>
+                    <td>12/10/2026 · 17:00</td>
+                    <td>20 / 20</td>
+                    <td>Đã nhận xét 20 học sinh</td>
+                    <td><span class="badge badge-success">Đã nhận xét</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 3: NHẬP ĐIỂM & NHẬN XÉT CHI TIẾT -->
+        <div id="viewEntry" class="grade-subview" style="display:none;">
+          <div class="card" style="padding:20px; margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+              <div>
+                <h3 class="title-card">Nhập điểm & nhận xét: Kiểm tra chương I - Hàm số</h3>
+                <p class="text-caption">Ngày 21/10/2026 · Thang điểm 0–10 (Bước 0,5) · Tự luận 45 phút · 20/20 học sinh đã có điểm</p>
+              </div>
+              <span class="badge badge-success">Đã lưu bảng điểm thành công</span>
+            </div>
+
+            <div class="table-container" style="box-shadow:none; margin-bottom:20px;">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th style="width:30%;">Học sinh</th>
+                    <th style="width:20%;">Điểm / 10</th>
+                    <th style="width:50%;">Nhận xét của giáo viên</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Trần Minh Anh</strong><br><span class="text-caption">HS001</span></td>
+                    <td><input type="number" step="0.5" min="0" max="10" class="form-control" style="width:90px; font-weight:700;" value="8.5"></td>
+                    <td><input type="text" class="form-control" value="Nắm chắc kiến thức, cần trình bày cẩn thận hơn."></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Nguyễn Đức Bảo</strong><br><span class="text-caption">HS002</span></td>
+                    <td><input type="number" step="0.5" min="0" max="10" class="form-control" style="width:90px; font-weight:700;" value="7.0"></td>
+                    <td><input type="text" class="form-control" value="Hoàn thành tốt, tiếp tục luyện tập để nâng cao kỹ năng."></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lê Ngọc Chi</strong><br><span class="text-caption">HS003</span></td>
+                    <td><input type="number" step="0.5" min="0" max="10" class="form-control" style="width:90px; font-weight:700;" value="9.0"></td>
+                    <td><input type="text" class="form-control" value="Vận dụng tốt kiến thức, trình bày mạch lạc."></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Phạm Hải Đăng</strong><br><span class="text-caption">HS004</span></td>
+                    <td><input type="number" step="0.5" min="0" max="10" class="form-control" style="width:90px; font-weight:700;" value="6.5"></td>
+                    <td><input type="text" class="form-control" value="Cần luyện thêm dạng bài đọc đồ thị và tìm tập xác định."></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Hoàng Thu Hà</strong><br><span class="text-caption">HS005</span></td>
+                    <td><input type="number" step="0.5" min="0" max="10" class="form-control" style="width:90px; font-weight:700;" value="8.0"></td>
+                    <td><input type="text" class="form-control" value="Hoàn thành tốt, tiếp tục luyện tập."></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Hộp bắt buộc lý do chỉnh sửa theo Business Rules -->
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:16px; margin-bottom:20px;">
+              <div class="form-group" style="margin:0;">
+                <label class="form-label">Lý do chỉnh sửa điểm <span class="required">* (Bắt buộc lưu vết khi thay đổi điểm đã lưu)</span></label>
+                <input type="text" class="form-control" value="Điều chỉnh điểm Trần Minh Anh từ 8,0 lên 8,5 sau khi rà soát lại câu 3.">
+                <span class="text-caption" style="margin-top:4px;">Người sửa: Nguyễn Hà Linh · Thời điểm lưu gần nhất: 21/10/2026, 09:05</span>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="text-caption">Chỉ giáo viên có quyền chỉnh sửa điểm.</span>
+              <div style="display:flex; gap:12px;">
+                <button class="btn btn-secondary" onclick="switchGradeView('viewExams', document.getElementById('tabBtn1'))">Quay lại</button>
+                <button class="btn btn-primary" onclick="alert('Đã cập nhật bảng điểm và lưu vết lịch sử sửa điểm thành công!')">
+                  <i data-feather="save" class="feather-sm"></i> <span>Lưu bảng điểm</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 4: TIẾN BỘ HỌC SINH -->
+        <div id="viewStudentProgress" class="grade-subview" style="display:none;">
+          <div class="card" style="padding:20px; margin-bottom:24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <div>
+                <h3 class="title-card">Tiến bộ học sinh: Trần Minh Anh (HS001)</h3>
+                <p class="text-caption">Điểm số / Toán 10 - Nền tảng</p>
+              </div>
+              <span class="badge badge-success">Đang học</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:20px;">
+              <div class="stat-card" style="padding:14px;">
+                <div>
+                  <div class="stat-label">Điểm TB 4 bài kiểm tra</div>
+                  <div class="stat-value" style="font-size:22px;">7,4 / 10</div>
+                </div>
+              </div>
+              <div class="stat-card" style="padding:14px;">
+                <div>
+                  <div class="stat-label">Bài kiểm tra gần nhất</div>
+                  <div class="stat-value" style="font-size:22px; color:var(--color-primary);">8,5 / 10</div>
+                </div>
+              </div>
+              <div class="stat-card" style="padding:14px;">
+                <div>
+                  <div class="stat-label">Tiến bộ so với đầu năm</div>
+                  <div class="stat-value" style="font-size:22px; color:var(--color-success);">+2,0 điểm</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Khối biểu đồ SVG & Lời nhận xét -->
+            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:20px; margin-bottom:20px;">
+              <div style="background:#FAFDFE; border:1px solid #E2E8F0; border-radius:8px; padding:16px;">
+                <h4 style="font-size:13.5px; font-weight:700; margin-bottom:12px;">Điểm kiểm tra theo thời gian</h4>
+                <div style="height:160px; display:flex; align-items:flex-end; gap:36px; padding: 0 20px 20px 40px; border-bottom:1px solid #CBD5E1; border-left:1px solid #CBD5E1; position:relative;">
+                  <div style="text-align:center; position:relative;">
+                    <div style="position:absolute; top:-24px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:700; color:var(--color-primary);">6.5</div>
+                    <div style="width:12px; height:65px; background:var(--color-primary-100); border-radius:4px 4px 0 0; margin:0 auto;"></div>
+                    <span style="font-size:10px; color:#64748B;">09/09</span>
+                  </div>
+                  <div style="text-align:center; position:relative;">
+                    <div style="position:absolute; top:-24px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:700; color:var(--color-primary);">7.0</div>
+                    <div style="width:12px; height:70px; background:var(--color-primary-100); border-radius:4px 4px 0 0; margin:0 auto;"></div>
+                    <span style="font-size:10px; color:#64748B;">02/10</span>
+                  </div>
+                  <div style="text-align:center; position:relative;">
+                    <div style="position:absolute; top:-24px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:700; color:var(--color-primary);">7.5</div>
+                    <div style="width:12px; height:75px; background:var(--color-primary-100); border-radius:4px 4px 0 0; margin:0 auto;"></div>
+                    <span style="font-size:10px; color:#64748B;">14/10</span>
+                  </div>
+                  <div style="text-align:center; position:relative;">
+                    <div style="position:absolute; top:-24px; left:50%; transform:translateX(-50%); font-size:11px; font-weight:700; color:var(--color-success);">8.5</div>
+                    <div style="width:12px; height:85px; background:var(--color-success); border-radius:4px 4px 0 0; margin:0 auto;"></div>
+                    <span style="font-size:10px; color:#15803D; font-weight:700;">21/10</span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background:#FAFDFE; border:1px solid #E2E8F0; border-radius:8px; padding:16px;">
+                <h4 style="font-size:13.5px; font-weight:700; margin-bottom:8px;">Nhận xét gần nhất</h4>
+                <p style="font-size:12.5px; color:#475569; line-height:1.5;">
+                  Minh Anh nắm chắc kiến thức và tiến bộ đều qua các bài kiểm tra. Cần cẩn thận hơn ở câu vận dụng cao.
+                </p>
+                <div style="margin-top:12px; font-size:11px; color:#64748B;">Nguyễn Hà Linh · 21/10/2026</div>
+              </div>
+            </div>
+
+            <!-- Bảng Lịch sử thay đổi điểm -->
+            <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Lịch sử thay đổi điểm</h4>
+            <div class="table-container" style="box-shadow:none;">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Thời gian / Người sửa</th>
+                    <th>Bài kiểm tra</th>
+                    <th>Điểm cũ → mới</th>
+                    <th>Lý do</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Nguyễn Hà Linh</strong><br><span class="text-caption">21/10/2026 - 09:05</span></td>
+                    <td>Kiểm tra chương I - Hàm số</td>
+                    <td>8,0 → <strong style="color:var(--color-success);">8,5</strong></td>
+                    <td>Rà soát lại câu 3, bổ sung 0,5 điểm đúng theo đáp án.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Nguyễn Hà Linh</strong><br><span class="text-caption">21/10/2026 - 08:10</span></td>
+                    <td>Kiểm tra chương I - Hàm số</td>
+                    <td>Chưa có → <strong>8,0</strong></td>
+                    <td>Nhập điểm lần đầu sau khi chấm bài.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: UC-07 & UC-08 GRADEBOOK LOGIC</span>
+          <p class="slot-desc">Đã thiết lập khung hàm: saveScores(), auditLogGradeChanges(), calculateClassAverage().</p>
+          <span class="code-hint">window.GradeEntryModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/exam-homework.js"></script>
+  <script src="../../assets/js/modules/teacher/grade-entry.js"></script>
+  <script>
+    AuthService.requireAuth('teacher');
+
+    function switchGradeView(viewId, btn) {
+      document.querySelectorAll('.grade-subview').forEach(v => v.style.display = 'none');
+      document.querySelectorAll('.subnav-tab-item').forEach(b => b.classList.remove('active'));
+      document.getElementById(viewId).style.display = 'block';
+      if (btn) btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

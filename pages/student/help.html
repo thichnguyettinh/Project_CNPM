@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trung tâm hướng dẫn - Học sinh | Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/help-center.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG HỌC SINH</span></div>
+      </div>
+      <div class="sidebar-sub-brand">
+        Lớp học cô Hà Linh<br>Năm học 2026-2027
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link"><span>Tổng quan</span></a>
+        <a href="schedule.html" class="nav-item-link"><span>Lịch học</span></a>
+        <a href="attendance.html" class="nav-item-link"><span>Điểm danh</span></a>
+        <a href="grades.html" class="nav-item-link"><span>Kết quả học tập</span></a>
+        <a href="assignments.html" class="nav-item-link"><span>Bài tập</span><span class="sidebar-nav-badge">2</span></a>
+        <a href="notifications.html" class="nav-item-link"><span>Thông báo</span><span class="sidebar-nav-badge">3</span></a>
+        <a href="profile.html" class="nav-item-link"><span>Hồ sơ cá nhân</span></a>
+        <a href="profile.html#password" class="nav-item-link"><span>Đổi mật khẩu</span></a>
+        <a href="help.html" class="nav-item-link active"><span>Trung tâm hướng dẫn</span></a>
+      </nav>
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge" style="background:#F0FDF4; color:#15803D;">MA</div>
+          <div class="user-mini-meta"><h5>Trần Minh Anh</h5><p>Học sinh</p></div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs"><span>Không gian học sinh</span><span class="crumb-sep">/</span><span class="crumb-active">Trung tâm hướng dẫn</span></div>
+        <div class="header-actions">
+          <span style="font-size:13px; color:var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">MA</div>
+            <span style="font-size:13px; font-weight:600;">Trần Minh Anh · Học sinh</span>
+          </div>
+        </div>
+      </header>
+      <div class="app-content">
+        <h1 class="title-page" style="font-size:24px; margin-bottom:16px;">Trung tâm hướng dẫn · Học sinh</h1>
+        <section class="help-intro"><h2>Học và theo dõi tiến độ của em</h2><p class="text-secondary">Các hướng dẫn dưới đây giúp em tìm lịch học, xem kết quả và nộp bài.</p></section>
+        <div class="help-grid">
+          <section class="card help-card"><h3>Lịch học & điểm danh</h3><ul><li>Mở Lịch học để xem buổi học sắp tới, thời gian và phòng học.</li><li>Vào Điểm danh để xem trạng thái chuyên cần của mình.</li></ul><div class="help-links"><a class="btn btn-secondary btn-sm" href="schedule.html">Lịch học</a><a class="btn btn-secondary btn-sm" href="attendance.html">Điểm danh</a></div></section>
+          <section class="card help-card"><h3>Kết quả học tập</h3><ul><li>Xem điểm, nhận xét của giáo viên và tiến độ học tập.</li><li>Nếu có thắc mắc về điểm, liên hệ giáo viên phụ trách.</li></ul><div class="help-links"><a class="btn btn-secondary btn-sm" href="grades.html">Xem kết quả</a></div></section>
+          <section class="card help-card"><h3>Bài tập & nộp bài</h3><ul><li>Mở bài tập để xem yêu cầu và hạn nộp.</li><li>Chọn tệp bài làm đúng định dạng được yêu cầu rồi xác nhận nộp.</li></ul><div class="help-links"><a class="btn btn-secondary btn-sm" href="assignments.html">Mở bài tập</a></div></section>
+          <section class="card help-card"><h3>Hồ sơ & bảo mật</h3><ul><li>Kiểm tra thông tin cá nhân trong Hồ sơ.</li><li>Đổi mật khẩu cần nhập mật khẩu hiện tại và xác nhận mật khẩu mới.</li></ul><div class="help-links"><a class="btn btn-secondary btn-sm" href="profile.html">Hồ sơ cá nhân</a><a class="btn btn-secondary btn-sm" href="profile.html#password">Đổi mật khẩu</a></div></section>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script>AuthService.requireAuth('student');</script>
+</body>
+</html>

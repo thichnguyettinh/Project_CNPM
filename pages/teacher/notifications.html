@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thông báo - Giáo viên | Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/notifications.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+        <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>QUẢN LÝ LỚP HỌC THÊM</span></div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link"><span>Tổng quan</span></a>
+        <a href="classes.html" class="nav-item-link"><span>Lớp học</span></a>
+        <a href="users.html" class="nav-item-link"><span>Tài khoản</span></a>
+        <a href="schedule.html" class="nav-item-link"><span>Lịch học</span></a>
+        <a href="attendance.html" class="nav-item-link"><span>Điểm danh</span></a>
+        <a href="grades.html" class="nav-item-link"><span>Điểm số</span></a>
+        <a href="tuition.html" class="nav-item-link"><span>Học phí</span></a>
+        <a href="notifications.html" class="nav-item-link active"><span>Thông báo</span><span class="sidebar-nav-badge" data-unread-badge>3</span></a>
+        <a href="profile.html" class="nav-item-link"><span>Hồ sơ cá nhân</span></a>
+        <a href="profile.html#password" class="nav-item-link"><span>Đổi mật khẩu</span></a>
+        <a href="help.html" class="nav-item-link"><span>Trung tâm hướng dẫn</span></a>
+      </nav>
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile"><div class="avatar-badge">HL</div><div class="user-mini-meta"><h5>Nguyễn Hà Linh</h5><p>Giáo viên</p></div></div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs"><span>Không gian giáo viên</span><span class="crumb-sep">/</span><span class="crumb-active">Thông báo</span></div>
+        <div class="header-actions"><span style="font-size:13px;color:var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span><a class="btn-header-icon" href="notifications.html" title="Thông báo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="notify-dot"></span></a><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-badge" style="width:32px;height:32px;font-size:12px;">HL</div><span style="font-size:13px;font-weight:600;">Nguyễn Hà Linh · Giáo viên</span></div></div>
+      </header>
+      <div class="app-content">
+        <div class="notifications-toolbar">
+          <div><h1 class="title-page" style="font-size:24px;">Thông báo</h1><p class="text-secondary" style="font-size:13px;margin-top:4px;">Theo dõi cập nhật lớp học và hoạt động trong hệ thống.</p></div>
+          <button type="button" class="btn btn-secondary btn-sm" data-mark-all-read>✓ Đánh dấu tất cả đã đọc</button>
+        </div>
+        <div class="notifications-tabs" role="tablist">
+          <button class="notifications-tab active" type="button" role="tab" aria-selected="true" data-notification-filter="all">Tất cả</button>
+          <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="unread">Chưa đọc</button>
+          <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="read">Đã đọc</button>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><select class="notification-category-filter" aria-label="Lọc theo danh mục" data-notification-category><option value="all">Tất cả danh mục</option><option value="schedule">Lịch học</option><option value="tuition">Học phí</option><option value="grades">Điểm số</option><option value="account">Tài khoản</option><option value="attendance">Điểm danh</option></select></div>
+        <section class="notification-list" data-notification-list aria-label="Danh sách thông báo">
+          <article class="notification-item is-unread" data-category="schedule" data-read="false"><span class="notification-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h3"/></svg></span><div class="notification-copy"><div class="notification-meta">Lịch học <span>·</span> <span data-notification-status>Mới</span></div><h2 class="notification-title">Lịch dạy hôm nay</h2><p class="notification-description">Toán 10 · Nền tảng bắt đầu lúc 17:30 tại phòng 201. Buổi học tiếp theo: Toán 12 · Luyện thi lúc 19:15.</p><time class="notification-time">Hôm nay · 08:00</time><a class="notification-link" href="schedule.html">Xem lịch học →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+          <article class="notification-item is-unread" data-category="tuition" data-read="false"><span class="notification-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></svg></span><div class="notification-copy"><div class="notification-meta">Học phí · <span data-notification-status>Mới</span></div><h2 class="notification-title">Học phí cần đối chiếu</h2><p class="notification-description">15 học sinh còn số dư học phí tháng 10/2026, tổng cộng 8.000.000 ₫. Hạn thu ngày 25/10/2026.</p><time class="notification-time">Hôm nay · 07:45</time><a class="notification-link" href="tuition.html">Xem công nợ →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+          <article class="notification-item is-unread" data-category="grades" data-read="false"><span class="notification-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 12 2 2 4-4M9 7h6"/></svg></span><div class="notification-copy"><div class="notification-meta">Điểm số · <span data-notification-status>Mới</span></div><h2 class="notification-title">Đã lưu bảng điểm kiểm tra</h2><p class="notification-description">Nguyễn Hà Linh đã nhập điểm cho 20 học sinh lớp Toán 10 · Nền tảng, bài kiểm tra chương I · Hàm số.</p><time class="notification-time">22/10/2026 · 20:10</time><a class="notification-link" href="grades.html">Xem bảng điểm →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+          <article class="notification-item" data-category="account" data-read="true"><span class="notification-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></span><div class="notification-copy"><div class="notification-meta">Tài khoản · <span data-notification-status>Đã đọc</span></div><h2 class="notification-title">Đã liên kết tài khoản phụ huynh</h2><p class="notification-description">Tài khoản Trần Thị Hương (PH001) đã được liên kết với học sinh Trần Minh Anh (HS001).</p><time class="notification-time">21/10/2026 · 09:30</time><a class="notification-link" href="users.html">Xem tài khoản →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+          <article class="notification-item" data-category="attendance" data-read="true"><span class="notification-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="m8 12 2 2 5-5"/></svg></span><div class="notification-copy"><div class="notification-meta">Điểm danh · <span data-notification-status>Đã đọc</span></div><h2 class="notification-title">Điểm danh đã được lưu</h2><p class="notification-description">Lớp Toán 10 · Nền tảng ngày 21/10: 19 có mặt, 1 có phép. Người lưu: Nguyễn Hà Linh.</p><time class="notification-time">21/10/2026 · 19:02</time><a class="notification-link" href="attendance.html">Xem điểm danh →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+          <article class="notification-item" data-category="account" data-read="true"><span class="notification-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/><path d="M9 12h6"/></svg></span><div class="notification-copy"><div class="notification-meta">Hệ thống · <span data-notification-status>Đã đọc</span></div><h2 class="notification-title">Đăng nhập tài khoản giáo viên</h2><p class="notification-description">Tài khoản của bạn đã đăng nhập thành công. Nếu không phải bạn, hãy thay đổi mật khẩu ngay.</p><time class="notification-time">20/10/2026 · 07:50</time><a class="notification-link" href="profile.html#password">Cài đặt bảo mật →</a></div><div class="notification-state"><span class="notification-new">Mới</span><button class="notification-mark-read" type="button" data-mark-read>Đánh dấu đã đọc</button></div></article>
+        </section>
+        <div class="notification-empty" data-notification-empty>Không có thông báo phù hợp với bộ lọc.</div>
+        <p class="notification-count-summary" data-notification-summary></p>
+        <aside class="notification-system-note" data-system-note><span aria-hidden="true">ⓘ</span><div><strong>Thông báo trong hệ thống</strong><p>Các cập nhật chỉ hiển thị trong Lớp Mình. Hệ thống không tự động gửi SMS hoặc email cho học sinh, phụ huynh.</p></div><button type="button" aria-label="Đóng thông báo" data-dismiss-note>×</button></aside>
+        <p class="text-caption" style="margin-top:16px;">© 2026 Lớp Mình · Hệ thống quản lý lớp học thêm · Không gian giáo viên · Dữ liệu riêng tư</p>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/notifications.js"></script>
+  <script>AuthService.requireAuth('teacher');</script>
+</body>
+</html>

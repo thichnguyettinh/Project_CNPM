@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài tập của em - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        
+        <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG HỌC SINH</span></div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+    <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link">
+          <span>Kết quả học tập</span>
+        </a>
+        <a href="assignments.html" class="nav-item-link active">
+          <span>Bài tập</span>
+          <span class="sidebar-nav-badge">2</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link"><span>Trung tâm hướng dẫn</span></a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge" style="background:#F0FDF4; color:#15803D;">MA</div>
+          <div class="user-mini-meta"><h5>Trần Minh Anh</h5><p>Học sinh</p></div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs"><span>Không gian học sinh</span><span class="crumb-sep">/</span><span class="crumb-active">Bài tập</span></div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">MA</div>
+            <span style="font-size:13px; font-weight:600;">Trần Minh Anh · Học sinh</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- VIEW 1: DANH SÁCH BÀI TẬP -->
+        <div id="paneAssignmentList">
+          <div class="page-header-row">
+            <div>
+              <h1 class="title-page" style="font-size:24px;">Bài tập của em</h1>
+              <p class="text-secondary" style="font-size:13px; margin-top:4px;">Theo dõi hạn nộp, bài đã hoàn thành và nhận xét từ giáo viên.</p>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <select class="form-control" style="width:240px; font-weight:600;"><option>Toán 10 - Nền tảng (TO10A)</option></select>
+            <select class="form-control" style="width:180px;"><option>Học kỳ I · 2026-2027</option></select>
+          </div>
+
+          <!-- 3 Thống kê bài tập -->
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+            <div class="stat-card" style="padding:16px;">
+              <div>
+                <div class="stat-label">Bài tập được giao</div>
+                <div class="stat-value" style="font-size:24px;">6 bài</div>
+                <div class="stat-desc">Học kỳ I · 2026-2027</div>
+              </div>
+            </div>
+            <div class="stat-card" style="padding:16px;">
+              <div>
+                <div class="stat-label">Chưa nộp</div>
+                <div class="stat-value" style="font-size:24px; color:var(--color-danger);">2 bài</div>
+                <div class="stat-desc">Hạn gần nhất: 26/10 · 17:00</div>
+              </div>
+            </div>
+            <div class="stat-card" style="padding:16px;">
+              <div>
+                <div class="stat-label">Đã nộp & nhận xét</div>
+                <div class="stat-value" style="font-size:24px; color:var(--color-success);">4 bài</div>
+                <div class="stat-desc">Cả 4 bài nộp đúng hạn</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bảng bài tập -->
+          <div class="card" style="padding:20px;">
+            <div class="subnav-tabs" style="margin-bottom:16px;">
+              <button class="subnav-tab-item active">Tất cả (6)</button>
+              <button class="subnav-tab-item">Chưa nộp (2)</button>
+              <button class="subnav-tab-item">Đã nộp (4)</button>
+            </div>
+
+            <div class="table-container" style="box-shadow:none;">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Bài tập</th>
+                    <th>Hạn nộp</th>
+                    <th>Trạng thái</th>
+                    <th style="text-align:right;">Hoàn thành / Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Đồ thị hàm số bậc hai</strong></td>
+                    <td>26/10/2026 · 17:00</td>
+                    <td><span class="badge badge-danger">Chưa nộp</span></td>
+                    <td style="text-align:right;">
+                      <button class="btn btn-primary btn-sm" onclick="showSubmitPane()">Xem bài tập →</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Giá trị lớn nhất, nhỏ nhất</strong></td>
+                    <td>28/10/2026 · 17:00</td>
+                    <td><span class="badge badge-warning">Chưa nộp</span></td>
+                    <td style="text-align:right;">
+                      <button class="btn btn-secondary btn-sm" onclick="showSubmitPane()">Xem bài tập →</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Ôn tập tập hợp & mệnh đề</strong></td>
+                    <td>12/10/2026 · 17:00</td>
+                    <td><span class="badge badge-success">Đã nhận xét</span></td>
+                    <td style="text-align:right;">
+                      <span class="text-caption" style="margin-right:8px;">Đã nộp 11/10 · Đúng hạn</span>
+                      <button class="btn btn-link btn-sm">Xem bài tập →</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIEW 2: CHI TIẾT BÀI TẬP & NỘP BÀI -->
+        <div id="paneAssignmentDetail" style="display:none;">
+          <div style="margin-bottom:16px;">
+            <button class="btn btn-link btn-sm" onclick="hideSubmitPane()">← Danh sách bài tập</button>
+            <h1 class="title-page" style="font-size:24px; margin-top:4px;">Đồ thị hàm số bậc hai</h1>
+            <p class="text-caption">BT008 · Toán 10 - Nền tảng (TO10A) · Giáo viên: Nguyễn Hà Linh</p>
+          </div>
+
+          <div style="display:flex; gap:16px; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:20px;">
+            <span class="badge badge-danger">Chưa nộp</span>
+            <div style="font-size:12.5px; color:#475569;">Ngày giao: <strong>21/10/2026 · 19:00</strong></div>
+            <div style="font-size:12.5px; color:#DC2626;">Hạn nộp: <strong>26/10/2026 · 17:00</strong></div>
+            <div style="font-size:12.5px; margin-left:auto; color:#64748B;">5 bài tự luận · Nộp tệp bài làm</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1.8fr 1fr; gap:20px; margin-bottom:20px;">
+            <!-- Cột trái: Hướng dẫn & Tệp đính kèm -->
+            <div>
+              <div class="card" style="padding:20px; margin-bottom:20px;">
+                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Hướng dẫn làm bài</h4>
+                <p style="font-size:13px; color:#475569; line-height:1.6; margin-bottom:12px;">
+                  Hoàn thành 5 bài trong phiếu đính kèm. Viết lời giải vào vở, chụp rõ từng trang hoặc gộp thành một tệp PDF trước khi nộp.
+                </p>
+                <div style="font-size:12.5px; color:#334155; line-height:1.6;">
+                  <strong>Nội dung cần hoàn thành:</strong><br>
+                  1. Xác định đỉnh và trục đối xứng của parabol y = x² - 4x + 3.<br>
+                  2. Lập bảng biến thiên và vẽ đồ thị.<br>
+                  3. Tìm parabol đi qua ba điểm cho trước.<br>
+                  4. Tìm giá trị nhỏ nhất của y = 2x² - 8x + 5.<br>
+                  5. Giải bài toán thực tế về chiều cao của một vật theo thời gian.
+                </div>
+              </div>
+
+              <div class="card" style="padding:20px;">
+                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Tài liệu đính kèm</h4>
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#F8FAFC; padding:12px 16px; border-radius:8px; border:1px solid #E2E8F0;">
+                  <div>
+                    <div style="font-weight:600; font-size:13px;">Phiếu bài tập - Đồ thị hàm số bậc hai.pdf</div>
+                    <div class="text-caption">PDF · 640 KB · Nguyễn Hà Linh</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm" onclick="alert('Đang tải phiếu bài tập PDF...')">📥 Tải phiếu bài tập</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cột phải: Khung nộp bài & Nhận xét -->
+            <div>
+              <div class="card" style="padding:20px; margin-bottom:20px;">
+                <h4 style="font-size:14px; font-weight:700; margin-bottom:12px;">Bài nộp của em</h4>
+                <div class="dropzone-box" onclick="alert('Mở hộp thoại chọn tệp bài làm PDF/ảnh')">
+                  <svg class="dropzone-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <p style="font-size:13px; font-weight:600;">Chọn tệp hoặc kéo thả bài làm vào đây</p>
+                  <span class="text-caption">PDF, PNG, JPEG · Tối đa 10 MB</span>
+                </div>
+
+                <button class="btn btn-primary w-full" style="margin-top:16px;" onclick="alert('Đã gửi nộp bài tập thành công cho cô Hà Linh!')">
+                  Nộp bài
+                </button>
+              </div>
+
+              <div class="card" style="padding:20px;">
+                <h4 style="font-size:14px; font-weight:700; margin-bottom:6px;">Nhận xét của giáo viên</h4>
+                <p class="text-caption">Chưa có nhận xét. Cô Hà Linh sẽ xem bài và phản hồi sau khi em nộp.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: STUDENT HOMEWORK SUBMISSION</span>
+          <p class="slot-desc">Khung kết nối API: fetchAssignments(), submitHomeworkFile().</p>
+          <span class="code-hint">window.StudentGradeProgressModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/student/assignment-view.js"></script>
+  <script>
+    AuthService.requireAuth('student');
+
+    function showSubmitPane() {
+      document.getElementById('paneAssignmentList').style.display = 'none';
+      document.getElementById('paneAssignmentDetail').style.display = 'block';
+    }
+
+    function hideSubmitPane() {
+      document.getElementById('paneAssignmentDetail').style.display = 'none';
+      document.getElementById('paneAssignmentList').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

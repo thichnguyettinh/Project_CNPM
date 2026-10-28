@@ -1,0 +1,97 @@
+/* ==========================================================================
+   LỚP MÌNH - QUY CHUẨN THIẾT KẾ / DESIGN SYSTEM 2026
+   Hệ thống quản lý lớp học thêm - Rõ ràng, nhất quán, đáng tin cậy.
+   ========================================================================== */
+
+:root {
+  /* Màu sắc thương hiệu */
+  --color-primary: #1565C0;
+  --color-primary-hover: #0D47A1;
+  --color-primary-50: #E8F1FD;
+  --color-primary-100: #DBEAFE;
+
+  /* Nhấn xanh ngọc */
+  --color-accent: #0F766E;
+  --color-accent-bg: #F0FDFA;
+
+  /* Màu văn bản & giao diện */
+  --color-text-main: #171B4D;
+  --color-text-secondary: #64748B;
+  --color-text-muted: #94A3B8;
+  --color-bg-app: #F5F7FB;
+  --color-surface: #FFFFFF;
+  --color-border: #E2E8F0;
+  --color-border-hover: #CBD5E1;
+
+  /* Màu ngữ nghĩa (Semantic colors) */
+  --color-success: #15803D;
+  --color-success-bg: #F0FDF4;
+  --color-success-border: #BBF7D0;
+
+  --color-warning: #A16207;
+  --color-warning-bg: #FFFBEB;
+  --color-warning-border: #FDE68A;
+
+  --color-danger: #DC2626;
+  --color-danger-bg: #FEF2F2;
+  --color-danger-border: #FECACA;
+
+  --color-info: #1565C0;
+  --color-info-bg: #EFF6FF;
+  --color-info-border: #BFDBFE;
+
+  --color-neutral: #64748B;
+  --color-neutral-bg: #F1F5F9;
+  --color-neutral-border: #E2E8F0;
+
+  /* Kiểu chữ & Font */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 20px;
+  --font-size-xl: 28px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+
+  /* Khoảng cách (Spacing scale theo hệ 4-8-12-16-24-32-40) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Góc bo (Border Radius) */
+  --radius-xs: 4px;
+  --radius-badge: 6px;
+  --radius-input: 8px;
+  --radius-btn: 8px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
+  --radius-full: 9999px;
+
+  /* Đổ bóng (Shadows) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+
+  /* Bố cục Desktop */
+  --sidebar-width: 232px;
+  --header-height: 70px;
+  --max-content-width: 1440px;
+
+  /* Thời gian chuyển động */
+  --transition-fast: 150ms ease-in-out;
+  --transition-normal: 250ms ease-in-out;
+}

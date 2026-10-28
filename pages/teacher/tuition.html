@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý học phí - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <h2>Lớp Mình</h2>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="classes.html" class="nav-item-link">
+          <span>Lớp học</span>
+        </a>
+        <a href="users.html" class="nav-item-link">
+          <span>Tài khoản</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link">
+          <span>Điểm số</span>
+        </a>
+        <a href="tuition.html" class="nav-item-link active">
+          <span>Học phí</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link">
+          <span>Trung tâm hướng dẫn</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge">HL</div>
+          <div class="user-mini-meta">
+            <h5>Nguyễn Hà Linh</h5>
+            <p>Giáo viên</p>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs">
+          <span>Không gian giáo viên</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">Học phí</span>
+        </div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
+            <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <!-- Header Quản lý học phí -->
+        <div class="page-header-row">
+          <div>
+            <h1 class="title-page" style="font-size:24px;">Quản lý học phí</h1>
+            <p class="text-secondary" style="margin-top:4px;">Theo dõi khoản phải thu, số tiền đã nhận và công nợ theo kỳ.</p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" onclick="alert('Đã xuất báo cáo học phí ra Excel!')">Xuất báo cáo</button>
+            <button class="btn btn-primary" onclick="alert('Mở form lập khoản thu mới cho kỳ học')">+ Lập khoản thu</button>
+          </div>
+        </div>
+
+        <div class="alert alert-info" style="margin-bottom:20px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>
+            <strong>Thanh toán ngoài hệ thống. Giáo viên ghi nhận thủ công:</strong> Không có cổng thanh toán trực tuyến tự động. Chỉ ghi nhận sau khi đã nhận tiền mặt hoặc đối chiếu lệnh chuyển khoản bên ngoài.
+          </div>
+        </div>
+
+        <!-- 3 Thẻ thống kê tài chính -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Tổng phải thu · Tháng 10</div>
+              <div class="stat-value" style="font-size:24px;">76.400.000 ₫</div>
+              <div class="stat-desc">96 học sinh · 6 lớp học</div>
+            </div>
+            <div class="stat-icon primary">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+            </div>
+          </div>
+
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Đã ghi nhận thu</div>
+              <div class="stat-value" style="font-size:24px; color:var(--color-success);">68.400.000 ₫</div>
+              <div class="stat-desc">81 học sinh đã đóng học phí</div>
+            </div>
+            <div class="stat-icon success">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+          </div>
+
+          <div class="stat-card" style="padding:16px;">
+            <div>
+              <div class="stat-label">Số dư còn phải thu</div>
+              <div class="stat-value" style="font-size:24px; color:var(--color-danger);">8.000.000 ₫</div>
+              <div class="stat-desc">15 học sinh còn công nợ</div>
+            </div>
+            <div class="stat-icon warning">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Tabs -->
+        <div class="subnav-tabs">
+          <button class="subnav-tab-item active">Khoản thu học sinh</button>
+          <button class="subnav-tab-item" onclick="alert('Đang xem lịch sử ghi nhận thanh toán')">Lịch sử ghi nhận</button>
+          <button class="subnav-tab-item" onclick="alert('Đang xem tổng hợp công nợ theo lớp')">Tổng hợp theo lớp</button>
+        </div>
+
+        <!-- Danh sách học phí chi tiết -->
+        <div class="card" style="padding: 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+              <h3 class="title-card">Học phí tháng 10/2026</h3>
+              <p class="text-caption">Hạn thu: 25/10/2026 · Số tiền được tính theo số buổi học thực tế</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openPaymentModal('Trần Minh Anh', 'HS001', 800000, 500000, 300000)">
+              💳 Ghi nhận thu tiền
+            </button>
+          </div>
+
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
+            <div class="search-box-wrap" style="flex:1; min-width:240px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="form-control" placeholder="Tìm tên hoặc mã học sinh...">
+            </div>
+            <select class="form-control" style="width:160px;"><option>Kỳ: Tháng 10/2026</option></select>
+            <select class="form-control" style="width:170px;"><option>Tất cả lớp học</option><option>Toán 10 - Nền tảng</option></select>
+            <select class="form-control" style="width:150px;"><option>Tất cả trạng thái</option><option>Còn thiếu</option><option>Chưa thu</option><option>Đã đủ</option></select>
+          </div>
+
+          <div class="table-container" style="box-shadow:none;">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Học sinh / Lớp</th>
+                  <th>Phải thu</th>
+                  <th>Đã nhận</th>
+                  <th>Còn lại</th>
+                  <th>Trạng thái</th>
+                  <th style="text-align:right;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Trần Minh Anh</strong><br><span class="text-caption">HS001 · TO10A</span></td>
+                  <td>800.000 ₫</td>
+                  <td>500.000 ₫</td>
+                  <td><strong style="color:var(--color-warning);">300.000 ₫</strong></td>
+                  <td><span class="badge badge-warning">Còn thiếu</span></td>
+                  <td style="text-align:right;">
+                    <button class="btn btn-primary btn-sm" style="margin-right:6px;" onclick="openPaymentModal('Trần Minh Anh', 'HS001', 800000, 500000, 300000)">Thu tiền</button>
+                    <button class="btn btn-link btn-sm" onclick="openInvoiceDetail('Trần Minh Anh')">Chi tiết →</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><strong>Nguyễn Đức Bảo</strong><br><span class="text-caption">HS002 · TO10A</span></td>
+                  <td>800.000 ₫</td>
+                  <td>0 ₫</td>
+                  <td><strong style="color:var(--color-danger);">800.000 ₫</strong></td>
+                  <td><span class="badge badge-danger">Chưa thu</span></td>
+                  <td style="text-align:right;">
+                    <button class="btn btn-primary btn-sm" style="margin-right:6px;" onclick="openPaymentModal('Nguyễn Đức Bảo', 'HS002', 800000, 0, 800000)">Thu tiền</button>
+                    <button class="btn btn-link btn-sm" onclick="openInvoiceDetail('Nguyễn Đức Bảo')">Chi tiết →</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><strong>Lê Ngọc Chi</strong><br><span class="text-caption">HS003 · TO10A</span></td>
+                  <td>800.000 ₫</td>
+                  <td>800.000 ₫</td>
+                  <td>0 ₫</td>
+                  <td><span class="badge badge-success"><span class="badge-dot"></span>Đã đủ</span></td>
+                  <td style="text-align:right;">
+                    <button class="btn btn-link btn-sm" onclick="openInvoiceDetail('Lê Ngọc Chi')">Chi tiết →</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><strong>Phạm Hải Đăng</strong><br><span class="text-caption">HS004 · TO10A</span></td>
+                  <td>800.000 ₫</td>
+                  <td>0 ₫</td>
+                  <td><strong style="color:var(--color-danger);">800.000 ₫</strong></td>
+                  <td><span class="badge badge-danger">Chưa thu</span></td>
+                  <td style="text-align:right;">
+                    <button class="btn btn-primary btn-sm" style="margin-right:6px;" onclick="openPaymentModal('Phạm Hải Đăng', 'HS004', 800000, 0, 800000)">Thu tiền</button>
+                    <button class="btn btn-link btn-sm">Chi tiết →</button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td><strong>Hoàng Thu Hà</strong><br><span class="text-caption">HS005 · TO10A</span></td>
+                  <td>800.000 ₫</td>
+                  <td>500.000 ₫</td>
+                  <td><strong style="color:var(--color-warning);">300.000 ₫</strong></td>
+                  <td><span class="badge badge-warning">Còn thiếu</span></td>
+                  <td style="text-align:right;">
+                    <button class="btn btn-primary btn-sm" style="margin-right:6px;" onclick="openPaymentModal('Hoàng Thu Hà', 'HS005', 800000, 500000, 300000)">Thu tiền</button>
+                    <button class="btn btn-link btn-sm">Chi tiết →</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="feature-slot">
+          <span class="slot-tag">SLOT: UC-09 TUITION MANAGEMENT</span>
+          <p class="slot-desc">Đã thiết lập khung hàm: generateTuitionBill(), recordPayment(), reconcileDebts().</p>
+          <span class="code-hint">window.TuitionFeeModule</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL: GHI NHẬN ĐÃ NHẬN TIỀN -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalRecordPayment">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Ghi nhận đã nhận tiền</h3>
+          <p class="text-caption" id="payModalStudentMeta">Trần Minh Anh · HS001 · Tháng 10/2026</p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modalRecordPayment')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" style="margin-bottom:16px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>
+            <strong>Thanh toán ngoài hệ thống. Giáo viên ghi nhận thủ công:</strong> Chỉ xác nhận sau khi đã thực nhận tiền. Thao tác này không tạo giao dịch chuyển tiền.
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px; border-radius:8px; margin-bottom:16px;">
+          <span style="font-size:13px; color:#64748B;">Số dư hiện tại cần đóng:</span>
+          <strong style="font-size:16px; color:var(--color-warning);" id="payModalDueText">300.000 ₫</strong>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Số tiền đã nhận (VNĐ) <span class="required">*</span></label>
+            <input type="text" class="form-control" id="payModalAmountInput" value="300.000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ngày nhận tiền <span class="required">*</span></label>
+            <input type="date" class="form-control" value="2026-10-23">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phương thức nhận ngoài hệ thống <span class="required">*</span></label>
+          <select class="form-control">
+            <option>Chuyển khoản ngân hàng (bên ngoài)</option>
+            <option>Tiền mặt tại lớp</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ghi chú / Tham chiếu</label>
+          <input type="text" class="form-control" value="PH Trần Thị Hương chuyển khoản phần học phí còn lại. Tham chiếu: CK2310MA">
+        </div>
+
+        <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:8px; padding:12px; margin-bottom:16px;">
+          <div style="font-size:13px; color:#15803D; font-weight:600;">Sau khi ghi nhận: Còn lại 0 ₫ · Đã đủ</div>
+          <label class="form-checkbox" style="margin-top:8px;">
+            <input type="checkbox" checked>
+            <span>Tôi xác nhận đã nhận đủ số tiền trên.</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalRecordPayment')">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="alert('Đã ghi nhận thanh toán học phí thành công!'); closeModal('modalRecordPayment');">
+          Xác nhận ghi nhận
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL: CHI TIẾT HỌC PHÍ HỌC SINH -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalInvoiceDetail">
+    <div class="modal-container" style="max-width: 780px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Học phí · Trần Minh Anh</h3>
+          <p class="text-caption">Học phí / HS001 / Tháng 10/2026</p>
+        </div>
+        <button class="modal-close" onclick="closeModal('modalInvoiceDetail')">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-bottom:20px;">
+          <div class="stat-card" style="padding:12px;">
+            <div>
+              <div class="stat-label">Phải thu · Tháng 10</div>
+              <div class="stat-value" style="font-size:20px;">800.000 ₫</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding:12px;">
+            <div>
+              <div class="stat-label">Đã nhận</div>
+              <div class="stat-value" style="font-size:20px; color:var(--color-success);">500.000 ₫</div>
+            </div>
+          </div>
+          <div class="stat-card" style="padding:12px;">
+            <div>
+              <div class="stat-label">Còn phải thu</div>
+              <div class="stat-value" style="font-size:20px; color:var(--color-warning);">300.000 ₫</div>
+            </div>
+          </div>
+        </div>
+
+        <h4 style="font-size:14px; font-weight:700; margin-bottom:10px;">Lịch sử nhận tiền</h4>
+        <div class="table-container" style="box-shadow:none; margin-bottom:20px;">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Ngày nhận / Mã phiếu</th>
+                <th>Số tiền</th>
+                <th>Phương thức</th>
+                <th>Ghi chú</th>
+                <th>Người ghi nhận</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>15/10/2026</strong><br><span class="text-caption">TT-202610-004</span></td>
+                <td><strong style="color:var(--color-success);">300.000 ₫</strong></td>
+                <td>Chuyển khoản</td>
+                <td>PH Trần Thị Hương chuyển khoản</td>
+                <td>Nguyễn Hà Linh</td>
+              </tr>
+              <tr>
+                <td><strong>05/10/2026</strong><br><span class="text-caption">TT-202610-001</span></td>
+                <td><strong style="color:var(--color-success);">200.000 ₫</strong></td>
+                <td>Tiền mặt</td>
+                <td>Học sinh nộp trực tiếp sau buổi học</td>
+                <td>Nguyễn Hà Linh</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modalInvoiceDetail')">Đóng</button>
+      </div>
+    </div>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/tuition-fee.js"></script>
+  <script>
+    AuthService.requireAuth('teacher');
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+    function openPaymentModal(studentName, code, due, paid, remain) {
+      document.getElementById('payModalStudentMeta').innerText = studentName + ' · ' + code + ' · Tháng 10/2026';
+      document.getElementById('payModalDueText').innerText = remain.toLocaleString('vi-VN') + ' ₫';
+      document.getElementById('payModalAmountInput').value = remain.toLocaleString('vi-VN');
+      openModal('modalRecordPayment');
+    }
+
+    function openInvoiceDetail(name) {
+      openModal('modalInvoiceDetail');
+    }
+  </script>
+</body>
+</html>

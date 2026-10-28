@@ -1,0 +1,276 @@
+/* ==========================================================================
+   LOGIN PAGE STYLES (Theo Thiết kế Giao diện Đăng nhập Lớp Mình 2026)
+   ========================================================================== */
+
+.login-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--color-surface);
+}
+
+/* KHỐI TRÁI: BANNER GIỚI THIỆU THƯƠNG HIỆU (42% - 46%) */
+.login-banner-side {
+  flex: 0 0 44%;
+  background: linear-gradient(180deg, #F0F6FF 0%, #E8F1FD 100%);
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid #DCE6F5;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon-box {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(21, 101, 192, 0.25);
+}
+
+.brand-title-wrap h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.brand-title-wrap span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.login-banner-content {
+  margin: 40px 0;
+}
+
+.banner-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+.banner-title {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #171B4D;
+  margin-bottom: 16px;
+}
+
+.banner-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #475569;
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.feature-icon-card {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.feature-info h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E293B;
+  margin-bottom: 2px;
+}
+
+.feature-info p {
+  font-size: 13px;
+  color: #64748B;
+  line-height: 1.4;
+}
+
+.banner-footer {
+  font-size: 13px;
+  color: #64748B;
+}
+
+/* KHỐI PHẢI: FORM ĐĂNG NHẬP */
+.login-form-side {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background-color: #FFFFFF;
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 460px;
+}
+
+.form-header-badge {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.form-header-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 6px;
+}
+
+.form-header-sub {
+  font-size: 14px;
+  color: #64748B;
+  margin-bottom: 24px;
+}
+
+/* Phím chọn nhanh vai trò để kiểm thử */
+.role-quick-selector {
+  background: #F8FAFC;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.role-tab-btn {
+  flex: 1;
+  height: 36px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.role-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--color-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.form-options-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.forgot-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.btn-login-submit {
+  width: 100%;
+  height: 44px;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.notice-box {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.notice-box p {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #475569;
+}
+
+.form-footer-action {
+  text-align: center;
+  border-top: 1px solid #F1F5F9;
+  padding-top: 18px;
+}
+
+.form-footer-action p {
+  font-size: 13px;
+  color: #64748B;
+  margin-bottom: 4px;
+}
+
+.contact-admin-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.security-caption {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 960px) {
+  .login-banner-side {
+    display: none;
+  }
+  .login-form-side {
+    padding: 24px 16px;
+  }
+}
