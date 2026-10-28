@@ -44,7 +44,10 @@ const AuthService = {
       'a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge'
     );
     const dots = document.querySelectorAll('.notify-dot');
-    [...badges, ...dots].forEach(indicator => { indicator.hidden = true; });
+    [...badges, ...dots].forEach(indicator => {
+      indicator.hidden = true;
+      indicator.removeAttribute('data-notification-count-loaded');
+    });
 
     return this.api('/notifications/unread-count')
       .then(result => {
@@ -54,8 +57,12 @@ const AuthService = {
         badges.forEach(badge => {
           badge.textContent = String(result.count);
           badge.hidden = result.count === 0;
+          badge.dataset.notificationCountLoaded = 'true';
         });
-        dots.forEach(dot => { dot.hidden = result.count === 0; });
+        dots.forEach(dot => {
+          dot.hidden = result.count === 0;
+          dot.dataset.notificationCountLoaded = 'true';
+        });
       })
       .catch(error => {
         console.error('Không thể cập nhật số thông báo chưa đọc:', error);

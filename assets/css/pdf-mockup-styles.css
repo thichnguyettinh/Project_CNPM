@@ -21,6 +21,12 @@
   color: #DC2626;
 }
 
+a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge:not([data-notification-count-loaded="true"]),
+.notify-dot:not([data-notification-count-loaded="true"]),
+.sidebar-nav-badge[hidden] {
+  display: none !important;
+}
+
 /* Thanh điều hướng tab nhỏ gọn trong trang */
 .subnav-tabs {
   display: flex;
