@@ -1,7 +1,283 @@
 % ==================== CHƯƠNG 3 ====================
 \chapter{PHÂN TÍCH YÊU CẦU}
 
+\providecommand{\UCHeading}[1]{\par\medskip\noindent\textbf{#1}\par\nopagebreak\smallskip}
+
 \section{Xác định các lớp phân tích}
+Trên cơ sở các chức năng đã được đặc tả, hệ thống được phân tích thành ba nhóm lớp: lớp biên (Boundary), lớp điều khiển (Control) và lớp thực thể (Entity). Lớp biên tiếp nhận yêu cầu và hiển thị kết quả; lớp điều khiển tổ chức xử lý nghiệp vụ; lớp thực thể biểu diễn những đối tượng cần quản lý. Các lớp và phương thức chính được thể hiện bằng ký hiệu lớp UML dạng hình chữ nhật, qua đó làm rõ trách nhiệm và sự phối hợp của các thành phần trong từng chức năng.
+
+\par\medskip
+\UCHeading{UC-01. Đăng nhập}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC01_Lop_DangNhap.png}
+  \caption{Biểu đồ lớp phân tích chức năng đăng nhập}
+  \label{fig:chuong3-01}
+\end{figure}
+Chức năng đăng nhập gồm lớp biên GiaoDienDangNhap, lớp điều khiển DieuKhienXacThuc và hai lớp thực thể TaiKhoan, VaiTro. Giao diện tiếp nhận thông tin đăng nhập; lớp điều khiển xác thực tài khoản, kiểm tra vai trò và trả kết quả để hệ thống cho phép truy cập hoặc hiển thị thông báo lỗi.
+
+\par\medskip
+\UCHeading{UC-02. Quản lý người dùng và phân quyền}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC02_Lop_QuanLyNguoiDung.png}
+  \caption{Biểu đồ lớp phân tích chức năng quản lý người dùng và phân quyền}
+  \label{fig:chuong3-02}
+\end{figure}
+Lớp GiaoDienNguoiDung hỗ trợ giáo viên tạo tài khoản, lựa chọn vai trò và thiết lập liên kết giữa phụ huynh với học sinh. DieuKhienNguoiDung thực hiện kiểm tra quyền hạn, điều phối việc tạo TaiKhoan, hồ sơ HocSinh và bản ghi LienKetPHHS; VaiTro xác định phạm vi sử dụng chức năng của từng tài khoản.
+
+\par\medskip
+\UCHeading{UC-03. Quản lý lớp học}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC03_Lop_QuanLyLopHoc.png}
+  \caption{Biểu đồ lớp phân tích chức năng quản lý lớp học}
+  \label{fig:chuong3-03}
+\end{figure}
+GiaoDienQuanLyLop cho phép giáo viên khai báo, điều chỉnh và kết thúc lớp học. DieuKhienLopHoc phụ trách kiểm tra dữ liệu và điều phối việc cập nhật LopHoc; các lớp TaiKhoan, BuoiHoc và KhoanHocPhi cung cấp thông tin giáo viên phụ trách, lịch học và những khoản thu cần xem xét khi kết thúc lớp.
+
+\par\medskip
+\UCHeading{UC-04. Lập thời khóa biểu}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC04_Lop_LapThoiKhoaBieu.png}
+  \caption{Biểu đồ lớp phân tích chức năng lập thời khóa biểu}
+  \label{fig:chuong3-04}
+\end{figure}
+GiaoDienThoiKhoaBieu tiếp nhận thông tin thời gian và hỗ trợ xem lịch theo tuần. DieuKhienLichHoc kiểm tra khung giờ của lớp và tạo những buổi học tương ứng; LopHoc xác định lớp cần lập lịch, còn BuoiHoc lưu thông tin từng buổi học cụ thể.
+
+\par\medskip
+\UCHeading{UC-05. Quản lý danh sách học sinh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC05_Lop_DanhSachHocSinh.png}
+  \caption{Biểu đồ lớp phân tích chức năng quản lý danh sách học sinh}
+  \label{fig:chuong3-05}
+\end{figure}
+Chức năng này sử dụng GiaoDienDanhSachLop và DieuKhienGhiDanh để thực hiện ghi danh hoặc cho học sinh nghỉ lớp. HocSinh cung cấp hồ sơ người học, GhiDanhLop lưu trạng thái tham gia lớp; BuoiHoc hỗ trợ kiểm tra trùng lịch và KhoanHocPhi hỗ trợ kiểm tra công nợ trước khi xác nhận thay đổi.
+
+\par\medskip
+\UCHeading{UC-06. Điểm danh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC06_Lop_DiemDanh.png}
+  \caption{Biểu đồ lớp phân tích chức năng điểm danh}
+  \label{fig:chuong3-06}
+\end{figure}
+GiaoDienDiemDanh hiển thị danh sách học sinh và cho phép giáo viên ghi nhận trạng thái chuyên cần. DieuKhienDiemDanh kiểm tra buổi học, danh sách ghi danh và cập nhật DiemDanh; BuoiHoc, GhiDanhLop và ThongBao hỗ trợ xác định đối tượng điểm danh và cung cấp thông tin cho người dùng trên hệ thống.
+
+\par\medskip
+\UCHeading{UC-07. Quản lý bài tập và bài kiểm tra}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC07_Lop_BaiTapKiemTra.png}
+  \caption{Biểu đồ lớp phân tích chức năng quản lý bài tập và bài kiểm tra}
+  \label{fig:chuong3-07}
+\end{figure}
+GiaoDienBaiKiemTra hỗ trợ giáo viên tạo và xem danh sách các bài đánh giá của lớp. DieuKhienBaiKiemTra kiểm tra lớp học, thông tin bài và thời hạn, sau đó tạo hoặc cập nhật BaiKiemTra gắn với LopHoc tương ứng.
+
+\par\medskip
+\UCHeading{UC-08. Cập nhật điểm số}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC08_Lop_CapNhatDiemSo.png}
+  \caption{Biểu đồ lớp phân tích chức năng cập nhật điểm số}
+  \label{fig:chuong3-08}
+\end{figure}
+GiaoDienNhapDiem cho phép giáo viên nhập điểm và nhận xét theo từng học sinh. DieuKhienDiemSo kiểm tra quyền thao tác, bài kiểm tra và thang điểm; DiemSo lưu kết quả, thông tin người sửa và thời điểm sửa, trong khi BaiKiemTra, HocSinh và ThongBao hỗ trợ việc kiểm tra, hiển thị kết quả và thông báo.
+
+\par\medskip
+\UCHeading{UC-09. Quản lý học phí}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC09_Lop_QuanLyHocPhi.png}
+  \caption{Biểu đồ lớp phân tích chức năng quản lý học phí}
+  \label{fig:chuong3-09}
+\end{figure}
+GiaoDienHocPhi cung cấp thao tác lập báo phí và ghi nhận số tiền đã nhận. DieuKhienHocPhi tổng hợp dữ liệu từ LopHoc và BuoiHoc để xác định khoản thu, cập nhật KhoanHocPhi và tổ chức gửi thông báo trên website thông qua ThongBao.
+
+\par\medskip
+\UCHeading{UC-10. Tra cứu lịch học}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC10_Lop_TraCuuLichHoc.png}
+  \caption{Biểu đồ lớp phân tích chức năng tra cứu lịch học}
+  \label{fig:chuong3-10}
+\end{figure}
+GiaoDienTraCuuLich tiếp nhận học sinh và khoảng thời gian cần xem; DieuKhienTraCuu kiểm tra quyền truy cập trước khi trả kết quả. Các thực thể HocSinh, LienKetPHHS và GhiDanhLop xác định người học được phép tra cứu; BuoiHoc cung cấp các buổi học thuộc khoảng thời gian yêu cầu.
+
+\par\medskip
+\UCHeading{UC-11. Tra cứu kết quả học tập và điểm danh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC11_Lop_TraCuuKetQuaDiemDanh.png}
+  \caption{Biểu đồ lớp phân tích chức năng tra cứu kết quả học tập và điểm danh}
+  \label{fig:chuong3-11}
+\end{figure}
+GiaoDienTraCuuKetQua hiển thị bảng điểm, nhận xét và thông tin chuyên cần. DieuKhienTraCuu kiểm tra phạm vi truy cập qua LienKetPHHS khi người xem là phụ huynh, đồng thời khai thác BaiKiemTra, DiemSo và DiemDanh để tổng hợp kết quả của học sinh.
+
+\par\medskip
+\UCHeading{UC-12. Tra cứu học phí}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.53\textheight,keepaspectratio]{picC3/C3_3_1_UC12_Lop_TraCuuHocPhi.png}
+  \caption{Biểu đồ lớp phân tích chức năng tra cứu học phí}
+  \label{fig:chuong3-12}
+\end{figure}
+GiaoDienTraCuuHocPhi cho phép phụ huynh lựa chọn học sinh và kỳ thu cần tra cứu. DieuKhienTraCuu xác định mối liên hệ phụ huynh – học sinh thông qua LienKetPHHS, sau đó lấy KhoanHocPhi của học sinh tương ứng để hiển thị số tiền và tình trạng đóng học phí.
+
 \section{Xây dựng biểu đồ trình tự}
+Các biểu đồ trình tự được xây dựng để thể hiện quá trình tương tác giữa người sử dụng, giao diện, bộ phận điều khiển và các thành phần dữ liệu khi thực hiện chức năng. Trong mỗi biểu đồ, các thông điệp được sắp xếp theo thứ tự thời gian; những trường hợp xử lý thay thế, xử lý tùy chọn hoặc lặp lại được thể hiện bằng các khung điều kiện tương ứng. Nội dung dưới đây trình bày luồng xử lý của các chức năng chính trong hệ thống.
+
+\par\medskip
+\UCHeading{UC-01. Đăng nhập}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC01_TrinhTu_DangNhap.png}
+  \caption{Biểu đồ trình tự chức năng đăng nhập}
+  \label{fig:chuong3-13}
+\end{figure}
+Người dùng nhập tài khoản và mật khẩu trên giao diện đăng nhập. Bộ phận điều khiển tra cứu TaiKhoan, đối chiếu thông tin xác thực và lấy VaiTro; nếu dữ liệu hợp lệ và tài khoản đang hoạt động, hệ thống trả kết quả đăng nhập và chuyển đến giao diện phù hợp, ngược lại hiển thị thông báo lỗi.
+
+\par\medskip
+\UCHeading{UC-02. Quản lý người dùng và phân quyền}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC02_TrinhTu_QuanLyNguoiDung.png}
+  \caption{Biểu đồ trình tự chức năng quản lý người dùng và phân quyền}
+  \label{fig:chuong3-14}
+\end{figure}
+Giáo viên yêu cầu tạo tài khoản mới, nhập thông tin và lựa chọn vai trò. Hệ thống kiểm tra quyền cùng tính hợp lệ của dữ liệu trước khi tạo TaiKhoan; nếu là tài khoản học sinh, hệ thống khởi tạo HocSinh, và khi có yêu cầu liên kết phụ huynh, hệ thống ghi nhận LienKetPHHS rồi thông báo kết quả.
+
+\par\medskip
+\UCHeading{UC-03. Quản lý lớp học – tạo lớp}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC03_TrinhTu_TaoLop.png}
+  \caption{Biểu đồ trình tự thao tác tạo lớp học}
+  \label{fig:chuong3-15}
+\end{figure}
+Giáo viên nhập thông tin lớp học và gửi yêu cầu tạo mới. Hệ thống kiểm tra quyền quản lý và dữ liệu nhập, sau đó ghi nhận LopHoc gắn với giáo viên phụ trách; trường hợp dữ liệu không hợp lệ, giao diện hiển thị thông báo để giáo viên điều chỉnh.
+
+\par\medskip
+\UCHeading{UC-03. Quản lý lớp học – chỉnh sửa hoặc kết thúc}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC03_TrinhTu_SuaKetThucLop.png}
+  \caption{Biểu đồ trình tự thao tác chỉnh sửa và kết thúc lớp học}
+  \label{fig:chuong3-16}
+\end{figure}
+Sau khi chọn lớp học, giáo viên có thể điều chỉnh thông tin hoặc yêu cầu kết thúc lớp. Ở nhánh chỉnh sửa, hệ thống cập nhật LopHoc; ở nhánh kết thúc, hệ thống xem xét các khoản học phí liên quan và thực hiện thay đổi trạng thái lớp khi giáo viên xác nhận.
+
+\par\medskip
+\UCHeading{UC-04. Lập thời khóa biểu}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC04_TrinhTu_LapThoiKhoaBieu.png}
+  \caption{Biểu đồ trình tự chức năng lập thời khóa biểu}
+  \label{fig:chuong3-17}
+\end{figure}
+Giáo viên xác định lớp và nhập thời gian học. Hệ thống kiểm tra điều kiện giờ kết thúc phải sau giờ bắt đầu; với lịch được thiết lập theo chu kỳ, từng buổi học được tạo lần lượt và lưu dưới dạng BuoiHoc. Khi thông tin thời gian không hợp lệ, yêu cầu được trả lại để chỉnh sửa.
+
+\par\medskip
+\UCHeading{UC-05. Quản lý danh sách học sinh – ghi danh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC05_TrinhTu_ThemHocSinh.png}
+  \caption{Biểu đồ trình tự thao tác thêm học sinh vào lớp}
+  \label{fig:chuong3-18}
+\end{figure}
+Giáo viên lựa chọn học sinh cần thêm vào lớp. Hệ thống kiểm tra tình trạng ghi danh và đối chiếu lịch học của học sinh; nếu điều kiện phù hợp hoặc giáo viên chấp thuận cảnh báo trùng lịch, hệ thống tạo GhiDanhLop, cập nhật sĩ số và hiển thị kết quả.
+
+\par\medskip
+\UCHeading{UC-05. Quản lý danh sách học sinh – cho nghỉ}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC05_TrinhTu_ChoHocSinhNghi.png}
+  \caption{Biểu đồ trình tự thao tác cho học sinh nghỉ lớp}
+  \label{fig:chuong3-19}
+\end{figure}
+Giáo viên lựa chọn học sinh cần đưa ra khỏi danh sách đang học. Hệ thống kiểm tra dữ liệu GhiDanhLop và tình trạng học phí, thông báo các khoản chưa hoàn tất nếu có; sau xác nhận của giáo viên, trạng thái ghi danh và sĩ số lớp được cập nhật, trong khi thông tin học tập đã phát sinh vẫn được giữ lại.
+
+\par\medskip
+\UCHeading{UC-06. Điểm danh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC06_TrinhTu_DiemDanh.png}
+  \caption{Biểu đồ trình tự chức năng điểm danh}
+  \label{fig:chuong3-20}
+\end{figure}
+Giáo viên chọn buổi học cần điểm danh và nhận danh sách học sinh đang theo học. Đối với từng học sinh, giáo viên cập nhật trạng thái và ghi chú khi cần; hệ thống kiểm tra tính hợp lệ, tạo hoặc cập nhật DiemDanh cùng thông tin người thực hiện, sau đó thông báo kết quả lưu.
+
+\par\medskip
+\UCHeading{UC-07. Quản lý bài tập và bài kiểm tra}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC07_TrinhTu_BaiTapKiemTra.png}
+  \caption{Biểu đồ trình tự chức năng quản lý bài tập và bài kiểm tra}
+  \label{fig:chuong3-21}
+\end{figure}
+Giáo viên mở lớp học, nhập tên bài, loại bài và các mốc thời gian liên quan. Hệ thống kiểm tra tính hợp lệ của dữ liệu và lớp được lựa chọn trước khi tạo BaiKiemTra; khi thông tin chưa hợp lệ, giao diện hiển thị lỗi để người dùng bổ sung hoặc điều chỉnh.
+
+\par\medskip
+\UCHeading{UC-08. Cập nhật điểm số}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC08_TrinhTu_CapNhatDiemSo.png}
+  \caption{Biểu đồ trình tự chức năng cập nhật điểm số}
+  \label{fig:chuong3-22}
+\end{figure}
+Giáo viên lựa chọn bài kiểm tra và nhập điểm, nhận xét của từng học sinh. Hệ thống kiểm tra quyền nhập điểm, sự phù hợp của học sinh với lớp và giới hạn thang điểm; các kết quả hợp lệ được tạo mới hoặc cập nhật trong DiemSo, sau đó phản hồi trạng thái hoàn tất.
+
+\par\medskip
+\UCHeading{UC-09. Quản lý học phí – lập báo phí}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC09_TrinhTu_LapBaoPhi.png}
+  \caption{Biểu đồ trình tự thao tác lập và phát hành báo phí}
+  \label{fig:chuong3-23}
+\end{figure}
+Giáo viên lựa chọn kỳ thu của học sinh. Hệ thống tổng hợp thông tin lớp và dữ liệu học tập liên quan để tính khoản phải đóng; sau khi giáo viên kiểm tra và xác nhận phát hành, KhoanHocPhi được ghi nhận, đồng thời thông báo khoản thu được cung cấp cho người nhận qua website.
+
+\par\medskip
+\UCHeading{UC-09. Quản lý học phí – ghi nhận thanh toán}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC09_TrinhTu_GhiNhanThanhToan.png}
+  \caption{Biểu đồ trình tự thao tác ghi nhận thanh toán học phí}
+  \label{fig:chuong3-24}
+\end{figure}
+Sau khi nhận tiền từ phụ huynh bằng hình thức ngoài hệ thống, giáo viên chọn khoản học phí và nhập số tiền thực nhận. Hệ thống kiểm tra số tiền cùng quyền cập nhật, điều chỉnh tổng số tiền đã đóng và số còn thiếu trong KhoanHocPhi, sau đó hiển thị trạng thái khoản thu.
+
+\par\medskip
+\UCHeading{UC-10. Tra cứu lịch học}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC10_TrinhTu_TraCuuLichHoc.png}
+  \caption{Biểu đồ trình tự chức năng tra cứu lịch học}
+  \label{fig:chuong3-25}
+\end{figure}
+Người dùng lựa chọn học sinh và khoảng thời gian cần tra cứu. Hệ thống kiểm tra quyền truy cập đối với học sinh được yêu cầu; khi hợp lệ, dữ liệu ghi danh và các BuoiHoc được truy xuất để hiển thị thời khóa biểu, trường hợp không có quyền sẽ nhận thông báo từ chối.
+
+\par\medskip
+\UCHeading{UC-11. Tra cứu kết quả học tập và điểm danh}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC11_TrinhTu_TraCuuKetQuaDiemDanh.png}
+  \caption{Biểu đồ trình tự chức năng tra cứu kết quả học tập và điểm danh}
+  \label{fig:chuong3-26}
+\end{figure}
+Học sinh hoặc phụ huynh lựa chọn hồ sơ cần xem. Sau bước kiểm tra quyền, hệ thống lấy dữ liệu BaiKiemTra, DiemSo và DiemDanh để tổng hợp điểm số, nhận xét và tình hình chuyên cần; các yêu cầu không đủ quyền không được cung cấp dữ liệu.
+
+\par\medskip
+\UCHeading{UC-12. Tra cứu học phí}
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.96\textwidth,height=0.59\textheight,keepaspectratio]{picC3/C3_3_2_UC12_TrinhTu_TraCuuHocPhi.png}
+  \caption{Biểu đồ trình tự chức năng tra cứu học phí}
+  \label{fig:chuong3-27}
+\end{figure}
+Phụ huynh lựa chọn học sinh và kỳ thu học phí. Hệ thống xác minh quyền theo dõi học sinh, tra cứu KhoanHocPhi tương ứng và trả về số tiền phải đóng, đã đóng, còn thiếu cùng trạng thái; nếu không có quyền truy cập, giao diện hiển thị thông báo phù hợp.
+
 \section{Xây dựng biểu đồ lớp phân tích}
 \section{Xây dựng biểu đồ thực thể liên kết (ERD)}
