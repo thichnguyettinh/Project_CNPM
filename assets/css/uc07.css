@@ -1,0 +1,25 @@
+/* UC-07 — giao diện bổ sung an toàn, giữ nguyên CSS của nhóm */
+.uc07-toolbar { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.uc07-toolbar select { min-width:240px; max-width:420px; }
+.uc07-label { font-weight:600; font-size:13px; }
+.uc07-notice { padding:12px 14px; border-radius:8px; margin:12px 0; background:#f0fdf4; border:1px solid #86efac; color:#166534; }
+.uc07-notice.uc07-error { background:#fff1f2; border-color:#fda4af; color:#9f1239; }
+.uc07-list .table-container { overflow-x:auto; }
+.uc07-list table { width:100%; }
+.uc07-list td .text-caption { max-width:260px; white-space:normal; overflow-wrap:anywhere; }
+.uc07-empty { color:#64748b; padding:16px 0; }
+.uc07-overlay[hidden] { display:none !important; }
+.uc07-overlay { position:fixed; inset:0; z-index:10000; background:rgba(15,23,42,.58); display:flex; justify-content:center; align-items:center; padding:18px; overflow-y:auto; }
+.uc07-dialog { background:#fff; border-radius:14px; padding:24px; max-width:640px; width:100%; max-height:95vh; overflow:auto; box-shadow:0 20px 60px rgba(0,0,0,.23); }
+.uc07-dialog h2 { font-size:20px; margin:0 0 8px; }
+.uc07-dialog .text-secondary { font-size:13px; margin-bottom:18px; }
+.uc07-field { display:flex; flex-direction:column; gap:5px; margin:12px 0; }
+.uc07-field label { font-size:13px; font-weight:650; }
+.uc07-field textarea { min-height:85px; }
+.uc07-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.uc07-help { font-size:12px; color:#64748b; margin:12px 0; }
+.uc07-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+@media(max-width:630px){ .uc07-form-grid { grid-template-columns:1fr; } .uc07-dialog { padding:16px; } }
+
+.uc07-file-current { padding:9px 12px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; font-size:13px; color:#1e40af; overflow-wrap:anywhere; }
+.uc07-file-button { margin-top:5px; }

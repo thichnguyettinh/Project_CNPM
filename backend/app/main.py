@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import uuid
+from io import BytesIO
+from zipfile import BadZipFile, ZipFile
 from contextlib import contextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Annotated, Any, Callable
 
 import psycopg
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -27,6 +29,7 @@ from .schemas import (
     PaymentCreate,
     ProfileUpdate,
     ResultsSave,
+    QuestionScoresSave,
     SessionCreate,
     SessionUpdate,
     UserCreate,
@@ -1046,16 +1049,20 @@ def list_assignments(
     student_code: str | None = None,
 ):
     params: list[Any] = []
-    where = ["a.status <> 'draft'"]
+    where: list[str] = []
+    viewer_student_id = -1  # Chỉ học sinh được truy vấn trạng thái nộp bài của mình.
     if user["role"] == "teacher":
         where.append("c.teacher_user_id = %s")
         params.append(user["user_id"])
     elif user["role"] == "student":
         student = require_student_id(connection, user["user_id"])
+        viewer_student_id = student["student_id"]
+        where.append("a.status <> 'draft'")
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.student_id = %s AND ce.status = 'active')")
         params.append(student["student_id"])
     else:
         ids = linked_student_ids(connection, user["user_id"])
+        where.append("a.status <> 'draft'")
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.student_id = ANY(%s) AND ce.status = 'active')")
         params.append(ids)
     if class_id:
@@ -1071,16 +1078,200 @@ def list_assignments(
         f"""
         SELECT a.assignment_id AS id, a.class_id, c.class_code, c.name AS class_name,
                a.title, a.assignment_type, a.description, a.assigned_at, a.due_at, a.status,
-               COUNT(DISTINCT ce.student_id) AS student_count,
-               ROUND(AVG(r.score)::numeric, 2) AS average_score
+               att.file_name AS attachment_file_name, att.file_size AS attachment_file_size,
+               (SELECT COUNT(*) FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.status = 'active') AS student_count,
+               (SELECT ROUND(AVG(r.score)::numeric, 2) FROM assignment_results r WHERE r.assignment_id = a.assignment_id) AS average_score,
+               own.submission_id AS my_submission_id, own.submitted_at AS my_submitted_at,
+               own.status AS my_submission_status
         FROM assignments a JOIN classes c ON c.class_id = a.class_id
-        LEFT JOIN class_enrollments ce ON ce.class_id = c.class_id AND ce.status = 'active'
-        LEFT JOIN assignment_results r ON r.assignment_id = a.assignment_id
+        LEFT JOIN assignment_attachments att ON att.assignment_id = a.assignment_id
+        LEFT JOIN LATERAL (
+          SELECT sub.submission_id, sub.submitted_at, sub.status
+          FROM assignment_submissions sub
+          WHERE sub.assignment_id = a.assignment_id AND sub.student_id = %s
+          ORDER BY sub.submitted_at DESC, sub.submission_id DESC LIMIT 1
+        ) own ON TRUE
         WHERE {' AND '.join(where)}
-        GROUP BY a.assignment_id, c.class_code, c.name
-        ORDER BY a.assigned_at DESC
+        ORDER BY a.assigned_at DESC, a.created_at DESC
         """,
-        tuple(params),
+        (viewer_student_id, *params),
+    )
+
+
+# UC-07: tệp đề và bài nộp là hai thực thể riêng biệt; không cho phép tải công khai.
+ATTACHMENT_MIME = {
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+}
+
+
+def _validated_attachment(file: UploadFile) -> tuple[str, str, bytes, str]:
+    name = (file.filename or "").replace("\\", "/").split("/")[-1].strip()
+    if not name or len(name) > 255 or any(ord(ch) < 32 for ch in name):
+        raise HTTPException(status_code=400, detail="Tên tệp đề không hợp lệ (tối đa 255 ký tự).")
+    ext = Path(name).suffix.lower()
+    if ext not in ATTACHMENT_MIME:
+        raise HTTPException(status_code=415, detail="Chỉ nhận đề PDF, DOCX, PNG, JPG/JPEG.")
+    content = file.file.read(MAX_UPLOAD_BYTES + 1)
+    if not content:
+        raise HTTPException(status_code=400, detail="Tệp đề đang trống.")
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Tệp đề vượt giới hạn dung lượng.")
+    valid = {
+        ".pdf": lambda: content.startswith(b"%PDF-"),
+        ".png": lambda: content.startswith(b"\x89PNG\r\n\x1a\n"),
+        ".jpg": lambda: content.startswith(b"\xff\xd8\xff"),
+        ".jpeg": lambda: content.startswith(b"\xff\xd8\xff"),
+    }
+    if ext == ".docx":
+        try:
+            with ZipFile(BytesIO(content)) as doc:
+                entries = set(doc.namelist())
+                good = "[Content_Types].xml" in entries and "word/document.xml" in entries
+        except (BadZipFile, OSError, ValueError):
+            good = False
+    else:
+        good = valid[ext]()
+    if not good:
+        raise HTTPException(status_code=415, detail="Nội dung tệp không khớp định dạng PDF/DOCX/ảnh.")
+    return name, ext, content, ATTACHMENT_MIME[ext]
+
+
+def _store_attachment(file: UploadFile) -> tuple[str, str, str, int, Path]:
+    name, ext, content, mime = _validated_attachment(file)
+    root = (Path(UPLOAD_DIR).resolve() / "assignment_prompts")
+    root.mkdir(parents=True, exist_ok=True)
+    key = f"{uuid.uuid4().hex}{ext}"
+    destination = root / key
+    destination.write_bytes(content)
+    return name, key, mime, len(content), destination
+
+
+def _save_attachment_record(
+    connection: psycopg.Connection, assignment_id: str, teacher_id: str,
+    name: str, key: str, mime: str, size: int,
+):
+    connection.execute(
+        """INSERT INTO assignment_attachments
+           (assignment_id, file_name, storage_key, mime_type, file_size, uploaded_by)
+           VALUES (%s, %s, %s, %s, %s, %s)
+           ON CONFLICT (assignment_id) DO UPDATE SET
+             file_name = EXCLUDED.file_name, storage_key = EXCLUDED.storage_key,
+             mime_type = EXCLUDED.mime_type, file_size = EXCLUDED.file_size,
+             uploaded_by = EXCLUDED.uploaded_by, uploaded_at = NOW()""",
+        (assignment_id, name, key, mime, size, teacher_id),
+    )
+
+
+@app.post("/api/assignments/with-attachment", status_code=201)
+def create_assignment_with_attachment(
+    connection: Connection,
+    teacher: Teacher,
+    class_id: str = Form(...),
+    title: str = Form(...),
+    assignment_type: str = Form(...),
+    description: str = Form(""),
+    assigned_at: date = Form(...),
+    due_at: datetime | None = Form(None),
+    status: str = Form("published"),
+    file: UploadFile = File(...),
+):
+    # Validate toàn bộ dữ liệu và tệp trước khi tạo bài hoặc gửi thông báo.
+    payload = AssignmentCreate(
+        class_id=class_id, title=title, assignment_type=assignment_type,
+        description=description, assigned_at=assigned_at, due_at=due_at, status=status,
+    )
+    require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    name, key, mime, size, destination = _store_attachment(file)
+    try:
+        row = create_assignment(payload, connection, teacher)
+        _save_attachment_record(connection, row["assignment_id"], teacher["user_id"], name, key, mime, size)
+        connection.commit()  # Không công bố bài nếu lưu tệp đề vào DB thất bại.
+        return {**row, "attachment_file_name": name, "attachment_file_size": size}
+    except Exception:
+        connection.rollback()
+        destination.unlink(missing_ok=True)
+        raise
+
+
+@app.put("/api/assignments/{assignment_id}/attachment")
+def replace_assignment_attachment(
+    assignment_id: str, connection: Connection, teacher: Teacher,
+    file: UploadFile = File(...),
+):
+    assignment = fetch_one(
+        connection,
+        """SELECT a.assignment_id FROM assignments a JOIN classes c ON c.class_id = a.class_id
+           WHERE a.assignment_id = %s AND c.teacher_user_id = %s""",
+        (assignment_id, teacher["user_id"]),
+    )
+    if not assignment:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài hoặc không có quyền sửa.")
+    previous = fetch_one(
+        connection, "SELECT storage_key FROM assignment_attachments WHERE assignment_id = %s",
+        (assignment_id,),
+    )
+    name, key, mime, size, destination = _store_attachment(file)
+    try:
+        _save_attachment_record(connection, assignment_id, teacher["user_id"], name, key, mime, size)
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        destination.unlink(missing_ok=True)
+        raise
+    if previous:
+        try:
+            (Path(UPLOAD_DIR).resolve() / "assignment_prompts" / previous["storage_key"]).unlink(missing_ok=True)
+        except OSError:
+            # Cơ sở dữ liệu đã cập nhật; tệp cũ có thể được dọn sau.
+            pass
+    return {"assignment_id": assignment_id, "file_name": name, "file_size": size}
+
+
+@app.get("/api/assignments/{assignment_id}/attachment")
+def download_assignment_attachment(
+    assignment_id: str, connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+):
+    row = fetch_one(
+        connection,
+        """SELECT att.*, a.class_id, a.status, c.teacher_user_id
+           FROM assignment_attachments att
+           JOIN assignments a ON a.assignment_id = att.assignment_id
+           JOIN classes c ON c.class_id = a.class_id
+           WHERE att.assignment_id = %s""",
+        (assignment_id,),
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Chưa có tệp đề cho bài này.")
+    allowed = user["role"] == "teacher" and row["teacher_user_id"] == user["user_id"]
+    if not allowed and row["status"] != "draft" and user["role"] == "student":
+        student = require_student_id(connection, user["user_id"])
+        allowed = fetch_one(
+            connection,
+            """SELECT 1 FROM class_enrollments WHERE class_id = %s AND student_id = %s
+               AND status = 'active'""",
+            (row["class_id"], student["student_id"]),
+        ) is not None
+    if not allowed and row["status"] != "draft" and user["role"] == "parent":
+        allowed = fetch_one(
+            connection,
+            """SELECT 1 FROM parents p JOIN student_parents sp ON sp.parent_id = p.parent_id
+               JOIN class_enrollments ce ON ce.student_id = sp.student_id
+               WHERE p.user_id = %s AND ce.class_id = %s AND ce.status = 'active' LIMIT 1""",
+            (user["user_id"], row["class_id"]),
+        ) is not None
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền xem tệp đề.")
+    path = (Path(UPLOAD_DIR).resolve() / "assignment_prompts" / row["storage_key"])
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Tệp đề không còn tồn tại trên máy chủ.")
+    return FileResponse(
+        path, filename=row["file_name"], media_type=row["mime_type"],
+        content_disposition_type="attachment", headers={"X-Content-Type-Options": "nosniff"},
     )
 
 
@@ -1165,15 +1356,21 @@ def get_results(assignment_id: str, connection: Connection, teacher: Teacher):
     return fetch_all(
         connection,
         """
-        SELECT s.student_code, u.full_name, r.score, r.teacher_comment, r.graded_at
+        SELECT s.student_code, u.full_name, r.score, r.teacher_comment, r.graded_at,
+               sub.submission_id, sub.file_name, sub.submitted_at
         FROM class_enrollments ce
         JOIN students s ON s.student_id = ce.student_id
         JOIN users u ON u.user_id = s.user_id
         LEFT JOIN assignment_results r ON r.assignment_id = %s AND r.student_id = s.student_id
+        LEFT JOIN LATERAL (
+          SELECT submission_id, file_name, submitted_at FROM assignment_submissions
+          WHERE assignment_id = %s AND student_id = s.student_id
+          ORDER BY submitted_at DESC, submission_id DESC LIMIT 1
+        ) sub ON TRUE
         WHERE ce.class_id = %s AND ce.status = 'active'
         ORDER BY u.full_name
         """,
-        (assignment_id, assignment["class_id"]),
+        (assignment_id, assignment_id, assignment["class_id"]),
     )
 
 
@@ -1215,6 +1412,12 @@ def save_results(
             old_score = old["score"] if old else None
             if old and old_score != entry.score and not (entry.change_reason or "").strip():
                 raise HTTPException(status_code=400, detail=f"Cần ghi lý do sửa điểm cho {entry.student_code}.")
+            # Khi thay đổi điểm tổng, chi tiết từng câu cũ không còn đúng.
+            if old and old_score != entry.score:
+                connection.execute(
+                    "DELETE FROM assignment_question_scores WHERE assignment_id = %s AND student_id = %s",
+                    (assignment_id, student["student_id"]),
+                )
             result = fetch_one(
                 connection,
                 """
@@ -1289,6 +1492,94 @@ def grade_history(student_code: str, connection: Connection, teacher: Teacher):
         ORDER BY l.changed_at DESC
         """,
         (student["student_id"],),
+    )
+
+
+# UC-11: điểm chi tiết từng câu, ràng buộc với điểm tổng đã lưu ở UC-08.
+def _uc11_teacher_result(connection: psycopg.Connection, assignment_id: str, student_code: str, user_id: str) -> dict:
+    row = fetch_one(
+        connection,
+        """
+        SELECT s.student_id, r.score
+        FROM assignments a
+        JOIN classes c ON c.class_id = a.class_id
+        JOIN class_enrollments ce ON ce.class_id = a.class_id AND ce.status = 'active'
+        JOIN students s ON s.student_id = ce.student_id
+        JOIN assignment_results r ON r.assignment_id = a.assignment_id AND r.student_id = s.student_id
+        WHERE a.assignment_id = %s AND s.student_code = %s AND c.teacher_user_id = %s
+        """,
+        (assignment_id, student_code, user_id),
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Chưa có điểm tổng hoặc không có quyền chấm học sinh này.")
+    return row
+
+
+@app.get("/api/assignments/{assignment_id}/question-scores/{student_code}")
+def uc11_get_question_scores(assignment_id: str, student_code: str, connection: Connection, teacher: Teacher):
+    result = _uc11_teacher_result(connection, assignment_id, student_code, teacher["user_id"])
+    return fetch_all(
+        connection,
+        """SELECT question_no, max_score, earned_score FROM assignment_question_scores
+           WHERE assignment_id = %s AND student_id = %s ORDER BY question_no""",
+        (assignment_id, result["student_id"]),
+    )
+
+
+@app.put("/api/assignments/{assignment_id}/question-scores/{student_code}")
+def uc11_save_question_scores(
+    assignment_id: str,
+    student_code: str,
+    payload: QuestionScoresSave,
+    connection: Connection,
+    teacher: Teacher,
+):
+    with transaction(connection):
+        result = _uc11_teacher_result(connection, assignment_id, student_code, teacher["user_id"])
+        if result["score"] is None:
+            raise HTTPException(status_code=400, detail="Cần lưu điểm tổng tại UC-08 trước.")
+        earned = sum((part.earned_score for part in payload.questions), 0)
+        maximum = sum((part.max_score for part in payload.questions), 0)
+        if earned != result["score"]:
+            raise HTTPException(status_code=400, detail="Tổng điểm từng câu phải bằng điểm tổng UC-08.")
+        if maximum > 10:
+            raise HTTPException(status_code=400, detail="Tổng điểm tối đa không được vượt 10.")
+        connection.execute(
+            "DELETE FROM assignment_question_scores WHERE assignment_id = %s AND student_id = %s",
+            (assignment_id, result["student_id"]),
+        )
+        for part in payload.questions:
+            connection.execute(
+                """INSERT INTO assignment_question_scores
+                   (assignment_id, student_id, question_no, max_score, earned_score)
+                   VALUES (%s, %s, %s, %s, %s)""",
+                (assignment_id, result["student_id"], part.question_no, part.max_score, part.earned_score),
+            )
+    return {"saved": len(payload.questions)}
+
+
+@app.get("/api/assignments/{assignment_id}/my-question-scores")
+def uc11_my_question_scores(
+    assignment_id: str,
+    connection: Connection,
+    student_user: Annotated[dict, Depends(require_roles("student"))],
+):
+    student = require_student_id(connection, student_user["user_id"])
+    exists = fetch_one(
+        connection,
+        """SELECT 1 FROM assignments a
+           JOIN class_enrollments ce ON ce.class_id = a.class_id
+           WHERE a.assignment_id = %s AND ce.student_id = %s AND ce.status = 'active'
+           AND a.status <> 'draft'""",
+        (assignment_id, student["student_id"]),
+    )
+    if not exists:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài được phép xem.")
+    return fetch_all(
+        connection,
+        """SELECT question_no, max_score, earned_score FROM assignment_question_scores
+           WHERE assignment_id = %s AND student_id = %s ORDER BY question_no""",
+        (assignment_id, student["student_id"]),
     )
 
 
