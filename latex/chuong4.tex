@@ -6,3 +6,150 @@
 \section{Thiết kế chi tiết lớp}
 \section{Sơ đồ lớp chi tiết}
 \section{Thiết kế giao diện}
+\setcounter{secnumdepth}{3} % Hiển thị 4.6.3.1, 4.6.3.2, ...
+\setcounter{subsection}{2} % Tạm thời: 4.6.1 và 4.6.2 chưa có
+
+\subsection{Giao diện dành cho học sinh}
+
+\subsubsection{Giao diện tổng quan}
+
+Giao diện Tổng quan dành cho Học sinh là màn hình được hiển thị sau khi học sinh đăng nhập thành công vào hệ thống Quản lý lớp học thêm. Giao diện cung cấp cái nhìn khái quát về tình hình học tập của học sinh thông qua lời chào cá nhân hóa và các thẻ thống kê nhanh, gồm số lớp đang theo học, điểm trung bình kiểm tra, số buổi tham gia trong tháng và số bài tập chưa nộp. Những thông tin này giúp học sinh nắm được kết quả học tập và các công việc cần quan tâm mà không phải truy cập từng chức năng riêng lẻ.
+
+Bên dưới khu vực thống kê là các khối thông tin về buổi học sắp tới, bài tập cần hoàn thành, điểm số gần đây, tình hình điểm danh và thông báo mới. Thanh điều hướng bên trái cung cấp đường dẫn đến các trang Lịch học, Điểm danh, Kết quả học tập, Bài tập, Thông báo và chức năng quản lý tài khoản. Các liên kết “Chi tiết buổi học”, “Xem lịch tuần”, “Xem kết quả học tập” và “Xem lịch sử điểm danh” hỗ trợ học sinh chuyển đến trang nội dung tương ứng. Thiết kế này phù hợp với nhóm chức năng tra cứu đã mô tả ở Chương 2, đặc biệt là UC-10 và UC-11.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46301_TongQuan_HocSinh.png}
+    \caption{Giao diện tổng quan dành cho học sinh}
+    \label{fig:c4-463-01}
+\end{figure}
+
+\subsubsection{Giao diện Lịch học}
+
+Giao diện Lịch học tuần giúp học sinh theo dõi thời khóa biểu của mình theo từng tuần thông qua bảng lịch được chia theo các ngày từ thứ Hai đến Chủ nhật. Tại khu vực phía trên, giao diện hiển thị khoảng thời gian đang xem và cung cấp các nút chuyển tuần trước, tuần sau hoặc quay về tuần hiện tại, đồng thời cho phép lựa chọn lớp học cần tra cứu. Mỗi buổi học được trình bày tại ngày tương ứng với các thông tin cơ bản gồm giờ học, tên lớp, nội dung buổi học, phòng học và giáo viên phụ trách. Những ngày không có lịch được hiển thị riêng để học sinh dễ quan sát. Phía dưới lịch còn có thông báo thay đổi phòng học và thông tin lịch học cố định, giúp học sinh chủ động theo dõi kế hoạch học tập.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46302_LichHoc_Tuan.png}
+    \caption{Giao diện lịch học tuần}
+    \label{fig:c4-463-02}
+\end{figure}
+
+Từ bảng lịch học tuần, học sinh có thể chọn liên kết “Chi tiết” tại một buổi học để mở giao diện Chi tiết buổi học. Giao diện này cung cấp thông tin đầy đủ hơn về buổi học đã chọn như tên lớp, ngày học, khung giờ, thời lượng, phòng học và giáo viên phụ trách. Phần nội dung chính thể hiện chủ đề, mục tiêu học tập và những công việc cần chuẩn bị trước khi đến lớp. Ngoài ra, học sinh có thể xem tài liệu của buổi học, sử dụng nút tải tài liệu, theo dõi bài tập liên quan cùng hạn nộp và tình trạng nộp bài. Khu vực bên phải hiển thị thông tin lớp học và buổi học tiếp theo, trong khi thông báo trạng thái buổi học giúp người dùng biết buổi học đã diễn ra hay chưa. Liên kết “Lịch học tuần” ở đầu trang cho phép quay trở lại bảng lịch tổng quan.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46302_ChiTiet_BuoiHoc.png}
+    \caption{Giao diện chi tiết buổi học}
+    \label{fig:c4-463-03}
+\end{figure}
+
+Nhìn chung, hai giao diện được liên kết với nhau để hỗ trợ học sinh tra cứu lịch học theo hai mức độ: tổng quan theo tuần và chi tiết theo từng buổi. Các thông tin về lịch, nội dung giảng dạy, tài liệu và bài tập được tập hợp tại cùng một khu vực, qua đó giúp học sinh dễ dàng chuẩn bị và theo dõi quá trình học tập. Phạm vi sử dụng của học sinh tại các giao diện này chủ yếu là xem và tra cứu thông tin; việc tạo hoặc thay đổi lịch học thuộc chức năng quản lý của giáo viên.
+
+\subsubsection{Giao diện Lịch sử điểm danh}
+
+Giao diện Lịch sử điểm danh cho phép học sinh theo dõi tình hình chuyên cần của bản thân theo từng lớp học và tháng. Tại phía trên khu vực nội dung, học sinh có thể lựa chọn lớp và khoảng thời gian cần tra cứu. Các thẻ thống kê được bố trí trực quan, tổng hợp số buổi có mặt, vắng, trễ và có phép, giúp học sinh nhanh chóng nắm bắt tình trạng tham gia học tập.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46303_LichSu_DiemDanh.png}
+    \caption{Giao diện lịch sử điểm danh}
+    \label{fig:c4-463-04}
+\end{figure}
+
+Trong giao diện minh họa, dữ liệu tháng 10/2026 của lớp Toán 10 – Nền tảng được tổng hợp thành 6 buổi có mặt, 1 buổi vắng, 1 buổi trễ và 1 buổi có phép. Hệ thống hiển thị tỷ lệ tham gia 77,8\% (7/9 buổi), được tính trên số buổi có mặt và đi trễ so với tổng số buổi đã diễn ra. Bên dưới là bảng chi tiết theo ngày và buổi học, phòng học, trạng thái điểm danh cùng ghi chú tương ứng, hỗ trợ học sinh tra cứu lại từng lần tham gia lớp học.
+
+Cuối trang có lưu ý rằng lịch sử điểm danh chỉ được phép xem; việc điều chỉnh trạng thái thuộc quyền của giáo viên. Khi phát hiện thông tin chưa chính xác, học sinh được hướng dẫn liên hệ giáo viên để kiểm tra. Giao diện vì vậy hỗ trợ chức năng tra cứu tiến độ học tập và điểm danh (UC-11), đồng thời thể hiện rõ phạm vi quyền hạn của học sinh trong hệ thống.
+
+\subsubsection{Giao diện Kết quả học tập}
+
+Chức năng Kết quả học tập được thiết kế nhằm giúp học sinh theo dõi quá trình học tập từ thông tin tổng hợp đến kết quả cụ thể của từng bài kiểm tra. Khi truy cập mục “Kết quả học tập” trên thanh điều hướng, học sinh có thể lựa chọn lớp học và học kỳ để xem các dữ liệu tương ứng. Nội dung được trình bày trực quan, tạo điều kiện để người học nhận biết mức độ tiến bộ và những nội dung cần tiếp tục ôn tập.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46304_KetQua_HocTap.png}
+    \caption{Giao diện kết quả học tập}
+    \label{fig:c4-463-05}
+\end{figure}
+
+Tại trang tra cứu, hệ thống tổng hợp điểm trung bình các bài kiểm tra, kết quả của lần kiểm tra gần nhất và mức thay đổi điểm số so với đầu năm. Biểu đồ điểm theo thời gian giúp học sinh quan sát xu hướng học tập qua từng đợt đánh giá; đồng thời, phần nhận xét gần nhất cung cấp ý kiến và định hướng rèn luyện của giáo viên. Bên dưới, danh sách bài kiểm tra thể hiện tên bài, ngày thực hiện, điểm đạt được và nhận xét ngắn để học sinh thuận tiện đối chiếu kết quả.
+
+Từ danh sách này, học sinh có thể chọn liên kết “Xem bài kiểm tra” tại một bài đánh giá bất kỳ để chuyển đến phần thông tin chi tiết. Nhờ cách tổ chức này, người học không chỉ biết kết quả chung mà còn có thể tìm hiểu cụ thể cách chấm điểm và những nội dung cần cải thiện trong từng bài.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46304_ChiTiet_BaiKiemTra.png}
+    \caption{Giao diện chi tiết bài kiểm tra}
+    \label{fig:c4-463-06}
+\end{figure}
+
+Tại phần thông tin chi tiết, hệ thống trình bày tên bài, ngày kiểm tra, hình thức đánh giá, giáo viên chấm và tổng điểm đạt được. Kết quả được phân tích theo từng câu hỏi, thể hiện điểm đạt được so với điểm tối đa và nhận xét tương ứng. Qua đó, học sinh xác định những phần đã làm tốt và nội dung cần cải thiện.
+
+Ngoài ra, học sinh có thể đọc nhận xét chung và gợi ý ôn tập, tải đề và đáp án hoặc truy cập bài tập liên quan. Nếu kết quả đã được rà soát, mục “Thông tin rà soát” hiển thị điểm trước và sau khi điều chỉnh, lý do và thời điểm cập nhật. Liên kết ở đầu trang cho phép quay lại danh sách kết quả để tiếp tục xem các bài khác.
+
+Nhờ liên kết giữa kết quả tổng hợp và thông tin chi tiết, học sinh có thể theo dõi tiến bộ và chủ động ôn luyện dựa trên nhận xét của giáo viên. Các thông tin trên chỉ có quyền tra cứu đối với học sinh; việc nhập, sửa điểm và xác nhận rà soát do giáo viên thực hiện. Nhóm chức năng này hỗ trợ UC-11 – Tra cứu tiến độ học tập và điểm danh đã được đặc tả ở Chương 2.
+
+\subsubsection{Giao diện Bài tập}
+
+Chức năng Bài tập hỗ trợ học sinh theo dõi các nhiệm vụ học tập do giáo viên giao, kiểm tra thời hạn nộp và xem tình trạng hoàn thành của từng bài. Khi chọn mục “Bài tập” trên thanh điều hướng, học sinh có thể lọc danh sách theo lớp học và học kỳ. Phía trên trang là các thẻ tổng hợp số bài đã được giao, số bài chưa nộp và số bài đã nộp có nhận xét; bên dưới là các bộ lọc “Tất cả”, “Chưa nộp” và “Đã nộp” để thuận tiện tra cứu. Mỗi dòng bài tập hiển thị tên bài, hạn nộp, trạng thái và liên kết “Xem bài tập”, giúp học sinh xác định công việc cần ưu tiên thực hiện.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46305_DanhSach_BaiTap.png}
+    \caption{Giao diện danh sách bài tập}
+    \label{fig:c4-463-07}
+\end{figure}
+
+Từ danh sách đã tra cứu, học sinh chọn “Xem bài tập” tại một nhiệm vụ cụ thể để tiếp tục xem nội dung và thực hiện bài làm. Thông tin được trình bày bao gồm tên bài, mã bài tập, ngày giao, hạn nộp và hình thức nộp. Phần hướng dẫn nêu yêu cầu cần hoàn thành, các lưu ý khi trình bày và mục tiêu luyện tập; tài liệu đính kèm có nút tải về để học sinh tham khảo trước khi làm bài. Nhờ đó, quá trình xem bài tập và chuẩn bị bài nộp được liên kết ngay trong cùng một luồng thao tác, không cần tìm kiếm nội dung ở nhiều nơi.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46305_ChiTiet_BaiTap.png}
+    \caption{Giao diện chi tiết bài tập}
+    \label{fig:c4-463-08}
+\end{figure}
+
+Sau khi hoàn thành, học sinh sử dụng khu vực “Bài nộp của em” để chọn hoặc kéo thả tệp bài làm và nhấn “Nộp bài”. Thiết kế cho biết các định dạng tệp được hỗ trợ và hiển thị trạng thái “Chưa nộp” khi học sinh chưa gửi bài. Phần “Nhận xét của giáo viên” được bố trí ngay trên trang để học sinh theo dõi phản hồi sau khi bài làm được xem xét. Cách tổ chức này kết nối liên tục việc nhận bài, đọc yêu cầu, tải tài liệu, gửi bài và theo dõi nhận xét; đồng thời giúp học sinh chủ động quản lý tiến độ học tập của mình.
+
+\subsubsection{Giao diện thông báo}
+
+Chức năng Thông báo giúp học sinh cập nhật kịp thời những thay đổi và thông tin liên quan đến quá trình học tập. Khi chọn mục “Thông báo” trên thanh điều hướng, học sinh được cung cấp danh sách thông báo về điểm kiểm tra, hạn nộp bài tập, điều chỉnh lịch học, kết quả điểm danh và liên kết tài khoản phụ huynh. Các thông báo mới được làm nổi bật bằng nền màu khác biệt và nhãn “Mới”, giúp người dùng dễ dàng nhận biết nội dung chưa xem.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46306_ThongBao.png}
+    \caption{Giao diện thông báo}
+    \label{fig:c4-463-09}
+\end{figure}
+
+Để thuận tiện tra cứu, hệ thống bố trí các lựa chọn “Tất cả”, “Chưa đọc” và “Đã đọc”, kèm số lượng tương ứng; đồng thời cung cấp nút “Đánh dấu tất cả đã đọc” để quản lý trạng thái thông báo. Tại mỗi mục, học sinh có thể xem tiêu đề, nội dung tóm tắt, thời điểm cập nhật và sử dụng liên kết như “Xem kết quả”, “Xem bài tập”, “Xem lịch học” hoặc “Xem lịch sử” để chuyển đến thông tin liên quan. Theo thiết kế, thông báo được hiển thị trực tiếp trên website, không tự động gửi SMS hoặc email. Qua đó, học sinh chủ động theo dõi những thông tin cần lưu ý mà không phải tìm kiếm riêng lẻ ở từng chức năng.
+
+\subsubsection{Giao diện Hồ sơ cá nhân}
+
+Giao diện Hồ sơ cá nhân cho phép học sinh xem và quản lý các thông tin liên quan đến bản thân trong quá trình sử dụng hệ thống quản lý lớp học thêm. Khi truy cập mục “Hồ sơ cá nhân” từ thanh điều hướng, học sinh được cung cấp thông tin nhận diện, trạng thái học tập và các thông tin liên hệ. Các trường như họ và tên, ngày sinh, lớp tại trường và trường học do giáo viên quản lý được hiển thị để tra cứu, trong khi học sinh có thể cập nhật email, số điện thoại và địa chỉ liên hệ. Sau khi chỉnh sửa, học sinh chọn “Lưu thông tin” để ghi nhận thay đổi hoặc “Hủy thay đổi” để giữ lại thông tin trước đó.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46307_HoSo_CaNhan.png}
+    \caption{Giao diện hồ sơ cá nhân}
+    \label{fig:c4-463-10}
+\end{figure}
+
+Bên cạnh thông tin cá nhân, giao diện còn tổng hợp dữ liệu về phụ huynh đã liên kết với tài khoản học sinh và lớp học đang theo học. Học sinh có thể xem họ tên, quan hệ và số điện thoại của phụ huynh, đồng thời theo dõi các thông tin cơ bản của lớp như môn học, giáo viên phụ trách, lịch học và thời gian khóa học. Liên kết “Xem thông tin lớp học” hỗ trợ truy cập nội dung liên quan mà không cần tìm kiếm lại từ đầu.
+
+Ngoài ra, khu vực thông tin tài khoản hiển thị tên đăng nhập, mã học sinh và trạng thái tài khoản. Để bảo vệ thông tin cá nhân, học sinh có thể truy cập mục “Bảo mật \& mật khẩu” hoặc sử dụng nút “Đổi mật khẩu” khi cần thay đổi thông tin xác thực. Các thông tin định danh và quyền truy cập do hệ thống hoặc giáo viên quản lý không thể tự ý chỉnh sửa trên giao diện này. Nhờ đó, chức năng Hồ sơ cá nhân vừa hỗ trợ học sinh chủ động cập nhật thông tin liên hệ, vừa bảo đảm tính nhất quán của hồ sơ học tập.
+
+\subsubsection{Giao diện Đổi mật khẩu}
+
+Giao diện Đổi mật khẩu cho phép học sinh chủ động cập nhật thông tin xác thực nhằm tăng cường bảo mật tài khoản trong quá trình sử dụng hệ thống quản lý lớp học thêm. Học sinh truy cập chức năng “Đổi mật khẩu” từ thanh điều hướng hoặc khu vực bảo mật tài khoản. Tại đây, hệ thống hiển thị biểu mẫu gồm ba trường: mật khẩu hiện tại, mật khẩu mới và xác nhận mật khẩu mới. Học sinh cần nhập chính xác mật khẩu đang sử dụng trước khi thiết lập mật khẩu mới và xác nhận lại để hoàn tất yêu cầu thay đổi.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46308_DoiMatKhau.png}
+    \caption{Giao diện đổi mật khẩu}
+    \label{fig:c4-463-11}
+\end{figure}
+
+Trong quá trình nhập liệu, giao diện cung cấp các tiêu chí kiểm tra mật khẩu mới, bao gồm độ dài tối thiểu tám ký tự, có chữ hoa và chữ thường, có ít nhất một chữ số và khác mật khẩu hiện tại. Trạng thái đáp ứng từng tiêu chí và kết quả đối chiếu với trường xác nhận được thể hiện ngay bên dưới biểu mẫu, giúp học sinh nhận biết thông tin đã hợp lệ hay chưa. Sau khi hoàn tất, học sinh chọn “Cập nhật mật khẩu” để gửi yêu cầu thay đổi hoặc chọn “Hủy bỏ” nếu không muốn tiếp tục thao tác.
+
+Bên cạnh biểu mẫu, hệ thống hiển thị các khuyến nghị sử dụng mật khẩu an toàn và liên kết hướng dẫn hỗ trợ trong trường hợp học sinh quên mật khẩu hiện tại. Theo thông tin hướng dẫn trên giao diện, sau khi đổi mật khẩu, học sinh sử dụng mật khẩu mới để đăng nhập; các phiên đăng nhập cũ sẽ kết thúc nhằm bảo vệ dữ liệu. Chức năng này góp phần giúp học sinh quản lý thông tin xác thực của mình và hạn chế nguy cơ truy cập tài khoản trái phép.
