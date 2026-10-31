@@ -47,6 +47,7 @@ Ví dụ, đối với chức năng điểm danh (UC-06), Giáo viên chọn l�
 Đối với chức năng học phí (UC-09), Tuition Manager tổng hợp dữ liệu cần thiết để lập khoản thu, lưu khoản thu và cho phép Giáo viên ghi nhận kết quả thanh toán. Việc thanh toán tiền mặt hoặc chuyển khoản diễn ra bên ngoài hệ thống; chương trình chỉ quản lý số tiền và trạng thái đã được xác nhận. Vì vậy, phương án kiến trúc không bổ sung cổng thanh toán trực tuyến tự động hay dịch vụ gửi SMS/Email bên thứ ba, đúng với phạm vi đã xác định.\par
 
 \begin{table}[H]
+\caption{Ánh xạ chức năng với các gói nghiệp vụ}
 \centering
 \small
 \renewcommand{\arraystretch}{1.2}
@@ -64,7 +65,6 @@ UC-09 & Tuition Manager: lập khoản thu, ghi nhận thanh toán và đối so
 UC-10, 11, 12 & Lookup Manager: truy xuất lịch học, tiến độ học tập, chuyên cần và học phí theo quyền. \\ \hline
 \end{tabularx}
 
-\caption{Ánh xạ chức năng với các gói nghiệp vụ}
 \label{tab:usecase-goi}
 \end{table}
 
