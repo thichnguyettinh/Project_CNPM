@@ -46,8 +46,6 @@ Ví dụ, đối với chức năng điểm danh (UC-06), Giáo viên chọn l�
 
 Đối với chức năng học phí (UC-09), Tuition Manager tổng hợp dữ liệu cần thiết để lập khoản thu, lưu khoản thu và cho phép Giáo viên ghi nhận kết quả thanh toán. Việc thanh toán tiền mặt hoặc chuyển khoản diễn ra bên ngoài hệ thống; chương trình chỉ quản lý số tiền và trạng thái đã được xác nhận. Vì vậy, phương án kiến trúc không bổ sung cổng thanh toán trực tuyến tự động hay dịch vụ gửi SMS/Email bên thứ ba, đúng với phạm vi đã xác định.\par
 
-\paragraph*{Bảng ánh xạ nghiệp vụ với các gói xử lý}
-
 \begin{table}[H]
 \centering
 \small
@@ -55,7 +53,6 @@ Ví dụ, đối với chức năng điểm danh (UC-06), Giáo viên chọn l�
 \setlength{\tabcolsep}{5pt}
 \begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.65cm}|>{\raggedright\arraybackslash}X|}
 \hline
-\rowcolor{blue!12}
 \textbf{Use case} & \textbf{Gói nghiệp vụ chịu trách nhiệm chính} \\ \hline
 UC-01, UC-02 & Account \& Role Manager: đăng nhập, tạo tài khoản, liên kết phụ huynh – học sinh và phân quyền. \\ \hline
 UC-03 & Class Manager: tạo, chỉnh sửa và kết thúc lớp học. \\ \hline
