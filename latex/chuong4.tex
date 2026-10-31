@@ -46,7 +46,6 @@ Ví dụ, đối với chức năng điểm danh (UC-06), Giáo viên chọn l�
 
 Đối với chức năng học phí (UC-09), Tuition Manager tổng hợp dữ liệu cần thiết để lập khoản thu, lưu khoản thu và cho phép Giáo viên ghi nhận kết quả thanh toán. Việc thanh toán tiền mặt hoặc chuyển khoản diễn ra bên ngoài hệ thống; chương trình chỉ quản lý số tiền và trạng thái đã được xác nhận. Vì vậy, phương án kiến trúc không bổ sung cổng thanh toán trực tuyến tự động hay dịch vụ gửi SMS/Email bên thứ ba, đúng với phạm vi đã xác định.\par
 
-\Needspace{15\baselineskip}
 \paragraph*{Bảng ánh xạ nghiệp vụ với các gói xử lý}
 
 \begin{table}[H]
@@ -80,7 +79,7 @@ Nhằm mô tả cấu trúc phân rã và sự phụ thuộc giữa các thành 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{latex/picC4/Hinh_4_1_Kien_truc_tong_quan.png}
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{picC4/Hinh_4_1_Kien_truc_tong_quan.png}
   \caption{Biểu đồ kiến trúc tổng quan Hệ thống quản lý lớp học thêm}
   \label{fig:kt-1}
 \end{figure}
@@ -91,7 +90,7 @@ Nhằm mô tả cấu trúc phân rã và sự phụ thuộc giữa các thành 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{latex/picC4/Hinh_4_2_Presentation_View.png}
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{picC4/Hinh_4_2_Presentation_View.png}
   \caption{Biểu đồ gói của Presentation Layer (View)}
   \label{fig:kt-2}
 \end{figure}
@@ -122,7 +121,7 @@ Presentation Layer tiếp nhận tương tác của người dùng và hiển th
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{latex/picC4/Hinh_4_3_Service_Business_Controller.png}
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{picC4/Hinh_4_3_Service_Business_Controller.png}
   \caption{Biểu đồ gói Service Layer và Business Logic Layer (Controller)}
   \label{fig:kt-3}
 \end{figure}
@@ -151,7 +150,7 @@ Ví dụ, khi Giáo viên thêm học sinh vào lớp (UC-05), Controller gọi 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{latex/picC4/Hinh_4_4_Data_Model.png}
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{picC4/Hinh_4_4_Data_Model.png}
   \caption{Biểu đồ gói của Data Access Layer (Model)}
   \label{fig:kt-4}
 \end{figure}
@@ -191,7 +190,7 @@ Các mũi tên trong sơ đồ dưới đây đi từ \textbf{bảng chứa khó
 \begin{landscape}
 \begin{figure}[p]
 \centering
-\includegraphics[width=0.97\linewidth,height=0.83\textheight,keepaspectratio]{latex/picC4/Hinh_4_5_So_do_quan_he_tong_quan.png}
+\includegraphics[width=0.97\linewidth,height=0.83\textheight,keepaspectratio]{picC4/Hinh_4_5_So_do_quan_he_tong_quan.png}
 \caption{Sơ đồ quan hệ tổng quan của cơ sở dữ liệu quản lý lớp học thêm}
 \label{fig:db-all}
 \end{figure}
@@ -199,21 +198,21 @@ Các mũi tên trong sơ đồ dưới đây đi từ \textbf{bảng chứa khó
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.98\linewidth,keepaspectratio]{latex/picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png}
+\includegraphics[width=0.98\linewidth,keepaspectratio]{picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png}
 \caption{Nhóm bảng tài khoản, lớp học, lịch học và điểm danh}
 \label{fig:db-academic}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.96\linewidth,keepaspectratio]{latex/picC4/Hinh_4_7_Ket_qua_hoc_tap.png}
+\includegraphics[width=0.96\linewidth,keepaspectratio]{picC4/Hinh_4_7_Ket_qua_hoc_tap.png}
 \caption{Nhóm bảng bài tập, bài kiểm tra và kết quả học tập}
 \label{fig:db-grade}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.96\linewidth,keepaspectratio]{latex/picC4/Hinh_4_8_Hoc_phi_Thong_bao.png}
+\includegraphics[width=0.96\linewidth,keepaspectratio]{picC4/Hinh_4_8_Hoc_phi_Thong_bao.png}
 \caption{Nhóm bảng học phí, thông báo và nhật ký thay đổi}
 \label{fig:db-tuition}
 \end{figure}
