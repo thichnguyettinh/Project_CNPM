@@ -1,7 +1,695 @@
 % ==================== CHƯƠNG 4 ====================
 \chapter{THIẾT KẾ CHƯƠNG TRÌNH}
 \section{Thiết kế kiến trúc}
+
+Trên cơ sở yêu cầu đã được khảo sát và đặc tả ở các chương trước, nhóm xây dựng phương án kiến trúc cho Hệ thống quản lý lớp học thêm. Hệ thống phục vụ ba nhóm người dùng gồm Giáo viên/Gia sư, Học sinh và Phụ huynh; hỗ trợ quản lý tài khoản, lớp học, thời khóa biểu, danh sách học sinh, điểm danh, bài tập và bài kiểm tra, điểm số, học phí cùng các chức năng tra cứu. Việc thiết kế kiến trúc cần bảo đảm tách biệt trách nhiệm giữa giao diện, xử lý yêu cầu, nghiệp vụ và lưu trữ dữ liệu, qua đó hỗ trợ mở rộng và bảo trì hệ thống.\par
+
+Nội dung dưới đây trình bày kiến trúc ở mức thiết kế logic, làm căn cứ tổ chức mã nguồn và xây dựng sơ đồ gói. Tên các gói và thành phần thể hiện chức năng dự kiến, không đồng nghĩa với việc mọi gói đã được hiện thực hoặc có tên tệp tương ứng trong mã nguồn.\par
+
+\subsection{Lựa chọn kiến trúc}
+
+Nhóm đề xuất lựa chọn kiến trúc Client–Server cho ứng dụng Web, kết hợp nguyên lý MVC (Model–View–Controller) và cách tổ chức chương trình thành các tầng chức năng. Trong đó, phía người dùng chịu trách nhiệm hiển thị và tiếp nhận thao tác; phía máy chủ tiếp nhận yêu cầu, kiểm soát truy cập, xử lý nghiệp vụ và thực hiện truy xuất cơ sở dữ liệu. Các thành phần giao tiếp thông qua giao diện lập trình ứng dụng (API), thay vì để giao diện thao tác trực tiếp với cơ sở dữ liệu.\par
+
+Ở mức logic, mô hình MVC được áp dụng như sau: View biểu diễn các màn hình của Giáo viên, Học sinh và Phụ huynh; Controller tiếp nhận, kiểm tra, điều phối yêu cầu và trả về kết quả; Model biểu diễn dữ liệu cùng cơ chế truy cập, cập nhật dữ liệu của hệ thống. Để tránh đặt toàn bộ quy tắc nghiệp vụ trong Controller hoặc Model, nhóm tách riêng tầng Business Logic, chứa các bộ xử lý như điểm danh, quản lý điểm số và học phí. Cách tổ chức này vẫn bảo đảm tinh thần phân tách trách nhiệm của MVC, đồng thời làm rõ luồng xử lý thực tế của ứng dụng Web.\par
+
+Kiến trúc trên phù hợp với bài toán vì các chức năng có quan hệ dữ liệu chặt chẽ nhưng trách nhiệm khác nhau. Chẳng hạn, chức năng lập khoản thu học phí cần thông tin học sinh, lịch học và chuyên cần; chức năng tra cứu điểm cần kiểm tra quan hệ giữa tài khoản đang đăng nhập với học sinh được xem. Việc tách tầng giúp tái sử dụng logic nghiệp vụ, hạn chế lặp mã, giảm phụ thuộc giữa các mô-đun và thuận tiện khi nhóm phân công phát triển từng chức năng.\par
+
+Bên cạnh đó, kiến trúc phân lớp tạo điều kiện đáp ứng các yêu cầu phi chức năng về phân quyền theo vai trò, kiểm tra dữ liệu nhập, quản lý lỗi, lưu vết thao tác và khả năng bảo trì. Đây là phương án thiết kế hướng đến các mục tiêu đã nêu trong báo cáo, không phải kết quả đo kiểm hiệu năng hoặc xác nhận về công nghệ triển khai cụ thể.\par
+
+\subsection{Mô tả kiến trúc cụ thể}
+
+Kiến trúc được tổ chức thành bốn tầng chính theo hướng phụ thuộc từ trên xuống: Presentation Layer, Service Layer, Business Logic Layer và Data Access Layer. Nhóm tiện ích dùng chung (Cross-cutting Utilities) cung cấp các chức năng có thể được sử dụng ở nhiều tầng. Mỗi tầng có trách nhiệm riêng, giao tiếp qua các giao diện rõ ràng và hạn chế truy cập vượt tầng.\par
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Presentation Layer – Tầng hiển thị (View): }Cung cấp giao diện Web cho từng vai trò. Các màn hình tiêu biểu gồm đăng nhập, quản lý lớp học, lập thời khóa biểu, điểm danh, quản lý bài tập và điểm số, quản lý học phí, xem lịch học và tra cứu kết quả. Tầng này tiếp nhận thao tác người dùng, kiểm tra dữ liệu ở mức giao diện, hiển thị thông báo và gửi yêu cầu đến Service Layer. Presentation Layer không trực tiếp truy vấn cơ sở dữ liệu hoặc quyết định quyền truy cập cuối cùng.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Service Layer – Tầng dịch vụ (Controller): }Gồm các tuyến API, bộ điều khiển và thành phần trung gian (middleware). Tầng này nhận yêu cầu, kiểm tra phiên đăng nhập và quyền theo vai trò, xác thực dữ liệu đầu vào, gọi nghiệp vụ phù hợp và chuyển kết quả hoặc thông báo lỗi về giao diện. Việc bảo vệ các chức năng chỉ dành cho Giáo viên phải được thực hiện tại phía máy chủ, không chỉ thông qua việc ẩn nút trên màn hình.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Business Logic Layer – Tầng logic nghiệp vụ: }Tập trung các quy tắc hoạt động của hệ thống: tạo lớp và lập lịch học; thêm hoặc cho học sinh nghỉ học nhưng giữ lịch sử; ghi nhận chuyên cần theo buổi; tạo bài tập/kiểm tra, lưu điểm và nhận xét; tính khoản thu học phí, cập nhật ghi nhận thanh toán; tổng hợp và cung cấp dữ liệu tra cứu theo từng đối tượng. Các quy tắc liên quan nhiều thực thể được xử lý thống nhất tại tầng này.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Data Access Layer – Tầng truy cập dữ liệu (Model): }Bao gồm các mô hình/thực thể dữ liệu, các gói Repository và thành phần kết nối cơ sở dữ liệu. Tầng này chịu trách nhiệm truy vấn, thêm mới, cập nhật và đọc dữ liệu, đồng thời duy trì các mối liên hệ giữa tài khoản, lớp học, học sinh, lịch học, chuyên cần, điểm số và học phí. Các thao tác cập nhật nhiều bản ghi liên quan cần được kiểm soát tính nhất quán dữ liệu.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Cross-cutting Utilities – Nhóm tiện ích dùng chung: }Cung cấp cơ chế cấu hình hệ thống, xác thực và phân quyền, kiểm tra dữ liệu, xử lý lỗi và ghi nhật ký thay đổi. Các yêu cầu lưu vết người sửa và thời điểm sửa đối với dữ liệu điểm số hoặc học phí được hỗ trợ thông qua các thành phần dùng chung và dữ liệu lịch sử tương ứng.\par
+\end{samepage}
+
+Luồng xử lý cơ bản bắt đầu khi người dùng thao tác trên một màn hình Web. Presentation Layer gửi yêu cầu đến API; Service Layer kiểm tra dữ liệu và quyền truy cập trước khi chuyển đến Business Logic Layer. Tầng nghiệp vụ thực hiện các quy tắc cần thiết và sử dụng Data Access Layer để truy xuất hoặc cập nhật dữ liệu. Kết quả được trả ngược qua Controller về giao diện để hiển thị cho người dùng. Mọi thao tác đọc thông tin riêng tư của học sinh đều phải được giới hạn theo tài khoản và quan hệ truy cập hợp lệ.\par
+
+Ví dụ, đối với chức năng điểm danh (UC-06), Giáo viên chọn lớp và buổi học trên giao diện. Controller kiểm tra tài khoản có quyền quản lý lớp tương ứng; Attendance Manager tiếp nhận danh sách trạng thái có mặt, vắng hoặc trễ kèm ghi chú, kiểm tra dữ liệu và gọi Repository lưu kết quả. Sau khi hoàn tất, hệ thống trả thông báo lưu thành công; lịch sử chuyên cần được cung cấp cho học sinh hoặc phụ huynh có quyền tra cứu. Trạng thái “Có phép” được nêu trong phạm vi cập nhật và cần được thống nhất với đặc tả UC-06 trước khi triển khai chi tiết.\par
+
+Đối với chức năng học phí (UC-09), Tuition Manager tổng hợp dữ liệu cần thiết để lập khoản thu, lưu khoản thu và cho phép Giáo viên ghi nhận kết quả thanh toán. Việc thanh toán tiền mặt hoặc chuyển khoản diễn ra bên ngoài hệ thống; chương trình chỉ quản lý số tiền và trạng thái đã được xác nhận. Vì vậy, phương án kiến trúc không bổ sung cổng thanh toán trực tuyến tự động hay dịch vụ gửi SMS/Email bên thứ ba, đúng với phạm vi đã xác định.\par
+
+\Needspace{15\baselineskip}
+\paragraph*{Bảng ánh xạ nghiệp vụ với các gói xử lý}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{5pt}
+\begin{tabularx}{\linewidth}{|>{\raggedright\arraybackslash}p{2.65cm}|>{\raggedright\arraybackslash}X|}
+\hline
+\rowcolor{blue!12}
+\textbf{Use case} & \textbf{Gói nghiệp vụ chịu trách nhiệm chính} \\ \hline
+UC-01, UC-02 & Account \& Role Manager: đăng nhập, tạo tài khoản, liên kết phụ huynh – học sinh và phân quyền. \\ \hline
+UC-03 & Class Manager: tạo, chỉnh sửa và kết thúc lớp học. \\ \hline
+UC-04 & Schedule Manager: lập, cập nhật lịch và các buổi học. \\ \hline
+UC-05 & Enrollment Manager: quản lý danh sách học sinh theo lớp. \\ \hline
+UC-06 & Attendance Manager: ghi nhận và tra cứu lịch sử chuyên cần. \\ \hline
+UC-07, UC-08 & Assessment \& Grade Manager: tạo đầu điểm, nhập điểm, nhận xét và lưu vết cập nhật. \\ \hline
+UC-09 & Tuition Manager: lập khoản thu, ghi nhận thanh toán và đối soát học phí. \\ \hline
+UC-10, 11, 12 & Lookup Manager: truy xuất lịch học, tiến độ học tập, chuyên cần và học phí theo quyền. \\ \hline
+\end{tabularx}
+
+\caption{Ánh xạ chức năng với các gói nghiệp vụ}
+\label{tab:usecase-goi}
+\end{table}
+
+\subsection{Biểu đồ gói UML}
+
+Nhằm mô tả cấu trúc phân rã và sự phụ thuộc giữa các thành phần, nhóm xây dựng các biểu đồ gói UML ở mức kiến trúc logic. Các mũi tên thể hiện chiều gọi hoặc sử dụng dịch vụ, không biểu diễn luồng trao đổi hai chiều. Những gói được đặt cùng một tầng có thể phối hợp thông qua giao diện công khai nhưng không truy cập trực tiếp vào dữ liệu nội bộ của nhau. Các biểu đồ dưới đây dùng tên gói mang tính chức năng để làm rõ trách nhiệm, thay vì ràng buộc vào một framework hay cấu trúc thư mục cụ thể.\par
+
+\subsubsection{Biểu đồ gói tổng quan hệ thống}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{figures/Hinh_4_1_Kien_truc_tong_quan.png}
+  \caption{Biểu đồ kiến trúc tổng quan Hệ thống quản lý lớp học thêm}
+  \label{fig:kt-1}
+\end{figure}
+
+Ở mức tổng quan, người dùng chỉ tương tác với Presentation Layer. Tầng này gọi Service Layer để xử lý yêu cầu; Service Layer điều phối các quy tắc ở Business Logic Layer; tầng nghiệp vụ sử dụng Data Access Layer để thao tác dữ liệu. Cơ sở dữ liệu được truy cập thông qua thành phần kết nối tại tầng dữ liệu. Các tiện ích xác thực, phân quyền, kiểm tra đầu vào và ghi nhật ký được sử dụng xuyên suốt theo nhu cầu của từng tầng.\par
+
+\subsubsection{Presentation Layer – Mức View}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{figures/Hinh_4_2_Presentation_View.png}
+  \caption{Biểu đồ gói của Presentation Layer (View)}
+  \label{fig:kt-2}
+\end{figure}
+
+Presentation Layer tiếp nhận tương tác của người dùng và hiển thị dữ liệu theo quyền. Sau khi đăng nhập, Giáo viên có thể thực hiện các thao tác quản trị lớp; Học sinh và Phụ huynh được cung cấp các màn hình tra cứu phù hợp. Các gói chính gồm:\par
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Routes \& Navigation: }Phân luồng truy cập đến các trang, hỗ trợ điều hướng theo nhóm người dùng và trạng thái đăng nhập. Việc điều hướng ở giao diện chỉ phục vụ trải nghiệm; quyết định cấp quyền thực tế vẫn thuộc máy chủ.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Pages / Screens: }Tập hợp các màn hình nghiệp vụ như đăng nhập, danh sách lớp, lịch học, điểm danh, bài tập/kiểm tra, bảng điểm, học phí và tra cứu.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– UI Components: }Chứa các thành phần có thể tái sử dụng như biểu mẫu, hộp thoại, bảng danh sách, lịch biểu và khung thông báo.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Client State / Session: }Quản lý trạng thái hiển thị, dữ liệu tạm và thông tin phiên người dùng trong quá trình tương tác.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– API Client: }Đóng gói việc gửi yêu cầu và tiếp nhận phản hồi từ máy chủ, tránh việc mỗi màn hình tự xử lý kết nối theo cách khác nhau.\par
+\end{samepage}
+
+\subsubsection{Service Layer và Business Logic Layer – Mức Controller}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{figures/Hinh_4_3_Service_Business_Controller.png}
+  \caption{Biểu đồ gói Service Layer và Business Logic Layer (Controller)}
+  \label{fig:kt-3}
+\end{figure}
+
+Hai tầng này phối hợp để xử lý các chức năng của hệ thống nhưng có nhiệm vụ độc lập. Service Layer tập trung vào giao tiếp và kiểm soát yêu cầu, trong khi Business Logic Layer quyết định nghiệp vụ cần thực hiện và kết quả hợp lệ. Việc phân chia này giúp Controller không phải chứa toàn bộ quy tắc xử lý dữ liệu.\par
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– API Routes: }Định nghĩa các đường dẫn tiếp nhận yêu cầu cho các chức năng tài khoản, lớp học, thời khóa biểu, điểm danh, bài kiểm tra, điểm số, học phí và tra cứu.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Middleware: }Thực hiện xác thực phiên đăng nhập, kiểm tra quyền theo vai trò, kiểm tra dữ liệu đầu vào và xử lý các trường hợp lỗi chung trước khi Controller gọi nghiệp vụ.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Controllers: }Nhận dữ liệu yêu cầu đã được kiểm tra, gọi các gói nghiệp vụ tương ứng và chuyển kết quả thành phản hồi API rõ ràng cho giao diện.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Business Managers: }Các bộ quản lý nghiệp vụ được tách theo nhóm chức năng: tài khoản và vai trò; lớp học, lịch học và ghi danh; điểm danh; bài tập và điểm số; học phí; tra cứu và thông báo nội bộ. Mỗi bộ quản lý chỉ thực hiện những thao tác phù hợp với trách nhiệm đã được xác định.\par
+\end{samepage}
+
+Ví dụ, khi Giáo viên thêm học sinh vào lớp (UC-05), Controller gọi nghiệp vụ ghi danh để kiểm tra tình trạng lớp, quan hệ học sinh–lớp và điều kiện trùng lịch. Sau khi thay đổi được ghi nhận, thông tin sĩ số và lịch học liên quan được cập nhật theo quy tắc hệ thống; dữ liệu điểm danh, điểm số và học phí trong quá khứ vẫn được bảo toàn khi học sinh nghỉ học.\par
+
+\subsubsection{Data Access Layer – Mức Model}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth,height=0.73\textheight,keepaspectratio]{figures/Hinh_4_4_Data_Model.png}
+  \caption{Biểu đồ gói của Data Access Layer (Model)}
+  \label{fig:kt-4}
+\end{figure}
+
+Data Access Layer quản lý việc biểu diễn và lưu trữ các dữ liệu phát sinh từ hoạt động của hệ thống. Thành phần Business Logic không viết truy vấn trực tiếp mà thông qua Repository; Repository sử dụng công cụ kết nối dữ liệu để thực hiện thao tác trên cơ sở dữ liệu. Nhờ vậy, cơ chế lưu trữ có thể được điều chỉnh với ảnh hưởng nhỏ hơn đến các tầng bên trên.\par
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Models / Entities: }Biểu diễn các nhóm dữ liệu cần quản lý: người dùng và vai trò; liên kết Phụ huynh – Học sinh; lớp học, lịch học, ghi danh; trạng thái điểm danh; bài tập/kiểm tra, điểm và nhận xét; khoản thu và ghi nhận thanh toán; thông báo và nhật ký thay đổi.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Repositories: }Cung cấp các phương thức truy vấn, tạo mới, cập nhật và lấy dữ liệu theo từng nhóm thực thể. Các phương thức truy xuất phải áp dụng các điều kiện lọc cần thiết để không làm lộ dữ liệu của học sinh khác.\par
+\end{samepage}
+
+\begin{samepage}
+\noindent\hspace*{0.65em}\textbf{– Database Connector: }Quản lý kết nối tới hệ quản trị cơ sở dữ liệu, hỗ trợ thực thi truy vấn và tổ chức giao dịch để giữ tính nhất quán đối với những thay đổi dữ liệu liên quan.\par
+\end{samepage}
+
+Sơ đồ ở mức kiến trúc chưa xác định chính thức tên bảng, kiểu dữ liệu, khóa chính, khóa ngoại hoặc hệ quản trị cơ sở dữ liệu cụ thể. Các nội dung đó được làm rõ ở mục 4.2 – Thiết kế cơ sở dữ liệu và các mục thiết kế chi tiết tiếp theo.\par
+
+Tóm lại, phương án Client–Server kết hợp MVC và phân lớp tạo ra ranh giới trách nhiệm tương đối rõ ràng giữa giao diện, điều phối yêu cầu, xử lý nghiệp vụ và truy cập dữ liệu. Các biểu đồ gói là cơ sở để nhóm tiếp tục thiết kế cơ sở dữ liệu, cấu trúc lớp và chi tiết từng mô-đun chức năng, đồng thời đối chiếu với danh sách use case đã xác định trong Chương 2.\par
+
 \section{Thiết kế cơ sở dữ liệu}
+
+Căn cứ các chức năng UC-01 đến UC-12 và các quy trình nghiệp vụ đã trình bày ở Chương 1 và Chương 2, nhóm đề xuất thiết kế cơ sở dữ liệu quan hệ cho \textit{Hệ thống quản lý lớp học thêm}. Dữ liệu gồm tài khoản và phân quyền, liên kết phụ huynh--học sinh, lớp học, thời khóa biểu, buổi học, ghi danh, điểm danh, bài tập và bài kiểm tra, điểm số, học phí, thông báo và nhật ký thay đổi. Cơ sở dữ liệu được thiết kế theo hướng tránh lặp dữ liệu, bảo đảm liên kết giữa các đối tượng và duy trì lịch sử của học sinh trong quá trình học tập.
+
+Ở mức phương án, nhóm lựa chọn hệ quản trị PostgreSQL. Các trường định danh sử dụng \texttt{UUID}; dữ liệu tiền tệ sử dụng \texttt{NUMERIC(12,2)}; dữ liệu ngày giờ có múi giờ sử dụng \texttt{TIMESTAMPTZ}. Việc lựa chọn công nghệ và tên bảng tại mục này là \textbf{đề xuất thiết kế logic và vật lý}, cần được đối chiếu với mã nguồn trước khi xác nhận là cấu trúc đã triển khai.
+
+Theo giới hạn phạm vi của đề tài, thanh toán học phí bằng tiền mặt/chuyển khoản được thực hiện \textit{ngoài hệ thống}; cơ sở dữ liệu chỉ lưu khoản thu và các lần giáo viên xác nhận đã nhận tiền. Chức năng thông báo được lưu để hiển thị trực tiếp trên website, không phát sinh các bảng cho cổng thanh toán hay hệ thống gửi SMS/email tự động.
+
+\subsection{Sơ đồ quan hệ giữa các bảng}
+
+Thiết kế đề xuất gồm \textbf{13 bảng}. Bảng \texttt{users} quản lý cả ba vai trò bằng thuộc tính \texttt{role}; các bảng liên kết thực hiện quan hệ nhiều--nhiều, còn các bảng nghiệp vụ chứa khóa ngoại trỏ đến tài khoản, lớp học hoặc buổi học tương ứng. Nhờ đó, khi học sinh nghỉ một lớp, hệ thống có thể chuyển trạng thái của bản ghi ghi danh thay vì xóa lịch sử chuyên cần, điểm số và học phí.
+
+Các mũi tên trong sơ đồ dưới đây đi từ \textbf{bảng chứa khóa ngoại} đến \textbf{bảng được tham chiếu}; chữ \texttt{PK}, \texttt{FK} và \texttt{UQ} lần lượt là khóa chính, khóa ngoại và ràng buộc duy nhất. Để bảo đảm tính dễ đọc khi in trên giấy A4, bên cạnh sơ đồ tổng quan còn có các sơ đồ phân nhóm nghiệp vụ.
+
+\begin{landscape}
+\begin{figure}[p]
+\centering
+\includegraphics[width=0.97\linewidth,height=0.83\textheight,keepaspectratio]{figures/Hinh_4_5_So_do_quan_he_tong_quan.png}
+\caption{Sơ đồ quan hệ tổng quan của cơ sở dữ liệu quản lý lớp học thêm}
+\label{fig:db-all}
+\end{figure}
+\end{landscape}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.98\linewidth,keepaspectratio]{figures/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png}
+\caption{Nhóm bảng tài khoản, lớp học, lịch học và điểm danh}
+\label{fig:db-academic}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\linewidth,keepaspectratio]{figures/Hinh_4_7_Ket_qua_hoc_tap.png}
+\caption{Nhóm bảng bài tập, bài kiểm tra và kết quả học tập}
+\label{fig:db-grade}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\linewidth,keepaspectratio]{figures/Hinh_4_8_Hoc_phi_Thong_bao.png}
+\caption{Nhóm bảng học phí, thông báo và nhật ký thay đổi}
+\label{fig:db-tuition}
+\end{figure}
+
+\textbf{Các quan hệ chính:} một giáo viên có thể quản lý nhiều lớp; mỗi lớp có nhiều học sinh và mỗi học sinh có thể tham gia nhiều lớp qua \texttt{class\_enrollments}. Một lớp có nhiều lịch học, buổi học, bài đánh giá và khoản thu. Mỗi buổi học có nhiều bản ghi điểm danh; mỗi bài đánh giá có nhiều kết quả điểm số. Một khoản thu có thể gắn với nhiều lần thanh toán. Một phụ huynh có thể liên kết với nhiều học sinh và một học sinh có thể được nhiều phụ huynh theo dõi thông qua \texttt{parent\_student\_links}.
+
+\subsection{Đặc tả thiết kế dữ liệu cho từng bảng}
+
+Bảng thiết kế dưới đây trình bày tên trường, kiểu dữ liệu, kích thước, ràng buộc toàn vẹn, khuôn dạng và ý nghĩa của từng thuộc tính. Ký hiệu \texttt{NULL} biểu thị trường có thể để trống, còn \texttt{NOT NULL} yêu cầu phải có dữ liệu. Các khóa ngoại sử dụng chính sách xóa \texttt{RESTRICT} mặc định trong phương án thiết kế nhằm hạn chế xóa mất dữ liệu lịch sử; việc khóa hoặc kết thúc sử dụng được quản lý bằng các trường trạng thái khi phù hợp.
+
+\subsubsection{Bảng \texttt{users}}
+Tài khoản chung của giáo viên, học sinh và phụ huynh.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{users}}\label{tab:csdl:users}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{users}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã định danh tài khoản.\\\hline
+\rowcolor{gray!5}
+\texttt{username} & VARCHAR(100) & 100 & UNIQUE; NOT NULL & Văn bản & Tên đăng nhập do hệ thống/giáo viên cấp.\\\hline
+\texttt{password\_\allowbreak{}hash} & VARCHAR(255) & 255 & NOT NULL & Văn bản & Chuỗi băm mật khẩu; không lưu mật khẩu gốc.\\\hline
+\rowcolor{gray!5}
+\texttt{full\_\allowbreak{}name} & VARCHAR(150) & 150 & NOT NULL & Văn bản & Họ và tên người dùng.\\\hline
+\texttt{email} & VARCHAR(255) & 255 & UNIQUE; NULL & Email & Địa chỉ email (nếu được cung cấp).\\\hline
+\rowcolor{gray!5}
+\texttt{phone} & VARCHAR(20) & 20 & NULL & Văn bản & Số điện thoại (nếu có).\\\hline
+\texttt{role} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & TEACHER / STUDENT / PARENT.\\\hline
+\rowcolor{gray!5}
+\texttt{is\_\allowbreak{}active} & BOOLEAN & — & NOT NULL; DEFAULT TRUE & Luận lý & Tài khoản có đang được sử dụng hay không.\\\hline
+\texttt{must\_\allowbreak{}change\_\allowbreak{}password} & BOOLEAN & — & NOT NULL; DEFAULT TRUE & Luận lý & Yêu cầu đổi mật khẩu được cấp ban đầu.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo tài khoản.\\\hline
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm cập nhật gần nhất.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{parent\_student\_links}}
+Liên kết nhiều--nhiều giữa phụ huynh và học sinh.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{parent\_student\_links}}\label{tab:csdl:parent_student_links}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{parent\_student\_links}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã quan hệ.\\\hline
+\rowcolor{gray!5}
+\texttt{parent\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Tài khoản phụ huynh.\\\hline
+\texttt{student\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Tài khoản học sinh.\\\hline
+\rowcolor{gray!5}
+\texttt{linked\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm xác lập quan hệ.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{classes}}
+Danh sách lớp học do giáo viên/gia sư tổ chức.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{classes}}\label{tab:csdl:classes}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{classes}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã lớp học.\\\hline
+\rowcolor{gray!5}
+\texttt{teacher\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên phụ trách.\\\hline
+\texttt{class\_\allowbreak{}name} & VARCHAR(150) & 150 & NOT NULL & Văn bản & Tên lớp học.\\\hline
+\rowcolor{gray!5}
+\texttt{subject} & VARCHAR(100) & 100 & NOT NULL & Văn bản & Môn học.\\\hline
+\texttt{description} & TEXT & — & NULL & Văn bản & Mô tả hoặc ghi chú lớp.\\\hline
+\rowcolor{gray!5}
+\texttt{tuition\_\allowbreak{}rate} & NUMERIC(12,2) & 12,2 & NOT NULL; CHECK $\geq$ 0 & Tiền VND & Đơn giá buổi hoặc tháng theo quy tắc lớp.\\\hline
+\texttt{tuition\_\allowbreak{}mode} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & PER\_\allowbreak{}SESSION / PER\_\allowbreak{}MONTH.\\\hline
+\rowcolor{gray!5}
+\texttt{start\_\allowbreak{}date} & DATE & — & NOT NULL & Ngày & Ngày bắt đầu lớp.\\\hline
+\texttt{status} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & ACTIVE / CLOSED.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo lớp.\\\hline
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm cập nhật lớp.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{class\_enrollments}}
+Lưu quá trình tham gia và nghỉ học của học sinh theo từng lớp.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{class\_enrollments}}\label{tab:csdl:class_enrollments}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{class\_enrollments}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã lượt ghi danh.\\\hline
+\rowcolor{gray!5}
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NOT NULL & UUID & Lớp được ghi danh.\\\hline
+\texttt{student\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Học sinh được ghi danh.\\\hline
+\rowcolor{gray!5}
+\texttt{joined\_\allowbreak{}at} & DATE & — & NOT NULL & Ngày & Ngày học sinh tham gia lớp.\\\hline
+\texttt{left\_\allowbreak{}at} & DATE & — & NULL & Ngày & Ngày nghỉ (nếu đã nghỉ).\\\hline
+\rowcolor{gray!5}
+\texttt{status} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & ACTIVE / WITHDRAWN.\\\hline
+\texttt{exit\_\allowbreak{}reason} & TEXT & — & NULL & Văn bản & Lý do hoặc ghi chú nghỉ học.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo bản ghi.\\\hline
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm sửa bản ghi.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{class\_schedules}}
+Quy tắc thời khóa biểu định kỳ hoặc một buổi cụ thể.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{class\_schedules}}\label{tab:csdl:class_schedules}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{class\_schedules}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã lịch học.\\\hline
+\rowcolor{gray!5}
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NOT NULL & UUID & Lớp sở hữu lịch học.\\\hline
+\texttt{schedule\_\allowbreak{}type} & VARCHAR(10) & 10 & NOT NULL; CHECK & Danh mục & WEEKLY / ONCE.\\\hline
+\rowcolor{gray!5}
+\texttt{weekday} & SMALLINT & — & NULL; CHECK 1--7 & Số nguyên & Thứ trong tuần; chỉ dùng với WEEKLY.\\\hline
+\texttt{specific\_\allowbreak{}date} & DATE & — & NULL & Ngày & Ngày học; chỉ dùng với ONCE.\\\hline
+\rowcolor{gray!5}
+\texttt{start\_\allowbreak{}time} & TIME & — & NOT NULL & Giờ & Giờ bắt đầu.\\\hline
+\texttt{end\_\allowbreak{}time} & TIME & — & NOT NULL; CHECK > start & Giờ & Giờ kết thúc.\\\hline
+\rowcolor{gray!5}
+\texttt{location} & VARCHAR(255) & 255 & NULL & Văn bản & Phòng học hoặc địa điểm/link lớp.\\\hline
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm thiết lập lịch.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{class\_sessions}}
+Các buổi học thực tế được sinh từ lịch hoặc thêm riêng.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{class\_sessions}}\label{tab:csdl:class_sessions}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{class\_sessions}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã buổi học.\\\hline
+\rowcolor{gray!5}
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NOT NULL & UUID & Lớp tổ chức buổi học.\\\hline
+\texttt{schedule\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ class\_\allowbreak{}schedules(id); NULL & UUID & Quy tắc lịch tạo buổi (nếu có).\\\hline
+\rowcolor{gray!5}
+\texttt{session\_\allowbreak{}date} & DATE & — & NOT NULL & Ngày & Ngày diễn ra buổi học.\\\hline
+\texttt{start\_\allowbreak{}time} & TIME & — & NOT NULL & Giờ & Giờ bắt đầu thực tế/dự kiến.\\\hline
+\rowcolor{gray!5}
+\texttt{end\_\allowbreak{}time} & TIME & — & NOT NULL; CHECK > start & Giờ & Giờ kết thúc.\\\hline
+\texttt{status} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & SCHEDULED / COMPLETED / CANCELLED.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo buổi học.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{attendance\_records}}
+Dữ liệu chuyên cần của từng học sinh tại từng buổi học.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{attendance\_records}}\label{tab:csdl:attendance_records}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{attendance\_records}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã phiếu điểm danh.\\\hline
+\rowcolor{gray!5}
+\texttt{session\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ class\_\allowbreak{}sessions(id); NOT NULL & UUID & Buổi học được điểm danh.\\\hline
+\texttt{student\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Học sinh được điểm danh.\\\hline
+\rowcolor{gray!5}
+\texttt{status} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & PRESENT / ABSENT / LATE / EXCUSED.\\\hline
+\texttt{note} & TEXT & — & NULL & Văn bản & Ghi chú hoặc lý do vắng.\\\hline
+\rowcolor{gray!5}
+\texttt{recorded\_\allowbreak{}by} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên thực hiện thao tác.\\\hline
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm điểm danh lần đầu.\\\hline
+\rowcolor{gray!5}
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm chỉnh sửa gần nhất.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{assessments}}
+Đầu điểm của bài tập, kiểm tra và kỳ thi trong lớp.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{assessments}}\label{tab:csdl:assessments}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{assessments}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã bài tập/bài kiểm tra.\\\hline
+\rowcolor{gray!5}
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NOT NULL & UUID & Lớp được giao.\\\hline
+\texttt{title} & VARCHAR(200) & 200 & NOT NULL & Văn bản & Tên bài đánh giá.\\\hline
+\rowcolor{gray!5}
+\texttt{assessment\_\allowbreak{}type} & VARCHAR(12) & 12 & NOT NULL; CHECK & Danh mục & HOMEWORK / QUIZ / MIDTERM / FINAL.\\\hline
+\texttt{assigned\_\allowbreak{}on} & DATE & — & NOT NULL & Ngày & Ngày giao hoặc công bố.\\\hline
+\rowcolor{gray!5}
+\texttt{due\_\allowbreak{}at} & TIMESTAMPTZ & — & NULL & Ngày giờ & Hạn chót (nếu có).\\\hline
+\texttt{max\_\allowbreak{}score} & NUMERIC(5,2) & 5,2 & NOT NULL; CHECK > 0 & Số thập phân & Điểm tối đa, mặc định 10.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}by} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên tạo đầu điểm.\\\hline
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo bản ghi.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{grades}}
+Điểm và nhận xét của học sinh theo đầu điểm.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{grades}}\label{tab:csdl:grades}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{grades}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã kết quả đánh giá.\\\hline
+\rowcolor{gray!5}
+\texttt{assessment\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ assessments(id); NOT NULL & UUID & Đầu điểm tương ứng.\\\hline
+\texttt{student\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Học sinh được chấm.\\\hline
+\rowcolor{gray!5}
+\texttt{score} & NUMERIC(5,2) & 5,2 & NULL; CHECK $\geq$ 0 & Điểm & Điểm số; NULL khi chưa nhập.\\\hline
+\texttt{feedback} & TEXT & — & NULL & Văn bản & Nhận xét của giáo viên.\\\hline
+\rowcolor{gray!5}
+\texttt{updated\_\allowbreak{}by} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên cập nhật.\\\hline
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm tạo kết quả.\\\hline
+\rowcolor{gray!5}
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm sửa gần nhất.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{tuition\_invoices}}
+Khoản thu học phí của học sinh theo lớp và kỳ.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{tuition\_invoices}}\label{tab:csdl:tuition_invoices}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{tuition\_invoices}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã khoản thu.\\\hline
+\rowcolor{gray!5}
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NOT NULL & UUID & Lớp phát sinh học phí.\\\hline
+\texttt{student\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Học sinh cần đóng phí.\\\hline
+\rowcolor{gray!5}
+\texttt{period\_\allowbreak{}start} & DATE & — & NOT NULL & Ngày & Ngày đầu kỳ thu.\\\hline
+\texttt{period\_\allowbreak{}end} & DATE & — & NOT NULL; CHECK $\geq$ start & Ngày & Ngày cuối kỳ thu.\\\hline
+\rowcolor{gray!5}
+\texttt{due\_\allowbreak{}date} & DATE & — & NULL & Ngày & Hạn dự kiến thanh toán.\\\hline
+\texttt{session\_\allowbreak{}count} & INTEGER & — & NOT NULL; CHECK $\geq$ 0 & Số nguyên & Số buổi dùng để xác định khoản thu.\\\hline
+\rowcolor{gray!5}
+\texttt{unit\_\allowbreak{}price} & NUMERIC(12,2) & 12,2 & NOT NULL; CHECK $\geq$ 0 & Tiền VND & Đơn giá tại thời điểm lập khoản thu.\\\hline
+\texttt{amount\_\allowbreak{}due} & NUMERIC(12,2) & 12,2 & NOT NULL; CHECK $\geq$ 0 & Tiền VND & Tổng số tiền cần đóng.\\\hline
+\rowcolor{gray!5}
+\texttt{status} & VARCHAR(16) & 16 & NOT NULL; CHECK & Danh mục & UNPAID / PARTIAL / PAID.\\\hline
+\texttt{issued\_\allowbreak{}by} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên lập khoản thu.\\\hline
+\rowcolor{gray!5}
+\texttt{issued\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm phát hành.\\\hline
+\texttt{updated\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm cập nhật gần nhất.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{tuition\_payments}}
+Lưu các lần giáo viên xác nhận đã nhận tiền ngoài hệ thống.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{tuition\_payments}}\label{tab:csdl:tuition_payments}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{tuition\_payments}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã lần ghi nhận thanh toán.\\\hline
+\rowcolor{gray!5}
+\texttt{invoice\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ tuition\_\allowbreak{}invoices(id); NOT NULL & UUID & Khoản thu được thanh toán.\\\hline
+\texttt{amount} & NUMERIC(12,2) & 12,2 & NOT NULL; CHECK > 0 & Tiền VND & Số tiền giáo viên xác nhận đã nhận.\\\hline
+\rowcolor{gray!5}
+\texttt{payment\_\allowbreak{}method} & VARCHAR(14) & 14 & NOT NULL; CHECK & Danh mục & CASH / BANK\_\allowbreak{}TRANSFER.\\\hline
+\texttt{paid\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm nhận tiền.\\\hline
+\rowcolor{gray!5}
+\texttt{confirmed\_\allowbreak{}by} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Giáo viên xác nhận.\\\hline
+\texttt{note} & TEXT & — & NULL & Văn bản & Ghi chú đối chiếu thanh toán.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm nhập vào hệ thống.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{notifications}}
+Thông báo nội bộ hiển thị trên website.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{notifications}}\label{tab:csdl:notifications}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{notifications}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã thông báo.\\\hline
+\rowcolor{gray!5}
+\texttt{recipient\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NOT NULL & UUID & Người được nhận thông báo.\\\hline
+\texttt{sender\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NULL & UUID & Người tạo (nếu có).\\\hline
+\rowcolor{gray!5}
+\texttt{title} & VARCHAR(200) & 200 & NOT NULL & Văn bản & Tiêu đề thông báo.\\\hline
+\texttt{content} & TEXT & — & NOT NULL & Văn bản & Nội dung hiển thị.\\\hline
+\rowcolor{gray!5}
+\texttt{category} & VARCHAR(16) & 16 & NOT NULL; CHECK & Danh mục & ATTENDANCE / GRADE / TUITION / SYSTEM.\\\hline
+\texttt{class\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ classes(id); NULL & UUID & Lớp liên quan nếu có.\\\hline
+\rowcolor{gray!5}
+\texttt{invoice\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ tuition\_\allowbreak{}invoices(id); NULL & UUID & Khoản thu liên quan nếu có.\\\hline
+\texttt{is\_\allowbreak{}read} & BOOLEAN & — & NOT NULL; DEFAULT FALSE & Luận lý & Đã đọc hay chưa.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm phát hành thông báo.\\\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Bảng \texttt{audit\_logs}}
+Nhật ký thay đổi dữ liệu quan trọng theo yêu cầu lưu vết.
+
+\begingroup
+\fontsize{9.2}{11.2}\selectfont
+\setlength{\tabcolsep}{2.4pt}
+\renewcommand{\arraystretch}{1.22}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.48cm}|>{\raggedright\arraybackslash}p{0.95cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{1.25cm}|>{\raggedright\arraybackslash}p{4.27cm}|}
+\caption{Đặc tả bảng \texttt{audit\_logs}}\label{tab:csdl:audit_logs}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endfirsthead
+\multicolumn{6}{r}{\textit{Tiếp bảng \texttt{audit\_logs}}}\\
+\hline\rowcolor{blue!11}\textbf{Tên trường}&\textbf{Kiểu dữ liệu}&\textbf{Kích thước}&\textbf{Ràng buộc toàn vẹn}&\textbf{Khuôn dạng}&\textbf{Ghi chú}\\\hline
+\endhead
+\hline\multicolumn{6}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+\endfoot
+\hline
+\endlastfoot
+\texttt{id} & UUID & — & PK; NOT NULL & UUID & Mã bản ghi nhật ký.\\\hline
+\rowcolor{gray!5}
+\texttt{actor\_\allowbreak{}id} & UUID & — & FK $\rightarrow$ users(id); NULL & UUID & Người thực hiện, có thể rỗng khi tác vụ hệ thống.\\\hline
+\texttt{entity\_\allowbreak{}type} & VARCHAR(40) & 40 & NOT NULL & Văn bản & Loại thực thể: grades, tuition\_\allowbreak{}invoices, ...\\\hline
+\rowcolor{gray!5}
+\texttt{entity\_\allowbreak{}id} & UUID & — & NOT NULL & UUID & Mã bản ghi bị thay đổi.\\\hline
+\texttt{action} & VARCHAR(20) & 20 & NOT NULL; CHECK & Danh mục & INSERT / UPDATE / DELETE.\\\hline
+\rowcolor{gray!5}
+\texttt{old\_\allowbreak{}data} & JSONB & — & NULL & JSON & Giá trị trước khi cập nhật; loại dữ liệu bí mật.\\\hline
+\texttt{new\_\allowbreak{}data} & JSONB & — & NULL & JSON & Giá trị sau khi cập nhật; loại dữ liệu bí mật.\\\hline
+\rowcolor{gray!5}
+\texttt{created\_\allowbreak{}at} & TIMESTAMPTZ & — & NOT NULL & Ngày giờ & Thời điểm ghi nhận thay đổi.\\\hline
+\end{longtable}
+\endgroup
+
+
+\subsection{Ràng buộc toàn vẹn và quy tắc nghiệp vụ}
+
+Các ràng buộc không chỉ kiểm tra kiểu dữ liệu mà còn bảo đảm dữ liệu phù hợp với các use case và quy trình To-Be của đề tài. Một số quy tắc liên bảng cần được thực thi ở tầng nghiệp vụ hoặc bằng giao dịch/trigger của cơ sở dữ liệu, do ràng buộc \texttt{CHECK} đơn giản chỉ kiểm tra dữ liệu trong một bản ghi.
+
+\begin{enumerate}
+\item \textbf{Tài khoản và phân quyền (UC-01, UC-02):} giá trị \texttt{role} thuộc tập \texttt{TEACHER}, \texttt{STUDENT}, \texttt{PARENT}. Chỉ tài khoản giáo viên có quyền tạo/cập nhật lớp và tài khoản người dùng; tài khoản phụ huynh chỉ được liên kết với tài khoản học sinh. Không có chức năng tự đăng ký công khai.
+\item \textbf{Lớp học và ghi danh (UC-03, UC-05):} tại một thời điểm, mỗi cặp học sinh--lớp chỉ có tối đa một bản ghi ghi danh có trạng thái \texttt{ACTIVE}. Học sinh nghỉ học được ghi \texttt{WITHDRAWN} và \texttt{left\_at}; không xóa dữ liệu chuyên cần, điểm số hay khoản thu trước đó. Khi thêm học sinh, tầng nghiệp vụ kiểm tra lịch học bị trùng trước khi xác nhận.
+\item \textbf{Thời khóa biểu (UC-04):} một lịch \texttt{WEEKLY} cần có \texttt{weekday}; lịch \texttt{ONCE} cần có \texttt{specific\_date}. Giờ kết thúc phải lớn hơn giờ bắt đầu. Buổi học \texttt{class\_sessions} là đơn vị dùng để điểm danh và đối chiếu số buổi học phục vụ tính học phí.
+\item \textbf{Điểm danh (UC-06):} mỗi học sinh chỉ có một trạng thái trên một buổi học, được bảo đảm bằng \texttt{UNIQUE(session\_id, student\_id)}. Chỉ học sinh thuộc lớp tại ngày diễn ra buổi học mới được ghi điểm danh. Thiết kế hỗ trợ \texttt{PRESENT}, \texttt{ABSENT}, \texttt{LATE}, \texttt{EXCUSED}; trạng thái \texttt{EXCUSED} là cách thể hiện yêu cầu ``Có phép'' ở phần cập nhật phạm vi của báo cáo.
+\item \textbf{Bài tập, bài kiểm tra và điểm số (UC-07, UC-08):} mỗi học sinh có tối đa một bản ghi điểm trên một đầu điểm, qua \texttt{UNIQUE(assessment\_id, student\_id)}. Điểm không âm, không được lớn hơn \texttt{max\_score} của bài; học sinh phải thuộc lớp của bài đánh giá. Khi sửa điểm hoặc nhận xét, thông tin thay đổi quan trọng được ghi tại \texttt{audit\_logs}.
+\item \textbf{Học phí (UC-09):} mỗi khoản thu gắn với một lớp, một học sinh và một kỳ thu. \texttt{amount\_due} lưu tổng khoản cần đóng tại thời điểm phát hành; số tiền đã nhận là tổng \texttt{amount} trong \texttt{tuition\_payments}; số tiền còn thiếu bằng số tiền phải đóng trừ số tiền đã nhận. Không cho phép tổng thanh toán vượt quá khoản phải thu. Trạng thái dự kiến: \texttt{UNPAID} (chưa đóng), \texttt{PARTIAL} (đóng một phần) và \texttt{PAID} (đã đóng). Việc thêm thanh toán và cập nhật trạng thái cần được thực hiện trong cùng một giao dịch.
+\item \textbf{Tra cứu và thông báo (UC-10, UC-11, UC-12):} giáo viên chỉ xem dữ liệu lớp do mình phụ trách; học sinh chỉ xem dữ liệu của bản thân; phụ huynh chỉ xem dữ liệu học sinh đã liên kết. Ràng buộc truy cập này được kiểm soát ở API/Business Logic, không chỉ phụ thuộc vào điều hướng giao diện. Bảng \texttt{notifications} lưu thông báo trong ứng dụng, không đại diện cho việc đã gửi SMS/email.
+\item \textbf{Lưu vết và an toàn dữ liệu:} thay đổi quan trọng liên quan đến điểm, khoản thu và xác nhận tiền cần có người thao tác và thời điểm. Nhật ký không sao chép mật khẩu, token hay thông tin bí mật; dữ liệu báo cáo không được xóa dây chuyền do vô tình xóa tài khoản hoặc lớp.
+\end{enumerate}
+
+\subsection{Đối chiếu thiết kế dữ liệu với phạm vi báo cáo}
+
+Đối chiếu các phần đặc tả trong báo cáo gốc cho thấy có hai điểm cần thống nhất ở phiên bản nộp cuối. Thứ nhất, mô tả UC-06 mới nêu ba trạng thái \textit{Có mặt--Vắng--Trễ}, trong khi phần cập nhật phạm vi đã bổ sung \textit{Có phép}; phương án cơ sở dữ liệu chọn bốn trạng thái để không bỏ sót yêu cầu mở rộng. Thứ hai, quy trình To-Be học phí và một số mô tả dùng hai trạng thái thanh toán, nhưng mục ``Danh sách thay đổi/giả định'' đã đề xuất \textit{Đóng một phần}; thiết kế này sử dụng bảng \texttt{tuition\_payments} và ba trạng thái để thể hiện số tiền nhận được thực tế. Đây là \textbf{quyết định thiết kế đề xuất}, cần cập nhật đồng bộ Chương 1, Chương 2, chương kiểm thử và giao diện khi nhóm thống nhất.
+
+Cơ sở dữ liệu được thiết kế thuần quan hệ; không bắt buộc có collection MongoDB như báo cáo mẫu. Những dữ liệu linh hoạt như bản ghi trước/sau thay đổi có thể lưu bằng \texttt{JSONB} trong PostgreSQL. Sơ đồ quan hệ và đặc tả bảng là nền tảng cho mục 4.3 (thiết kế gói), mục 4.4--4.5 (thiết kế lớp), xây dựng và kiểm thử chương trình.
+
 \section{Thiết kế chi tiết các gói}
 \section{Thiết kế chi tiết lớp}
 \section{Sơ đồ lớp chi tiết}
