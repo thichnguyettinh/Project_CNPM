@@ -691,7 +691,118 @@ Cơ sở dữ liệu được thiết kế thuần quan hệ; không bắt buộ
 \section{Sơ đồ lớp chi tiết}
 \section{Thiết kế giao diện}
 \setcounter{secnumdepth}{3} % Hiển thị 4.6.3.1, 4.6.3.2, ...
-\setcounter{subsection}{2} % Tạm thời: 4.6.1 và 4.6.2 chưa có
+\subsection{Giao diện dành cho giáo viên}
+\subsection{Giao diện dành cho phụ huynh}
+\subsubsection{Giao diện tổng quan}
+Giao diện Tổng quan dành cho Phụ huynh là màn hình được hiển thị sau khi phụ huynh đăng nhập thành công vào hệ thống Quản lý lớp học thêm. Giao diện cung cấp cái nhìn khái quát về tình hình học tập của con em thông qua lời chào cá nhân hóa và các thẻ thống kê nhanh, gồm điểm trung bình hiện tại, điểm bài mới nhất, số buổi có mặt trong tháng và học phí còn thiếu. Những thông tin này giúp phụ huynh nắm bắt kết quả học tập và các khoản nợ phí cần quan tâm mà không phải truy cập từng chức năng riêng lẻ.
+
+Bên dưới các thẻ thống kê, giao diện bố trí các khối nội dung trực quan bao gồm buổi học sắp tới, học phí tháng hiện tại, tiến độ học tập và thông báo mới. Thanh điều hướng ở cạnh trái cung cấp các đường dẫn nhanh đến các trang chức năng như Tổng quan, Lịch học, Điểm danh, Kết quả học tập, Học phí, Thông báo, Hồ sơ phụ huynh và cài đặt mật khẩu. Đồng thời, các liên kết như “Lịch học”, “Chi tiết”, “Kết quả học tập” và “Tất cả” hỗ trợ phụ huynh dễ dàng chuyển hướng đến các trang nội dung chi tiết tương ứng để theo dõi sát sao con em mình. Thiết kế này hoàn toàn phù hợp với nhóm chức năng tra cứu đã được phân tích tại Chương 2, đặc biệt đáp ứng các Use Case UC-10, UC-11 và UC-12.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46201_TongQuan_PhuHuynh.jpg}
+    \caption{Giao diện tổng quan dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện lịch học}
+Giao diện Lịch học dành cho phụ huynh giúp các bậc phụ huynh dễ dàng theo dõi thời khóa biểu và lộ trình học tập của con em mình theo từng tuần thông qua bảng lịch trực quan. Tại khu vực phía trên, giao diện cung cấp tính năng lựa chọn hồ sơ học sinh đang theo dõi (ví dụ: Nguyễn Minh Anh, Lớp 8) và lớp học cụ thể. Bộ điều hướng thời gian hiển thị rõ khoảng thời gian của tuần hiện tại (ví dụ: 19–25 tháng 10, 2026), kết hợp cùng các nút mũi tên chuyển tuần trước, tuần sau hoặc quay về ngày “Hôm nay", giúp phụ huynh linh hoạt trong việc tra cứu.
+
+Khu vực trung tâm là bảng lịch học được chia theo các cột ngày trong tuần từ thứ Hai đến Chủ nhật và các hàng mốc thời gian. Mỗi buổi học được trình bày thành một khối thông tin tại ngày giờ tương ứng với các chi tiết cơ bản gồm: tên lớp (Toán 8A), khung giờ (18:00-19:30), phòng học (Phòng 203) và trạng thái buổi học như “Đã kết thúc" hay “Buổi bổ trợ". Khối màu xanh lam nổi bật được dùng để biểu thị buổi học đang được người dùng nhấp chọn xem chi tiết. Những mốc thời gian không có lịch được để trống giúp giao diện thoáng đãng, dễ quan sát.
+
+Khi phụ huynh nhấp chọn một buổi học trên bảng lịch, phần nửa dưới của giao diện sẽ hiển thị hai khối thông tin quan trọng: “Chi tiết buổi học" và “Buổi học tiếp theo". Khối chi tiết bên trái cung cấp đầy đủ dữ liệu về thời gian, địa điểm, giáo viên phụ trách (Trần Hoàng Nam), học sinh tham gia và đặc biệt là nội dung bài học kèm lời dặn dò chuẩn bị bài (ví dụ: yêu cầu mang theo vở bài tập và dụng cụ). Khối bên phải hiển thị thông tin về buổi học kế tiếp, giúp phụ huynh chủ động sắp xếp thời gian đưa đón hoặc nhắc nhở con em.
+
+Ngoài ra, giao diện còn tích hợp các nút “Liên hệ trung tâm" và những lưu ý nhắc nhở phụ huynh cách xin phép nghỉ học cho con trước buổi học. Ở cuối trang, hệ thống hiển thị dòng ghi chú: “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin". Thiết kế này thể hiện rõ phạm vi quyền hạn của phụ huynh trên hệ thống chủ yếu là xem và tra cứu, hoàn toàn nhất quán với yêu cầu phân quyền bảo mật đã được đặc tả của hệ thống.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46202_LichHoc_PhuHuynh.jpg}
+    \caption{Giao diện lịch học dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện lịch sử điểm danh}
+Giao diện Lịch sử điểm danh cho phép phụ huynh theo dõi sát sao tình hình chuyên cần của con em mình theo từng lớp học và tháng cụ thể. Tương tự như các màn hình khác, phần đầu giao diện cung cấp thanh lựa chọn để phụ huynh chuyển đổi cấu hình hồ sơ học sinh (ví dụ: Nguyễn Minh Anh, Lớp 8) đang muốn tra cứu. Nút “Liên hệ trung tâm" cũng được bố trí thuận tiện ở góc trên cùng để phụ huynh sử dụng khi cần.
+
+Ngay phía dưới, hệ thống cung cấp một thẻ thống kê tổng quan về “Chuyên cần tháng" (ví dụ: tháng 10/2026). Khu vực này tổng hợp tổng số buổi học đã ghi nhận (ví dụ: 12 buổi học) kèm theo một thanh tiến trình nhiều màu sắc trực quan thể hiện tỷ lệ các trạng thái. Thông tin chi tiết được bóc tách rõ ràng thành các nhóm: “Có mặt", “Vắng", “Trễ" và “Có phép", giúp phụ huynh nhanh chóng nắm bắt bức tranh tổng thể về ý thức tham gia lớp học của con. Hệ thống cũng ghi chú rõ dữ liệu này bao gồm cả các buổi học định kỳ và bổ trợ tính đến ngày tra cứu hiện tại.
+
+Phần nội dung chính của giao diện là bảng “Các buổi học đã điểm danh". Tại đây, hệ thống trang bị các bộ lọc theo Tháng, Lớp học và Trạng thái để phụ huynh dễ dàng rút gọn danh sách cần xem. Bảng dữ liệu liệt kê chi tiết từng buổi học với các cột: Ngày học, Thời gian, Lớp/Môn học, Ghi chú và Trạng thái. Trạng thái điểm danh được gắn nhãn màu sắc để tạo điểm nhấn thị giác (xanh lá cho “Có mặt" và “Có phép", vàng cam cho “Trễ", và đỏ cho “Vắng"), kết hợp chặt chẽ với cột Ghi chú để giải thích cụ thể hoàn cảnh (ví dụ: “Đến trễ 10 phút", “Gia đình xin phép" hoặc “Chưa có lý do").
+
+Cuối trang, hệ thống hiển thị dòng lưu ý nhằm hướng dẫn quy trình giải quyết thắc mắc: “Điểm danh do giáo viên cập nhật. Nếu thông tin chưa chính xác, phụ huynh vui lòng liên hệ trung tâm để được đối chiếu". Đồng thời, dòng chữ “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin" một lần nữa khẳng định rõ phạm vi quyền hạn của phụ huynh trên chức năng này. Thiết kế này hoàn toàn đáp ứng nghiệp vụ hỗ trợ tra cứu minh bạch thuộc nhóm chức năng UC-11 đã được đặc tả trong biểu đồ.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46203_DiemDanh_PhuHuynh.jpg}
+    \caption{Giao diện lịch sử điểm danh dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện kết quả học tập}
+Chức năng Kết quả học tập được thiết kế nhằm giúp phụ huynh theo dõi sát sao quá trình nỗ lực và mức độ tiếp thu kiến thức của con em mình. Ngay khi truy cập, phụ huynh có thể sử dụng khu vực điều hướng ở phần trên cùng để chuyển đổi giữa các hồ sơ học sinh (ví dụ: Nguyễn Minh Anh, Lớp 8) và môn học tương ứng (Toán 8A). Nút “Liên hệ trung tâm" tiếp tục được duy trì ở góc trên bên phải để hỗ trợ nhanh chóng khi cần. Kế tiếp là thanh công cụ bộ lọc cho phép tra cứu dữ liệu tùy chỉnh theo mốc thời gian (Tháng 10/2026), môn học và loại bài đánh giá.
+
+Điểm nổi bật của giao diện là cụm ba thẻ thống kê tổng quan được bố trí trực quan ngay dưới thanh bộ lọc, giúp phụ huynh nắm bắt tình hình học tập chỉ trong nháy mắt. Thẻ đầu tiên cung cấp “Điểm trung bình hiện tại" (ví dụ: 8,0/10) được tính toán theo trọng số quy định của trung tâm. Thẻ thứ hai hiển thị điểm số của “Bài đánh giá mới nhất" (8,5/10) kèm theo thông tin tên bài và ngày thực hiện. Đặc biệt, thẻ thứ ba đo lường chỉ số “Tiến bộ qua các bài đánh giá" (ví dụ: +1,5 điểm từ mốc 7,0 lên 8,5), giúp phụ huynh nhận biết ngay sự thay đổi tích cực hoặc giảm sút trong một giai đoạn.
+
+Phần giữa của giao diện được chia thành hai khu vực cung cấp cái nhìn sâu hơn về hành trình học tập. Bên trái là biểu đồ đường “Xu hướng điểm đánh giá", minh họa trực quan sự biến thiên điểm số của từng bài kiểm tra qua các mốc thời gian (từ 12/09 đến 20/10), thể hiện rõ đà tăng hoặc giảm phong độ của học sinh. Bên phải là khu vực “Nhận xét từ giáo viên", nơi hiển thị những phản hồi chi tiết từ giáo viên phụ trách (ví dụ: Thầy Trần Hoàng Nam). Không chỉ nhận xét về ưu khuyết điểm trong bài, khu vực này còn nổi bật với một khung xanh “Gợi ý tuần này", đưa ra những định hướng ôn tập cụ thể (như luyện thêm 3-5 bài phân tích đa thức) để phụ huynh có thể đồng hành đôn đốc con em tại nhà.
+
+Phía dưới cùng là bảng “Chi tiết các bài đánh giá", liệt kê đầy đủ danh sách các bài kiểm tra làm cơ sở hình thành nên các số liệu phía trên. Bảng dữ liệu được tổ chức minh bạch với các cột: Tên bài đánh giá, Ngày kiểm tra, Hình thức (Tự luận - 45 phút, Kiểm tra - 15 phút...), Điểm số và Nhận xét ngắn gọn. Cuối trang, hệ thống tiếp tục nhấn mạnh cơ chế bảo mật và phân quyền thông qua các dòng ghi chú: “Kết quả và nhận xét do giáo viên cập nhật; phụ huynh chỉ xem" và “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin". Thiết kế này đảm bảo tính toàn vẹn của dữ liệu điểm số, hoàn toàn tuân thủ đặc tả Use Case UC-11 về chức năng tra cứu tiến độ học tập dành riêng cho tài khoản phụ huynh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46204_KQHT_PhuHuynh.jpg}
+    \caption{Giao diện kết quả học tập dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện học phí}
+Giao diện Chi tiết học phí được thiết kế để phụ huynh dễ dàng tra cứu, theo dõi và quản lý công nợ, các khoản phí cần thanh toán của con em mình một cách minh bạch. Tại khu vực đầu trang, hệ thống giữ nguyên thiết kế đồng nhất với bộ chọn hồ sơ học sinh (ví dụ: Nguyễn Minh Anh, Lớp 8) và nút “Liên hệ trung tâm". Ngay bên dưới, phụ huynh có thể chọn kỳ học phí cần xem (ví dụ: Tháng 10/2026), kết hợp cùng một nhãn trạng thái nổi bật ở góc phải (như “Còn thiếu") giúp người dùng nhận diện nhanh tình trạng hoàn thành nghĩa vụ tài chính.
+
+Hệ thống cung cấp cái nhìn tổng quan thông qua ba thẻ thống kê tài chính trực quan. Thẻ đầu tiên là “Tổng học phí phải đóng", hiển thị số tiền gốc của kỳ học (ví dụ: 1.800.000 đ). Thẻ thứ hai, “Đã đóng ngoài hệ thống", tổng hợp số tiền mà trung tâm đã nhận và xác nhận (ví dụ: 1.200.000 đ tương ứng với 2 lần đóng). Thẻ thứ ba thông báo “Số tiền còn thiếu" (600.000 đ) kèm theo nhắc nhở về mốc thời gian “Hạn đóng" (28/10/2026), giúp phụ huynh chủ động sắp xếp thời gian thanh toán.
+
+Phần trung tâm của giao diện được chia rẽ nhánh thành hai khối thông tin chi tiết. Bên trái là khối “Thông tin khoản thu", trình bày cấu trúc chi tiết của hóa đơn bao gồm: Mã phiếu thu (HP-102026-MA), tên học sinh, lớp học, khoảng thời gian kỳ học phí, số tiền học phí gốc, các khoản ưu đãi/điều chỉnh (nếu có) và tổng tiền cuối cùng phải đóng. Bên phải là khối “Tình trạng đối soát", biểu diễn tiến độ thanh toán bằng một thanh trạng thái kết hợp tỷ lệ phần trăm (ví dụ: 66,7\% Đã đóng). Khối này kèm theo một ghi chú quan trọng: “Thanh toán thực hiện ngoài hệ thống, trực tiếp với trung tâm. Cổng phụ huynh chỉ hiển thị số tiền đã được trung tâm xác nhận". Chú thích này phản ánh chính xác phạm vi dự án đã đặc tả ở Chương 1 (không tích hợp cổng thanh toán trực tuyến, mọi giao dịch thực hiện bên ngoài và được giáo viên ghi nhận lại).
+
+Cuối trang là bảng “Lịch sử đóng học phí", liệt kê minh bạch lịch sử các lần giao dịch đã được hệ thống ghi nhận. Bảng dữ liệu cung cấp đầy đủ các trường thông tin: Ngày xác nhận, Số tiền, Hình thức bên ngoài (như “Chuyển khoản cho trung tâm" hay “Tiền mặt tại trung tâm"), Mã biên nhận và Trạng thái “Đã xác nhận". Để hỗ trợ tốt nhất, hệ thống còn hiển thị một thông báo hướng dẫn phụ huynh cách xử lý khi đã đóng tiền nhưng chưa thấy cập nhật, kèm theo số điện thoại hotline của bộ phận học vụ để tiện liên hệ đối chiếu. Dòng chữ “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin" ở dưới cùng tiếp tục khẳng định tính chất chỉ đọc của tài khoản phụ huynh đối với module quản lý học phí (UC-12).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46205_HocPhi_PhuHuynh.jpg}
+    \caption{Giao diện học phí dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện thông báo}
+Giao diện được chia bố cục thành hai phần trực quan: cột danh sách thông báo ở bên trái và khung nội dung chi tiết ở bên phải, giúp phụ huynh duyệt tin nhanh chóng mà không cần tải lại trang. Tại cột danh sách, hệ thống cung cấp thanh bộ lọc theo trạng thái “Tất cả" và “Chưa đọc" kèm số lượng cụ thể (ví dụ: 4 Tất cả, 2 Chưa đọc). Mỗi thẻ thông báo trong danh sách bao gồm biểu tượng phân loại, tiêu đề rõ ràng (như “Nhắc học phí tháng 10/2026", “Nội dung ôn tập cuối tháng", “Kết quả bài kiểm tra..."), một đoạn trích dẫn ngắn, mốc thời gian và nhãn trạng thái (“Chưa đọc" màu xanh lam hoặc “Đã đọc" màu xanh lá). Thẻ đang được chọn sẽ được làm nổi bật bằng khung viền xanh và trạng thái “Đang xem".
+
+Khi một thông báo được chọn, khung “Chi tiết thông báo" bên phải sẽ hiển thị toàn bộ nội dung. Phần tiêu đề chi tiết cung cấp các nhãn phân loại (ví dụ: “Học phí", “Chưa đọc"), tiêu đề chính, nguồn gửi (Bộ phận học vụ), thời gian gửi và đối tượng nhận. Nội dung thông báo được trình bày dưới dạng thư tín trang trọng. Điển hình như trong thông báo nhắc học phí, hệ thống tự động trích xuất và nhúng một bảng tóm tắt tài chính hiển thị số tiền học phí trong kỳ (1.800.000 đ), số tiền đã đóng (1.200.000 đ), số tiền còn thiếu (600.000 đ) và hạn đóng (28/10/2026).
+
+Bên dưới nội dung, hệ thống đính kèm một hộp ghi chú màu xanh với nội dung: “Mọi khoản thanh toán được thực hiện ngoài hệ thống. Phụ huynh không thanh toán trên cổng thông tin này". Ghi chú này tuân thủ chặt chẽ đặc tả phạm vi dự án về việc không tích hợp thanh toán trực tuyến. Cuối thông báo được bố trí các nút hành động điều hướng nhanh (call-to-action) như “Xem chi tiết học phí" và “Liên hệ trung tâm", giúp phụ huynh xử lý thông tin ngay lập tức. Dưới cùng trang vẫn là dòng trạng thái quen thuộc “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin", khẳng định tính chất một chiều của dữ liệu trên cổng thông tin phụ huynh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46206_ThongBao_PhuHuynh.jpg}
+    \caption{Giao diện thông báo dành cho phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện hồ sơ phụ huynh}
+Giao diện Hồ sơ phụ huynh được thiết kế để phụ huynh quản lý thông tin cá nhân và xem các thông tin liên kết tài khoản trên hệ thống. Tương tự các giao diện khác, phần trên cùng duy trì bộ chọn hồ sơ học sinh đang theo dõi (ví dụ: Nguyễn Minh Anh, Lớp 8) và nút “Liên hệ trung tâm".
+
+Nội dung chính của giao diện được chia thành hai cột. Cột bên trái hiển thị khối “Thông tin liên hệ", bao gồm họ tên phụ huynh, số điện thoại, email và địa chỉ liên hệ. Phụ huynh có thể trực tiếp chỉnh sửa các thông tin này và nhấn “Lưu thay đổi" để cập nhật, hoặc “Hủy" để hoàn tác. Ghi chú bên dưới khẳng định: “Chỉ thông tin liên hệ của phụ huynh có thể cập nhật".
+
+Cột bên phải bao gồm hai khối thông tin. Khối trên cùng là “Học sinh đã liên kết", hiển thị thông tin học sinh (ví dụ: Nguyễn Minh Anh, mã học sinh), khối lớp, lớp tại trung tâm, giáo viên phụ trách và quan hệ (ví dụ: Mẹ). Kèm theo đó là ghi chú: “Thông tin học sinh do trung tâm quản lý. Liên hệ học vụ nếu cần thay đổi hoặc liên kết thêm con" và nút “Xem tổng quan của con". Khối dưới cùng hiển thị “Thông tin tài khoản" của phụ huynh, bao gồm vai trò, trạng thái tài khoản (Đang hoạt động) và ngày tạo, cùng nút “Cài đặt mật khẩu". Cuối trang là dòng chữ “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin", thể hiện rõ quyền hạn của phụ huynh đối với dữ liệu hệ thống.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46207_HoSo_PhuHuynh.jpg}
+    \caption{Giao diện hồ sơ phụ huynh}
+\end{figure}
+
+\subsubsection{Giao diện cài đặt mật khẩu}
+Giao diện Cài đặt mật khẩu giúp phụ huynh chủ động quản lý thông tin xác thực và tăng cường bảo mật cho tài khoản cá nhân trên hệ thống. Phần trên cùng của giao diện tiếp tục duy trì thanh lựa chọn hồ sơ học sinh (ví dụ: Nguyễn Minh Anh, Lớp 8) và nút “Liên hệ trung tâm", đảm bảo sự đồng nhất trong trải nghiệm điều hướng. Ngay bên dưới thanh công cụ là khu vực hiển thị thông báo trạng thái, ví dụ như dải thông báo màu xanh lá xác nhận “Mật khẩu đã được cập nhật thành công", giúp phản hồi ngay lập tức kết quả thao tác của người dùng.
+
+Khu vực nội dung chính được chia thành hai cột hỗ trợ trực quan. Cột bên trái là biểu mẫu “Đổi mật khẩu", yêu cầu phụ huynh nhập lần lượt “Mật khẩu hiện tại", “Mật khẩu mới" và “Xác nhận mật khẩu mới". Tất cả các trường nhập liệu đều được tích hợp biểu tượng con mắt để bật/tắt hiển thị ký tự. Trong quá trình nhập liệu, hệ thống tự động đánh giá và cung cấp các dòng phản hồi ngay bên dưới ô nhập, chẳng hạn như “Độ mạnh: Tốt - Đáp ứng yêu cầu bảo mật" hay “Mật khẩu xác nhận trùng khớp", giúp phụ huynh nắm bắt tính hợp lệ của dữ liệu trước khi nhấn chọn “Cập nhật mật khẩu" hoặc “Hủy".
+
+Cột bên phải đóng vai trò hướng dẫn chi tiết với khối “Mật khẩu an toàn", khuyên người dùng không dùng thông tin dễ đoán (như tên, ngày sinh của con) và liệt kê 4 tiêu chí bắt buộc (ít nhất 8 ký tự, có chữ hoa và chữ thường, có chữ số, có ký tự đặc biệt). Các tiêu chí này sẽ hiển thị dấu tích xanh khi điều kiện được đáp ứng. Phía dưới là khối “Lưu ý dành cho phụ huynh" cảnh báo tuyệt đối không chia sẻ mật khẩu với bất kỳ ai. Trong trường hợp quên mật khẩu hiện tại, hệ thống cung cấp sẵn một khung hướng dẫn liên hệ bộ phận học vụ kèm theo nút “Liên hệ hỗ trợ" để phụ huynh nhanh chóng khôi phục tài khoản. Cuối trang tiếp tục hiển thị dòng chữ “Dữ liệu do trung tâm cập nhật - Phụ huynh chỉ xem thông tin", duy trì tính nhất quán về thông điệp phân quyền trên toàn bộ các trang của phụ huynh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46208_CaiDatMatKhau_PhuHuynh.jpg}
+    \caption{Giao diện cài đặt mật khẩu dành cho phụ huynh}
+\end{figure}
+
 
 \subsection{Giao diện dành cho học sinh}
 
