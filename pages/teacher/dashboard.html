@@ -164,8 +164,8 @@
           <div class="stat-card">
             <div>
               <div class="stat-label">Học phí còn phải thu</div>
-              <div class="stat-value" style="color:var(--color-primary);">8.000.000 ₫</div>
-              <div class="stat-desc">15 học sinh · Tháng 10/2026</div>
+              <div class="stat-value" id="teacherDashTuitionRemaining" style="color:var(--color-primary);">8.000.000 ₫</div>
+              <div class="stat-desc" id="teacherDashTuitionDesc">15 học sinh · Tháng 10/2026</div>
             </div>
             <div class="stat-icon accent">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -265,7 +265,7 @@
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Học phí cần theo dõi</h3>
-                  <p class="text-caption">Tháng 10/2026 · Các học sinh có số dư chưa thanh toán</p>
+                  <p class="text-caption" id="teacherDashTuitionSubtitle">Tháng 10/2026 · Các học sinh có số dư chưa thanh toán</p>
                 </div>
                 <a href="tuition.html" class="btn btn-link">Quản lý học phí →</a>
               </div>
@@ -282,7 +282,7 @@
                       <th>Trạng thái</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="teacherDashTuitionWatchlistRows">
                     <tr>
                       <td><strong>Trần Minh Anh</strong><br><span class="text-caption">HS001</span></td>
                       <td>Toán 10 - Nền tảng</td>
@@ -373,6 +373,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/tuition-fee.js"></script>
   <script>
     AuthService.requireAuth('teacher');
   </script>
