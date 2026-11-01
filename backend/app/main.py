@@ -2180,6 +2180,21 @@ def dashboard(connection: Connection, user: Annotated[dict, Depends(current_user
                 """,
                 (user["user_id"],),
             ),
+            "today_sessions": fetch_one(
+                connection,
+                """
+                SELECT COUNT(*) AS session_count,
+                       MIN(cs.starts_at) AS first_starts_at,
+                       MAX(cs.ends_at) AS last_ends_at
+                FROM class_sessions cs
+                JOIN classes c ON c.class_id = cs.class_id
+                WHERE c.teacher_user_id = %s
+                  AND cs.status = 'scheduled'
+                  AND cs.starts_at >= date_trunc('day', NOW())
+                  AND cs.starts_at < date_trunc('day', NOW()) + INTERVAL '1 day'
+                """,
+                (user["user_id"],),
+            ),
             "upcoming_sessions": fetch_all(
                 connection,
                 """
@@ -2198,19 +2213,80 @@ def dashboard(connection: Connection, user: Annotated[dict, Depends(current_user
     else:
         child_ids = linked_student_ids(connection, user["user_id"])
     if not child_ids:
-        return {"students": [], "upcoming_sessions": [], "unread_notifications": 0}
+        return {
+            "students": [],
+            "upcoming_sessions": [],
+            "unread_notifications": 0,
+        }
     return {
         "students": fetch_all(
             connection,
             """
             SELECT s.student_code, u.full_name,
-                   ROUND(AVG(r.score)::numeric, 2) AS average_score,
-                   COUNT(DISTINCT ce.class_id) AS class_count
+                   (SELECT ROUND(AVG(r.score)::numeric, 2)
+                    FROM assignment_results r
+                    WHERE r.student_id = s.student_id AND r.score IS NOT NULL
+                   ) AS average_score,
+                   (SELECT COUNT(*) FROM assignment_results r
+                    WHERE r.student_id = s.student_id AND r.score IS NOT NULL
+                   ) AS graded_count,
+                   (SELECT r.score
+                    FROM assignment_results r
+                    JOIN assignments a ON a.assignment_id = r.assignment_id
+                    WHERE r.student_id = s.student_id AND r.score IS NOT NULL
+                    ORDER BY r.graded_at DESC NULLS LAST, a.assigned_at DESC, a.created_at DESC
+                    LIMIT 1
+                   ) AS latest_score,
+                   (SELECT a.title
+                    FROM assignment_results r
+                    JOIN assignments a ON a.assignment_id = r.assignment_id
+                    WHERE r.student_id = s.student_id AND r.score IS NOT NULL
+                    ORDER BY r.graded_at DESC NULLS LAST, a.assigned_at DESC, a.created_at DESC
+                    LIMIT 1
+                   ) AS latest_assignment_title,
+                   (SELECT COALESCE(r.graded_at, a.assigned_at::timestamptz)
+                    FROM assignment_results r
+                    JOIN assignments a ON a.assignment_id = r.assignment_id
+                    WHERE r.student_id = s.student_id AND r.score IS NOT NULL
+                    ORDER BY r.graded_at DESC NULLS LAST, a.assigned_at DESC, a.created_at DESC
+                    LIMIT 1
+                   ) AS latest_graded_at,
+                   (SELECT COUNT(*) FROM class_enrollments ce
+                    WHERE ce.student_id = s.student_id AND ce.status = 'active'
+                   ) AS class_count,
+                   (SELECT COUNT(*)
+                    FROM assignments a
+                    WHERE a.status IN ('published', 'closed')
+                      AND EXISTS (
+                        SELECT 1 FROM class_enrollments ce
+                        WHERE ce.class_id = a.class_id
+                          AND ce.student_id = s.student_id
+                          AND ce.status = 'active'
+                      )
+                      AND NOT EXISTS (
+                        SELECT 1 FROM assignment_submissions sub
+                        WHERE sub.assignment_id = a.assignment_id
+                          AND sub.student_id = s.student_id
+                      )
+                   ) AS pending_assignment_count,
+                   (SELECT MIN(a.due_at)
+                    FROM assignments a
+                    WHERE a.status IN ('published', 'closed')
+                      AND a.due_at IS NOT NULL
+                      AND EXISTS (
+                        SELECT 1 FROM class_enrollments ce
+                        WHERE ce.class_id = a.class_id
+                          AND ce.student_id = s.student_id
+                          AND ce.status = 'active'
+                      )
+                      AND NOT EXISTS (
+                        SELECT 1 FROM assignment_submissions sub
+                        WHERE sub.assignment_id = a.assignment_id
+                          AND sub.student_id = s.student_id
+                      )
+                   ) AS nearest_pending_due_at
             FROM students s JOIN users u ON u.user_id = s.user_id
-            LEFT JOIN class_enrollments ce ON ce.student_id = s.student_id AND ce.status = 'active'
-            LEFT JOIN assignment_results r ON r.student_id = s.student_id
             WHERE s.student_id = ANY(%s)
-            GROUP BY s.student_id, u.user_id
             """,
             (child_ids,),
         ),

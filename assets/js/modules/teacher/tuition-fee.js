@@ -1483,8 +1483,6 @@ const TuitionFeeModule = {
       }
 
       const totals = summary.totals || {};
-      const due = Number(totals.total_amount_due || 0);
-      const paid = Number(totals.total_amount_paid || 0);
       const rem = Number(totals.total_amount_remaining || 0);
       const debtCount = Number(totals.debt_count || 0);
 
@@ -1492,10 +1490,11 @@ const TuitionFeeModule = {
         remainValueEl.textContent = this.formatCurrency(rem);
       }
       if (remainDescEl) {
-        remainDescEl.textContent = `${debtCount} HS nợ · Phải thu ${this.formatCompactCurrency(due)} · Đã thu ${this.formatCompactCurrency(paid)}`;
+        remainDescEl.textContent = `${debtCount} HS · ${periodText}`;
+        remainDescEl.title = `${debtCount} học sinh còn nợ học phí trong ${periodText}`;
       }
       if (subtitleEl) {
-        subtitleEl.textContent = `${periodText} · Phải thu: ${this.formatCurrency(due)} · Đã thu: ${this.formatCurrency(paid)} · Còn lại: ${this.formatCurrency(rem)}`;
+        subtitleEl.textContent = `${periodText} · Các học sinh có số dư chưa thanh toán`;
       }
 
       if (tbody) {
@@ -1510,7 +1509,7 @@ const TuitionFeeModule = {
           `;
           tbody.appendChild(tr);
         } else {
-          watchlist.slice(0, 6).forEach(item => {
+          watchlist.slice(0, 2).forEach(item => {
             const meta = this.getStatusMeta(item.payment_status);
             const tr = document.createElement('tr');
             tr.innerHTML = `
@@ -1532,8 +1531,8 @@ const TuitionFeeModule = {
       }
     } catch (error) {
       if (remainValueEl) remainValueEl.textContent = '—';
-      if (remainDescEl) remainDescEl.textContent = `Không tải được học phí: ${error.message}`;
-      if (subtitleEl) subtitleEl.textContent = `Không tải được dữ liệu học phí: ${error.message}`;
+      if (remainDescEl) remainDescEl.title = `Không tải được học phí: ${error.message}`;
+      if (subtitleEl) subtitleEl.title = `Không tải được dữ liệu học phí: ${error.message}`;
       if (tbody) {
         tbody.innerHTML = `<tr><td colspan="6" style="color:var(--color-danger); text-align:center;">${this.escapeHtml(error.message)}</td></tr>`;
       }

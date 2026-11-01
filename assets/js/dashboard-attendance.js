@@ -16,8 +16,16 @@ const DashboardAttendance = {
   rateText(count) {
     return `${count.rate.toLocaleString('vi-VN', { maximumFractionDigits: 1 })}%`;
   },
+  notifySelectedChild(studentCode) {
+    if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
+      window.dispatchEvent(new CustomEvent('dashboard:child-selected', {
+        detail: { studentCode }
+      }));
+    }
+  },
   dateText(date) { return new Date(date).toLocaleDateString('vi-VN'); },
   setText(id, value) { const node = this.el(id); if (node) node.textContent = value; },
+  setTitle(id, value) { const node = this.el(id); if (node) node.title = value; },
   async init(role) {
     if (!AuthService.requireAuth(role)) return;
     try {
@@ -28,7 +36,7 @@ const DashboardAttendance = {
       const errorText = `Không tải được chuyên cần: ${error.message}`;
       if (role === 'teacher') {
         this.setText('teacherStudentCount', '—');
-        this.setText('teacherStudentCountHint', errorText);
+        this.setTitle('teacherStudentCountHint', errorText);
         this.renderRecentError(errorText);
       } else if (role === 'student') {
         this.setText('studentAttendanceCount', '—');
@@ -47,10 +55,10 @@ const DashboardAttendance = {
     try {
       const dashboard = await AuthService.api('/dashboard');
       this.setText('teacherStudentCount', String(Number(dashboard.students?.student_count ?? 0)));
-      this.setText('teacherStudentCountHint', 'Học sinh đang ghi danh trong các lớp quản lý');
+      this.setTitle('teacherStudentCountHint', '');
     } catch (error) {
       this.setText('teacherStudentCount', '—');
-      this.setText('teacherStudentCountHint', `Không tải được sĩ số: ${error.message}`);
+      this.setTitle('teacherStudentCountHint', `Không tải được sĩ số: ${error.message}`);
     }
     try { this.renderRecent(await AuthService.api('/attendance')); }
     catch (error) { this.renderRecentError(`Không tải được điểm danh: ${error.message}`); }
@@ -112,10 +120,12 @@ const DashboardAttendance = {
       this.setText('parentDashboardChildName', 'Chưa có học sinh liên kết');
       this.setText('parentAttendanceCount', '—');
       this.setText('parentAttendanceDesc', 'Chưa có hồ sơ học sinh được liên kết.');
+      this.notifySelectedChild('');
       return;
     }
     children.forEach(child => select.add(new Option(`${child.full_name} (${child.student_code})`, child.student_code)));
     select.disabled = children.length < 2;
+    let firstUpdate = true;
     const update = () => {
       const child = children.find(entry => entry.student_code === select.value);
       this.setText('parentDashboardChildName', child?.full_name || 'Học sinh');
@@ -125,6 +135,10 @@ const DashboardAttendance = {
       this.setText('parentAttendanceDesc', c.total
         ? `${this.rateText(c)} tham gia · ${c.present} có mặt · ${c.late} trễ · ${c.absent} vắng · ${c.excused} có phép`
         : 'Chưa có buổi được giáo viên ghi điểm danh.');
+      if (firstUpdate) {
+        this.notifySelectedChild(select.value);
+        firstUpdate = false;
+      }
     };
     select.addEventListener('change', update);
     update();

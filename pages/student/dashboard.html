@@ -100,8 +100,8 @@
           <div class="stat-card">
             <div>
               <div class="stat-label">Lớp đang học</div>
-              <div class="stat-value">1</div>
-              <div class="stat-desc">TO10A · Năm học 2026-2027</div>
+              <div class="stat-value" id="studentClassCount">—</div>
+              <div class="stat-desc" id="studentClassCountHint">Lớp học trong năm học 2026-2027</div>
             </div>
             <div class="stat-icon primary">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg>
@@ -111,8 +111,8 @@
           <div class="stat-card">
             <div>
               <div class="stat-label">Điểm TB kiểm tra</div>
-              <div class="stat-value" style="color:var(--color-primary);">7,4 / 10</div>
-              <div class="stat-desc">4 bài · Tiến bộ +2,0 điểm</div>
+              <div class="stat-value" id="studentAverageScore" style="color:var(--color-primary);">—</div>
+              <div class="stat-desc" id="studentGradeSummary">Tổng hợp các bài đánh giá</div>
             </div>
             <div class="stat-icon success">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -133,8 +133,8 @@
           <div class="stat-card">
             <div>
               <div class="stat-label">Bài tập chưa nộp</div>
-              <div class="stat-value" style="color:var(--color-danger);">2</div>
-              <div class="stat-desc">Hạn gần nhất: 26/10 · 17:00</div>
+              <div class="stat-value" id="studentPendingAssignmentCount" style="color:var(--color-danger);">—</div>
+              <div class="stat-desc" id="studentPendingAssignmentHint">Bài tập cần hoàn thành</div>
             </div>
             <div class="stat-icon accent">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -283,6 +283,7 @@
   </div>
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/dashboard-attendance.js"></script>
+  <script src="../../assets/js/dashboard-stats.js"></script>
   <script>document.addEventListener('DOMContentLoaded', () => DashboardAttendance.init('student'));</script>
 </body>
 </html>

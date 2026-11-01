@@ -933,6 +933,8 @@ const ParentTuitionInvoiceModule = {
   // 6. CONTROLLER THẺ HỌC PHÍ TRÊN DASHBOARD PHỤ HUYNH: pages/parent/dashboard.html
   // =========================================================================
   async initParentDashboard(studentCode = '') {
+    const requestId = (this.dashboardRequestId || 0) + 1;
+    this.dashboardRequestId = requestId;
     const statRemainEl = document.getElementById('parentDashTuitionRemaining');
     const statDueDescEl = document.getElementById('parentDashTuitionDueDesc');
     const cardTitleEl = document.getElementById('parentDashTuitionCardTitle');
@@ -948,6 +950,7 @@ const ParentTuitionInvoiceModule = {
     try {
       const filter = studentCode ? { student_code: studentCode } : {};
       const invoices = await this.fetchChildInvoices(filter);
+      if (requestId !== this.dashboardRequestId) return;
       const list = Array.isArray(invoices) ? invoices : [];
 
       if (list.length === 0) {
@@ -1019,8 +1022,12 @@ const ParentTuitionInvoiceModule = {
         }
       }
     } catch (error) {
+      if (requestId !== this.dashboardRequestId) return;
       if (statRemainEl) statRemainEl.textContent = '—';
       if (statDueDescEl) statDueDescEl.textContent = `Không tải được học phí`;
+      if (cardTotalEl) cardTotalEl.textContent = '—';
+      if (cardPaidEl) cardPaidEl.textContent = '—';
+      if (cardRemainEl) cardRemainEl.textContent = '—';
       if (cardAlertEl) {
         cardAlertEl.className = 'alert alert-danger';
         cardAlertEl.textContent = `Không tải được dữ liệu học phí: ${error.message}`;
@@ -1038,9 +1045,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ParentTuitionInvoiceModule.initParentNotificationsTuition();
   } else if (document.getElementById('parentDashTuitionRemaining') || document.getElementById('parentDashTuitionTotal')) {
     const childSelect = document.getElementById('parentAttendanceChild');
-    ParentTuitionInvoiceModule.initParentDashboard(childSelect?.value || '');
-    childSelect?.addEventListener('change', e => {
-      ParentTuitionInvoiceModule.initParentDashboard(e.target.value || '');
-    });
+    if (childSelect) {
+      window.addEventListener('dashboard:child-selected', event => {
+        ParentTuitionInvoiceModule.initParentDashboard(event.detail?.studentCode || '');
+      });
+      childSelect.addEventListener('change', event => {
+        ParentTuitionInvoiceModule.initParentDashboard(event.target.value || '');
+      });
+      ParentTuitionInvoiceModule.initParentDashboard(childSelect.value || '');
+    } else {
+      ParentTuitionInvoiceModule.initParentDashboard();
+    }
   }
 });

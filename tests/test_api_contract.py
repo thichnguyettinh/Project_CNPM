@@ -1,5 +1,6 @@
 import unittest
 from datetime import datetime, timezone
+from pathlib import Path
 from unittest.mock import patch
 
 from fastapi import HTTPException
@@ -7,6 +8,7 @@ from pydantic import ValidationError
 
 from backend.app.main import (
     app,
+    dashboard,
     link_parent_to_student,
     login,
     reset_user_password,
@@ -161,6 +163,75 @@ class ApiContractTests(unittest.TestCase):
             "/api/dashboard",
         }
         self.assertTrue(expected.issubset(paths))
+
+    def test_teacher_dashboard_returns_live_class_student_and_today_session_counts(self):
+        connection = unittest.mock.Mock()
+        teacher = {"user_id": "teacher-1", "role": "teacher"}
+        class_stats = {"class_count": 8, "active_classes": 5}
+        student_stats = {"student_count": 12}
+        today_stats = {"session_count": 2}
+        with (
+            patch(
+                "backend.app.main.fetch_one",
+                side_effect=[class_stats, student_stats, today_stats],
+            ),
+            patch("backend.app.main.fetch_all", return_value=[]),
+        ):
+            result = dashboard(connection, teacher)
+        self.assertEqual(result["classes"], class_stats)
+        self.assertEqual(result["students"], student_stats)
+        self.assertEqual(result["today_sessions"], today_stats)
+
+    def test_student_dashboard_query_contains_real_grade_and_pending_assignment_stats(self):
+        connection = unittest.mock.Mock()
+        student_user = {"user_id": "student-1", "role": "student"}
+        student = {"student_id": 7, "student_code": "HS007", "full_name": "Học sinh"}
+        summary = {
+            "student_code": "HS007",
+            "average_score": 8.25,
+            "graded_count": 2,
+            "latest_score": 9,
+            "pending_assignment_count": 1,
+        }
+        with (
+            patch("backend.app.main.require_student_id", return_value=student),
+            patch("backend.app.main.fetch_all", side_effect=[[summary], []]) as fetch_all,
+            patch("backend.app.main.fetch_one", return_value={"count": 0}),
+        ):
+            result = dashboard(connection, student_user)
+        self.assertEqual(result["students"], [summary])
+        student_query = fetch_all.call_args_list[0].args[1]
+        self.assertIn("AS average_score", student_query)
+        self.assertIn("AS latest_score", student_query)
+        self.assertIn("AS pending_assignment_count", student_query)
+
+    def test_dashboard_kpis_are_bound_to_live_data_not_mock_values(self):
+        root = Path(__file__).resolve().parents[1]
+        teacher = (root / "pages/teacher/dashboard.html").read_text(encoding="utf-8")
+        student = (root / "pages/student/dashboard.html").read_text(encoding="utf-8")
+        parent = (root / "pages/parent/dashboard.html").read_text(encoding="utf-8")
+        dashboard_css = (root / "assets/css/dashboard.css").read_text(encoding="utf-8")
+        teacher_tuition = (root / "assets/js/modules/teacher/tuition-fee.js").read_text(encoding="utf-8")
+        for html in (teacher, student, parent):
+            self.assertIn("../../assets/js/dashboard-stats.js", html)
+        self.assertIn("../../assets/js/modules/teacher/tuition-fee.js", teacher)
+        self.assertIn("../../assets/js/modules/parent/tuition-invoice.js", parent)
+        self.assertIn("watchlist.slice(0, 2)", teacher_tuition)
+        self.assertIn("Các học sinh có số dư chưa thanh toán", teacher_tuition)
+        grid_end = teacher.index("        </div>\n\n        <!-- Học phí theo dõi")
+        tuition_card = teacher.index('<div class="card teacher-dashboard-card--tuition"')
+        footer = teacher.index('<div class="page-mini-footer">')
+        self.assertLess(grid_end, tuition_card)
+        self.assertLess(tuition_card, footer)
+        self.assertIn("grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr)", dashboard_css)
+        self.assertNotIn("grid-template-areas:", dashboard_css)
+        self.assertNotIn(".teacher-dashboard .page-mini-footer", dashboard_css)
+        self.assertNotIn("15 học sinh · Tháng 10/2026", teacher)
+        self.assertNotIn("8.000.000 ₫", teacher)
+        self.assertNotIn("7,4 / 10", student)
+        self.assertNotIn("Hạn gần nhất: 26/10", student)
+        self.assertNotIn("8,0", parent)
+        self.assertNotIn("600.000 ₫", parent)
 
     def test_parent_link_connects_an_existing_parent_and_rejects_duplicate(self):
         connection = unittest.mock.Mock()

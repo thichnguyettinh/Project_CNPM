@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 const script = fs.readFileSync(path.join(__dirname, '../assets/js/dashboard-attendance.js'), 'utf8');
+const statsScript = fs.readFileSync(path.join(__dirname, '../assets/js/dashboard-stats.js'), 'utf8');
 function mockElement() {
   return {
     textContent: '', value: '', disabled: false, options: [], children: [], listeners: {},
@@ -78,4 +79,69 @@ test('Lỗi API không hiển thị số điểm danh demo',async()=>{
   await m.init('student');
   assert.equal(el('studentAttendanceCount').textContent,'—');
   assert.match(el('studentAttendanceDesc').textContent,/API lỗi/);
+});
+
+function setupStats(role, summary) {
+  const elements = new Map();
+  const listeners = {};
+  const ctx = {
+    window: { addEventListener: (event, handler) => { listeners[event] = handler; } },
+    document: {
+      getElementById(id) {
+        if (!elements.has(id)) elements.set(id, {textContent: ''});
+        return elements.get(id);
+      },
+      querySelector: selector => selector === '.teacher-dashboard' && role === 'teacher' ? {} : null,
+      addEventListener() {}
+    },
+    AuthService: {
+      requireAuth: requestedRole => requestedRole === role,
+      api: async () => summary
+    },
+    Number, Date
+  };
+  vm.createContext(ctx);
+  vm.runInContext(statsScript, ctx);
+  return {module:ctx.window.DashboardStats, el:id=>ctx.document.getElementById(id), listeners};
+}
+
+test('Thẻ tổng quan giáo viên nhận số lớp, học sinh và buổi học từ dashboard API', async () => {
+  const {module, el} = setupStats('teacher', {
+    classes:{active_classes:4},
+    students:{student_count:11},
+    today_sessions:{session_count:2,first_starts_at:'2026-11-02T10:00:00+07:00',last_ends_at:'2026-11-02T13:00:00+07:00'}
+  });
+  el('teacherClassCountHint').textContent = 'Năm học 2026-2027';
+  el('teacherStudentCountHint').textContent = 'Trong các lớp học';
+  el('teacherTodaySessionHint').textContent = 'Lịch học trong ngày';
+  await module.init('teacher');
+  assert.equal(el('teacherClassCount').textContent, '4');
+  assert.equal(el('teacherStudentCount').textContent, '11');
+  assert.equal(el('teacherTodaySessionCount').textContent, '2');
+  assert.equal(el('teacherClassCountHint').textContent, 'Năm học 2026-2027');
+  assert.equal(el('teacherStudentCountHint').textContent, 'Trong 4 lớp học');
+  assert.equal(el('teacherTodaySessionHint').textContent, 'Lịch học trong ngày');
+});
+
+test('Thẻ tổng quan học sinh hiển thị điểm, lớp và bài chưa nộp từ API', async () => {
+  const {module, el} = setupStats('student', {students:[{
+    student_code:'HS001',class_count:2,average_score:8.25,graded_count:4,
+    pending_assignment_count:1,nearest_pending_due_at:'2026-11-10T10:00:00+07:00'
+  }]});
+  await module.init('student');
+  assert.equal(el('studentClassCount').textContent, '2');
+  assert.equal(el('studentAverageScore').textContent, '8,25 / 10');
+  assert.equal(el('studentPendingAssignmentCount').textContent, '1');
+});
+
+test('Thẻ điểm phụ huynh đổi theo học sinh đang chọn', async () => {
+  const {module, el} = setupStats('parent', {students:[{
+    student_code:'HS001',full_name:'Minh Anh',average_score:7.5,graded_count:2,
+    latest_score:9,latest_assignment_title:'Bài kiểm tra'
+  }]});
+  await module.init('parent');
+  module.renderChild('HS001');
+  assert.equal(el('parentAverageScore').textContent, '7,5 / 10');
+  assert.equal(el('parentLatestScore').textContent, '9 / 10');
+  assert.match(el('parentLatestScoreHint').textContent, /Bài kiểm tra/);
 });
