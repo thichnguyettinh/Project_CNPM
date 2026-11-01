@@ -1,4 +1,4 @@
-/** Chạy: node --test tests_uc05_uc06/test_frontend.cjs  (không cần npm) */
+/** Chạy: node --test tests/test_frontend.cjs  (không cần npm) */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');

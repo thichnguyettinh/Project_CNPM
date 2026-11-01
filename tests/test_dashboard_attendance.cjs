@@ -1,4 +1,4 @@
-/** Kiểm thử bảng số liệu chuyên cần trên ba trang Tổng quan. Chạy node --test tests_uc05_uc06/*.cjs */
+/** Kiểm thử bảng số liệu chuyên cần trên ba trang Tổng quan. Chạy node --test tests/test_dashboard_attendance.cjs */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');

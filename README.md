@@ -43,6 +43,11 @@ Dự án (project_cnpm/)
 │           ├── Giáo viên (teacher/)
 │           ├── Học sinh (student/)
 │           └── Phụ huynh (parent/)
+├── Kiểm thử tập trung (tests/)
+│   ├── Chạy toàn bộ test Python và JavaScript (run_all_tests.py)
+│   ├── Test backend và schema (test_api_contract.py, test_tuition_uc09_uc12.py, test_uc07_de_bai.py, test_uc11_schema.py)
+│   ├── Test giao diện và nghiệp vụ (test_tong_hop_static.py)
+│   └── Test JavaScript (test_*.js, test_*.cjs)
 ├── Trang theo vai trò (pages/)
 │   ├── Giáo viên (teacher/)
 │   │   ├── Tổng quan (dashboard.html)
@@ -82,8 +87,6 @@ Dự án (project_cnpm/)
 │   │   └── Cấu hình (config.py)
 │   ├── Công cụ quản trị (scripts/)
 │   │   └── Tạo tài khoản giáo viên (bootstrap_teacher.py)
-│   ├── Kiểm thử (tests/)
-│   │   └── Kiểm thử API và bảo mật (test_api_contract.py)
 │   ├── Danh sách thư viện Python (requirements.txt)
 │   ├── Mẫu cấu hình local (.env.example)
 │   └── Cấu hình local, không chia sẻ (.env)
@@ -136,7 +139,7 @@ Dự án (project_cnpm/)
    Kiểm tra API tại `http://127.0.0.1:8001/api/health`; tài liệu API ở `http://127.0.0.1:8001/docs`. Chạy giao diện ở terminal khác bằng `python -m http.server 3000`, rồi mở `http://localhost:3000`.
 
 - Schema chỉ tạo cấu trúc, chưa nhập dữ liệu mockup; seed demo tạo ba tài khoản thử nghiệm và liên kết học sinh-phụ huynh nhưng không tạo dữ liệu lớp học.
-- Kiểm thử backend (bao gồm hash/salt và khóa đăng nhập sau 3 lần sai): `python -m unittest discover -s backend\tests -v`.
+- Chạy toàn bộ kiểm thử Python và JavaScript từ thư mục gốc: `python tests\run_all_tests.py` (cần Node.js trên `PATH` để chạy test JavaScript). Chỉ chạy test Python: `python -m unittest discover -s tests -p "test_*.py" -v`.
 - **Trạng thái giao diện:** Đăng nhập, xác thực phiên và thông báo đã dùng API. Một số màn hình nghiệp vụ khác vẫn hiển thị dữ liệu mẫu hoặc chưa nối toàn bộ form/bảng vào API. Có thể kiểm tra và thao tác trực tiếp các endpoint qua `/docs`; không xem dữ liệu mẫu trên những màn hình đó là dữ liệu PostgreSQL.
 
 ---
