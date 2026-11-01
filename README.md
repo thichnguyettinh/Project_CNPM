@@ -168,7 +168,6 @@ Dự án (project_cnpm/)
   * **Tài liệu và kiểm thử bảo mật:** README hướng dẫn chạy hệ thống; có kiểm thử backend cho hashing/salt, khóa đăng nhập và kiểm tra một số hợp đồng API.
 * **Chưa hoàn thành:**
   * Chưa xác minh toàn bộ các luồng đăng nhập/nghiệp vụ chạy end-to-end trên PostgreSQL với dữ liệu thật.
-  * Một số trang dashboard và nghiệp vụ vẫn hiển thị dữ liệu minh họa; cần nối dữ liệu/API và kiểm thử tích hợp trước khi ghi nhận hoàn tất toàn hệ thống.
 * **Trang phụ trách:**
   * [`index.html`](file:///d:/project_cnpm/index.html) (Trang 1 PDF): Màn hình Đăng nhập 2 cột, kiểm tra tài khoản, điều hướng 3 vai trò.
   * [`pages/teacher/users.html`](file:///d:/project_cnpm/pages/teacher/users.html) (Trang 4, 15, 22 PDF): Danh sách tài khoản (Học sinh 96, Phụ huynh 84); Modal tạo tài khoản học sinh và liên kết phụ huynh; Xử lý trạng thái tìm kiếm trống (Empty state).
