@@ -146,6 +146,25 @@ class TuitionBackendAstContractTests(unittest.TestCase):
 
 
 class TuitionFrontendDomContractTests(unittest.TestCase):
+    def test_teacher_tuition_kpis_do_not_flash_mock_amounts_before_api_loads(self):
+        tuition_html = (ROOT / "pages/teacher/tuition.html").read_text(encoding="utf-8")
+        for element_id in (
+            "statTotalDueValue",
+            "statTotalPaidValue",
+            "statTotalRemainingValue",
+        ):
+            match = re.search(
+                rf'<div class="stat-value" id="{element_id}"[^>]*>(.*?)</div>',
+                tuition_html,
+                re.DOTALL,
+            )
+            self.assertIsNotNone(match, f"Missing tuition KPI {element_id}")
+            self.assertEqual(match.group(1).strip(), "—")
+
+        self.assertNotIn("76.400.000 ₫", tuition_html)
+        self.assertNotIn("68.400.000 ₫", tuition_html)
+        self.assertNotIn("8.000.000 ₫", tuition_html)
+
     def test_teacher_tuition_js_preserves_legacy_methods_and_matches_html_ids(self):
         js = (ROOT / "assets/js/modules/teacher/tuition-fee.js").read_text(encoding="utf-8")
 
