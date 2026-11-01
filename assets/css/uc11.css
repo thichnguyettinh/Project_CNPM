@@ -1,0 +1,30 @@
+/* UC-11 — dùng design system sẵn có của dự án */
+.uc11-panel {padding:20px; margin-bottom:22px;}
+.uc11-header {display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
+.uc11-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:15px 0;}
+.uc11-toolbar label{font-weight:600;font-size:13px;}
+.uc11-toolbar select{width:min(100%,420px);}
+.uc11-notice{min-height:18px;margin:10px 0;color:#475569;font-size:13px;}
+.uc11-notice.uc11-error{color:#b91c1c;}
+.uc11-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0;}
+.uc11-stat{border:1px solid #e2e8f0;border-radius:10px;padding:14px;min-height:76px;display:flex;flex-direction:column;gap:8px;background:#f8fafc;}
+.uc11-stat span{font-size:12px;color:#64748b;}
+.uc11-stat strong{font-size:21px;color:#102a43;}
+.uc11-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(230px,1fr);gap:14px;margin:16px 0;}
+.uc11-box{border:1px solid #e2e8f0;background:#fafdfe;border-radius:10px;padding:14px;min-width:0;}
+.uc11-box h4,.uc11-subtitle{font-size:15px;font-weight:700;margin:0 0 12px;}
+.uc11-subtitle{margin:22px 0 12px;}
+.uc11-chart{min-height:150px;overflow:auto;}
+.uc11-svg-wrap{overflow-x:auto;max-width:100%;}
+.uc11-svg{width:100%;max-height:300px;min-width:480px;display:block;}
+.uc11-comment{font-size:13px;color:#475569;line-height:1.65;white-space:pre-wrap;}
+.uc11-empty{color:#64748b;font-size:13px;margin:12px 0;}
+.uc11-table{width:100%;}
+.uc11-table td,.uc11-table th{vertical-align:top;}
+.uc11-table td{font-size:13px;}
+.uc11-table .btn{white-space:nowrap;}
+.uc11-actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px;}
+.uc11-number{width:90px;min-width:65px;}
+#uc11-questions-panel[hidden],#uc11-student-detail[hidden]{display:none !important;}
+@media(max-width:900px){.uc11-grid{grid-template-columns:1fr;}.uc11-stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:520px){.uc11-stats{grid-template-columns:1fr;}.uc11-toolbar select{width:100%;}}

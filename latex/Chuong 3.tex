@@ -1,0 +1,918 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{babel}
+\babelprovide[import, main]{vietnamese}
+\babelfont{rm}{Noto Serif}
+\babelfont{sf}{Noto Sans}
+\babelfont{tt}{Noto Sans Mono}
+
+\usepackage[a4paper,top=25mm,bottom=25mm,left=30mm,right=20mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\definecolor{primary}{RGB}{0,0,0}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    urlcolor=primary,
+    citecolor=primary,
+    pdftitle={Chương 3: Phân tích yêu cầu - Hệ thống Quản lý Lớp học thêm},
+    pdfauthor={Gia Bảo - Thanh Thảo}
+}
+
+\setlength{\headheight}{15pt}
+\setlength{\parindent}{15pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\baselinestretch}{1.25}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{Đồ án Công nghệ Phần mềm: Hệ thống Quản lý Lớp học thêm}}
+\fancyhead[R]{\small\textit{Gia Bảo -- Thanh Thảo}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newcommand{\bcelist}[5]{%
+\begin{center}
+\noindent\fbox{\parbox{0.96\textwidth}{%
+\vspace{4pt}
+\textbf{#1}\par\vspace{4pt}
+\begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Thành phần UML} & \textbf{Chi tiết lớp và phương thức chính} \\
+\midrule
+Lớp biên (\texttt{<<boundary>>}) & \texttt{#2} \\
+Lớp điều khiển (\texttt{<<control>>}) & \texttt{#3} \\
+Lớp thực thể (\texttt{<<entity>>}) & \texttt{#4} \\
+\bottomrule
+\end{tabularx}
+\vspace{4pt}
+\noindent\textit{Hình #5}
+\vspace{2pt}
+}}
+\end{center}
+}
+
+\newcommand{\seqbox}[5]{%
+\begin{center}
+\noindent\fbox{\parbox{0.96\textwidth}{%
+\vspace{4pt}
+\textbf{#1}\par\vspace{4pt}
+\noindent\textbf{Đối tượng tham gia (Lifelines):} #2\par\vspace{3pt}
+\noindent\textbf{Trình tự thông điệp chính:}
+\begin{enumerate}
+\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+#3
+\end{enumerate}
+\noindent\textbf{Khung điều kiện / Rẽ nhánh:} #4\par\vspace{4pt}
+\noindent\textit{Hình #5}
+\vspace{2pt}
+}}
+\end{center}
+}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE\textbf{CHƯƠNG 3: PHÂN TÍCH YÊU CẦU}}\\[6pt]
+    {\normalsize\textit{Thực hiện: Gia Bảo -- Thanh Thảo}}
+\end{center}
+\vspace{8pt}
+
+\setcounter{section}{3}
+\setcounter{subsection}{0}
+
+\subsection{Xác định các lớp phân tích}
+
+Trên cơ sở các chức năng đã được đặc tả, hệ thống được phân tích thành ba nhóm lớp: lớp biên (\textit{Boundary}), lớp điều khiển (\textit{Control}) và lớp thực thể (\textit{Entity}). Lớp biên tiếp nhận yêu cầu và hiển thị kết quả; lớp điều khiển tổ chức xử lý nghiệp vụ; lớp thực thể biểu diễn những đối tượng cần quản lý. Các lớp và phương thức chính được thể hiện bằng ký hiệu lớp UML dạng hình chữ nhật, qua đó làm rõ trách nhiệm và sự phối hợp của các thành phần trong từng chức năng.
+
+\subsubsection*{UC-01. Đăng nhập}
+
+\bcelist{Cấu trúc lớp phân tích UC-01: Đăng nhập}
+{GiaoDienDangNhap: +nhapThongTin(), +hienThiLoi()}
+{DieuKhienXacThuc: +xacThucTaiKhoan(), +kiemTraVaiTro(), +traKetQuaDangNhap()}
+{TaiKhoan (+timTheoTenDangNhap(), +doiChieuMatKhau()); VaiTro (+layQuyenTruyCap())}
+{3.1. Biểu đồ lớp phân tích chức năng đăng nhập}
+
+Chức năng đăng nhập gồm lớp biên \texttt{GiaoDienDangNhap}, lớp điều khiển \texttt{DieuKhienXacThuc} và hai lớp thực thể \texttt{TaiKhoan}, \texttt{VaiTro}. Giao diện tiếp nhận thông tin đăng nhập; lớp điều khiển xác thực tài khoản, kiểm tra vai trò và trả kết quả để hệ thống cho phép truy cập hoặc hiển thị thông báo lỗi.
+
+\subsubsection*{UC-02. Quản lý người dùng và phân quyền}
+
+\bcelist{Cấu trúc lớp phân tích UC-02: Quản lý người dùng và phân quyền}
+{GiaoDienNguoiDung: +nhapTaiKhoan(), +chonVaiTro(), +lienKetHocSinh()}
+{DieuKhienNguoiDung: +kiemTraQuyenGiaoVien(), +taoCapNhatTaiKhoan(), +lienKetPhuHuynhHocSinh()}
+{TaiKhoan (+taoTaiKhoan(), +doiTrangThai()); VaiTro (+layVaiTro()); HocSinh (+taoHoSoHocSinh()); LienKetPHHS (+taoLienKet(), +kiemTraLienKet())}
+{3.2. Biểu đồ lớp phân tích chức năng quản lý người dùng và phân quyền}
+
+Lớp \texttt{GiaoDienNguoiDung} hỗ trợ giáo viên tạo tài khoản, lựa chọn vai trò và thiết lập liên kết giữa phụ huynh với học sinh. \texttt{DieuKhienNguoiDung} thực hiện kiểm tra quyền hạn, điều phối việc tạo \texttt{TaiKhoan}, hồ sơ \texttt{HocSinh} và bản ghi \texttt{LienKetPHHS}; \texttt{VaiTro} xác định phạm vi sử dụng chức năng của từng tài khoản.
+
+\subsubsection*{UC-03. Quản lý lớp học}
+
+\bcelist{Cấu trúc lớp phân tích UC-03: Quản lý lớp học}
+{GiaoDienQuanLyLop: +nhapThongTinLop(), +chonKetThucLop()}
+{DieuKhienLopHoc: +taoLopHoc(), +suaThongTinLop(), +ketThucLop()}
+{LopHoc (+taoLop(), +capNhatLop(), +doiTrangThaiLop()); TaiKhoan (+layGiaSuPhuTrach()); BuoiHoc (+kiemTraBuoiTuongLai()); KhoanHocPhi (+kiemTraKhoanChuaDong())}
+{3.3. Biểu đồ lớp phân tích chức năng quản lý lớp học}
+
+\texttt{GiaoDienQuanLyLop} cho phép giáo viên khai báo, điều chỉnh và kết thúc lớp học. \texttt{DieuKhienLopHoc} phụ trách kiểm tra dữ liệu và điều phối việc cập nhật \texttt{LopHoc}; các lớp \texttt{TaiKhoan}, \texttt{BuoiHoc} và \texttt{KhoanHocPhi} cung cấp thông tin giáo viên phụ trách, lịch học và những khoản thu cần xem xét khi kết thúc lớp.
+
+\subsubsection*{UC-04. Lập thời khóa biểu}
+
+\bcelist{Cấu trúc lớp phân tích UC-04: Lập thời khóa biểu}
+{GiaoDienThoiKhoaBieu: +nhapThoiGian(), +xemLichTheoTuan()}
+{DieuKhienLichHoc: +kiemTraKhungGio(), +taoCacBuoiHoc()}
+{LopHoc (+layThongTinLop()); BuoiHoc (+taoBuoiHoc(), +traCuuBuoiHoc())}
+{3.4. Biểu đồ lớp phân tích chức năng lập thời khóa biểu}
+
+\texttt{GiaoDienThoiKhoaBieu} tiếp nhận thông tin thời gian và hỗ trợ xem lịch theo tuần. \texttt{DieuKhienLichHoc} kiểm tra khung giờ của lớp và tạo những buổi học tương ứng; \texttt{LopHoc} xác định lớp cần lập lịch, còn \texttt{BuoiHoc} lưu thông tin từng buổi học cụ thể.
+
+\subsubsection*{UC-05. Quản lý danh sách học sinh}
+
+\bcelist{Cấu trúc lớp phân tích UC-05: Quản lý danh sách học sinh}
+{GiaoDienDanhSachLop: +chonHocSinh(), +xacNhanGhiDanh(), +xacNhanChoNghi()}
+{DieuKhienGhiDanh: +kiemTraDieuKien(), +themHocSinhVaoLop(), +capNhatChoNghi()}
+{HocSinh (+traCuuHoSo()); GhiDanhLop (+taoGhiDanh(), +capNhatTrangThai()); BuoiHoc (+kiemTraTrungLich()); KhoanHocPhi (+kiemTraCongNo())}
+{3.5. Biểu đồ lớp phân tích chức năng quản lý danh sách học sinh}
+
+Chức năng này sử dụng \texttt{GiaoDienDanhSachLop} và \texttt{DieuKhienGhiDanh} để thực hiện ghi danh hoặc cho học sinh nghỉ lớp. \texttt{HocSinh} cung cấp hồ sơ người học, \texttt{GhiDanhLop} lưu trạng thái tham gia lớp; \texttt{BuoiHoc} hỗ trợ kiểm tra trùng lịch và \texttt{KhoanHocPhi} hỗ trợ kiểm tra công nợ trước khi xác nhận thay đổi.
+
+\subsubsection*{UC-06. Điểm danh}
+
+\bcelist{Cấu trúc lớp phân tích UC-06: Điểm danh}
+{GiaoDienDiemDanh: +hienThiDanhSach(), +nhapTrangThai(), +luuDiemDanh()}
+{DieuKhienDiemDanh: +kiemTraBuoiHoc(), +kiemTraHocSinhTrongLop(), +ghiNhanChuyenCan()}
+{BuoiHoc (+layBuoiHoc()); GhiDanhLop (+layHocSinhDangHoc()); DiemDanh (+taoHoacSuaDiemDanh(), +capNhatNguoiThoiDiem()); ThongBao (+taoThongBaoWeb())}
+{3.6. Biểu đồ lớp phân tích chức năng điểm danh}
+
+\texttt{GiaoDienDiemDanh} hiển thị danh sách học sinh và cho phép giáo viên ghi nhận trạng thái chuyên cần. \texttt{DieuKhienDiemDanh} kiểm tra buổi học, danh sách ghi danh và cập nhật \texttt{DiemDanh}; \texttt{BuoiHoc}, \texttt{GhiDanhLop} và \texttt{ThongBao} hỗ trợ xác định đối tượng điểm danh và cung cấp thông tin cho người dùng trên hệ thống.
+
+\subsubsection*{UC-07. Quản lý bài tập và bài kiểm tra}
+
+\bcelist{Cấu trúc lớp phân tích UC-07: Quản lý bài tập và bài kiểm tra}
+{GiaoDienBaiKiemTra: +nhapThongTinBai(), +xemDanhSachBai()}
+{DieuKhienBaiKiemTra: +kiemTraLop(), +kiemTraNgayHan(), +taoBaiKiemTra()}
+{LopHoc (+layLopHoc()); BaiKiemTra (+taoDauDiem(), +capNhatThongTinBai())}
+{3.7. Biểu đồ lớp phân tích chức năng quản lý bài tập và bài kiểm tra}
+
+\texttt{GiaoDienBaiKiemTra} hỗ trợ giáo viên tạo và xem danh sách các bài đánh giá của lớp. \texttt{DieuKhienBaiKiemTra} kiểm tra lớp học, thông tin bài và thời hạn, sau đó tạo hoặc cập nhật \texttt{BaiKiemTra} gắn với \texttt{LopHoc} tương ứng.
+
+\subsubsection*{UC-08. Cập nhật điểm số}
+
+\bcelist{Cấu trúc lớp phân tích UC-08: Cập nhật điểm số}
+{GiaoDienNhapDiem: +hienThiBangDiem(), +nhapDiemVaNhanXet()}
+{DieuKhienDiemSo: +kiemTraQuyenCham(), +kiemTraThangDiem(), +luuDiemSo()}
+{BaiKiemTra (+layHeSoVaThangDiem()); HocSinh (+kiemTraHocSinh()); DiemSo (+luuGiaTriDiem(), +capNhatNguoiSuaVaThoiDiem()); ThongBao (+taoThongBaoDiem())}
+{3.8. Biểu đồ lớp phân tích chức năng cập nhật điểm số}
+
+\texttt{GiaoDienNhapDiem} cho phép giáo viên nhập điểm và nhận xét theo từng học sinh. \texttt{DieuKhienDiemSo} kiểm tra quyền thao tác, bài kiểm tra và thang điểm; \texttt{DiemSo} lưu kết quả, thông tin người sửa và thời điểm sửa, trong khi \texttt{BaiKiemTra}, \texttt{HocSinh} và \texttt{ThongBao} hỗ trợ việc kiểm tra, hiển thị kết quả và thông báo.
+
+\subsubsection*{UC-09. Quản lý học phí}
+
+\bcelist{Cấu trúc lớp phân tích UC-09: Quản lý học phí}
+{GiaoDienHocPhi: +lapBaoPhi(), +nhapTienDaNhan()}
+{DieuKhienHocPhi: +tinhSoTienPhaiDong(), +phatHanhKhoanThu(), +capNhatSoTienDaDong()}
+{BuoiHoc (+layLichHocTheoKy()); LopHoc (+layDonGia()); KhoanHocPhi (+lapKhoanThu(), +capNhatThanhToan()); ThongBao (+taoThongBaoHocPhi())}
+{3.9. Biểu đồ lớp phân tích chức năng quản lý học phí}
+
+\texttt{GiaoDienHocPhi} cung cấp thao tác lập báo phí và ghi nhận số tiền đã nhận. \texttt{DieuKhienHocPhi} tổng hợp dữ liệu từ \texttt{LopHoc} và \texttt{BuoiHoc} để xác định khoản thu, cập nhật \texttt{KhoanHocPhi} và tổ chức gửi thông báo trên website thông qua \texttt{ThongBao}.
+
+\subsubsection*{UC-10. Tra cứu lịch học}
+
+\bcelist{Cấu trúc lớp phân tích UC-10: Tra cứu lịch học}
+{GiaoDienTraCuuLich: +chonHocSinhVaKhoangNgay(), +hienThiLichHoc()}
+{DieuKhienTraCuu: +kiemTraQuyenTheoHocSinh(), +traCuuBuoiHoc()}
+{HocSinh (+timHoSoTheoTaiKhoan()); LienKetPHHS (+kiemTraQuyenPhuHuynh()); GhiDanhLop (+layGhiDanhHopLe()); BuoiHoc (+layBuoiHocTheoKhoangNgay())}
+{3.10. Biểu đồ lớp phân tích chức năng tra cứu lịch học}
+
+\texttt{GiaoDienTraCuuLich} tiếp nhận học sinh và khoảng thời gian cần xem; \texttt{DieuKhienTraCuu} kiểm tra quyền truy cập trước khi trả kết quả. Các thực thể \texttt{HocSinh}, \texttt{LienKetPHHS} và \texttt{GhiDanhLop} xác định người học được phép tra cứu; \texttt{BuoiHoc} cung cấp các buổi học thuộc khoảng thời gian yêu cầu.
+
+\subsubsection*{UC-11. Tra cứu kết quả học tập và điểm danh}
+
+\bcelist{Cấu trúc lớp phân tích UC-11: Tra cứu kết quả học tập và điểm danh}
+{GiaoDienTraCuuKetQua: +chonHocSinh(), +hienThiKetQua()}
+{DieuKhienTraCuu: +kiemTraQuyenTheoHocSinh(), +traCuuDiemVaDiemDanh()}
+{LienKetPHHS (+kiemTraQuyenPhuHuynh()); BaiKiemTra (+layThongTinBai()); DiemSo (+layBangDiem()); DiemDanh (+layLichSuChuyenCan())}
+{3.11. Biểu đồ lớp phân tích chức năng tra cứu kết quả học tập và điểm danh}
+
+\texttt{GiaoDienTraCuuKetQua} hiển thị bảng điểm, nhận xét và thông tin chuyên cần. \texttt{DieuKhienTraCuu} kiểm tra phạm vi truy cập qua \texttt{LienKetPHHS} khi người xem là phụ huynh, đồng thời khai thác \texttt{BaiKiemTra}, \texttt{DiemSo} và \texttt{DiemDanh} để tổng hợp kết quả của học sinh.
+
+\subsubsection*{UC-12. Tra cứu học phí}
+
+\bcelist{Cấu trúc lớp phân tích UC-12: Tra cứu học phí}
+{GiaoDienTraCuuHocPhi: +chonConVaKyThu(), +hienThiKhoanThu()}
+{DieuKhienTraCuu: +kiemTraQuyenPhuHuynh(), +layKhoanThuTheoHocSinh()}
+{LienKetPHHS (+kiemTraLienKet()); HocSinh (+layHocSinh()); KhoanHocPhi (+layKhoanThuVaTrangThai())}
+{3.12. Biểu đồ lớp phân tích chức năng tra cứu học phí}
+
+\texttt{GiaoDienTraCuuHocPhi} cho phép phụ huynh lựa chọn học sinh và kỳ thu cần tra cứu. \texttt{DieuKhienTraCuu} xác định mối liên hệ phụ huynh -- học sinh thông qua \texttt{LienKetPHHS}, sau đó lấy \texttt{KhoanHocPhi} của học sinh tương ứng để hiển thị số tiền và tình trạng đóng học phí.
+
+\subsection{Xây dựng biểu đồ trình tự}
+
+Các biểu đồ trình tự được xây dựng để thể hiện quá trình tương tác giữa người sử dụng, giao diện, bộ phận điều khiển và các thành phần dữ liệu khi thực hiện chức năng. Trong mỗi biểu đồ, các thông điệp được sắp xếp theo thứ tự thời gian; những trường hợp xử lý thay thế, xử lý tùy chọn hoặc lặp lại được thể hiện bằng các khung điều kiện tương ứng. Nội dung dưới đây trình bày luồng xử lý của các chức năng chính trong hệ thống.
+
+\subsubsection*{UC-01. Đăng nhập}
+
+\seqbox{Biểu đồ trình tự UC-01: Đăng nhập}
+{Người dùng (Actor) $\rightarrow$ \texttt{GiaoDienDangNhap} $\rightarrow$ \texttt{DieuKhienXacThuc} $\rightarrow$ \texttt{TaiKhoan / VaiTro} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Người dùng nhập tài khoản, mật khẩu trên \texttt{GiaoDienDangNhap} và gửi yêu cầu đăng nhập.
+\item \texttt{DieuKhienXacThuc} gọi xác thực thông tin tới \texttt{TaiKhoan / VaiTro}.
+\item Truy vấn \texttt{TaiKhoan} và \texttt{VaiTro} trong Cơ sở dữ liệu để lấy mã băm mật khẩu và quyền truy cập.
+}
+{Khung \texttt{alt}: \textit{[Hợp lệ và tài khoản hoạt động]} $\rightarrow$ Trả thông tin xác thực và vai trò, mở giao diện phù hợp; \textit{[Sai thông tin hoặc bị khóa]} $\rightarrow$ Từ chối đăng nhập và hiển thị thông báo lỗi.}
+{3.13. Biểu đồ trình tự chức năng đăng nhập}
+
+Người dùng nhập tài khoản và mật khẩu trên giao diện đăng nhập. Bộ phận điều khiển tra cứu \texttt{TaiKhoan}, đối chiếu thông tin xác thực và lấy \texttt{VaiTro}; nếu dữ liệu hợp lệ và tài khoản đang hoạt động, hệ thống trả kết quả đăng nhập và chuyển đến giao diện phù hợp, ngược lại hiển thị thông báo lỗi.
+
+\subsubsection*{UC-02. Quản lý người dùng và phân quyền}
+
+\seqbox{Biểu đồ trình tự UC-02: Cấp tài khoản, liên kết PH--HS}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienNguoiDung} $\rightarrow$ \texttt{DieuKhienNguoiDung} $\rightarrow$ \texttt{TaiKhoan / VaiTro / LienKetPHHS} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên nhập thông tin người dùng và vai trò trên \texttt{GiaoDienNguoiDung}.
+\item \texttt{DieuKhienNguoiDung} kiểm tra vai trò, quyền giáo viên và tính hợp lệ của tài khoản.
+\item Tạo bản ghi \texttt{TaiKhoan} (lưu vết \texttt{NguoiTao}) và nhận \texttt{MaTaiKhoan} mới.
+}
+{Khung \texttt{alt} \textit{[Dữ liệu hợp lệ]} kết hợp khung \texttt{opt} \textit{[Vai trò Học sinh]} (tạo hồ sơ \texttt{HocSinh} gắn \texttt{MaTaiKhoan}) và \texttt{opt} \textit{[Phụ huynh đã chọn học sinh]} (tạo bản ghi \texttt{LienKetPHHS}); nhánh \textit{[Thiếu quyền hoặc thông tin sai]} trả thông báo từ chối.}
+{3.14. Biểu đồ trình tự chức năng quản lý người dùng và phân quyền}
+
+Giáo viên yêu cầu tạo tài khoản mới, nhập thông tin và lựa chọn vai trò. Hệ thống kiểm tra quyền cùng tính hợp lệ của dữ liệu trước khi tạo \texttt{TaiKhoan}; nếu là tài khoản học sinh, hệ thống khởi tạo \texttt{HocSinh}, và khi có yêu cầu liên kết phụ huynh, hệ thống ghi nhận \texttt{LienKetPHHS} rồi thông báo kết quả.
+
+\subsubsection*{UC-03. Quản lý lớp học -- tạo lớp}
+
+\seqbox{Biểu đồ trình tự UC-03: Tạo lớp học}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienQuanLyLop} $\rightarrow$ \texttt{DieuKhienLopHoc} $\rightarrow$ \texttt{TaiKhoan / LopHoc} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên nhập thông tin lớp mới và gửi yêu cầu tạo lớp.
+\item \texttt{DieuKhienLopHoc} kiểm tra quyền giáo viên và tính hợp lệ của dữ liệu lớp học.
+\item Thực hiện \texttt{INSERT LopHoc} với \texttt{MaGiaSu} và sĩ số khởi tạo bằng 0, trả về \texttt{MaLopHoc} mới.
+}
+{Khung \texttt{alt}: \textit{[Hợp lệ]} $\rightarrow$ Tạo lớp thành công và hiển thị lớp hoạt động; \textit{[Không hợp lệ]} $\rightarrow$ Thông báo lỗi và yêu cầu sửa thông tin.}
+{3.15. Biểu đồ trình tự thao tác tạo lớp học}
+
+Giáo viên nhập thông tin lớp học và gửi yêu cầu tạo mới. Hệ thống kiểm tra quyền quản lý và dữ liệu nhập, sau đó ghi nhận \texttt{LopHoc} gắn với giáo viên phụ trách; trường hợp dữ liệu không hợp lệ, giao diện hiển thị thông báo để giáo viên điều chỉnh.
+
+\subsubsection*{UC-03. Quản lý lớp học -- chỉnh sửa hoặc kết thúc}
+
+\seqbox{Biểu đồ trình tự UC-03: Chỉnh sửa, kết thúc lớp}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienQuanLyLop} $\rightarrow$ \texttt{DieuKhienLopHoc} $\rightarrow$ \texttt{LopHoc / KhoanHocPhi} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn lớp và gửi yêu cầu chỉnh sửa hoặc kết thúc lớp.
+\item \texttt{DieuKhienLopHoc} xác minh \texttt{MaGiaSu} và trạng thái lớp hiện tại.
+\item Cập nhật thông tin lớp học hoặc kiểm tra công nợ \texttt{KhoanHocPhi} trước khi đổi \texttt{TrangThaiLop}.
+}
+{Khung \texttt{alt}: \textit{[Chỉnh sửa lớp]} $\rightarrow$ \texttt{UPDATE LopHoc} theo \texttt{MaLopHoc}; \textit{[Kết thúc lớp]} $\rightarrow$ Kiểm tra khoản phí chưa hoàn tất, cảnh báo và xin xác nhận, sau đó đổi \texttt{TrangThaiLop} và giữ nguyên dữ liệu liên kết.}
+{3.16. Biểu đồ trình tự thao tác chỉnh sửa và kết thúc lớp học}
+
+Sau khi chọn lớp học, giáo viên có thể điều chỉnh thông tin hoặc yêu cầu kết thúc lớp. Ở nhánh chỉnh sửa, hệ thống cập nhật \texttt{LopHoc}; ở nhánh kết thúc, hệ thống xem xét các khoản học phí liên quan và thực hiện thay đổi trạng thái lớp khi giáo viên xác nhận.
+
+\subsubsection*{UC-04. Lập thời khóa biểu}
+
+\seqbox{Biểu đồ trình tự UC-04: Lập thời khóa biểu}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienThoiKhoaBieu} $\rightarrow$ \texttt{DieuKhienLichHoc} $\rightarrow$ \texttt{LopHoc / BuoiHoc} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn lớp, nhập ngày, giờ bắt đầu -- kết thúc và phòng học.
+\item \texttt{DieuKhienLichHoc} kiểm tra trạng thái lớp và ràng buộc khung giờ (\texttt{GioKetThuc > GioBatDau}).
+\item Tạo các bản ghi \texttt{BuoiHoc} theo \texttt{MaLopHoc} và trả về danh sách lịch mới.
+}
+{Khung \texttt{alt} \textit{[GioKetThuc > GioBatDau]} chứa khung lặp \texttt{loop} \textit{[Mỗi buổi thuộc chu kỳ lập lịch]} để \texttt{INSERT BuoiHoc}; nhánh \textit{[Thời gian không hợp lệ]} từ chối tạo buổi và hiển thị lỗi.}
+{3.17. Biểu đồ trình tự chức năng lập thời khóa biểu}
+
+Giáo viên xác định lớp và nhập thời gian học. Hệ thống kiểm tra điều kiện giờ kết thúc phải sau giờ bắt đầu; với lịch được thiết lập theo chu kỳ, từng buổi học được tạo lần lượt và lưu dưới dạng \texttt{BuoiHoc}. Khi thông tin thời gian không hợp lệ, yêu cầu được trả lại để chỉnh sửa.
+
+\subsubsection*{UC-05. Quản lý danh sách học sinh -- ghi danh}
+
+\seqbox{Biểu đồ trình tự UC-05: Thêm học sinh vào lớp}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienDanhSachLop} $\rightarrow$ \texttt{DieuKhienGhiDanh} $\rightarrow$ \texttt{HocSinh / GhiDanhLop / BuoiHoc} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn lớp, chọn học sinh và gửi yêu cầu thêm học sinh vào lớp.
+\item \texttt{DieuKhienGhiDanh} tra cứu \texttt{GhiDanhLop} và \texttt{BuoiHoc} để kiểm tra ghi danh và đối chiếu trùng lịch.
+\item Thực hiện \texttt{INSERT GhiDanhLop} (trạng thái đang học) và \texttt{UPDATE LopHoc.SiSoHienTai}.
+}
+{Khung \texttt{alt}: \textit{[Không trùng hoặc đã xác nhận]} $\rightarrow$ Lưu ghi danh và cập nhật sĩ số mới; \textit{[Trùng lịch chưa được chấp nhận]} $\rightarrow$ Cảnh báo trùng lịch và yêu cầu xác nhận lại.}
+{3.18. Biểu đồ trình tự thao tác thêm học sinh vào lớp}
+
+Giáo viên lựa chọn học sinh cần thêm vào lớp. Hệ thống kiểm tra tình trạng ghi danh và đối chiếu lịch học của học sinh; nếu điều kiện phù hợp hoặc giáo viên chấp thuận cảnh báo trùng lịch, hệ thống tạo \texttt{GhiDanhLop}, cập nhật sĩ số và hiển thị kết quả.
+
+\subsubsection*{UC-05. Quản lý danh sách học sinh -- cho nghỉ}
+
+\seqbox{Biểu đồ trình tự UC-05: Cho học sinh nghỉ lớp}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienDanhSachLop} $\rightarrow$ \texttt{DieuKhienGhiDanh} $\rightarrow$ \texttt{GhiDanhLop / KhoanHocPhi} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn học sinh cần cho nghỉ và gửi yêu cầu kiểm tra.
+\item \texttt{DieuKhienGhiDanh} đối chiếu \texttt{GhiDanhLop} và công nợ trong \texttt{KhoanHocPhi}, hiển thị cảnh báo nếu còn nợ.
+\item Sau khi giáo viên xác nhận cuối, thực hiện \texttt{UPDATE TrangThaiGhiDanh, NgayNghiHoc}, giảm \texttt{SiSoHienTai} nhưng giữ nguyên lịch sử điểm và khoản thu.
+}
+{Bảo toàn toàn vẹn dữ liệu lịch sử: không xóa \texttt{BuoiHoc}, \texttt{DiemDanh}, \texttt{DiemSo} và \texttt{KhoanHocPhi} đã phát sinh.}
+{3.19. Biểu đồ trình tự thao tác cho học sinh nghỉ lớp}
+
+Giáo viên lựa chọn học sinh cần đưa ra khỏi danh sách đang học. Hệ thống kiểm tra dữ liệu \texttt{GhiDanhLop} và tình trạng học phí, thông báo các khoản chưa hoàn tất nếu có; sau xác nhận của giáo viên, trạng thái ghi danh và sĩ số lớp được cập nhật, trong khi thông tin học tập đã phát sinh vẫn được giữ lại.
+
+\subsubsection*{UC-06. Điểm danh}
+
+\seqbox{Biểu đồ trình tự UC-06: Điểm danh buổi học}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienDiemDanh} $\rightarrow$ \texttt{DieuKhienDiemDanh} $\rightarrow$ \texttt{BuoiHoc / GhiDanhLop / DiemDanh} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn buổi học, hệ thống truy vấn \texttt{BuoiHoc}, \texttt{GhiDanhLop}, \texttt{DiemDanh} để hiển thị danh sách học sinh đang học.
+\item Giáo viên chọn trạng thái chuyên cần và ghi chú cho từng học sinh, sau đó nhấn lưu điểm danh.
+\item Thực hiện \texttt{UPSERT DiemDanh} kèm \texttt{NguoiCapNhat} và \texttt{ThoiDiemCapNhat}.
+}
+{Khung \texttt{loop} \textit{[Mỗi học sinh thuộc buổi]} để nhập trạng thái; khung \texttt{alt} \textit{[Thông tin hợp lệ]} lưu dữ liệu và lưu vết người cập nhật, nhánh \textit{[Sai lớp hoặc trạng thái]} hiển thị lỗi.}
+{3.20. Biểu đồ trình tự chức năng điểm danh}
+
+Giáo viên chọn buổi học cần điểm danh và nhận danh sách học sinh đang theo học. Đối với từng học sinh, giáo viên cập nhật trạng thái và ghi chú khi cần; hệ thống kiểm tra tính hợp lệ, tạo hoặc cập nhật \texttt{DiemDanh} cùng thông tin người thực hiện, sau đó thông báo kết quả lưu.
+
+\subsubsection*{UC-07. Quản lý bài tập và bài kiểm tra}
+
+\seqbox{Biểu đồ trình tự UC-07: Tạo bài tập hoặc kiểm tra}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienBaiKiemTra} $\rightarrow$ \texttt{DieuKhienBaiKiemTra} $\rightarrow$ \texttt{LopHoc / BaiKiemTra} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên nhập tên bài, loại đánh giá, ngày giao, hạn nộp và gửi yêu cầu tạo đầu điểm.
+\item \texttt{DieuKhienBaiKiemTra} kiểm tra lớp học và tính hợp lệ của thông tin bài kiểm tra.
+\item Thực hiện \texttt{INSERT BaiKiemTra} kèm \texttt{NguoiTao} và trả về \texttt{MaBaiKiemTra} mới.
+}
+{Khung \texttt{alt}: \textit{[Hợp lệ]} $\rightarrow$ Tạo đầu điểm và hiển thị bài kiểm tra; \textit{[Không hợp lệ]} $\rightarrow$ Trả thông báo lỗi để bổ sung hoặc điều chỉnh.}
+{3.21. Biểu đồ trình tự chức năng quản lý bài tập và bài kiểm tra}
+
+Giáo viên mở lớp học, nhập tên bài, loại bài và các mốc thời gian liên quan. Hệ thống kiểm tra tính hợp lệ của dữ liệu và lớp được lựa chọn trước khi tạo \texttt{BaiKiemTra}; khi thông tin chưa hợp lệ, giao diện hiển thị lỗi để người dùng bổ sung hoặc điều chỉnh.
+
+\subsubsection*{UC-08. Cập nhật điểm số}
+
+\seqbox{Biểu đồ trình tự UC-08: Nhập/sửa điểm số}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienNhapDiem} $\rightarrow$ \texttt{DieuKhienDiemSo} $\rightarrow$ \texttt{BaiKiemTra / DiemSo} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn bài kiểm tra, hệ thống truy vấn \texttt{BaiKiemTra}, \texttt{DiemSo}, \texttt{HocSinh} để hiển thị bảng điểm và thang điểm.
+\item Giáo viên nhập điểm và nhận xét cho từng học sinh rồi gửi yêu cầu lưu.
+\item Hệ thống kiểm tra quyền chấm và thang điểm, sau đó \texttt{INSERT} hoặc \texttt{UPDATE DiemSo} (lưu \texttt{NguoiSuaDiem}, \texttt{ThoiDiemSua} khi sửa điểm).
+}
+{Khung \texttt{loop} \textit{[Từng học sinh]} kết hợp khung \texttt{alt}: \textit{[Đúng quyền, trong thang điểm]} $\rightarrow$ Lưu điểm và lưu vết chỉnh sửa; \textit{[Sai điểm/quyền/học sinh]} $\rightarrow$ Yêu cầu sửa dữ liệu.}
+{3.22. Biểu đồ trình tự chức năng cập nhật điểm số}
+
+Giáo viên lựa chọn bài kiểm tra và nhập điểm, nhận xét của từng học sinh. Hệ thống kiểm tra quyền nhập điểm, sự phù hợp của học sinh với lớp và giới hạn thang điểm; các kết quả hợp lệ được tạo mới hoặc cập nhật trong \texttt{DiemSo}, sau đó phản hồi trạng thái hoàn tất.
+
+\subsubsection*{UC-09. Quản lý học phí -- lập báo phí}
+
+\seqbox{Biểu đồ trình tự UC-09: Lập và phát hành báo phí}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienHocPhi} $\rightarrow$ \texttt{DieuKhienHocPhi} $\rightarrow$ \texttt{BuoiHoc / LopHoc / KhoanHocPhi} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn lớp, học sinh, kỳ thu và yêu cầu tính số tiền phải đóng.
+\item \texttt{DieuKhienHocPhi} truy vấn \texttt{BuoiHoc}, \texttt{DiemDanh}, \texttt{LopHoc} để lấy số buổi và đơn giá, trả về số tiền đề xuất.
+\item Giáo viên xác nhận phát hành $\rightarrow$ hệ thống thực hiện \texttt{INSERT KhoanHocPhi} và \texttt{INSERT ThongBao}.
+}
+{Tự động đồng bộ giữa phát hành khoản thu (\texttt{KhoanHocPhi}) và tạo thông báo nhắc phí trên cổng Web (\texttt{ThongBao}).}
+{3.23. Biểu đồ trình tự thao tác lập và phát hành báo phí}
+
+Giáo viên lựa chọn kỳ thu của học sinh. Hệ thống tổng hợp thông tin lớp và dữ liệu học tập liên quan để tính khoản phải đóng; sau khi giáo viên kiểm tra và xác nhận phát hành, \texttt{KhoanHocPhi} được ghi nhận, đồng thời thông báo khoản thu được cung cấp cho người nhận qua website.
+
+\subsubsection*{UC-09. Quản lý học phí -- ghi nhận thanh toán}
+
+\seqbox{Biểu đồ trình tự UC-09: Ghi nhận tiền đã đóng}
+{Giáo viên (Actor) $\rightarrow$ \texttt{GiaoDienHocPhi} $\rightarrow$ \texttt{DieuKhienHocPhi} $\rightarrow$ \texttt{KhoanHocPhi} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Giáo viên chọn khoản học phí, hệ thống truy vấn \texttt{KhoanHocPhi} hiển thị số tiền phải đóng / đã đóng / còn thiếu.
+\item Giáo viên nhập số tiền thực nhận và hình thức thanh toán (tiền mặt / chuyển khoản).
+\item Hệ thống tính lại số đã đóng, số còn thiếu và \texttt{UPDATE KhoanHocPhi} kèm \texttt{NguoiCapNhat}, \texttt{ThoiDiemCapNhat}.
+}
+{Khung \texttt{alt}: \textit{[Số tiền hợp lệ, đủ quyền]} $\rightarrow$ Cập nhật trạng thái thanh toán và số dư mới; \textit{[Số tiền không hợp lệ]} $\rightarrow$ Hiển thị lỗi.}
+{3.24. Biểu đồ trình tự thao tác ghi nhận thanh toán học phí}
+
+Sau khi nhận tiền từ phụ huynh bằng hình thức ngoài hệ thống, giáo viên chọn khoản học phí và nhập số tiền thực nhận. Hệ thống kiểm tra số tiền cùng quyền cập nhật, điều chỉnh tổng số tiền đã đóng và số còn thiếu trong \texttt{KhoanHocPhi}, sau đó hiển thị trạng thái khoản thu.
+
+\subsubsection*{UC-10. Tra cứu lịch học}
+
+\seqbox{Biểu đồ trình tự UC-10: Tra cứu lịch học}
+{HS / Phụ huynh (Actor) $\rightarrow$ \texttt{GiaoDienTraCuuLich} $\rightarrow$ \texttt{DieuKhienTraCuu} $\rightarrow$ \texttt{LienKetPHHS / GhiDanhLop / BuoiHoc} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Học sinh hoặc Phụ huynh chọn học sinh và khoảng ngày cần xem lịch.
+\item \texttt{DieuKhienTraCuu} truy vấn \texttt{HocSinh}, \texttt{LienKetPHHS} để kiểm tra quyền truy cập đối với học sinh.
+\item Nếu hợp lệ, truy vấn \texttt{GhiDanhLop} và \texttt{BuoiHoc} thuộc thời gian ghi danh để hiển thị lịch tuần/tháng.
+}
+{Khung \texttt{alt}: \textit{[Được phép xem]} $\rightarrow$ Trả dữ liệu lịch phù hợp; \textit{[Không liên kết / sai học sinh]} $\rightarrow$ Từ chối truy cập và thông báo lỗi quyền.}
+{3.25. Biểu đồ trình tự chức năng tra cứu lịch học}
+
+Người dùng lựa chọn học sinh và khoảng thời gian cần tra cứu. Hệ thống kiểm tra quyền truy cập đối với học sinh được yêu cầu; khi hợp lệ, dữ liệu ghi danh và các \texttt{BuoiHoc} được truy xuất để hiển thị thời khóa biểu, trường hợp không có quyền sẽ nhận thông báo từ chối.
+
+\subsubsection*{UC-11. Tra cứu kết quả học tập và điểm danh}
+
+\seqbox{Biểu đồ trình tự UC-11: Tra cứu điểm và chuyên cần}
+{HS / Phụ huynh (Actor) $\rightarrow$ \texttt{GiaoDienTraCuuKetQua} $\rightarrow$ \texttt{DieuKhienTraCuu} $\rightarrow$ \texttt{DiemSo / BaiKiemTra / DiemDanh} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Học sinh hoặc Phụ huynh chọn hồ sơ học sinh cần xem kết quả.
+\item \texttt{DieuKhienTraCuu} kiểm tra tài khoản và liên kết PH--HS qua \texttt{HocSinh}, \texttt{LienKetPHHS}.
+\item Truy vấn \texttt{DiemSo}, \texttt{BaiKiemTra}, \texttt{DiemDanh} để tổng hợp điểm, nhận xét và lịch sử chuyên cần.
+}
+{Khung \texttt{alt}: \textit{[Đủ quyền xem]} $\rightarrow$ Hiển thị bảng điểm và chuyên cần; \textit{[Không có quyền]} $\rightarrow$ Từ chối và thông báo lỗi quyền.}
+{3.26. Biểu đồ trình tự chức năng tra cứu kết quả học tập và điểm danh}
+
+Học sinh hoặc phụ huynh lựa chọn hồ sơ cần xem. Sau bước kiểm tra quyền, hệ thống lấy dữ liệu \texttt{BaiKiemTra}, \texttt{DiemSo} và \texttt{DiemDanh} để tổng hợp điểm số, nhận xét và tình hình chuyên cần; các yêu cầu không đủ quyền không được cung cấp dữ liệu.
+
+\subsubsection*{UC-12. Tra cứu học phí}
+
+\seqbox{Biểu đồ trình tự UC-12: Phụ huynh tra cứu học phí}
+{Phụ huynh (Actor) $\rightarrow$ \texttt{GiaoDienTraCuuHocPhi} $\rightarrow$ \texttt{DieuKhienTraCuu} $\rightarrow$ \texttt{LienKetPHHS / KhoanHocPhi} $\rightarrow$ Cơ sở dữ liệu}
+{
+\item Phụ huynh chọn con và kỳ học phí cần tra cứu.
+\item \texttt{DieuKhienTraCuu} thực hiện \texttt{SELECT LienKetPHHS} để xác minh liên kết Phụ huynh -- Học sinh.
+\item Thực hiện \texttt{SELECT KhoanHocPhi} của học sinh để trả về số tiền phải đóng, đã đóng, còn thiếu và trạng thái hiện tại.
+}
+{Khung \texttt{alt}: \textit{[Phụ huynh được liên kết]} $\rightarrow$ Hiển thị bảng kê học phí theo kỳ; \textit{[Không có quyền]} $\rightarrow$ Từ chối tra cứu và thông báo lỗi quyền.}
+{3.27. Biểu đồ trình tự chức năng tra cứu học phí}
+
+Phụ huynh lựa chọn học sinh và kỳ thu học phí. Hệ thống xác minh quyền theo dõi học sinh, tra cứu \texttt{KhoanHocPhi} tương ứng và trả về số tiền phải đóng, đã đóng, còn thiếu cùng trạng thái; nếu không có quyền truy cập, giao diện hiển thị thông báo phù hợp.
+
+\subsection{Xây dựng biểu đồ lớp phân tích}
+
+Từ các lớp biên (\texttt{<<boundary>>}), lớp điều khiển (\texttt{<<control>>}) và lớp thực thể (\texttt{<<entity>>}) đã được xác định theo từng chức năng ở mục 3.1 cùng trình tự trao đổi thông điệp ở mục 3.2, hệ thống được tổng hợp thành biểu đồ lớp phân tích tổng quát. Biểu đồ lớp phân tích tập trung làm rõ cấu trúc tĩnh của các lớp thực thể nghiệp vụ, các thuộc tính chủ chốt, các phương thức xử lý chính và mối quan hệ liên kết (\textit{Association}) cùng bản số (\textit{Multiplicity}) giữa chúng.
+
+\subsubsection{Tổng hợp các nhóm lớp phân tích trong hệ thống}
+
+Kiến trúc phân tích của Hệ thống Quản lý Lớp học thêm được tổ chức theo mô hình ba nhóm lớp chặt chẽ nhằm tách biệt giao diện hiển thị, logic kiểm soát nghiệp vụ và dữ liệu lưu trữ. Bảng dưới đây tổng hợp danh sách và trách nhiệm của từng nhóm lớp:
+
+\begin{table}[htbp]
+\centering
+\caption{Tổng hợp các nhóm lớp phân tích theo mô hình BCE}
+\begin{tabularx}{\textwidth}{@{}c >{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{STT} & \textbf{Nhóm lớp phân tích} & \textbf{Các lớp thành phần trong hệ thống} & \textbf{Trách nhiệm và vai trò chính} \\
+\midrule
+1 & Nhóm lớp biên (\texttt{<<boundary>>}) & \texttt{GiaoDienDangNhap}, \texttt{GiaoDienNguoiDung}, \texttt{GiaoDienQuanLyLop}, \texttt{GiaoDienThoiKhoaBieu}, \texttt{GiaoDienDanhSachLop}, \texttt{GiaoDienDiemDanh}, \texttt{GiaoDienBaiKiemTra}, \texttt{GiaoDienNhapDiem}, \texttt{GiaoDienHocPhi}, \texttt{GiaoDienTraCuuLich}, \texttt{GiaoDienTraCuuKetQua}, \texttt{GiaoDienTraCuuHocPhi} & Tiếp nhận thao tác nhập liệu và yêu cầu tra cứu từ 3 tác nhân (Gia sư, Học sinh, Phụ huynh), kiểm tra định dạng sơ bộ và hiển thị kết quả hoặc thông báo lỗi tương ứng. \\
+\midrule
+2 & Nhóm lớp điều khiển (\texttt{<<control>>}) & \texttt{DieuKhienXacThuc}, \texttt{DieuKhienNguoiDung}, \texttt{DieuKhienLopHoc}, \texttt{DieuKhienLichHoc}, \texttt{DieuKhienGhiDanh}, \texttt{DieuKhienDiemDanh}, \texttt{DieuKhienBaiKiemTra}, \texttt{DieuKhienDiemSo}, \texttt{DieuKhienHocPhi}, \texttt{DieuKhienTraCuu} & Điều phối luồng xử lý nghiệp vụ của các Use Case từ UC-01 đến UC-12; kiểm tra phân quyền, kiểm tra ràng buộc nghiệp vụ (trùng lịch, thang điểm, công nợ, lưu vết) và gọi các lớp thực thể. \\
+\midrule
+3 & Nhóm lớp thực thể (\texttt{<<entity>>}) & \texttt{VaiTro}, \texttt{TaiKhoan}, \texttt{HocSinh}, \texttt{LienKetPHHS}, \texttt{LopHoc}, \texttt{GhiDanhLop}, \texttt{BuoiHoc}, \texttt{DiemDanh}, \texttt{BaiKiemTra}, \texttt{DiemSo}, \texttt{KhoanHocPhi}, \texttt{ThongBao} & Biểu diễn cấu trúc dữ liệu cốt lõi và bền vững của hệ thống, lưu trữ trạng thái nghiệp vụ và cung cấp các phương thức truy vấn, tạo mới, cập nhật dữ liệu. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsubsection{Biểu đồ lớp phân tích tổng quát của hệ thống}
+
+Hình 3.28 trình bày cấu trúc biểu đồ lớp phân tích tổng quát kết nối 12 lớp thực thể cốt lõi của hệ thống. Mỗi lớp được biểu diễn chuẩn UML gồm ba ngăn: ngăn tên lớp kèm nhãn \texttt{<<entity>>}, ngăn thuộc tính và ngăn phương thức.
+
+\begin{center}
+\noindent\fbox{\parbox{0.97\textwidth}{%
+\vspace{4pt}
+\centering\textbf{CẤU TRÚC 12 LỚP THỰC THỂ (\texttt{<<entity>>}) TRONG BIỂU ĐỒ LỚP PHÂN TÍCH TỔNG QUÁT}\par\vspace{4pt}
+\scriptsize
+\begin{tabularx}{\linewidth}{@{}p{2.2cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Lớp thực thể} & \textbf{Thuộc tính chính (\texttt{-})} & \textbf{Phương thức nghiệp vụ (\texttt{+})} \\
+\midrule
+\textbf{\texttt{VaiTro}} & \texttt{MaVaiTro, MaCodeVaiTro, TenVaiTro, MoTaQuyenHan} & \texttt{layQuyenTruyCap(), layVaiTro()} \\
+\addlinespace[2pt]
+\textbf{\texttt{TaiKhoan}} & \texttt{MaTaiKhoan, MaVaiTro, TenDangNhap, MatKhauMaHoa, HoTen, SoDienThoai, TrangThaiHoatDong} & \texttt{timTheoTenDangNhap(), doiChieuMatKhau(), taoTaiKhoan(), doiTrangThai()} \\
+\addlinespace[2pt]
+\textbf{\texttt{HocSinh}} & \texttt{MaHocSinh, MaTaiKhoan, MaCodeHocSinh, NgaySinh, KhoiLop, TruongDangHoc, TrangThaiHocTap} & \texttt{taoHoSoHocSinh(), traCuuHoSo(), timHoSoTheoTaiKhoan()} \\
+\addlinespace[2pt]
+\textbf{\texttt{LienKetPHHS}} & \texttt{MaLienKet, MaTKPhuHuynh, MaHocSinh, MoiQuanHe, LaLienHeChinh} & \texttt{taoLienKet(), kiemTraLienKet(), kiemTraQuyenPhuHuynh()} \\
+\addlinespace[2pt]
+\textbf{\texttt{LopHoc}} & \texttt{MaLopHoc, MaGiaSu, MaCodeLop, TenLopHoc, MonHoc, DonGiaCoBan, SiSoHienTai, TrangThaiLop} & \texttt{taoLop(), capNhatLop(), doiTrangThaiLop(), layDonGia()} \\
+\addlinespace[2pt]
+\textbf{\texttt{GhiDanhLop}} & \texttt{MaGhiDanh, MaLopHoc, MaHocSinh, NgayVaoLop, NgayNghiHoc, TrangThaiGhiDanh} & \texttt{taoGhiDanh(), capNhatTrangThai(), layHocSinhDangHoc()} \\
+\addlinespace[2pt]
+\textbf{\texttt{BuoiHoc}} & \texttt{MaBuoiHoc, MaLopHoc, NgayHoc, GioBatDau, GioKetThuc, NoiDungBaiGiang, TrangThaiBuoiHoc} & \texttt{taoBuoiHoc(), kiemTraTrungLich(), layBuoiHocTheoKhoangNgay()} \\
+\addlinespace[2pt]
+\textbf{\texttt{DiemDanh}} & \texttt{MaDiemDanh, MaBuoiHoc, MaHocSinh, TrangThaiDiemDanh, GhiChuDiemDanh, NguoiCapNhat, ThoiDiemCapNhat} & \texttt{taoHoacSuaDiemDanh(), capNhatNguoiThoiDiem(), layLichSuChuyenCan()} \\
+\addlinespace[2pt]
+\textbf{\texttt{BaiKiemTra}} & \texttt{MaBaiKiemTra, MaLopHoc, TenBaiKiemTra, LoaiDanhGia, HeSoDiem, ThangDiemToiDa} & \texttt{taoDauDiem(), capNhatThongTinBai(), layHeSoVaThangDiem()} \\
+\addlinespace[2pt]
+\textbf{\texttt{DiemSo}} & \texttt{MaDiemSo, MaBaiKiemTra, MaHocSinh, GiaTriDiem, NhanXetGiaoVien, NguoiSuaDiem, ThoiDiemSua} & \texttt{luuGiaTriDiem(), capNhatNguoiSuaVaThoiDiem(), layBangDiem()} \\
+\addlinespace[2pt]
+\textbf{\texttt{KhoanHocPhi}} & \texttt{MaKhoanThu, MaLopHoc, MaHocSinh, KyThuPhi, SoBuoiTinhPhi, SoTienPhaiDong, SoTienDaDong, SoTienConThieu, TrangThaiHocPhi} & \texttt{lapKhoanThu(), capNhatThanhToan(), kiemTraCongNo()} \\
+\addlinespace[2pt]
+\textbf{\texttt{ThongBao}} & \texttt{MaThongBao, MaNguoiNhan, MaHocSinh, LoaiThongBao, TieuDe, DaDoc} & \texttt{taoThongBaoWeb(), taoThongBaoDiem(), taoThongBaoHocPhi()} \\
+\bottomrule
+\end{tabularx}
+\vspace{4pt}
+\normalsize\textit{Hình 3.28. Biểu đồ lớp phân tích tổng quát của Hệ thống Quản lý Lớp học thêm}
+\vspace{2pt}
+}}
+\end{center}
+
+Trên biểu đồ lớp phân tích tổng quát, lớp \texttt{TaiKhoan} giữ vai trò trung tâm trong quản lý định danh và phân quyền thông qua liên kết với lớp \texttt{VaiTro}. Đối với học sinh, lớp \texttt{TaiKhoan} liên kết một -- một với lớp \texttt{HocSinh} để tách biệt thông tin đăng nhập và hồ sơ học tập; đồng thời lớp trung gian \texttt{LienKetPHHS} kết nối tài khoản phụ huynh với hồ sơ học sinh nhằm kiểm soát phạm vi tra cứu. Ở mảng quản lý giảng dạy, lớp \texttt{LopHoc} liên kết với \texttt{GhiDanhLop}, \texttt{BuoiHoc}, \texttt{BaiKiemTra} và \texttt{KhoanHocPhi}, từ đó kết nối tới các lớp ghi nhận kết quả chi tiết là \texttt{DiemDanh}, \texttt{DiemSo} và \texttt{ThongBao}.
+
+\subsection{Xây dựng biểu đồ thực thể liên kết}
+
+Trên cơ sở các lớp thực thể đã được phân tích và các yêu cầu ràng buộc dữ liệu của bài toán, mục này tiến hành xác định chi tiết các đối tượng dữ liệu, đặc tính (thuộc tính) của từng đối tượng, các mối quan hệ giữa chúng và xây dựng biểu đồ thực thể liên kết (ERD) cho Hệ thống Quản lý Lớp học thêm.
+
+\subsubsection{Xác định các đối tượng dữ liệu}
+
+\paragraph{3.4.1.1. Đối tượng VaiTro}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin về các vai trò phân quyền trong hệ thống, bao gồm gia sư/giáo viên (\texttt{GIA\_SU}), học sinh (\texttt{HOC\_SINH}) và phụ huynh (\texttt{PHU\_HUYNH}).\par
+\textbf{Chức năng:} Dùng để xác định phạm vi quyền hạn truy cập và thao tác trên từng nhóm chức năng nghiệp vụ theo đúng quy tắc phân quyền G1-FR01.\par
+\textbf{Các thông tin chính:} mã vai trò (\texttt{MaVaiTro}), mã định danh vai trò (\texttt{MaCodeVaiTro}), tên vai trò (\texttt{TenVaiTro}) và mô tả quyền hạn (\texttt{MoTaQuyenHan}).
+
+\paragraph{3.4.1.2. Đối tượng TaiKhoan}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin tài khoản đăng nhập và thông tin liên hệ cơ bản của tất cả người sử dụng trong hệ thống (gia sư/giáo viên, học sinh và phụ huynh).\par
+\textbf{Chức năng:} Dùng để xác thực danh tính khi đăng nhập, kiểm tra trạng thái hoạt động của tài khoản, quản lý thông tin người dùng và truy vết người khởi tạo tài khoản.\par
+\textbf{Các thông tin chính:} mã tài khoản (\texttt{MaTaiKhoan}), mã vai trò (\texttt{MaVaiTro}), người tạo tài khoản (\texttt{NguoiTao}), tên đăng nhập (\texttt{TenDangNhap}), mật khẩu mã hóa (\texttt{MatKhauMaHoa}), họ tên (\texttt{HoTen}), số điện thoại (\texttt{SoDienThoai}), email (\texttt{Email}), trạng thái hoạt động (\texttt{TrangThaiHoatDong}) và thời điểm tạo (\texttt{ThoiDiemTao}).
+
+\paragraph{3.4.1.3. Đối tượng HocSinh}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin hồ sơ học tập chuyên biệt của từng học sinh tham gia các lớp học thêm, tách biệt với thông tin xác thực trong đối tượng \texttt{TaiKhoan}.\par
+\textbf{Chức năng:} Quản lý thông tin cá nhân, trường lớp phổ thông đang theo học, ghi chú năng lực ban đầu và trạng thái theo học của học sinh để làm cơ sở ghi danh, điểm danh, chấm điểm và tính học phí.\par
+\textbf{Các thông tin chính:} mã học sinh (\texttt{MaHocSinh}), mã tài khoản liên kết (\texttt{MaTaiKhoan}), mã định danh học sinh (\texttt{MaCodeHocSinh}), ngày sinh (\texttt{NgaySinh}), khối lớp (\texttt{KhoiLop}), trường đang học (\texttt{TruongDangHoc}), ghi chú học lực (\texttt{GhiChuHocLuc}) và trạng thái học tập (\texttt{TrangThaiHocTap}).
+
+\paragraph{3.4.1.4. Đối tượng LienKetPHHS}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin liên kết giữa tài khoản phụ huynh và hồ sơ học sinh tương ứng trong hệ thống.\par
+\textbf{Chức năng:} Đảm bảo ràng buộc phân quyền dữ liệu (G1-FR07): phụ huynh chỉ được phép tra cứu lịch học, chuyên cần, bảng điểm và khoản thu học phí của những học sinh đã được giáo viên thiết lập liên kết với tài khoản của mình.\par
+\textbf{Các thông tin chính:} mã liên kết (\texttt{MaLienKet}), mã tài khoản phụ huynh (\texttt{MaTKPhuHuynh}), mã học sinh (\texttt{MaHocSinh}), mối quan hệ với học sinh (\texttt{MoiQuanHe}), cờ xác định liên hệ chính nhận thông báo học phí (\texttt{LaLienHeChinh}) và ngày thiết lập liên kết (\texttt{NgayLienKet}).
+
+\paragraph{3.4.1.5. Đối tượng LopHoc}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin chi tiết về các lớp học thêm hoặc nhóm học do gia sư/giáo viên tổ chức và quản lý.\par
+\textbf{Chức năng:} Hỗ trợ giáo viên khởi tạo lớp học mới, cập nhật thông tin môn học, cấu hình hình thức tính học phí (theo buổi hoặc theo tháng), kiểm soát sĩ số hiện tại và đóng/kết thúc lớp học khi hoàn tất khóa học.\par
+\textbf{Các thông tin chính:} mã lớp học (\texttt{MaLopHoc}), mã gia sư phụ trách (\texttt{MaGiaSu}), mã lớp hiển thị (\texttt{MaCodeLop}), tên lớp học (\texttt{TenLopHoc}), môn học (\texttt{MonHoc}), hình thức tính phí (\texttt{HinhThucTinhPhi}), đơn giá cơ bản (\texttt{DonGiaCoBan}), sĩ số hiện tại (\texttt{SiSoHienTai}), ngày bắt đầu (\texttt{NgayBatDau}), ngày kết thúc (\texttt{NgayKetThuc}) và trạng thái lớp (\texttt{TrangThaiLop}).
+
+\paragraph{3.4.1.6. Đối tượng GhiDanhLop}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin về việc học sinh đăng ký và tham gia vào từng lớp học thêm cụ thể.\par
+\textbf{Chức năng:} Giải quyết mối quan hệ nhiều -- nhiều giữa học sinh và lớp học (một học sinh có thể theo học nhiều lớp), đồng thời quản lý trạng thái đang học hoặc đã nghỉ học mà vẫn bảo toàn lịch sử điểm danh, điểm số và học phí trước đó.\par
+\textbf{Các thông tin chính:} mã ghi danh (\texttt{MaGhiDanh}), mã lớp học (\texttt{MaLopHoc}), mã học sinh (\texttt{MaHocSinh}), ngày vào lớp (\texttt{NgayVaoLop}), ngày nghỉ học (\texttt{NgayNghiHoc}), trạng thái ghi danh (\texttt{TrangThaiGhiDanh}) và lý do nghỉ học (\texttt{LyDoNghi}).
+
+\paragraph{3.4.1.7. Đối tượng BuoiHoc}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin thời khóa biểu và lịch học chi tiết của từng buổi học thuộc mỗi lớp học thêm.\par
+\textbf{Chức năng:} Giúp giáo viên lên lịch học theo ngày, khung giờ bắt đầu -- kết thúc, phòng học và nội dung bài giảng; đồng thời làm cơ sở để học sinh, phụ huynh tra cứu lịch học và giáo viên thực hiện điểm danh theo buổi.\par
+\textbf{Các thông tin chính:} mã buổi học (\texttt{MaBuoiHoc}), mã lớp học (\texttt{MaLopHoc}), ngày học (\texttt{NgayHoc}), giờ bắt đầu (\texttt{GioBatDau}), giờ kết thúc (\texttt{GioKetThuc}), nội dung bài giảng (\texttt{NoiDungBaiGiang}), phòng học hoặc đường dẫn học tập (\texttt{PhongHoc}) và trạng thái buổi học (\texttt{TrangThaiBuoiHoc}).
+
+\paragraph{3.4.1.8. Đối tượng DiemDanh}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ dữ liệu chuyên cần của từng học sinh trong mỗi buổi học cụ thể.\par
+\textbf{Chức năng:} Hỗ trợ giáo viên ghi nhận và cập nhật trạng thái tham gia buổi học (có mặt, vắng, đi trễ, có phép), lưu vết người cập nhật và thời điểm cập nhật, đồng thời cung cấp số liệu thống kê số buổi học thực tế để tính học phí cuối kỳ/tháng.\par
+\textbf{Các thông tin chính:} mã điểm danh (\texttt{MaDiemDanh}), mã buổi học (\texttt{MaBuoiHoc}), mã học sinh (\texttt{MaHocSinh}), người cập nhật (\texttt{NguoiCapNhat}), trạng thái điểm danh (\texttt{TrangThaiDiemDanh}), ghi chú điểm danh (\texttt{GhiChuDiemDanh}) và thời điểm cập nhật (\texttt{ThoiDiemCapNhat}).
+
+\paragraph{3.4.1.9. Đối tượng BaiKiemTra}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin các đầu điểm đánh giá năng lực học tập (bài tập về nhà, kiểm tra 15 phút, kiểm tra định kỳ, thi cuối khóa) của từng lớp học.\par
+\textbf{Chức năng:} Giúp giáo viên khởi tạo cấu trúc cột điểm, quy định hệ số điểm, thang điểm tối đa và thời hạn nộp bài trước khi tiến hành chấm và nhập điểm cho học sinh.\par
+\textbf{Các thông tin chính:} mã bài kiểm tra (\texttt{MaBaiKiemTra}), mã lớp học (\texttt{MaLopHoc}), người tạo đề (\texttt{NguoiTao}), tên bài kiểm tra/bài tập (\texttt{TenBaiKiemTra}), loại đánh giá (\texttt{LoaiDanhGia}), hệ số điểm (\texttt{HeSoDiem}), thang điểm tối đa (\texttt{ThangDiemToiDa}), ngày giao (\texttt{NgayGiao}) và hạn nộp (\texttt{HanNop}).
+
+\paragraph{3.4.1.10. Đối tượng DiemSo}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ kết quả điểm số và lời nhận xét chi tiết của giáo viên đối với từng học sinh trong mỗi bài tập hoặc bài kiểm tra.\par
+\textbf{Chức năng:} Hỗ trợ quản lý bảng điểm trực tuyến, theo dõi sự tiến bộ của học sinh theo thời gian và đảm bảo ràng buộc nghiệp vụ lưu vết người chấm lần đầu cũng như người sửa điểm và thời điểm sửa điểm gần nhất.\par
+\textbf{Các thông tin chính:} mã điểm số (\texttt{MaDiemSo}), mã bài kiểm tra (\texttt{MaBaiKiemTra}), mã học sinh (\texttt{MaHocSinh}), người chấm điểm (\texttt{NguoiChamDiem}), người sửa điểm (\texttt{NguoiSuaDiem}), giá trị điểm đạt được (\texttt{GiaTriDiem}), nhận xét của giáo viên (\texttt{NhanXetGiaoVien}), thời điểm chấm (\texttt{ThoiDiemCham}) và thời điểm sửa điểm (\texttt{ThoiDiemSua}).
+
+\paragraph{3.4.1.11. Đối tượng KhoanHocPhi}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ thông tin báo phí, số tiền phải đóng, số tiền đã đóng, công nợ còn thiếu và lịch sử xác nhận thanh toán học phí của từng học sinh theo kỳ/tháng.\par
+\textbf{Chức năng:} Hỗ trợ tự động tổng hợp học phí từ số buổi học và đơn giá lớp học, theo dõi ba trạng thái thanh toán (chưa đóng, đóng một phần, đã đóng đủ) và lưu vết người cập nhật cùng thời điểm cập nhật khoản thu.\par
+\textbf{Các thông tin chính:} mã khoản thu (\texttt{MaKhoanThu}), mã lớp học (\texttt{MaLopHoc}), mã học sinh (\texttt{MaHocSinh}), người cập nhật (\texttt{NguoiCapNhat}), kỳ thu phí (\texttt{KyThuPhi}), số buổi tính phí (\texttt{SoBuoiTinhPhi}), số tiền phải đóng (\texttt{SoTienPhaiDong}), số tiền đã đóng (\texttt{SoTienDaDong}), số tiền còn thiếu (\texttt{SoTienConThieu}), trạng thái học phí (\texttt{TrangThaiHocPhi}), hình thức thanh toán (\texttt{HinhThucThanhToan}), hạn thanh toán (\texttt{HanThanhToan}), ngày thanh toán (\texttt{NgayThanhToan}) và thời điểm cập nhật (\texttt{ThoiDiemCapNhat}).
+
+\paragraph{3.4.1.12. Đối tượng ThongBao}\mbox{}\par
+\textbf{Mô tả:} Lưu trữ các bản ghi thông báo hiển thị trực tiếp trên cổng thông tin Web dành cho học sinh và phụ huynh.\par
+\textbf{Chức năng:} Giúp hệ thống tự động gửi thông báo khi lớp học thay đổi lịch học, khi giáo viên công bố điểm kiểm tra mới, khi học sinh vắng mặt hoặc khi phát hành thông báo thu học phí đầu kỳ/đến hạn.\par
+\textbf{Các thông tin chính:} mã thông báo (\texttt{MaThongBao}), mã người nhận (\texttt{MaNguoiNhan}), mã học sinh liên quan (\texttt{MaHocSinh}), loại thông báo (\texttt{LoaiThongBao}), tiêu đề thông báo (\texttt{TieuDe}), nội dung chi tiết (\texttt{NoiDungThongBao}), trạng thái đã đọc (\texttt{DaDoc}) và thời điểm gửi (\texttt{ThoiDiemGui}).
+
+\subsubsection{Xác định các đặc tính của các đối tượng dữ liệu}
+
+\paragraph{3.4.2.1. Đối tượng VaiTro}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaVaiTro}: định danh duy nhất cho từng vai trò phân quyền trong hệ thống (khóa chính).
+    \item \texttt{MaCodeVaiTro}: mã ký hiệu chuẩn của vai trò (\texttt{GIA\_SU}, \texttt{HOC\_SINH}, \texttt{PHU\_HUYNH}) dùng để kiểm tra phân quyền trong mã nguồn.
+    \item \texttt{TenVaiTro}: tên hiển thị tiếng Việt của vai trò trên giao diện quản trị.
+    \item \texttt{MoTaQuyenHan}: nội dung diễn giải các chức năng và phạm vi dữ liệu mà vai trò được phép thao tác.
+\end{itemize}
+
+\paragraph{3.4.2.2. Đối tượng TaiKhoan}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaTaiKhoan}: định danh duy nhất cho mỗi tài khoản người dùng trong hệ thống (khóa chính).
+    \item \texttt{MaVaiTro}: khóa ngoại tham chiếu đến đối tượng \texttt{VaiTro} để xác định quyền hạn của tài khoản.
+    \item \texttt{NguoiTao}: khóa ngoại tự tham chiếu ghi nhận mã tài khoản của gia sư/giáo viên đã khởi tạo và cấp phát tài khoản này.
+    \item \texttt{TenDangNhap}: chuỗi ký tự định danh duy nhất dùng để đăng nhập vào hệ thống.
+    \item \texttt{MatKhauMaHoa}: mật khẩu xác thực của người dùng được lưu trữ dưới dạng chuỗi băm bảo mật.
+    \item \texttt{HoTen}: họ và tên đầy đủ của người sở hữu tài khoản.
+    \item \texttt{SoDienThoai}: số điện thoại liên lạc của gia sư, phụ huynh hoặc học sinh.
+    \item \texttt{Email}: địa chỉ thư điện tử dùng để liên hệ và nhận thông báo khi cần thiết.
+    \item \texttt{TrangThaiHoatDong}: cờ trạng thái xác định tài khoản đang hoạt động bình thường hay đã bị khóa.
+    \item \texttt{ThoiDiemTao}: ngày giờ tài khoản được khởi tạo trên hệ thống.
+\end{itemize}
+
+\paragraph{3.4.2.3. Đối tượng HocSinh}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaHocSinh}: định danh duy nhất cho từng hồ sơ học sinh trong hệ thống (khóa chính).
+    \item \texttt{MaTaiKhoan}: khóa ngoại duy nhất (\textit{Unique Foreign Key}) liên kết 1 -- 1 với tài khoản đăng nhập của học sinh trong đối tượng \texttt{TaiKhoan}.
+    \item \texttt{MaCodeHocSinh}: mã học sinh hiển thị trên giao diện (ví dụ: \texttt{HS2026001}) giúp giáo viên và phụ huynh dễ nhận diện.
+    \item \texttt{NgaySinh}: ngày tháng năm sinh của học sinh.
+    \item \texttt{KhoiLop}: khối lớp phổ thông hiện tại của học sinh (ví dụ: Lớp 10, Lớp 11, Lớp 12).
+    \item \texttt{TruongDangHoc}: tên trường phổ thông nơi học sinh đang theo học.
+    \item \texttt{GhiChuHocLuc}: thông tin ghi chú ban đầu về học lực hoặc mục tiêu học tập của học sinh.
+    \item \texttt{TrangThaiHocTap}: tình trạng theo học hiện tại của học sinh tại trung tâm/lớp gia sư (đang học, tạm nghỉ).
+\end{itemize}
+
+\paragraph{3.4.2.4. Đối tượng LienKetPHHS}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaLienKet}: định danh duy nhất cho mỗi bản ghi liên kết giữa phụ huynh và học sinh (khóa chính).
+    \item \texttt{MaTKPhuHuynh}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan} (vai trò phụ huynh).
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh} được phụ huynh giám hộ và theo dõi.
+    \item \texttt{MoiQuanHe}: xác định mối quan hệ gia đình giữa phụ huynh và học sinh (Bố, Mẹ, Người giám hộ).
+    \item \texttt{LaLienHeChinh}: đánh dấu phụ huynh là đầu mối liên hệ chính để ưu tiên nhận thông báo chuyên cần và học phí.
+    \item \texttt{NgayLienKet}: thời điểm giáo viên thực hiện liên kết hai tài khoản trên hệ thống.
+\end{itemize}
+
+\paragraph{3.4.2.5. Đối tượng LopHoc}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaLopHoc}: định danh duy nhất cho từng lớp học thêm (khóa chính).
+    \item \texttt{MaGiaSu}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan}, xác định gia sư/giáo viên trực tiếp phụ trách lớp.
+    \item \texttt{MaCodeLop}: mã lớp ngắn gọn dùng trong tra cứu và hiển thị (ví dụ: \texttt{TOAN12-A1}).
+    \item \texttt{TenLopHoc}: tên đầy đủ của lớp học thêm.
+    \item \texttt{MonHoc}: tên môn học giảng dạy (Toán, Vật lý, Hóa học, Tiếng Anh...).
+    \item \texttt{HinhThucTinhPhi}: quy tắc tính học phí của lớp (tính theo số buổi học thực tế hoặc thu trọn gói theo tháng).
+    \item \texttt{DonGiaCoBan}: mức học phí cơ bản (VNĐ/buổi hoặc VNĐ/tháng) áp dụng cho lớp học.
+    \item \texttt{SiSoHienTai}: số lượng học sinh đang theo học tại lớp (mặc định khởi tạo bằng 0 và tự động cập nhật khi thêm/bớt học sinh).
+    \item \texttt{NgayBatDau}: ngày khai giảng lớp học.
+    \item \texttt{NgayKetThuc}: ngày đóng hoặc kết thúc lớp học.
+    \item \texttt{TrangThaiLop}: tình trạng vận hành của lớp học (đang mở hoạt động hoặc đã kết thúc).
+\end{itemize}
+
+\paragraph{3.4.2.6. Đối tượng GhiDanhLop}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaGhiDanh}: định danh duy nhất cho mỗi lượt đăng ký học sinh vào lớp (khóa chính).
+    \item \texttt{MaLopHoc}: khóa ngoại tham chiếu đến đối tượng \texttt{LopHoc}.
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh}.
+    \item \texttt{NgayVaoLop}: ngày học sinh chính thức bắt đầu tham gia lớp học.
+    \item \texttt{NgayNghiHoc}: ngày học sinh ngừng theo học tại lớp (nếu có).
+    \item \texttt{TrangThaiGhiDanh}: phản ánh học sinh đang theo học (\texttt{DANG\_HOC}) hay đã nghỉ học (\texttt{DA\_NGHI}) tại lớp đó.
+    \item \texttt{LyDoNghi}: ghi nhận lý do học sinh rút khỏi lớp hoặc ghi chú đặc biệt khi xếp lớp.
+\end{itemize}
+
+\paragraph{3.4.2.7. Đối tượng BuoiHoc}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaBuoiHoc}: định danh duy nhất cho từng buổi học cụ thể trong lịch học (khóa chính).
+    \item \texttt{MaLopHoc}: khóa ngoại tham chiếu đến đối tượng \texttt{LopHoc} tổ chức buổi học.
+    \item \texttt{NgayHoc}: ngày tháng năm diễn ra buổi học.
+    \item \texttt{GioBatDau}: thời điểm bắt đầu buổi học.
+    \item \texttt{GioKetThuc}: thời điểm kết thúc buổi học (bắt buộc thỏa mãn ràng buộc nghiệp vụ \texttt{GioKetThuc > GioBatDau}).
+    \item \texttt{NoiDungBaiGiang}: tóm tắt chủ đề, chương mục hoặc nội dung kiến thức giảng dạy trong buổi học.
+    \item \texttt{PhongHoc}: địa điểm phòng học trực tiếp hoặc đường dẫn lớp học.
+    \item \texttt{TrangThaiBuoiHoc}: tình trạng thực hiện buổi học (sắp diễn ra, đã hoàn thành, đã hủy/dời lịch).
+\end{itemize}
+
+\paragraph{3.4.2.8. Đối tượng DiemDanh}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaDiemDanh}: định danh duy nhất cho mỗi bản ghi điểm danh chuyên cần (khóa chính).
+    \item \texttt{MaBuoiHoc}: khóa ngoại tham chiếu đến đối tượng \texttt{BuoiHoc} cần điểm danh.
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh} tham gia buổi học.
+    \item \texttt{NguoiCapNhat}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan}, lưu vết giáo viên thực hiện điểm danh hoặc chỉnh sửa điểm danh.
+    \item \texttt{TrangThaiDiemDanh}: ghi nhận tình trạng chuyên cần của học sinh trong buổi học (có mặt, vắng không phép, đi trễ, vắng có phép).
+    \item \texttt{GhiChuDiemDanh}: thông tin giải trình lý do vắng học, đi trễ hoặc nhận xét thái độ học tập trong buổi.
+    \item \texttt{ThoiDiemCapNhat}: ngày giờ hệ thống ghi nhận thao tác điểm danh hoặc sửa đổi trạng thái chuyên cần gần nhất.
+\end{itemize}
+
+\paragraph{3.4.2.9. Đối tượng BaiKiemTra}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaBaiKiemTra}: định danh duy nhất cho mỗi bài tập hoặc bài kiểm tra (khóa chính).
+    \item \texttt{MaLopHoc}: khóa ngoại tham chiếu đến đối tượng \texttt{LopHoc} áp dụng bài kiểm tra này.
+    \item \texttt{NguoiTao}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan} (giáo viên tạo đầu điểm).
+    \item \texttt{TenBaiKiemTra}: tiêu đề bài tập hoặc bài kiểm tra (ví dụ: Kiểm tra 15 phút Chương Hàm số).
+    \item \texttt{LoaiDanhGia}: phân loại đầu điểm (bài tập về nhà, kiểm tra 15 phút, kiểm tra định kỳ/giữa kỳ, kiểm tra cuối kỳ).
+    \item \texttt{HeSoDiem}: trọng số/hệ số của bài kiểm tra dùng khi tính điểm trung bình.
+    \item \texttt{ThangDiemToiDa}: mức điểm tối đa của bài kiểm tra (mặc định là thang điểm 10).
+    \item \texttt{NgayGiao}: ngày giao bài tập hoặc ngày tổ chức kiểm tra trên lớp.
+    \item \texttt{HanNop}: thời hạn cuối cùng học sinh phải hoàn thành bài tập.
+\end{itemize}
+
+\paragraph{3.4.2.10. Đối tượng DiemSo}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaDiemSo}: định danh duy nhất cho mỗi kết quả điểm của học sinh (khóa chính).
+    \item \texttt{MaBaiKiemTra}: khóa ngoại tham chiếu đến đối tượng \texttt{BaiKiemTra}.
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh} được chấm điểm.
+    \item \texttt{NguoiChamDiem}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan}, ghi nhận giáo viên nhập điểm lần đầu.
+    \item \texttt{NguoiSuaDiem}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan}, bắt buộc lưu vết người thực hiện chỉnh sửa khi điểm số đã ghi nhận bị thay đổi.
+    \item \texttt{GiaTriDiem}: số điểm học sinh đạt được (ràng buộc từ 0 đến \texttt{ThangDiemToiDa}).
+    \item \texttt{NhanXetGiaoVien}: lời phê và đánh giá chi tiết của giáo viên về bài làm của học sinh.
+    \item \texttt{ThoiDiemCham}: thời điểm điểm số được nhập lần đầu vào hệ thống.
+    \item \texttt{ThoiDiemSua}: thời điểm điểm số hoặc nhận xét được chỉnh sửa gần nhất.
+\end{itemize}
+
+\paragraph{3.4.2.11. Đối tượng KhoanHocPhi}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaKhoanThu}: định danh duy nhất cho mỗi khoản thu/hóa đơn học phí của học sinh (khóa chính).
+    \item \texttt{MaLopHoc}: khóa ngoại tham chiếu đến đối tượng \texttt{LopHoc} phát sinh học phí.
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh} cần đóng học phí.
+    \item \texttt{NguoiCapNhat}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan}, lưu vết giáo viên lập báo phí hoặc xác nhận/điều chỉnh thanh toán.
+    \item \texttt{KyThuPhi}: kỳ hoặc tháng thu học phí (ví dụ: Tháng 10/2026).
+    \item \texttt{SoBuoiTinhPhi}: tổng số buổi học dùng làm căn cứ tính học phí trong kỳ.
+    \item \texttt{SoTienPhaiDong}: tổng số tiền học phí học sinh phải thanh toán trong kỳ.
+    \item \texttt{SoTienDaDong}: tổng số tiền thực tế phụ huynh đã thanh toán và được giáo viên xác nhận.
+    \item \texttt{SoTienConThieu}: số tiền công nợ còn lại chưa thanh toán (được tính tự động bằng \texttt{SoTienPhaiDong} trừ \texttt{SoTienDaDong}).
+    \item \texttt{TrangThaiHocPhi}: trạng thái thanh toán của khoản thu (chưa đóng, đóng một phần, đã đóng đủ).
+    \item \texttt{HinhThucThanhToan}: phương thức phụ huynh giao dịch ngoài hệ thống (tiền mặt hoặc chuyển khoản ngân hàng).
+    \item \texttt{HanThanhToan}: ngày đến hạn đóng học phí của kỳ thu.
+    \item \texttt{NgayThanhToan}: ngày giờ phụ huynh hoàn tất hoặc thực hiện đóng tiền gần nhất.
+    \item \texttt{ThoiDiemCapNhat}: thời điểm bản ghi học phí được tạo hoặc chỉnh sửa gần nhất.
+\end{itemize}
+
+\paragraph{3.4.2.12. Đối tượng ThongBao}\mbox{}
+\begin{itemize}\setlength{\itemsep}{2pt}\setlength{\parskip}{0pt}
+    \item \texttt{MaThongBao}: định danh duy nhất cho từng bản ghi thông báo trên hệ thống Web (khóa chính).
+    \item \texttt{MaNguoiNhan}: khóa ngoại tham chiếu đến đối tượng \texttt{TaiKhoan} (phụ huynh hoặc học sinh nhận thông báo).
+    \item \texttt{MaHocSinh}: khóa ngoại tham chiếu đến đối tượng \texttt{HocSinh} có sự kiện phát sinh (giúp phụ huynh có nhiều con nhận biết thông báo thuộc về con nào).
+    \item \texttt{LoaiThongBao}: phân loại sự kiện kích hoạt thông báo (đổi lịch học, có điểm mới, cảnh báo vắng học, thông báo học phí).
+    \item \texttt{TieuDe}: tiêu đề tóm tắt của thông báo hiển thị trên thanh chuông thông báo.
+    \item \texttt{NoiDungThongBao}: nội dung chi tiết của thông báo gửi tới người dùng.
+    \item \texttt{DaDoc}: trạng thái đánh dấu người nhận đã xem thông báo hay chưa.
+    \item \texttt{ThoiDiemGui}: thời điểm hệ thống khởi tạo và hiển thị thông báo.
+\end{itemize}
+
+\subsubsection{Xác định các mối quan hệ giữa các đối tượng dữ liệu}
+
+\paragraph{3.4.3.1. Quan hệ giữa VaiTro và TaiKhoan}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi vai trò phân quyền có thể được gán cho nhiều tài khoản người dùng khác nhau, nhưng mỗi tài khoản người dùng tại một thời điểm chỉ thuộc về một vai trò duy nhất (Gia sư, Học sinh hoặc Phụ huynh).\par
+\textbf{Ý nghĩa:} Giúp hệ thống kiểm soát chặt chẽ quyền truy cập chức năng và điều hướng đúng giao diện trang chủ (Dashboard) ngay sau khi người dùng đăng nhập.
+
+\paragraph{3.4.3.2. Quan hệ giữa TaiKhoan và HocSinh}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- 1 (một -- một)\par
+\textbf{Mô tả:} Mỗi tài khoản có vai trò Học sinh gắn liền với duy nhất một hồ sơ học tập trong đối tượng \texttt{HocSinh}, và mỗi hồ sơ \texttt{HocSinh} chỉ liên kết với một tài khoản đăng nhập duy nhất.\par
+\textbf{Ý nghĩa:} Tách biệt thông tin bảo mật xác thực (mật khẩu, trạng thái tài khoản) với thông tin nghiệp vụ học tập của học sinh, đồng thời đảm bảo ràng buộc học sinh chỉ xem được dữ liệu học tập của chính mình (G1-FR06).
+
+\paragraph{3.4.3.3. Quan hệ giữa TaiKhoan và LienKetPHHS}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Một tài khoản người dùng có vai trò Phụ huynh có thể sở hữu một hoặc nhiều bản ghi liên kết trong \texttt{LienKetPHHS} (trường hợp phụ huynh có nhiều con cùng theo học), nhưng mỗi bản ghi liên kết chỉ tham chiếu đến một tài khoản phụ huynh.\par
+\textbf{Ý nghĩa:} Xác định danh sách các học sinh mà một tài khoản phụ huynh được quyền theo dõi trên hệ thống (G1-FR07).
+
+\paragraph{3.4.3.4. Quan hệ giữa HocSinh và LienKetPHHS}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi hồ sơ học sinh có thể được liên kết với một hoặc nhiều tài khoản phụ huynh (ví dụ: cả bố và mẹ cùng theo dõi), nhưng mỗi bản ghi trong \texttt{LienKetPHHS} chỉ gắn với một học sinh cụ thể.\par
+\textbf{Ý nghĩa:} Hỗ trợ quản lý mối quan hệ giám hộ và xác định đúng người nhận khi hệ thống gửi thông báo chuyên cần, điểm số hoặc học phí của học sinh.
+
+\paragraph{3.4.3.5. Quan hệ giữa TaiKhoan và LopHoc}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Một tài khoản Gia sư/Giáo viên có thể trực tiếp mở và quản lý nhiều lớp học thêm khác nhau, nhưng mỗi lớp học chỉ do một gia sư/giáo viên phụ trách chính.\par
+\textbf{Ý nghĩa:} Xác định người chịu trách nhiệm quản lý danh sách lớp, lập thời khóa biểu, điểm danh, nhập điểm và thu học phí cho từng lớp học.
+
+\paragraph{3.4.3.6. Quan hệ giữa LopHoc và GhiDanhLop}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi lớp học thêm có thể chứa nhiều bản ghi ghi danh của các học sinh khác nhau, nhưng mỗi bản ghi trong \texttt{GhiDanhLop} chỉ thuộc về một lớp học duy nhất.\par
+\textbf{Ý nghĩa:} Quản lý danh sách thành viên và biến động sĩ số của từng lớp học theo thời gian.
+
+\paragraph{3.4.3.7. Quan hệ giữa HocSinh và GhiDanhLop}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi học sinh có thể đăng ký tham gia nhiều lớp học thêm ở các môn học hoặc khung giờ khác nhau, và mỗi lần ghi danh vào một lớp được lưu thành một bản ghi riêng trong \texttt{GhiDanhLop}.\par
+\textbf{Ý nghĩa:} Thể hiện trọn vẹn quy tắc nghiệp vụ một học sinh có thể thuộc nhiều lớp, đồng thời cho phép lưu giữ lịch sử học tập riêng biệt của học sinh tại từng lớp ngay cả khi đã nghỉ học.
+
+\paragraph{3.4.3.8. Quan hệ giữa LopHoc và BuoiHoc}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Một lớp học bao gồm nhiều buổi học diễn ra theo lịch trình hàng tuần hoặc theo ngày cụ thể, nhưng mỗi buổi học trong \texttt{BuoiHoc} chỉ thuộc về một lớp học duy nhất.\par
+\textbf{Ý nghĩa:} Phục vụ việc lập thời khóa biểu, kiểm tra trùng lịch học và theo dõi tiến độ giảng dạy của từng lớp.
+
+\paragraph{3.4.3.9. Quan hệ giữa BuoiHoc và DiemDanh}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi buổi học có nhiều bản ghi điểm danh tương ứng với các học sinh trong lớp, nhưng mỗi bản ghi \texttt{DiemDanh} chỉ gắn với một buổi học cụ thể.\par
+\textbf{Ý nghĩa:} Đảm bảo dữ liệu chuyên cần được ghi nhận chính xác theo từng buổi học và từng ngày giờ diễn ra lớp học.
+
+\paragraph{3.4.3.10. Quan hệ giữa HocSinh và DiemDanh}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi học sinh có nhiều bản ghi điểm danh qua các buổi học khác nhau mà mình tham gia, nhưng mỗi bản ghi điểm danh chỉ thuộc về một học sinh duy nhất.\par
+\textbf{Ý nghĩa:} Giúp thống kê tỷ lệ chuyên cần, tổng hợp số buổi có mặt/vắng mặt của học sinh để báo cáo cho phụ huynh và làm căn cứ tính học phí.
+
+\paragraph{3.4.3.11. Quan hệ giữa LopHoc và BaiKiemTra}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Một lớp học có thể tổ chức nhiều bài tập về nhà và bài kiểm tra định kỳ trong suốt khóa học, nhưng mỗi bài kiểm tra trong \texttt{BaiKiemTra} chỉ gắn với một lớp học xác định.\par
+\textbf{Ý nghĩa:} Quản lý danh mục các đầu điểm đánh giá theo đúng chương trình học của từng lớp.
+
+\paragraph{3.4.3.12. Quan hệ giữa BaiKiemTra và DiemSo}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi bài kiểm tra hoặc bài tập bao gồm nhiều bản ghi kết quả điểm của các học sinh trong lớp, nhưng mỗi bản ghi trong \texttt{DiemSo} chỉ thuộc về một bài kiểm tra duy nhất.\par
+\textbf{Ý nghĩa:} Gắn kết chặt chẽ kết quả điểm số và nhận xét của học sinh với đúng đầu điểm và thang điểm của bài kiểm tra đó.
+
+\paragraph{3.4.3.13. Quan hệ giữa HocSinh và DiemSo}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi học sinh có nhiều kết quả điểm số ứng với các bài kiểm tra đã thực hiện ở các lớp đang theo học, nhưng mỗi bản ghi điểm số chỉ thuộc về một học sinh duy nhất.\par
+\textbf{Ý nghĩa:} Hình thành bảng điểm cá nhân và biểu đồ theo dõi tiến độ học tập của từng học sinh theo thời gian.
+
+\paragraph{3.4.3.14. Quan hệ giữa LopHoc và KhoanHocPhi}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi lớp học phát sinh nhiều khoản thu học phí cho các học sinh qua từng kỳ hoặc từng tháng, nhưng mỗi khoản thu trong \texttt{KhoanHocPhi} chỉ tính cho một lớp học cụ thể.\par
+\textbf{Ý nghĩa:} Giúp giáo viên đối soát doanh thu học phí và danh sách công nợ theo từng lớp học thêm.
+
+\paragraph{3.4.3.15. Quan hệ giữa HocSinh và KhoanHocPhi}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi học sinh có nhiều khoản thu học phí theo từng kỳ/tháng và từng lớp đang theo học, nhưng mỗi bản ghi \texttt{KhoanHocPhi} chỉ gắn với một học sinh duy nhất.\par
+\textbf{Ý nghĩa:} Giúp phụ huynh và giáo viên tra cứu minh bạch số tiền phải đóng, số tiền đã đóng và số tiền còn thiếu của từng học sinh.
+
+\paragraph{3.4.3.16. Quan hệ giữa TaiKhoan và ThongBao}\mbox{}\par
+\textbf{Kiểu quan hệ:} 1 -- N (một -- nhiều)\par
+\textbf{Mô tả:} Mỗi tài khoản người dùng (học sinh hoặc phụ huynh) có thể nhận nhiều thông báo khác nhau theo thời gian, nhưng mỗi bản ghi trong \texttt{ThongBao} chỉ gửi tới một tài khoản người nhận xác định.\par
+\textbf{Ý nghĩa:} Hỗ trợ truyền tải kịp thời các biến động về lịch học, điểm số mới, tình trạng vắng học và nhắc hạn học phí đến đúng đối tượng sử dụng.
+
+\subsubsection{Biểu đồ thực thể liên kết (ERD) và bảng ánh xạ tổng hợp}
+
+Từ các đối tượng dữ liệu, thuộc tính khóa chính (\texttt{PK}), khóa ngoại (\texttt{FK}) và các mối quan hệ đã xác định ở trên, biểu đồ thực thể liên kết (ERD) của Hệ thống Quản lý Lớp học thêm được xây dựng theo ký hiệu chân chim (\textit{Crow's Foot}) như trình bày tại Hình 3.29.
+
+\begin{center}
+\noindent\fbox{\parbox{0.97\textwidth}{%
+\vspace{4pt}
+\centering\textbf{SƠ ĐỒ CẤU TRÚC THỰC THỂ LIÊN KẾT (ERD -- 12 BẢNG DỮ LIỆU)}\par\vspace{4pt}
+\scriptsize
+\begin{tabularx}{\linewidth}{@{}p{2.1cm} p{2.1cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Thực thể} & \textbf{Khóa chính (PK)} & \textbf{Khóa ngoại (FK)} & \textbf{Các thuộc tính dữ liệu chính} \\
+\midrule
+\textbf{\texttt{VaiTro}} & \texttt{MaVaiTro} & \textit{(Không có)} & \texttt{MaCodeVaiTro, TenVaiTro, MoTaQuyenHan} \\
+\addlinespace[2pt]
+\textbf{\texttt{TaiKhoan}} & \texttt{MaTaiKhoan} & \texttt{FK1: MaVaiTro}\newline \texttt{FK2: NguoiTao} & \texttt{TenDangNhap, MatKhauMaHoa, HoTen, SoDienThoai, Email, TrangThaiHoatDong, ThoiDiemTao} \\
+\addlinespace[2pt]
+\textbf{\texttt{HocSinh}} & \texttt{MaHocSinh} & \texttt{FK1: MaTaiKhoan} (1:1) & \texttt{MaCodeHocSinh, NgaySinh, KhoiLop, TruongDangHoc, GhiChuHocLuc, TrangThaiHocTap} \\
+\addlinespace[2pt]
+\textbf{\texttt{LienKetPHHS}} & \texttt{MaLienKet} & \texttt{FK1: MaTKPhuHuynh}\newline \texttt{FK2: MaHocSinh} & \texttt{MoiQuanHe, LaLienHeChinh, NgayLienKet} \\
+\addlinespace[2pt]
+\textbf{\texttt{LopHoc}} & \texttt{MaLopHoc} & \texttt{FK1: MaGiaSu} & \texttt{MaCodeLop, TenLopHoc, MonHoc, HinhThucTinhPhi, DonGiaCoBan, SiSoHienTai, NgayBatDau, NgayKetThuc, TrangThaiLop} \\
+\addlinespace[2pt]
+\textbf{\texttt{GhiDanhLop}} & \texttt{MaGhiDanh} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: MaHocSinh} & \texttt{NgayVaoLop, NgayNghiHoc, TrangThaiGhiDanh, LyDoNghi} \\
+\addlinespace[2pt]
+\textbf{\texttt{BuoiHoc}} & \texttt{MaBuoiHoc} & \texttt{FK1: MaLopHoc} & \texttt{NgayHoc, GioBatDau, GioKetThuc, NoiDungBaiGiang, PhongHoc, TrangThaiBuoiHoc} \\
+\addlinespace[2pt]
+\textbf{\texttt{DiemDanh}} & \texttt{MaDiemDanh} & \texttt{FK1: MaBuoiHoc}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiCapNhat} & \texttt{TrangThaiDiemDanh, GhiChuDiemDanh, ThoiDiemCapNhat} \\
+\addlinespace[2pt]
+\textbf{\texttt{BaiKiemTra}} & \texttt{MaBaiKiemTra} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: NguoiTao} & \texttt{TenBaiKiemTra, LoaiDanhGia, HeSoDiem, ThangDiemToiDa, NgayGiao, HanNop} \\
+\addlinespace[2pt]
+\textbf{\texttt{DiemSo}} & \texttt{MaDiemSo} & \texttt{FK1: MaBaiKiemTra}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiChamDiem}\newline \texttt{FK4: NguoiSuaDiem} & \texttt{GiaTriDiem, NhanXetGiaoVien, ThoiDiemCham, ThoiDiemSua} \\
+\addlinespace[2pt]
+\textbf{\texttt{KhoanHocPhi}} & \texttt{MaKhoanThu} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiCapNhat} & \texttt{KyThuPhi, SoBuoiTinhPhi, SoTienPhaiDong, SoTienDaDong, SoTienConThieu, TrangThaiHocPhi, HinhThucThanhToan, HanThanhToan, NgayThanhToan, ThoiDiemCapNhat} \\
+\addlinespace[2pt]
+\textbf{\texttt{ThongBao}} & \texttt{MaThongBao} & \texttt{FK1: MaNguoiNhan}\newline \texttt{FK2: MaHocSinh} & \texttt{LoaiThongBao, TieuDe, NoiDungThongBao, DaDoc, ThoiDiemGui} \\
+\bottomrule
+\end{tabularx}
+\vspace{4pt}
+\normalsize\textit{Hình 3.29. Biểu đồ thực thể liên kết (ERD) của Hệ thống Quản lý Lớp học thêm}
+\vspace{2pt}
+}}
+\end{center}
+
+Bảng dưới đây tổng hợp 12 thực thể trong mô hình dữ liệu và ánh xạ tương ứng sang các kho dữ liệu từ D1 đến D7 trên sơ đồ luồng dữ liệu (DFD):
+
+{\footnotesize
+\begin{longtable}{@{}c >{\raggedright\arraybackslash}p{2.2cm} c >{\raggedright\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}p{2.6cm} >{\raggedright\arraybackslash}p{4.8cm}@{}}
+\caption{Ánh xạ 12 thực thể ERD sang các kho dữ liệu DFD (D1 -- D7)}\\
+\toprule
+\textbf{STT} & \textbf{Tên Thực thể} & \textbf{Kho DFD} & \textbf{Khóa chính (PK)} & \textbf{Khóa ngoại (FK)} & \textbf{Mô tả vai trò nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{STT} & \textbf{Tên Thực thể} & \textbf{Kho DFD} & \textbf{Khóa chính (PK)} & \textbf{Khóa ngoại (FK)} & \textbf{Mô tả vai trò nghiệp vụ} \\
+\midrule
+\endhead
+1 & \texttt{VaiTro}\newline (Vai trò phân quyền) & D1 & \texttt{MaVaiTro} & (Không có) & Lưu 3 vai trò chuẩn của hệ thống: Gia sư/Giáo viên, Học sinh, Phụ huynh (G1-FR01). \\
+\midrule
+2 & \texttt{LienKetPHHS}\newline (Liên kết PH -- HS) & D2 & \texttt{MaLienKet} & \texttt{FK1: MaTKPhuHuynh}\newline \texttt{FK2: MaHocSinh} & Bảng trung gian liên kết tài khoản Phụ huynh với Học sinh (G1-FR07, UC-02). Phụ huynh chỉ xem được dữ liệu của con đã liên kết. \\
+\midrule
+3 & \texttt{LopHoc}\newline (Lớp học thêm) & D2 & \texttt{MaLopHoc} & \texttt{FK1: MaGiaSu} & Thông tin lớp học do Gia sư tạo, sửa hoặc đóng lớp (G1-FR02, UC-03). Quản lý đơn giá học phí và sĩ số hiện tại. \\
+\midrule
+4 & \texttt{TaiKhoan}\newline (Tài khoản người dùng) & D1 & \texttt{MaTaiKhoan} & \texttt{FK1: MaVaiTro}\newline \texttt{FK2: NguoiTao} & Quản lý thông tin đăng nhập của Gia sư, Học sinh và Phụ huynh (UC-01, UC-02). Tài khoản do Gia sư trực tiếp khởi tạo và cấp phát. \\
+\midrule
+5 & \texttt{HocSinh}\newline (Hồ sơ Học sinh) & D2 & \texttt{MaHocSinh} & \texttt{FK1: MaTaiKhoan} & Lưu thông tin hồ sơ học tập chuyên biệt của Học sinh (tách biệt với bảng \texttt{TaiKhoan} theo Mục 5 đề bài). \\
+\midrule
+6 & \texttt{GhiDanhLop}\newline (Danh sách Ghi danh) & D2 & \texttt{MaGhiDanh} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: MaHocSinh} & Giải quyết quan hệ N--N giữa Học sinh và Lớp học (1 học sinh thuộc nhiều lớp, khi nghỉ học vẫn giữ lịch sử điểm và học phí -- UC-05). \\
+\midrule
+7 & \texttt{ThongBao}\newline (Thông báo Web) & D7 & \texttt{MaThongBao} & \texttt{FK1: MaNguoiNhan}\newline \texttt{FK2: MaHocSinh} & Lưu thông báo gửi đến Học sinh và Phụ huynh khi đổi lịch học, có điểm mới, vắng học hoặc đến hạn học phí (G1-FR10, Kho D7 DFD). \\
+\midrule
+8 & \texttt{KhoanHocPhi}\newline (Khoản thu Học phí) & D6 & \texttt{MaKhoanThu} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiCapNhat} & Quản lý báo phí và ghi nhận thanh toán theo kỳ/tháng cho từng học sinh (G1-FR08, UC-09, Kho D6 DFD). Lưu vết người cập nhật và thời điểm sửa. \\
+\midrule
+9 & \texttt{BuoiHoc}\newline (Buổi học / Lịch học) & D3 & \texttt{MaBuoiHoc} & \texttt{FK1: MaLopHoc} & Thời khóa biểu từng buổi học cụ thể của lớp (G1-FR03, UC-04). Bắt buộc kiểm tra ràng buộc: \texttt{GioKetThuc > GioBatDau}. \\
+\midrule
+10 & \texttt{BaiKiemTra}\newline (Bài tập \& Kiểm tra) & D5 & \texttt{MaBaiKiemTra} & \texttt{FK1: MaLopHoc}\newline \texttt{FK2: NguoiTao} & Danh mục các đầu điểm đánh giá (Bài tập về nhà, Kiểm tra 15p, Giữa kỳ, Cuối kỳ) gắn với từng lớp học (G1-FR05, UC-07). \\
+\midrule
+11 & \texttt{DiemSo}\newline (Điểm số \& Nhận xét) & D5 & \texttt{MaDiemSo} & \texttt{FK1: MaBaiKiemTra}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiChamDiem}\newline \texttt{FK4: NguoiSuaDiem} & Lưu kết quả điểm số và lời phê của từng học sinh theo từng bài kiểm tra (G1-FR05, UC-08). Bắt buộc lưu \texttt{NguoiSuaDiem} và \texttt{ThoiDiemSua}. \\
+\midrule
+12 & \texttt{DiemDanh}\newline (Điểm danh Chuyên cần) & D4 & \texttt{MaDiemDanh} & \texttt{FK1: MaBuoiHoc}\newline \texttt{FK2: MaHocSinh}\newline \texttt{FK3: NguoiCapNhat} & Ghi nhận chuyên cần từng buổi của từng học sinh (G1-FR04, UC-06). Lưu vết \texttt{NguoiCapNhat} và \texttt{ThoiDiemCapNhat}. \\
+\bottomrule
+\end{longtable}
+}
+
+Chi tiết 16 mối liên kết giữa các thực thể, bản số ($1:1$, $1:N$) và cặp khóa tham chiếu (\texttt{PK} $\rightarrow$ \texttt{FK}) trên sơ đồ ERD được tổng hợp tại bảng sau:
+
+{\footnotesize
+\begin{longtable}{@{}c >{\raggedright\arraybackslash}p{2.0cm} c >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}p{4.5cm}@{}}
+\caption{Bảng tổng hợp 16 mối liên kết và khóa tham chiếu trong ERD}\\
+\toprule
+\textbf{STT} & \textbf{Thực thể Nguồn} & \textbf{Bản số} & \textbf{Thực thể Đích} & \textbf{Khóa Tham chiếu (PK $\rightarrow$ FK)} & \textbf{Diễn giải Ràng buộc Nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{STT} & \textbf{Thực thể Nguồn} & \textbf{Bản số} & \textbf{Thực thể Đích} & \textbf{Khóa Tham chiếu (PK $\rightarrow$ FK)} & \textbf{Diễn giải Ràng buộc Nghiệp vụ} \\
+\midrule
+\endhead
+1 & \texttt{VaiTro} & $1 : N$ & \texttt{TaiKhoan} & \texttt{MaVaiTro} $\rightarrow$ \texttt{MaVaiTro} & Một vai trò phân quyền cho nhiều tài khoản người dùng. \\
+2 & \texttt{TaiKhoan} & $1 : 1$ & \texttt{HocSinh} & \texttt{MaTaiKhoan} $\rightarrow$ \texttt{MaTaiKhoan} & Mỗi tài khoản học sinh gắn duy nhất với 1 hồ sơ học sinh. \\
+3 & \texttt{TaiKhoan} & $1 : N$ & \texttt{LienKetPHHS} & \texttt{MaTaiKhoan} $\rightarrow$ \texttt{MaTKPhuHuynh} & Một tài khoản phụ huynh có thể liên kết theo dõi 1 hoặc nhiều con. \\
+4 & \texttt{HocSinh} & $1 : N$ & \texttt{LienKetPHHS} & \texttt{MaHocSinh} $\rightarrow$ \texttt{MaHocSinh} & Một học sinh được liên kết với tài khoản bố/mẹ/người giám hộ. \\
+5 & \texttt{TaiKhoan} & $1 : N$ & \texttt{LopHoc} & \texttt{MaTaiKhoan} $\rightarrow$ \texttt{MaGiaSu} & Một gia sư/giáo viên trực tiếp tạo và phụ trách nhiều lớp học thêm. \\
+6 & \texttt{LopHoc} & $1 : N$ & \texttt{GhiDanhLop} & \texttt{MaLopHoc} $\rightarrow$ \texttt{MaLopHoc} & Một lớp học có danh sách nhiều học sinh ghi danh theo học. \\
+7 & \texttt{HocSinh} & $1 : N$ & \texttt{GhiDanhLop} & \texttt{MaHocSinh} $\rightarrow$ \texttt{MaHocSinh} & Một học sinh có thể đăng ký theo học ở nhiều lớp khác nhau. \\
+8 & \texttt{LopHoc} & $1 : N$ & \texttt{BuoiHoc} & \texttt{MaLopHoc} $\rightarrow$ \texttt{MaLopHoc} & Một lớp học bao gồm nhiều buổi học theo lịch thời khóa biểu. \\
+9 & \texttt{BuoiHoc} & $1 : N$ & \texttt{DiemDanh} & \texttt{MaBuoiHoc} $\rightarrow$ \texttt{MaBuoiHoc} & Mỗi buổi học ghi nhận trạng thái điểm danh của các học sinh trong lớp. \\
+10 & \texttt{HocSinh} & $1 : N$ & \texttt{DiemDanh} & \texttt{MaHocSinh} $\rightarrow$ \texttt{MaHocSinh} & Một học sinh có lịch sử chuyên cần qua nhiều buổi học. \\
+11 & \texttt{LopHoc} & $1 : N$ & \texttt{BaiKiemTra} & \texttt{MaLopHoc} $\rightarrow$ \texttt{MaLopHoc} & Một lớp học tổ chức nhiều bài tập về nhà và bài kiểm tra định kỳ. \\
+12 & \texttt{BaiKiemTra} & $1 : N$ & \texttt{DiemSo} & \texttt{MaBaiKiemTra} $\rightarrow$ \texttt{MaBaiKiemTra} & Mỗi bài kiểm tra lưu kết quả điểm và nhận xét của nhiều học sinh. \\
+13 & \texttt{HocSinh} & $1 : N$ & \texttt{DiemSo} & \texttt{MaHocSinh} $\rightarrow$ \texttt{MaHocSinh} & Một học sinh nhận nhiều kết quả điểm số ở các bài kiểm tra. \\
+14 & \texttt{HocSinh} & $1 : N$ & \texttt{KhoanHocPhi} & \texttt{MaHocSinh} $\rightarrow$ \texttt{MaHocSinh} & Một học sinh có nhiều khoản thu học phí theo từng kỳ/tháng. \\
+15 & \texttt{LopHoc} & $1 : N$ & \texttt{KhoanHocPhi} & \texttt{MaLopHoc} $\rightarrow$ \texttt{MaLopHoc} & Mỗi lớp học phát hành các báo phí theo kỳ/tháng cho học sinh. \\
+16 & \texttt{TaiKhoan} & $1 : N$ & \texttt{ThongBao} & \texttt{MaTaiKhoan} $\rightarrow$ \texttt{MaNguoiNhan} & Một người dùng (Phụ huynh/Học sinh) nhận nhiều thông báo trên Web. \\
+\bottomrule
+\end{longtable}
+}
+
+\end{document}

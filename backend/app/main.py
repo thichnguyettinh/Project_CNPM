@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import uuid
+from io import BytesIO
+from zipfile import BadZipFile, ZipFile
 from contextlib import contextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Annotated, Any, Callable
 
 import psycopg
-from fastapi import Depends, FastAPI, File, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -27,6 +29,7 @@ from .schemas import (
     PaymentCreate,
     ProfileUpdate,
     ResultsSave,
+    QuestionScoresSave,
     SessionCreate,
     SessionUpdate,
     UserCreate,
@@ -1097,16 +1100,20 @@ def list_assignments(
     student_code: str | None = None,
 ):
     params: list[Any] = []
-    where = ["a.status <> 'draft'"]
+    where: list[str] = []
+    viewer_student_id = -1  # Chỉ học sinh được truy vấn trạng thái nộp bài của mình.
     if user["role"] == "teacher":
         where.append("c.teacher_user_id = %s")
         params.append(user["user_id"])
     elif user["role"] == "student":
         student = require_student_id(connection, user["user_id"])
+        viewer_student_id = student["student_id"]
+        where.append("a.status <> 'draft'")
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.student_id = %s AND ce.status = 'active')")
         params.append(student["student_id"])
     else:
         ids = linked_student_ids(connection, user["user_id"])
+        where.append("a.status <> 'draft'")
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.student_id = ANY(%s) AND ce.status = 'active')")
         params.append(ids)
     if class_id:
@@ -1122,16 +1129,200 @@ def list_assignments(
         f"""
         SELECT a.assignment_id AS id, a.class_id, c.class_code, c.name AS class_name,
                a.title, a.assignment_type, a.description, a.assigned_at, a.due_at, a.status,
-               COUNT(DISTINCT ce.student_id) AS student_count,
-               ROUND(AVG(r.score)::numeric, 2) AS average_score
+               att.file_name AS attachment_file_name, att.file_size AS attachment_file_size,
+               (SELECT COUNT(*) FROM class_enrollments ce WHERE ce.class_id = c.class_id AND ce.status = 'active') AS student_count,
+               (SELECT ROUND(AVG(r.score)::numeric, 2) FROM assignment_results r WHERE r.assignment_id = a.assignment_id) AS average_score,
+               own.submission_id AS my_submission_id, own.submitted_at AS my_submitted_at,
+               own.status AS my_submission_status
         FROM assignments a JOIN classes c ON c.class_id = a.class_id
-        LEFT JOIN class_enrollments ce ON ce.class_id = c.class_id AND ce.status = 'active'
-        LEFT JOIN assignment_results r ON r.assignment_id = a.assignment_id
+        LEFT JOIN assignment_attachments att ON att.assignment_id = a.assignment_id
+        LEFT JOIN LATERAL (
+          SELECT sub.submission_id, sub.submitted_at, sub.status
+          FROM assignment_submissions sub
+          WHERE sub.assignment_id = a.assignment_id AND sub.student_id = %s
+          ORDER BY sub.submitted_at DESC, sub.submission_id DESC LIMIT 1
+        ) own ON TRUE
         WHERE {' AND '.join(where)}
-        GROUP BY a.assignment_id, c.class_code, c.name
-        ORDER BY a.assigned_at DESC
+        ORDER BY a.assigned_at DESC, a.created_at DESC
         """,
-        tuple(params),
+        (viewer_student_id, *params),
+    )
+
+
+# UC-07: tệp đề và bài nộp là hai thực thể riêng biệt; không cho phép tải công khai.
+ATTACHMENT_MIME = {
+    ".pdf": "application/pdf",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+}
+
+
+def _validated_attachment(file: UploadFile) -> tuple[str, str, bytes, str]:
+    name = (file.filename or "").replace("\\", "/").split("/")[-1].strip()
+    if not name or len(name) > 255 or any(ord(ch) < 32 for ch in name):
+        raise HTTPException(status_code=400, detail="Tên tệp đề không hợp lệ (tối đa 255 ký tự).")
+    ext = Path(name).suffix.lower()
+    if ext not in ATTACHMENT_MIME:
+        raise HTTPException(status_code=415, detail="Chỉ nhận đề PDF, DOCX, PNG, JPG/JPEG.")
+    content = file.file.read(MAX_UPLOAD_BYTES + 1)
+    if not content:
+        raise HTTPException(status_code=400, detail="Tệp đề đang trống.")
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(status_code=413, detail="Tệp đề vượt giới hạn dung lượng.")
+    valid = {
+        ".pdf": lambda: content.startswith(b"%PDF-"),
+        ".png": lambda: content.startswith(b"\x89PNG\r\n\x1a\n"),
+        ".jpg": lambda: content.startswith(b"\xff\xd8\xff"),
+        ".jpeg": lambda: content.startswith(b"\xff\xd8\xff"),
+    }
+    if ext == ".docx":
+        try:
+            with ZipFile(BytesIO(content)) as doc:
+                entries = set(doc.namelist())
+                good = "[Content_Types].xml" in entries and "word/document.xml" in entries
+        except (BadZipFile, OSError, ValueError):
+            good = False
+    else:
+        good = valid[ext]()
+    if not good:
+        raise HTTPException(status_code=415, detail="Nội dung tệp không khớp định dạng PDF/DOCX/ảnh.")
+    return name, ext, content, ATTACHMENT_MIME[ext]
+
+
+def _store_attachment(file: UploadFile) -> tuple[str, str, str, int, Path]:
+    name, ext, content, mime = _validated_attachment(file)
+    root = (Path(UPLOAD_DIR).resolve() / "assignment_prompts")
+    root.mkdir(parents=True, exist_ok=True)
+    key = f"{uuid.uuid4().hex}{ext}"
+    destination = root / key
+    destination.write_bytes(content)
+    return name, key, mime, len(content), destination
+
+
+def _save_attachment_record(
+    connection: psycopg.Connection, assignment_id: str, teacher_id: str,
+    name: str, key: str, mime: str, size: int,
+):
+    connection.execute(
+        """INSERT INTO assignment_attachments
+           (assignment_id, file_name, storage_key, mime_type, file_size, uploaded_by)
+           VALUES (%s, %s, %s, %s, %s, %s)
+           ON CONFLICT (assignment_id) DO UPDATE SET
+             file_name = EXCLUDED.file_name, storage_key = EXCLUDED.storage_key,
+             mime_type = EXCLUDED.mime_type, file_size = EXCLUDED.file_size,
+             uploaded_by = EXCLUDED.uploaded_by, uploaded_at = NOW()""",
+        (assignment_id, name, key, mime, size, teacher_id),
+    )
+
+
+@app.post("/api/assignments/with-attachment", status_code=201)
+def create_assignment_with_attachment(
+    connection: Connection,
+    teacher: Teacher,
+    class_id: str = Form(...),
+    title: str = Form(...),
+    assignment_type: str = Form(...),
+    description: str = Form(""),
+    assigned_at: date = Form(...),
+    due_at: datetime | None = Form(None),
+    status: str = Form("published"),
+    file: UploadFile = File(...),
+):
+    # Validate toàn bộ dữ liệu và tệp trước khi tạo bài hoặc gửi thông báo.
+    payload = AssignmentCreate(
+        class_id=class_id, title=title, assignment_type=assignment_type,
+        description=description, assigned_at=assigned_at, due_at=due_at, status=status,
+    )
+    require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    name, key, mime, size, destination = _store_attachment(file)
+    try:
+        row = create_assignment(payload, connection, teacher)
+        _save_attachment_record(connection, row["assignment_id"], teacher["user_id"], name, key, mime, size)
+        connection.commit()  # Không công bố bài nếu lưu tệp đề vào DB thất bại.
+        return {**row, "attachment_file_name": name, "attachment_file_size": size}
+    except Exception:
+        connection.rollback()
+        destination.unlink(missing_ok=True)
+        raise
+
+
+@app.put("/api/assignments/{assignment_id}/attachment")
+def replace_assignment_attachment(
+    assignment_id: str, connection: Connection, teacher: Teacher,
+    file: UploadFile = File(...),
+):
+    assignment = fetch_one(
+        connection,
+        """SELECT a.assignment_id FROM assignments a JOIN classes c ON c.class_id = a.class_id
+           WHERE a.assignment_id = %s AND c.teacher_user_id = %s""",
+        (assignment_id, teacher["user_id"]),
+    )
+    if not assignment:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài hoặc không có quyền sửa.")
+    previous = fetch_one(
+        connection, "SELECT storage_key FROM assignment_attachments WHERE assignment_id = %s",
+        (assignment_id,),
+    )
+    name, key, mime, size, destination = _store_attachment(file)
+    try:
+        _save_attachment_record(connection, assignment_id, teacher["user_id"], name, key, mime, size)
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        destination.unlink(missing_ok=True)
+        raise
+    if previous:
+        try:
+            (Path(UPLOAD_DIR).resolve() / "assignment_prompts" / previous["storage_key"]).unlink(missing_ok=True)
+        except OSError:
+            # Cơ sở dữ liệu đã cập nhật; tệp cũ có thể được dọn sau.
+            pass
+    return {"assignment_id": assignment_id, "file_name": name, "file_size": size}
+
+
+@app.get("/api/assignments/{assignment_id}/attachment")
+def download_assignment_attachment(
+    assignment_id: str, connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+):
+    row = fetch_one(
+        connection,
+        """SELECT att.*, a.class_id, a.status, c.teacher_user_id
+           FROM assignment_attachments att
+           JOIN assignments a ON a.assignment_id = att.assignment_id
+           JOIN classes c ON c.class_id = a.class_id
+           WHERE att.assignment_id = %s""",
+        (assignment_id,),
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Chưa có tệp đề cho bài này.")
+    allowed = user["role"] == "teacher" and row["teacher_user_id"] == user["user_id"]
+    if not allowed and row["status"] != "draft" and user["role"] == "student":
+        student = require_student_id(connection, user["user_id"])
+        allowed = fetch_one(
+            connection,
+            """SELECT 1 FROM class_enrollments WHERE class_id = %s AND student_id = %s
+               AND status = 'active'""",
+            (row["class_id"], student["student_id"]),
+        ) is not None
+    if not allowed and row["status"] != "draft" and user["role"] == "parent":
+        allowed = fetch_one(
+            connection,
+            """SELECT 1 FROM parents p JOIN student_parents sp ON sp.parent_id = p.parent_id
+               JOIN class_enrollments ce ON ce.student_id = sp.student_id
+               WHERE p.user_id = %s AND ce.class_id = %s AND ce.status = 'active' LIMIT 1""",
+            (user["user_id"], row["class_id"]),
+        ) is not None
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền xem tệp đề.")
+    path = (Path(UPLOAD_DIR).resolve() / "assignment_prompts" / row["storage_key"])
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Tệp đề không còn tồn tại trên máy chủ.")
+    return FileResponse(
+        path, filename=row["file_name"], media_type=row["mime_type"],
+        content_disposition_type="attachment", headers={"X-Content-Type-Options": "nosniff"},
     )
 
 
@@ -1216,15 +1407,21 @@ def get_results(assignment_id: str, connection: Connection, teacher: Teacher):
     return fetch_all(
         connection,
         """
-        SELECT s.student_code, u.full_name, r.score, r.teacher_comment, r.graded_at
+        SELECT s.student_code, u.full_name, r.score, r.teacher_comment, r.graded_at,
+               sub.submission_id, sub.file_name, sub.submitted_at
         FROM class_enrollments ce
         JOIN students s ON s.student_id = ce.student_id
         JOIN users u ON u.user_id = s.user_id
         LEFT JOIN assignment_results r ON r.assignment_id = %s AND r.student_id = s.student_id
+        LEFT JOIN LATERAL (
+          SELECT submission_id, file_name, submitted_at FROM assignment_submissions
+          WHERE assignment_id = %s AND student_id = s.student_id
+          ORDER BY submitted_at DESC, submission_id DESC LIMIT 1
+        ) sub ON TRUE
         WHERE ce.class_id = %s AND ce.status = 'active'
         ORDER BY u.full_name
         """,
-        (assignment_id, assignment["class_id"]),
+        (assignment_id, assignment_id, assignment["class_id"]),
     )
 
 
@@ -1266,6 +1463,12 @@ def save_results(
             old_score = old["score"] if old else None
             if old and old_score != entry.score and not (entry.change_reason or "").strip():
                 raise HTTPException(status_code=400, detail=f"Cần ghi lý do sửa điểm cho {entry.student_code}.")
+            # Khi thay đổi điểm tổng, chi tiết từng câu cũ không còn đúng.
+            if old and old_score != entry.score:
+                connection.execute(
+                    "DELETE FROM assignment_question_scores WHERE assignment_id = %s AND student_id = %s",
+                    (assignment_id, student["student_id"]),
+                )
             result = fetch_one(
                 connection,
                 """
@@ -1340,6 +1543,94 @@ def grade_history(student_code: str, connection: Connection, teacher: Teacher):
         ORDER BY l.changed_at DESC
         """,
         (student["student_id"],),
+    )
+
+
+# UC-11: điểm chi tiết từng câu, ràng buộc với điểm tổng đã lưu ở UC-08.
+def _uc11_teacher_result(connection: psycopg.Connection, assignment_id: str, student_code: str, user_id: str) -> dict:
+    row = fetch_one(
+        connection,
+        """
+        SELECT s.student_id, r.score
+        FROM assignments a
+        JOIN classes c ON c.class_id = a.class_id
+        JOIN class_enrollments ce ON ce.class_id = a.class_id AND ce.status = 'active'
+        JOIN students s ON s.student_id = ce.student_id
+        JOIN assignment_results r ON r.assignment_id = a.assignment_id AND r.student_id = s.student_id
+        WHERE a.assignment_id = %s AND s.student_code = %s AND c.teacher_user_id = %s
+        """,
+        (assignment_id, student_code, user_id),
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Chưa có điểm tổng hoặc không có quyền chấm học sinh này.")
+    return row
+
+
+@app.get("/api/assignments/{assignment_id}/question-scores/{student_code}")
+def uc11_get_question_scores(assignment_id: str, student_code: str, connection: Connection, teacher: Teacher):
+    result = _uc11_teacher_result(connection, assignment_id, student_code, teacher["user_id"])
+    return fetch_all(
+        connection,
+        """SELECT question_no, max_score, earned_score FROM assignment_question_scores
+           WHERE assignment_id = %s AND student_id = %s ORDER BY question_no""",
+        (assignment_id, result["student_id"]),
+    )
+
+
+@app.put("/api/assignments/{assignment_id}/question-scores/{student_code}")
+def uc11_save_question_scores(
+    assignment_id: str,
+    student_code: str,
+    payload: QuestionScoresSave,
+    connection: Connection,
+    teacher: Teacher,
+):
+    with transaction(connection):
+        result = _uc11_teacher_result(connection, assignment_id, student_code, teacher["user_id"])
+        if result["score"] is None:
+            raise HTTPException(status_code=400, detail="Cần lưu điểm tổng tại UC-08 trước.")
+        earned = sum((part.earned_score for part in payload.questions), 0)
+        maximum = sum((part.max_score for part in payload.questions), 0)
+        if earned != result["score"]:
+            raise HTTPException(status_code=400, detail="Tổng điểm từng câu phải bằng điểm tổng UC-08.")
+        if maximum > 10:
+            raise HTTPException(status_code=400, detail="Tổng điểm tối đa không được vượt 10.")
+        connection.execute(
+            "DELETE FROM assignment_question_scores WHERE assignment_id = %s AND student_id = %s",
+            (assignment_id, result["student_id"]),
+        )
+        for part in payload.questions:
+            connection.execute(
+                """INSERT INTO assignment_question_scores
+                   (assignment_id, student_id, question_no, max_score, earned_score)
+                   VALUES (%s, %s, %s, %s, %s)""",
+                (assignment_id, result["student_id"], part.question_no, part.max_score, part.earned_score),
+            )
+    return {"saved": len(payload.questions)}
+
+
+@app.get("/api/assignments/{assignment_id}/my-question-scores")
+def uc11_my_question_scores(
+    assignment_id: str,
+    connection: Connection,
+    student_user: Annotated[dict, Depends(require_roles("student"))],
+):
+    student = require_student_id(connection, student_user["user_id"])
+    exists = fetch_one(
+        connection,
+        """SELECT 1 FROM assignments a
+           JOIN class_enrollments ce ON ce.class_id = a.class_id
+           WHERE a.assignment_id = %s AND ce.student_id = %s AND ce.status = 'active'
+           AND a.status <> 'draft'""",
+        (assignment_id, student["student_id"]),
+    )
+    if not exists:
+        raise HTTPException(status_code=404, detail="Không tìm thấy bài được phép xem.")
+    return fetch_all(
+        connection,
+        """SELECT question_no, max_score, earned_score FROM assignment_question_scores
+           WHERE assignment_id = %s AND student_id = %s ORDER BY question_no""",
+        (assignment_id, student["student_id"]),
     )
 
 
@@ -1842,4 +2133,686 @@ def dashboard(connection: Connection, user: Annotated[dict, Depends(current_user
             "SELECT COUNT(*) AS count FROM notifications WHERE recipient_user_id = %s AND read_at IS NULL",
             (user["user_id"],),
         )["count"],
+    }
+
+
+# ==============================================================================
+# UC-09 & UC-12: MỞ RỘNG API QUẢN LÝ HỌC PHÍ, ĐỐI SOÁT CÔNG NỢ & NHẮC PHÍ
+# ==============================================================================
+from .schemas import BulkTuitionReminderRequest, TuitionReminderRequest
+
+
+def format_vnd_amount(value: Any) -> str:
+    amount = int(round(float(value or 0)))
+    return f"{amount:,}".replace(",", ".") + " ₫"
+
+
+def build_tuition_reminder_message(invoice_row: dict, custom_note: str | None = None) -> tuple[str, str]:
+    billing_month = int(invoice_row["billing_month"])
+    billing_year = int(invoice_row["billing_year"])
+    period_start = invoice_row["period_start"]
+    period_end = invoice_row["period_end"]
+    start_str = period_start.strftime("%d/%m/%Y") if hasattr(period_start, "strftime") else str(period_start)
+    end_str = period_end.strftime("%d/%m/%Y") if hasattr(period_end, "strftime") else str(period_end)
+
+    title = f"Nhắc học phí tháng {billing_month:02d}/{billing_year} · {invoice_row['student_name']}"
+    body = (
+        f"Kính gửi Quý Phụ huynh em {invoice_row['student_name']} "
+        f"({invoice_row['student_code']} · Lớp {invoice_row['class_name']}), "
+        f"khoản thu học phí kỳ {start_str}–{end_str} có tổng phải đóng "
+        f"{format_vnd_amount(invoice_row['amount_due'])}, đã xác nhận đóng "
+        f"{format_vnd_amount(invoice_row['amount_paid'])}, số tiền còn thiếu "
+        f"{format_vnd_amount(invoice_row['amount_remaining'])}. "
+        f"Hạn thanh toán: {end_str}. "
+        f"Mọi khoản thanh toán được thực hiện ngoài hệ thống trực tiếp với giáo viên/trung tâm."
+    )
+    if custom_note and custom_note.strip():
+        body += f" Ghi chú từ giáo viên: {custom_note.strip()}"
+    return title, body
+
+
+@app.get("/api/tuition/summary")
+def tuition_summary(
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+    class_id: str | None = None,
+    student_code: str | None = None,
+    billing_year: int | None = None,
+    billing_month: int | None = None,
+):
+    if user["role"] == "teacher":
+        if class_id:
+            require_class_teacher(connection, class_id, user["user_id"])
+
+        available_periods = fetch_all(
+            connection,
+            """
+            SELECT DISTINCT i.billing_year, i.billing_month
+            FROM tuition_invoices i
+            JOIN classes c ON c.class_id = i.class_id
+            WHERE i.status = 'open' AND c.teacher_user_id = %s
+            ORDER BY i.billing_year DESC, i.billing_month DESC
+            """,
+            (user["user_id"],),
+        )
+
+        where = ["i.status = 'open'", "c.teacher_user_id = %s"]
+        params: list[Any] = [user["user_id"]]
+        if class_id:
+            where.append("i.class_id = %s")
+            params.append(class_id)
+        if student_code:
+            where.append("s.student_code = %s")
+            params.append(student_code)
+        if billing_year is not None:
+            where.append("i.billing_year = %s")
+            params.append(billing_year)
+        if billing_month is not None:
+            where.append("i.billing_month = %s")
+            params.append(billing_month)
+
+        where_sql = " AND ".join(where)
+        totals = fetch_one(
+            connection,
+            f"""
+            SELECT
+              COALESCE(SUM(v.amount_due), 0)::numeric(12,2) AS total_amount_due,
+              COALESCE(SUM(v.amount_paid), 0)::numeric(12,2) AS total_amount_paid,
+              COALESCE(SUM(v.amount_remaining), 0)::numeric(12,2) AS total_amount_remaining,
+              COUNT(v.invoice_id) AS invoice_count,
+              COUNT(DISTINCT v.student_id) AS student_count,
+              COUNT(DISTINCT v.class_id) AS class_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'paid') AS paid_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'partial') AS partial_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'unpaid') AS unpaid_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status IN ('partial', 'unpaid')) AS debt_count,
+              MIN(i.period_end) FILTER (WHERE v.amount_remaining > 0) AS nearest_due_date,
+              MAX(i.period_end) AS latest_period_end
+            FROM v_tuition_invoice_balances v
+            JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+            JOIN students s ON s.student_id = i.student_id
+            JOIN classes c ON c.class_id = i.class_id
+            WHERE {where_sql}
+            """,
+            tuple(params),
+        )
+
+        due_val = float(totals["total_amount_due"] or 0)
+        paid_val = float(totals["total_amount_paid"] or 0)
+        progress_pct = round((paid_val / due_val) * 100, 1) if due_val > 0 else 0.0
+
+        class_breakdown = fetch_all(
+            connection,
+            """
+            SELECT
+              c.class_id,
+              c.class_code,
+              c.name AS class_name,
+              c.subject,
+              c.monthly_fee,
+              c.status AS class_status,
+              (
+                SELECT COUNT(DISTINCT ce.student_id)
+                FROM class_enrollments ce
+                WHERE ce.class_id = c.class_id AND ce.status = 'active'
+              ) AS enrolled_count,
+              COUNT(v.invoice_id) AS invoice_count,
+              COALESCE(SUM(v.amount_due), 0)::numeric(12,2) AS total_amount_due,
+              COALESCE(SUM(v.amount_paid), 0)::numeric(12,2) AS total_amount_paid,
+              COALESCE(SUM(v.amount_remaining), 0)::numeric(12,2) AS total_amount_remaining,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'paid') AS paid_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'partial') AS partial_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'unpaid') AS unpaid_count,
+              COUNT(v.invoice_id) FILTER (WHERE v.payment_status IN ('partial', 'unpaid')) AS debt_count
+            FROM classes c
+            LEFT JOIN tuition_invoices i
+              ON i.class_id = c.class_id
+              AND i.status = 'open'
+              AND (%s::int IS NULL OR i.billing_year = %s)
+              AND (%s::int IS NULL OR i.billing_month = %s)
+            LEFT JOIN v_tuition_invoice_balances v ON v.invoice_id = i.invoice_id
+            WHERE c.teacher_user_id = %s
+              AND (%s::varchar IS NULL OR c.class_id = %s)
+            GROUP BY c.class_id
+            ORDER BY c.class_code
+            """,
+            (
+                billing_year,
+                billing_year,
+                billing_month,
+                billing_month,
+                user["user_id"],
+                class_id,
+                class_id,
+            ),
+        )
+
+        watchlist = fetch_all(
+            connection,
+            f"""
+            SELECT
+              v.invoice_id,
+              v.billing_year,
+              v.billing_month,
+              v.amount_due,
+              v.amount_paid,
+              v.amount_remaining,
+              v.payment_status,
+              s.student_code,
+              u.full_name AS student_name,
+              c.class_id,
+              c.class_code,
+              c.name AS class_name,
+              i.period_start,
+              i.period_end,
+              i.sessions_count
+            FROM v_tuition_invoice_balances v
+            JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+            JOIN students s ON s.student_id = i.student_id
+            JOIN users u ON u.user_id = s.user_id
+            JOIN classes c ON c.class_id = i.class_id
+            WHERE {where_sql} AND v.amount_remaining > 0
+            ORDER BY v.amount_remaining DESC, i.period_end ASC, u.full_name ASC
+            LIMIT 25
+            """,
+            tuple(params),
+        )
+
+        return {
+            "role": "teacher",
+            "totals": {**totals, "progress_percent": progress_pct},
+            "available_periods": available_periods,
+            "class_breakdown": class_breakdown,
+            "watchlist": watchlist,
+        }
+
+    # Student or Parent summary
+    if user["role"] == "student":
+        st = require_student_id(connection, user["user_id"])
+        if student_code and student_code != st["student_code"]:
+            raise HTTPException(status_code=403, detail="Bạn chỉ được xem dữ liệu học phí của mình.")
+        all_student_ids = [st["student_id"]]
+        target_student_ids = [st["student_id"]]
+    else:
+        all_student_ids = linked_student_ids(connection, user["user_id"])
+        if student_code:
+            checked = can_view_student(connection, user, student_code)
+            target_student_ids = [checked["student_id"]]
+        else:
+            target_student_ids = all_student_ids
+
+    if not all_student_ids:
+        return {
+            "role": user["role"],
+            "children": [],
+            "available_periods": [],
+            "totals": {
+                "total_amount_due": 0,
+                "total_amount_paid": 0,
+                "total_amount_remaining": 0,
+                "invoice_count": 0,
+                "paid_count": 0,
+                "partial_count": 0,
+                "unpaid_count": 0,
+                "debt_count": 0,
+                "payment_count": 0,
+                "progress_percent": 0.0,
+                "nearest_due_date": None,
+                "latest_period_end": None,
+            },
+        }
+
+    children = fetch_all(
+        connection,
+        """
+        SELECT
+          s.student_id,
+          s.student_code,
+          u.full_name,
+          u.avatar_text,
+          c.class_id,
+          c.class_code,
+          c.name AS class_name,
+          c.subject,
+          t.full_name AS teacher_name,
+          t.phone AS teacher_phone,
+          t.email AS teacher_email
+        FROM students s
+        JOIN users u ON u.user_id = s.user_id
+        LEFT JOIN LATERAL (
+          SELECT ce.class_id
+          FROM class_enrollments ce
+          WHERE ce.student_id = s.student_id AND ce.status = 'active'
+          ORDER BY ce.enrolled_on DESC LIMIT 1
+        ) active_ce ON TRUE
+        LEFT JOIN classes c ON c.class_id = active_ce.class_id
+        LEFT JOIN users t ON t.user_id = c.teacher_user_id
+        WHERE s.student_id = ANY(%s)
+        ORDER BY u.full_name
+        """,
+        (all_student_ids,),
+    )
+
+    available_periods = fetch_all(
+        connection,
+        """
+        SELECT DISTINCT i.billing_year, i.billing_month
+        FROM tuition_invoices i
+        WHERE i.status = 'open' AND i.student_id = ANY(%s)
+        ORDER BY i.billing_year DESC, i.billing_month DESC
+        """,
+        (target_student_ids,),
+    )
+
+    where = ["i.status = 'open'", "i.student_id = ANY(%s)"]
+    params = [target_student_ids]
+    if class_id:
+        where.append("i.class_id = %s")
+        params.append(class_id)
+    if billing_year is not None:
+        where.append("i.billing_year = %s")
+        params.append(billing_year)
+    if billing_month is not None:
+        where.append("i.billing_month = %s")
+        params.append(billing_month)
+
+    where_sql = " AND ".join(where)
+    totals = fetch_one(
+        connection,
+        f"""
+        SELECT
+          COALESCE(SUM(v.amount_due), 0)::numeric(12,2) AS total_amount_due,
+          COALESCE(SUM(v.amount_paid), 0)::numeric(12,2) AS total_amount_paid,
+          COALESCE(SUM(v.amount_remaining), 0)::numeric(12,2) AS total_amount_remaining,
+          COUNT(v.invoice_id) AS invoice_count,
+          COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'paid') AS paid_count,
+          COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'partial') AS partial_count,
+          COUNT(v.invoice_id) FILTER (WHERE v.payment_status = 'unpaid') AS unpaid_count,
+          COUNT(v.invoice_id) FILTER (WHERE v.payment_status IN ('partial', 'unpaid')) AS debt_count,
+          MIN(i.period_end) FILTER (WHERE v.amount_remaining > 0) AS nearest_due_date,
+          MAX(i.period_end) AS latest_period_end,
+          (
+            SELECT COUNT(*)
+            FROM tuition_payments p
+            JOIN tuition_invoices inv2 ON inv2.invoice_id = p.invoice_id
+            WHERE inv2.invoice_id IN (
+              SELECT i2.invoice_id
+              FROM tuition_invoices i2
+              WHERE {where_sql.replace('i.', 'i2.')}
+            )
+          ) AS payment_count
+        FROM v_tuition_invoice_balances v
+        JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+        WHERE {where_sql}
+        """,
+        tuple(params + params),
+    )
+
+    due_val = float(totals["total_amount_due"] or 0)
+    paid_val = float(totals["total_amount_paid"] or 0)
+    progress_pct = round((paid_val / due_val) * 100, 1) if due_val > 0 else 0.0
+
+    return {
+        "role": user["role"],
+        "children": children,
+        "available_periods": available_periods,
+        "totals": {**totals, "progress_percent": progress_pct},
+    }
+
+
+@app.get("/api/tuition/payments")
+def list_tuition_payments(
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+    class_id: str | None = None,
+    student_code: str | None = None,
+    billing_year: int | None = None,
+    billing_month: int | None = None,
+    payment_method: str | None = None,
+):
+    where = ["i.status = 'open'"]
+    params: list[Any] = []
+    if user["role"] == "teacher":
+        where.append("c.teacher_user_id = %s")
+        params.append(user["user_id"])
+    elif user["role"] == "student":
+        student = require_student_id(connection, user["user_id"])
+        if student_code and student_code != student["student_code"]:
+            raise HTTPException(status_code=403, detail="Bạn chỉ được xem lịch sử học phí của mình.")
+        where.append("i.student_id = %s")
+        params.append(student["student_id"])
+    else:
+        ids = linked_student_ids(connection, user["user_id"])
+        if student_code:
+            checked = can_view_student(connection, user, student_code)
+            ids = [checked["student_id"]]
+        if not ids:
+            return []
+        where.append("i.student_id = ANY(%s)")
+        params.append(ids)
+
+    for column, value in (
+        ("i.class_id", class_id),
+        ("s.student_code", student_code),
+        ("i.billing_year", billing_year),
+        ("i.billing_month", billing_month),
+        ("p.payment_method", payment_method),
+    ):
+        if value is not None:
+            where.append(f"{column} = %s")
+            params.append(value)
+
+    return fetch_all(
+        connection,
+        f"""
+        SELECT
+          p.payment_id,
+          p.invoice_id,
+          p.amount,
+          p.payment_method,
+          p.paid_at,
+          p.reference_code,
+          p.note,
+          p.created_at,
+          rec.full_name AS recorded_by_name,
+          i.billing_year,
+          i.billing_month,
+          i.period_start,
+          i.period_end,
+          s.student_code,
+          stu_u.full_name AS student_name,
+          c.class_id,
+          c.class_code,
+          c.name AS class_name
+        FROM tuition_payments p
+        JOIN tuition_invoices i ON i.invoice_id = p.invoice_id
+        JOIN students s ON s.student_id = i.student_id
+        JOIN users stu_u ON stu_u.user_id = s.user_id
+        JOIN classes c ON c.class_id = i.class_id
+        JOIN users rec ON rec.user_id = p.recorded_by
+        WHERE {' AND '.join(where)}
+        ORDER BY p.paid_at DESC, p.payment_id DESC
+        LIMIT 200
+        """,
+        tuple(params),
+    )
+
+
+@app.get("/api/tuition/invoices/{invoice_id}")
+def get_tuition_invoice_detail(
+    invoice_id: str,
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+):
+    row = fetch_one(
+        connection,
+        """
+        SELECT
+          v.invoice_id,
+          v.student_id,
+          v.class_id,
+          v.billing_year,
+          v.billing_month,
+          v.amount_due,
+          v.amount_paid,
+          v.amount_remaining,
+          v.payment_status,
+          i.period_start,
+          i.period_end,
+          i.sessions_count,
+          i.note,
+          i.issued_at,
+          i.status,
+          issuer.full_name AS issued_by_name,
+          s.student_code,
+          stu_u.full_name AS student_name,
+          stu_u.email AS student_email,
+          stu_u.phone AS student_phone,
+          c.class_code,
+          c.name AS class_name,
+          c.subject,
+          c.monthly_fee,
+          c.teacher_user_id,
+          teacher_u.full_name AS teacher_name,
+          teacher_u.phone AS teacher_phone,
+          teacher_u.email AS teacher_email,
+          parent_info.parent_name,
+          parent_info.parent_phone,
+          parent_info.parent_email,
+          parent_info.relationship
+        FROM v_tuition_invoice_balances v
+        JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+        JOIN students s ON s.student_id = i.student_id
+        JOIN users stu_u ON stu_u.user_id = s.user_id
+        JOIN classes c ON c.class_id = i.class_id
+        JOIN users teacher_u ON teacher_u.user_id = c.teacher_user_id
+        JOIN users issuer ON issuer.user_id = i.issued_by
+        LEFT JOIN LATERAL (
+          SELECT p.full_name AS parent_name, p.phone AS parent_phone,
+                 p.email AS parent_email, sp.relationship
+          FROM student_parents sp
+          JOIN parents p ON p.parent_id = sp.parent_id
+          WHERE sp.student_id = s.student_id
+          ORDER BY sp.is_primary DESC, sp.linked_at ASC
+          LIMIT 1
+        ) parent_info ON TRUE
+        WHERE i.invoice_id = %s
+        """,
+        (invoice_id,),
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Không tìm thấy hóa đơn học phí.")
+
+    allowed = user["role"] == "teacher" and row["teacher_user_id"] == user["user_id"]
+    if user["role"] == "student":
+        allowed = require_student_id(connection, user["user_id"])["student_id"] == row["student_id"]
+    elif user["role"] == "parent":
+        allowed = row["student_id"] in linked_student_ids(connection, user["user_id"])
+    if not allowed:
+        raise HTTPException(status_code=403, detail="Bạn không có quyền xem hóa đơn học phí này.")
+
+    payments = fetch_all(
+        connection,
+        """
+        SELECT p.payment_id, p.amount, p.payment_method, p.paid_at,
+               p.reference_code, p.note, p.created_at, u.full_name AS recorded_by_name
+        FROM tuition_payments p
+        JOIN users u ON u.user_id = p.recorded_by
+        WHERE p.invoice_id = %s
+        ORDER BY p.paid_at DESC, p.payment_id DESC
+        """,
+        (invoice_id,),
+    )
+
+    sessions = fetch_all(
+        connection,
+        """
+        SELECT cs.session_id, cs.starts_at, cs.ends_at, cs.room, cs.topic,
+               cs.status AS session_status,
+               ar.status AS attendance_status, ar.note AS attendance_note
+        FROM class_sessions cs
+        LEFT JOIN attendance_records ar
+          ON ar.session_id = cs.session_id AND ar.student_id = %s
+        WHERE cs.class_id = %s
+          AND cs.status <> 'cancelled'
+          AND cs.starts_at::date BETWEEN %s AND %s
+        ORDER BY cs.starts_at ASC
+        """,
+        (row["student_id"], row["class_id"], row["period_start"], row["period_end"]),
+    )
+
+    due_val = float(row["amount_due"] or 0)
+    paid_val = float(row["amount_paid"] or 0)
+    progress_pct = round((paid_val / due_val) * 100, 1) if due_val > 0 else 100.0
+
+    invoice_data = dict(row)
+    invoice_data.pop("teacher_user_id", None)
+    invoice_data["progress_percent"] = progress_pct
+    invoice_data["payment_count"] = len(payments)
+
+    return {
+        "invoice": invoice_data,
+        "payments": payments,
+        "sessions": sessions,
+    }
+
+
+@app.post("/api/tuition/invoices/{invoice_id}/remind")
+def remind_tuition_invoice(
+    invoice_id: str,
+    payload: TuitionReminderRequest,
+    connection: Connection,
+    teacher: Teacher,
+):
+    invoice = fetch_one(
+        connection,
+        """
+        SELECT
+          v.invoice_id, v.student_id, v.billing_year, v.billing_month,
+          v.amount_due, v.amount_paid, v.amount_remaining, v.payment_status,
+          i.period_start, i.period_end,
+          s.student_code, s.user_id AS student_user_id,
+          stu_u.full_name AS student_name,
+          c.name AS class_name, c.class_code
+        FROM v_tuition_invoice_balances v
+        JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+        JOIN students s ON s.student_id = i.student_id
+        JOIN users stu_u ON stu_u.user_id = s.user_id
+        JOIN classes c ON c.class_id = i.class_id
+        WHERE i.invoice_id = %s AND i.status = 'open' AND c.teacher_user_id = %s
+        """,
+        (invoice_id, teacher["user_id"]),
+    )
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Không tìm thấy khoản thu học phí.")
+    if float(invoice["amount_remaining"] or 0) <= 0:
+        raise HTTPException(status_code=400, detail="Khoản thu này đã đóng đủ, không cần gửi nhắc phí.")
+
+    parent_rows = fetch_all(
+        connection,
+        """
+        SELECT DISTINCT p.user_id
+        FROM student_parents sp
+        JOIN parents p ON p.parent_id = sp.parent_id
+        WHERE sp.student_id = %s AND p.user_id IS NOT NULL
+        """,
+        (invoice["student_id"],),
+    )
+    recipient_ids = [r["user_id"] for r in parent_rows]
+    if payload.include_student and invoice["student_user_id"]:
+        recipient_ids.append(invoice["student_user_id"])
+    elif not recipient_ids and invoice["student_user_id"]:
+        recipient_ids.append(invoice["student_user_id"])
+
+    unique_recipients = list(dict.fromkeys(recipient_ids))
+    if not unique_recipients:
+        raise HTTPException(
+            status_code=400,
+            detail="Học sinh này chưa có tài khoản phụ huynh hoặc học sinh liên kết để nhận thông báo.",
+        )
+
+    title, body = build_tuition_reminder_message(invoice, payload.custom_note)
+    with transaction(connection):
+        for recipient_id in unique_recipients:
+            create_notification(
+                connection,
+                recipient_id,
+                title,
+                body,
+                "tuition",
+                invoice_id,
+            )
+
+    return {
+        "invoice_id": invoice_id,
+        "sent_count": len(unique_recipients),
+        "title": title,
+    }
+
+
+@app.post("/api/tuition/reminders/send")
+def send_bulk_tuition_reminders(
+    payload: BulkTuitionReminderRequest,
+    connection: Connection,
+    teacher: Teacher,
+):
+    if payload.class_id:
+        require_class_teacher(connection, payload.class_id, teacher["user_id"])
+
+    where = ["i.status = 'open'", "c.teacher_user_id = %s", "v.amount_remaining > 0"]
+    params: list[Any] = [teacher["user_id"]]
+    if payload.class_id:
+        where.append("i.class_id = %s")
+        params.append(payload.class_id)
+    if payload.billing_year is not None:
+        where.append("i.billing_year = %s")
+        params.append(payload.billing_year)
+    if payload.billing_month is not None:
+        where.append("i.billing_month = %s")
+        params.append(payload.billing_month)
+
+    unpaid_invoices = fetch_all(
+        connection,
+        f"""
+        SELECT
+          v.invoice_id, v.student_id, v.billing_year, v.billing_month,
+          v.amount_due, v.amount_paid, v.amount_remaining, v.payment_status,
+          i.period_start, i.period_end,
+          s.student_code, s.user_id AS student_user_id,
+          stu_u.full_name AS student_name,
+          c.name AS class_name, c.class_code
+        FROM v_tuition_invoice_balances v
+        JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+        JOIN students s ON s.student_id = i.student_id
+        JOIN users stu_u ON stu_u.user_id = s.user_id
+        JOIN classes c ON c.class_id = i.class_id
+        WHERE {' AND '.join(where)}
+        ORDER BY u_order.full_name
+        """.replace("ORDER BY u_order.full_name", "ORDER BY stu_u.full_name"),
+        tuple(params),
+    )
+
+    if not unpaid_invoices:
+        return {"invoices_reminded": 0, "sent_count": 0}
+
+    sent_count = 0
+    reminded_invoices = 0
+    with transaction(connection):
+        for inv in unpaid_invoices:
+            parent_rows = fetch_all(
+                connection,
+                """
+                SELECT DISTINCT p.user_id
+                FROM student_parents sp
+                JOIN parents p ON p.parent_id = sp.parent_id
+                WHERE sp.student_id = %s AND p.user_id IS NOT NULL
+                """,
+                (inv["student_id"],),
+            )
+            recipients = [r["user_id"] for r in parent_rows]
+            if payload.include_student and inv["student_user_id"]:
+                recipients.append(inv["student_user_id"])
+            elif not recipients and inv["student_user_id"]:
+                recipients.append(inv["student_user_id"])
+
+            unique_recipients = list(dict.fromkeys(recipients))
+            if not unique_recipients:
+                continue
+
+            title, body = build_tuition_reminder_message(inv, payload.custom_note)
+            for recipient_id in unique_recipients:
+                create_notification(
+                    connection,
+                    recipient_id,
+                    title,
+                    body,
+                    "tuition",
+                    inv["invoice_id"],
+                )
+                sent_count += 1
+            reminded_invoices += 1
+
+    return {
+        "invoices_reminded": reminded_invoices,
+        "sent_count": sent_count,
     }
