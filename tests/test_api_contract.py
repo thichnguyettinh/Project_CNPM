@@ -302,6 +302,10 @@ class ApiContractTests(unittest.TestCase):
         teacher_tuition = (root / "assets/js/modules/teacher/tuition-fee.js").read_text(encoding="utf-8")
         for html in (teacher, student, parent):
             self.assertIn("../../assets/js/dashboard-stats.js", html)
+        self.assertIn('id="teacherGreeting"', teacher)
+        self.assertIn('id="teacherGreetingDate"', teacher)
+        self.assertNotIn("Chào buổi sáng, cô Hà Linh!", teacher)
+        self.assertNotIn("Thứ Sáu, 23/10/2026", teacher)
         self.assertIn("../../assets/js/modules/teacher/tuition-fee.js", teacher)
         self.assertIn("../../assets/js/modules/parent/tuition-invoice.js", parent)
         self.assertIn("watchlist.slice(0, 2)", teacher_tuition)

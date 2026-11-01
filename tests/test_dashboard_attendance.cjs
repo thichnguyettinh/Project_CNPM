@@ -96,14 +96,29 @@ function setupStats(role, summary) {
     },
     AuthService: {
       requireAuth: requestedRole => requestedRole === role,
+      getCurrentUser: () => ({fullName:'Nguyễn Hà Linh'}),
       api: async () => summary
     },
-    Number, Date
+    Number, Date, Intl
   };
   vm.createContext(ctx);
   vm.runInContext(statsScript, ctx);
   return {module:ctx.window.DashboardStats, el:id=>ctx.document.getElementById(id), listeners};
 }
+
+test('Lời chào và ngày tổng quan dùng tên tài khoản và ngày hiện tại', () => {
+  const {module, el} = setupStats('teacher', {});
+  module.renderTeacherGreeting(
+    {fullName:'Trần Minh Anh'},
+    new Date(2026, 10, 2, 9, 0)
+  );
+  assert.equal(el('teacherGreeting').textContent, 'Chào buổi sáng, Trần Minh Anh!');
+  assert.match(el('teacherGreetingDate').textContent, /02\/11\/2026/);
+  assert.equal(el('dashboardCurrentDate').textContent, el('teacherGreetingDate').textContent);
+  assert.equal(el('teacherSidebarName').textContent, 'Trần Minh Anh');
+  assert.equal(el('teacherHeaderName').textContent, 'Trần Minh Anh · Giáo viên');
+  assert.equal(el('teacherSidebarAvatar').textContent, 'MA');
+});
 
 test('Thẻ tổng quan giáo viên nhận số lớp, học sinh và buổi học từ dashboard API', async () => {
   const {module, el} = setupStats('teacher', {

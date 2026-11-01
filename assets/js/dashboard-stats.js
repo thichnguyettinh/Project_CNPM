@@ -11,6 +11,31 @@ const DashboardStats = {
     const node = this.el(id);
     if (node) node.title = value;
   },
+  renderTeacherGreeting(user = AuthService.getCurrentUser(), now = new Date()) {
+    const hour = now.getHours();
+    const period = hour >= 5 && hour < 11 ? 'buổi sáng'
+      : hour >= 11 && hour < 13 ? 'buổi trưa'
+        : hour >= 13 && hour < 18 ? 'buổi chiều' : 'buổi tối';
+    const fullName = user?.fullName?.trim() || 'Giáo viên';
+    const initials = fullName.split(/\s+/).slice(-2)
+      .map(part => part[0])
+      .join('')
+      .toLocaleUpperCase('vi-VN');
+    const date = now.toLocaleDateString('vi-VN', {
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+
+    this.setText('teacherGreeting', `Chào ${period}, ${fullName}!`);
+    this.setText('teacherGreetingDate', date);
+    this.setText('dashboardCurrentDate', date);
+    this.setText('teacherSidebarName', fullName);
+    this.setText('teacherHeaderName', `${fullName} · Giáo viên`);
+    this.setText('teacherSidebarAvatar', initials);
+    this.setText('teacherHeaderAvatar', initials);
+  },
   formatScore(score) {
     return score === null || score === undefined
       ? '—'
@@ -30,6 +55,12 @@ const DashboardStats = {
   },
   async init(role) {
     this.role = role;
+    if (role === 'teacher') {
+      this.renderTeacherGreeting();
+      window.addEventListener('auth:user-updated', event => {
+        this.renderTeacherGreeting(event.detail);
+      });
+    }
     if (role === 'parent') {
       this.el('parentAttendanceChild')?.addEventListener('change', event => {
         this.renderChild(event.target.value || '');

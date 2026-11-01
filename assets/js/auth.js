@@ -171,6 +171,7 @@ const AuthService = {
       .then(serverUser => {
         localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(serverUser));
         this.updateWorkspaceBranding(serverUser);
+        window.dispatchEvent(new CustomEvent('auth:user-updated', { detail: serverUser }));
       })
       .catch(error => {
         this.clearSession();
