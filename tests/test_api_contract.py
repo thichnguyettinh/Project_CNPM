@@ -5,13 +5,21 @@ from unittest.mock import patch
 from fastapi import HTTPException
 from pydantic import ValidationError
 
-from backend.app.main import app, login, unread_notification_count
+from backend.app.main import (
+    app,
+    link_parent_to_student,
+    login,
+    reset_user_password,
+    unread_notification_count,
+)
 from backend.app.schemas import (
     InvoiceGenerate,
     LoginRequest,
     PasswordChange,
+    ParentLinkCreate,
     ResultEntry,
     UserCreate,
+    UserPasswordReset,
 )
 from backend.app.security import (
     LOGIN_LOCKOUT_MINUTES,
@@ -93,6 +101,22 @@ class RequestValidationTests(unittest.TestCase):
                 password="LongPassword42",
             )
 
+    def test_teacher_password_reset_requires_password_policy(self):
+        self.assertEqual(
+            UserPasswordReset(new_password="StrongPass1!").new_password,
+            "StrongPass1!",
+        )
+        with self.assertRaises(ValidationError):
+            UserPasswordReset(new_password="weakpass1")
+
+    def test_parent_link_payload_requires_student_code(self):
+        self.assertEqual(
+            ParentLinkCreate(student_code="HS001", relationship="Mẹ").student_code,
+            "HS001",
+        )
+        with self.assertRaises(ValidationError):
+            ParentLinkCreate(student_code="")
+
     def test_scores_are_limited_to_half_point_steps(self):
         self.assertEqual(ResultEntry(student_code="HS001", score="8.5").score, 8.5)
         with self.assertRaises(ValidationError):
@@ -126,6 +150,8 @@ class ApiContractTests(unittest.TestCase):
         expected = {
             "/api/auth/login",
             "/api/users",
+            "/api/users/{user_id}/parent-link",
+            "/api/users/{user_id}/reset-password",
             "/api/classes",
             "/api/sessions",
             "/api/assignments",
@@ -135,6 +161,59 @@ class ApiContractTests(unittest.TestCase):
             "/api/dashboard",
         }
         self.assertTrue(expected.issubset(paths))
+
+    def test_parent_link_connects_an_existing_parent_and_rejects_duplicate(self):
+        connection = unittest.mock.Mock()
+        payload = ParentLinkCreate(student_code="HS001", relationship="Mẹ")
+        inserted = {"student_id": 1, "parent_id": 2, "relationship": "Mẹ"}
+        teacher = {"user_id": "teacher-1"}
+        with patch(
+            "backend.app.main.fetch_one",
+            side_effect=[{"parent_id": 2}, {"student_id": 1}, inserted],
+        ) as fetch:
+            result = link_parent_to_student("parent-1", payload, connection, teacher)
+        self.assertEqual(result, inserted)
+        insert_sql = fetch.call_args_list[2].args[1]
+        self.assertIn("ON CONFLICT (student_id, parent_id) DO NOTHING", insert_sql)
+
+        with patch(
+            "backend.app.main.fetch_one",
+            side_effect=[{"parent_id": 2}, {"student_id": 1}, None],
+        ):
+            with self.assertRaises(HTTPException) as raised:
+                link_parent_to_student("parent-1", payload, connection, teacher)
+        self.assertEqual(raised.exception.status_code, 409)
+
+    def test_teacher_reset_password_updates_hash_lockout_and_sessions(self):
+        connection = unittest.mock.MagicMock()
+        teacher = {"user_id": "teacher-1"}
+        payload = UserPasswordReset(new_password="StrongPass1!")
+        with (
+            patch("backend.app.main.fetch_one", return_value={"role": "student"}),
+            patch("backend.app.main.hash_password", return_value="new-hash"),
+        ):
+            result = reset_user_password("student-1", payload, connection, teacher)
+        self.assertEqual(result["message"], "Đã đặt lại mật khẩu và thu hồi các phiên đăng nhập.")
+        password_update = connection.execute.call_args_list[0].args
+        self.assertIn("failed_login_attempts = 0", password_update[0])
+        self.assertEqual(password_update[1], ("new-hash", "student-1"))
+        session_update = connection.execute.call_args_list[1].args
+        self.assertIn("revoked_at = NOW()", session_update[0])
+        self.assertEqual(session_update[1], ("student-1",))
+
+    def test_teacher_cannot_reset_teacher_or_unknown_account_password(self):
+        connection = unittest.mock.Mock()
+        teacher = {"user_id": "teacher-1"}
+        with patch("backend.app.main.fetch_one", return_value={"role": "teacher"}):
+            with self.assertRaises(HTTPException) as raised:
+                reset_user_password(
+                    "teacher-1",
+                    UserPasswordReset(new_password="StrongPass1!"),
+                    connection,
+                    teacher,
+                )
+        self.assertEqual(raised.exception.status_code, 404)
+        connection.execute.assert_not_called()
 
 
 if __name__ == "__main__":

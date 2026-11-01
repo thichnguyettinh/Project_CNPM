@@ -25,6 +25,7 @@ from .schemas import (
     EnrollmentCreate,
     InvoiceGenerate,
     LoginRequest,
+    ParentLinkCreate,
     PasswordChange,
     PaymentCreate,
     ProfileUpdate,
@@ -33,6 +34,7 @@ from .schemas import (
     SessionCreate,
     SessionUpdate,
     UserCreate,
+    UserPasswordReset,
     UserUpdate,
 )
 from .security import (
@@ -470,6 +472,31 @@ def list_users(connection: Connection, teacher: Teacher, role: str | None = None
         """
         SELECT u.user_id AS id, u.username, u.email, u.role, u.full_name, u.phone,
                u.avatar_text, u.status, s.student_code,
+               (SELECT string_agg(DISTINCT CASE WHEN u.role = 'student'
+                                                  THEN linked_parent_user.full_name
+                                                  ELSE linked_student_user.full_name END, ', ')
+                FROM student_parents sp
+                JOIN parents linked_parent ON linked_parent.parent_id = sp.parent_id
+                JOIN students linked_student ON linked_student.student_id = sp.student_id
+                JOIN users linked_parent_user ON linked_parent_user.user_id = linked_parent.user_id
+                JOIN users linked_student_user ON linked_student_user.user_id = linked_student.user_id
+                WHERE linked_parent.user_id = u.user_id OR linked_student.user_id = u.user_id
+               ) AS linked_names,
+               (SELECT array_agg(DISTINCT CASE WHEN u.role = 'student'
+                                                THEN linked_parent.user_id
+                                                ELSE linked_student.user_id END)
+                FROM student_parents sp
+                JOIN parents linked_parent ON linked_parent.parent_id = sp.parent_id
+                JOIN students linked_student ON linked_student.student_id = sp.student_id
+                WHERE linked_parent.user_id = u.user_id OR linked_student.user_id = u.user_id
+               ) AS linked_user_ids,
+               (SELECT string_agg(DISTINCT c.name, ', ')
+                FROM students enrolled_student
+                JOIN class_enrollments ce ON ce.student_id = enrolled_student.student_id
+                  AND ce.status = 'active'
+                JOIN classes c ON c.class_id = ce.class_id
+                WHERE enrolled_student.user_id = u.user_id
+               ) AS class_names,
                (SELECT string_agg(alias, ',') FROM user_aliases a WHERE a.user_id = u.user_id) AS aliases
         FROM users u LEFT JOIN students s ON s.user_id = u.user_id
         WHERE (%s::text IS NULL OR u.role = %s)
@@ -531,6 +558,76 @@ def create_user(payload: UserCreate, connection: Connection, teacher: Teacher):
                 (student["student_id"], parent["parent_id"], payload.relationship),
             )
     return {"id": user_id, "username": payload.username, "role": payload.role}
+
+
+@app.post("/api/users/{user_id}/parent-link", status_code=201)
+def link_parent_to_student(
+    user_id: str,
+    payload: ParentLinkCreate,
+    connection: Connection,
+    teacher: Teacher,
+):
+    parent = fetch_one(
+        connection,
+        """SELECT p.parent_id FROM parents p
+           JOIN users u ON u.user_id = p.user_id
+           WHERE p.user_id = %s AND u.role = 'parent' AND u.status = 'active'""",
+        (user_id,),
+    )
+    if not parent:
+        raise HTTPException(status_code=404, detail="Không tìm thấy hồ sơ tài khoản phụ huynh.")
+    student = fetch_one(
+        connection,
+        """SELECT s.student_id FROM students s
+           JOIN users u ON u.user_id = s.user_id
+           WHERE s.student_code = %s AND s.status = 'active' AND u.status = 'active'""",
+        (payload.student_code,),
+    )
+    if not student:
+        raise HTTPException(status_code=404, detail="Không tìm thấy học sinh đang hoạt động.")
+    row = fetch_one(
+        connection,
+        """INSERT INTO student_parents (student_id, parent_id, relationship, is_primary)
+           VALUES (%s, %s, %s, NOT EXISTS (
+             SELECT 1 FROM student_parents WHERE student_id = %s
+           ))
+           ON CONFLICT (student_id, parent_id) DO NOTHING
+           RETURNING student_id, parent_id, relationship, is_primary, linked_at""",
+        (student["student_id"], parent["parent_id"], payload.relationship, student["student_id"]),
+    )
+    if not row:
+        raise HTTPException(status_code=409, detail="Tài khoản phụ huynh đã được liên kết với học sinh này.")
+    return row
+
+
+@app.post("/api/users/{user_id}/reset-password")
+def reset_user_password(
+    user_id: str,
+    payload: UserPasswordReset,
+    connection: Connection,
+    teacher: Teacher,
+):
+    user = fetch_one(
+        connection,
+        "SELECT role FROM users WHERE user_id = %s",
+        (user_id,),
+    )
+    if not user or user["role"] not in {"student", "parent"}:
+        raise HTTPException(status_code=404, detail="Không tìm thấy tài khoản học sinh hoặc phụ huynh.")
+    with transaction(connection):
+        connection.execute(
+            """UPDATE users
+               SET password_hash = %s, failed_login_attempts = 0, locked_until = NULL,
+                   updated_at = NOW()
+               WHERE user_id = %s""",
+            (hash_password(payload.new_password), user_id),
+        )
+        connection.execute(
+            """UPDATE auth_sessions SET revoked_at = NOW()
+               WHERE user_id = %s AND revoked_at IS NULL""",
+            (user_id,),
+        )
+    return {"message": "Đã đặt lại mật khẩu và thu hồi các phiên đăng nhập."}
 
 
 @app.patch("/api/users/{user_id}")

@@ -164,6 +164,7 @@ Dự án (project_cnpm/)
 * **Đã hoàn thành theo mã nguồn:**
   * **Đăng nhập và phân quyền:** đăng nhập bằng API, xác thực phiên, giới hạn vai trò theo trang và đăng xuất/thu hồi phiên.
   * **Bảo mật tài khoản:** scrypt với salt ngẫu nhiên; khóa đăng nhập 15 phút sau 3 lần sai; API đổi mật khẩu và chính sách mật khẩu mới.
+  * **Quản lý tài khoản (UC-02):** danh sách học sinh/phụ huynh lấy từ API; tạo tài khoản, liên kết phụ huynh hiện có với học sinh, đặt lại mật khẩu theo chính sách và thu hồi các phiên đăng nhập cũ.
   * **Backend và dữ liệu nền tảng:** FastAPI kết nối PostgreSQL; schema tài khoản/hồ sơ và các nhóm API nghiệp vụ được triển khai trong `backend/app/`; script tạo tài khoản demo ở `database/seed_test_accounts.sql`.
   * **Hồ sơ và đổi mật khẩu:** các trang hồ sơ cho giáo viên, học sinh, phụ huynh; checklist và thanh đo độ mạnh mật khẩu.
   * **Trung tâm hướng dẫn và điều hướng:** trang hướng dẫn theo từng vai trò; liên kết trong sidebar; biểu tượng đăng xuất học sinh/phụ huynh đồng bộ.
@@ -173,7 +174,7 @@ Dự án (project_cnpm/)
   * Chưa xác minh toàn bộ các luồng đăng nhập/nghiệp vụ chạy end-to-end trên PostgreSQL với dữ liệu thật.
 * **Trang phụ trách:**
   * [`index.html`](file:///d:/project_cnpm/index.html) (Trang 1 PDF): Màn hình Đăng nhập 2 cột, kiểm tra tài khoản, điều hướng 3 vai trò.
-  * [`pages/teacher/users.html`](file:///d:/project_cnpm/pages/teacher/users.html) (Trang 4, 15, 22 PDF): Danh sách tài khoản (Học sinh 96, Phụ huynh 84); Modal tạo tài khoản học sinh và liên kết phụ huynh; Xử lý trạng thái tìm kiếm trống (Empty state).
+  * [`pages/teacher/users.html`](file:///d:/project_cnpm/pages/teacher/users.html) (Trang 4, 15, 22 PDF): Danh sách tài khoản học sinh/phụ huynh lấy từ API; tạo tài khoản học sinh hoặc phụ huynh; liên kết tài khoản phụ huynh hiện có và đặt lại mật khẩu.
   * `pages/teacher/profile.html` (Trang 19, 20 PDF): Hồ sơ giáo viên và form đổi mật khẩu.
   * `pages/student/profile.html`, `pages/parent/profile.html`: hồ sơ và đổi mật khẩu cho học sinh/phụ huynh.
   * `pages/teacher/help.html`, `pages/student/help.html`, `pages/parent/help.html`: trung tâm hướng dẫn theo vai trò.

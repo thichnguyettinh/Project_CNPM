@@ -46,6 +46,22 @@ class UserUpdate(StrictModel):
     status: Literal["active", "inactive", "locked"] | None = None
 
 
+class ParentLinkCreate(StrictModel):
+    student_code: str = Field(min_length=1, max_length=30)
+    relationship: str | None = Field(default=None, max_length=40)
+
+
+class UserPasswordReset(StrictModel):
+    new_password: str = Field(min_length=8, max_length=128)
+
+    @model_validator(mode="after")
+    def validate_password_policy(self):
+        password_errors = password_policy_errors(self.new_password)
+        if password_errors:
+            raise ValueError("Mật khẩu cần đáp ứng: " + ", ".join(password_errors) + ".")
+        return self
+
+
 class PasswordChange(StrictModel):
     current_password: str = Field(min_length=1, max_length=256)
     new_password: str = Field(min_length=8, max_length=128)

@@ -123,3 +123,24 @@ test('UC05 tạo tài khoản học sinh sử dụng API /users với role stude
   assert.equal(payload.role,'student');
   assert.equal(payload.student_code,'HS002');
 });
+
+test('UC02 gửi đúng API và payload cho tạo, liên kết phụ huynh, đặt lại mật khẩu', async () => {
+  const {w, requests} = load('assets/js/modules/teacher/user-management.js');
+  await w.UserManagementModule.createUser({
+    username:'parent01', full_name:'Phụ huynh thử', role:'parent',
+    linked_student_code:'HS001', password:'StrongPass1!'
+  });
+  await w.UserManagementModule.linkParentToStudent('parent id', 'HS001', 'Mẹ');
+  await w.UserManagementModule.resetPassword('student id', 'StrongPass2!');
+  assert.deepEqual(requests.map(request => request.url), [
+    '/users',
+    '/users/parent%20id/parent-link',
+    '/users/student%20id/reset-password'
+  ]);
+  assert.equal(requests[0].options.method, 'POST');
+  assert.equal(JSON.parse(requests[1].options.body).student_code, 'HS001');
+  assert.equal(JSON.parse(requests[1].options.body).relationship, 'Mẹ');
+  assert.deepEqual(JSON.parse(requests[2].options.body), {
+    new_password: 'StrongPass2!'
+  });
+});

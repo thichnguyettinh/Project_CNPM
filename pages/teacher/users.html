@@ -13,6 +13,10 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <style>
+    .user-management-message[hidden], #tableAccountContainer[hidden], #emptySearchBox[hidden],
+    #createLinkedStudentGroup[hidden], #createStudentCodeGroup[hidden] { display: none !important; }
+  </style>
 </head>
 <body>
 
@@ -125,32 +129,27 @@
 
         <!-- Tab phân loại -->
         <div class="subnav-tabs" style="margin-bottom: 20px;">
-          <button class="subnav-tab-item active" onclick="filterUserRole('all', this)">Tất cả (180)</button>
-          <button class="subnav-tab-item" onclick="filterUserRole('student', this)">Học sinh (96)</button>
-          <button class="subnav-tab-item" onclick="filterUserRole('parent', this)">Phụ huynh (84)</button>
+          <button class="subnav-tab-item active" data-user-role onclick="UserManagementPage.setRole('all', this)" id="countAllUsers">Tất cả</button>
+          <button class="subnav-tab-item" data-user-role onclick="UserManagementPage.setRole('student', this)" id="countStudentUsers">Học sinh</button>
+          <button class="subnav-tab-item" data-user-role onclick="UserManagementPage.setRole('parent', this)" id="countParentUsers">Phụ huynh</button>
         </div>
+
+        <div id="userManagementMessage" class="alert user-management-message" role="status" hidden></div>
 
         <!-- Bảng danh sách tài khoản -->
         <div class="card" style="padding: 20px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <div>
               <h3 class="title-card">Danh sách tài khoản</h3>
-              <p class="text-caption">180 tài khoản · 96 học sinh và 84 phụ huynh</p>
+              <p class="text-caption">Danh sách học sinh và phụ huynh đang được quản lý.</p>
             </div>
-            <button class="btn btn-secondary btn-sm" onclick="alert('Đã xuất danh sách tài khoản ra Excel!')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Xuất danh sách</span>
-            </button>
           </div>
 
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
             <div class="search-box-wrap" style="flex:1; min-width:260px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" class="form-control" id="searchUserInput" placeholder="Tìm tên, mã hoặc tên đăng nhập..." onkeyup="checkSearchEmpty(this.value)">
+              <input type="search" class="form-control" id="searchUserInput" placeholder="Tìm tên, mã, tên đăng nhập hoặc liên kết...">
             </div>
-            <select class="form-control" style="width: 140px;"><option>Tất cả vai trò</option><option>Học sinh</option><option>Phụ huynh</option></select>
-            <select class="form-control" style="width: 150px;"><option>Đang hoạt động</option><option>Đã khóa</option></select>
-            <select class="form-control" style="width: 170px;"><option>Tất cả lớp học</option><option>Toán 10 - Nền tảng</option></select>
           </div>
 
           <!-- Khu vực Bảng hoặc Trạng thái trống -->
@@ -166,242 +165,151 @@
                   <th style="text-align:right;">Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr class="row-user-item">
-                  <td>
-                    <strong>Trần Minh Anh</strong><br>
-                    <span class="text-caption">HS001 · minhanh.hs</span>
-                  </td>
-                  <td><span class="badge badge-info">Học sinh</span></td>
-                  <td>Toán 10 - Nền tảng</td>
-                  <td>Trần Thị Hương</td>
-                  <td><span class="badge badge-success"><span class="badge-dot"></span>Hoạt động</span></td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="alert('Đang xem thông tin tài khoản')">Chi tiết</button>
-                  </td>
-                </tr>
-
-                <tr class="row-user-item">
-                  <td>
-                    <strong>Trần Thị Hương</strong><br>
-                    <span class="text-caption">PH001 · thihuong.ph</span>
-                  </td>
-                  <td><span class="badge badge-warning">Phụ huynh</span></td>
-                  <td>—</td>
-                  <td>Trần Minh Anh</td>
-                  <td><span class="badge badge-success"><span class="badge-dot"></span>Hoạt động</span></td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="alert('Đang xem thông tin tài khoản')">Chi tiết</button>
-                  </td>
-                </tr>
-
-                <tr class="row-user-item">
-                  <td>
-                    <strong>Nguyễn Đức Bảo</strong><br>
-                    <span class="text-caption">HS002 · ducbao.hs</span>
-                  </td>
-                  <td><span class="badge badge-info">Học sinh</span></td>
-                  <td>Toán 10 - Nền tảng</td>
-                  <td>Nguyễn Văn Bình</td>
-                  <td><span class="badge badge-success"><span class="badge-dot"></span>Hoạt động</span></td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="alert('Đang xem thông tin tài khoản')">Chi tiết</button>
-                  </td>
-                </tr>
-
-                <tr class="row-user-item">
-                  <td>
-                    <strong>Nguyễn Văn Bình</strong><br>
-                    <span class="text-caption">PH002 · vanbinh.ph</span>
-                  </td>
-                  <td><span class="badge badge-warning">Phụ huynh</span></td>
-                  <td>—</td>
-                  <td>Nguyễn Đức Bảo</td>
-                  <td><span class="badge badge-success"><span class="badge-dot"></span>Hoạt động</span></td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="alert('Đang xem thông tin tài khoản')">Chi tiết</button>
-                  </td>
-                </tr>
-
-                <tr class="row-user-item">
-                  <td>
-                    <strong>Lê Ngọc Chi</strong><br>
-                    <span class="text-caption">HS003 · ngocchi.hs</span>
-                  </td>
-                  <td><span class="badge badge-info">Học sinh</span></td>
-                  <td>Toán 10 - Nền tảng</td>
-                  <td>Lê Thị Lan</td>
-                  <td><span class="badge badge-success"><span class="badge-dot"></span>Hoạt động</span></td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="alert('Đang xem thông tin tài khoản')">Chi tiết</button>
-                  </td>
-                </tr>
-              </tbody>
+              <tbody id="userRows"><tr><td colspan="6">Đang tải tài khoản…</td></tr></tbody>
             </table>
           </div>
 
           <!-- Empty State -->
-          <div id="emptySearchBox" class="empty-state" style="display:none; margin-top:16px;">
+          <div id="emptySearchBox" class="empty-state" style="margin-top:16px;" hidden>
             <div class="empty-icon">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
             <h4 class="title-card">Không tìm thấy tài khoản</h4>
             <p class="text-caption" style="margin: 6px 0 16px;">Không có tài khoản phù hợp với từ khóa hoặc bộ lọc đã chọn.</p>
-            <button class="btn btn-secondary btn-sm" onclick="resetSearch()">Xóa bộ lọc</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('searchUserInput').value = ''; document.getElementById('searchUserInput').dispatchEvent(new Event('input'));">Xóa bộ lọc</button>
           </div>
 
         </div>
 
-        <div class="feature-slot">
-          <span class="slot-tag">SLOT: UC-02 USER & RBAC MODULE</span>
-          <p class="slot-desc">Đã thiết lập khung hàm: createUser(), linkParentToStudent(), resetPassword().</p>
-          <span class="code-hint">window.UserManagementModule</span>
-        </div>
       </div>
     </main>
   </div>
 
-  <!-- ============================================================= -->
-  <!-- MODAL: TẠO TÀI KHOẢN HỌC SINH & LIÊN KẾT PHỤ HUYNH -->
-  <!-- ============================================================= -->
+  <!-- Tạo tài khoản -->
   <div class="modal-overlay" id="modalCreateAccount">
-    <div class="modal-container" style="max-width: 860px;">
+    <div class="modal-container" style="max-width: 560px;">
       <div class="modal-header">
-        <h3 class="modal-title">Tạo tài khoản học sinh & liên kết phụ huynh</h3>
+        <h3 class="modal-title">Tạo tài khoản</h3>
         <button class="modal-close" onclick="closeModal('modalCreateAccount')">&times;</button>
       </div>
-      <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
-        
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
-          <!-- Cột nhập liệu form -->
-          <div>
-            <h4 style="font-size:14px; font-weight:700; color:var(--color-primary); margin-bottom:12px;">THÔNG TIN HỌC SINH</h4>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div class="form-group">
-                <label class="form-label">Họ và tên <span class="required">*</span></label>
-                <input type="text" class="form-control" placeholder="Nguyễn Hoàng Sơn" id="createStudentName">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Ngày sinh <span class="required">*</span></label>
-                <input type="date" class="form-control" value="2010-08-15">
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div class="form-group">
-                <label class="form-label">Số điện thoại</label>
-                <input type="text" class="form-control" placeholder="091 456 7890">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Lớp học <span class="required">*</span></label>
-                <select class="form-control">
-                  <option>Toán 10 - Nền tảng (TO10A)</option>
-                  <option>Toán 11 - Nâng cao (TO11B)</option>
-                </select>
-              </div>
-            </div>
-
+      <form id="createAccountForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="createRole">Loại tài khoản</label>
+            <select class="form-control" id="createRole">
+              <option value="student">Học sinh</option>
+              <option value="parent">Phụ huynh</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createFullName">Họ và tên <span class="required">*</span></label>
+            <input class="form-control" id="createFullName" maxlength="150" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createUsername">Tên đăng nhập <span class="required">*</span></label>
+            <input class="form-control" id="createUsername" minlength="3" maxlength="50" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createEmail">Email</label>
+            <input class="form-control" id="createEmail" type="email" maxlength="254" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createPhone">Số điện thoại</label>
+            <input class="form-control" id="createPhone" maxlength="30">
+          </div>
+          <div class="form-group" id="createStudentCodeGroup">
+            <label class="form-label" for="createStudentCode">Mã học sinh <span class="required">*</span></label>
+            <input class="form-control" id="createStudentCode" maxlength="30">
+          </div>
+          <div id="createLinkedStudentGroup" hidden>
             <div class="form-group">
-              <label class="form-label">Địa chỉ</label>
-              <input type="text" class="form-control" placeholder="24 Nguyễn Văn Cừ, Long Biên, Hà Nội">
+              <label class="form-label" for="createLinkedStudentCode">Mã học sinh cần liên kết <span class="required">*</span></label>
+              <input class="form-control" id="createLinkedStudentCode" maxlength="30">
             </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; background:#F8FAFC; padding:12px; border-radius:8px; margin-bottom:16px;">
-              <div class="form-group" style="margin:0;">
-                <label class="form-label">Tên đăng nhập <span class="required">*</span></label>
-                <input type="text" class="form-control" value="hoangson.hs">
-              </div>
-              <div class="form-group" style="margin:0;">
-                <label class="form-label">Mật khẩu tạm thời <span class="required">*</span></label>
-                <input type="text" class="form-control" value="123456">
-              </div>
-            </div>
-
-            <!-- Khối liên kết phụ huynh -->
-            <h4 style="font-size:14px; font-weight:700; color:var(--color-primary); margin-bottom:12px; padding-top:12px; border-top:1px solid #E2E8F0;">
-              LIÊN KẾT PHỤ HUYNH
-            </h4>
-            <div style="display:flex; gap:8px; margin-bottom:12px;">
-              <button type="button" class="btn btn-secondary btn-sm">Chọn tài khoản có sẵn</button>
-              <button type="button" class="btn btn-primary btn-sm">+ Tạo phụ huynh mới</button>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:12px;">
-              <div class="form-group">
-                <label class="form-label">Họ và tên phụ huynh <span class="required">*</span></label>
-                <input type="text" class="form-control" placeholder="Nguyễn Văn Hoàng">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Quan hệ <span class="required">*</span></label>
-                <select class="form-control"><option>Bố</option><option>Mẹ</option></select>
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div class="form-group">
-                <label class="form-label">SĐT phụ huynh <span class="required">*</span></label>
-                <input type="text" class="form-control" placeholder="090 345 6789">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Tên đăng nhập PH <span class="required">*</span></label>
-                <input type="text" class="form-control" value="vanhoang.ph">
-              </div>
+            <div class="form-group">
+              <label class="form-label" for="createRelationship">Quan hệ với học sinh</label>
+              <input class="form-control" id="createRelationship" maxlength="40" placeholder="Bố, mẹ, người giám hộ...">
             </div>
           </div>
-
-          <!-- Cột tóm tắt tài khoản -->
-          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:16px;">
-            <h4 style="font-size:14px; font-weight:700; margin-bottom:12px;">Tóm tắt tài khoản</h4>
-            <div style="font-size:13px; line-height:1.6; color:#475569; margin-bottom:16px;">
-              <p><strong>Học sinh mới:</strong></p>
-              <p id="summaryStudentName">Nguyễn Hoàng Sơn</p>
-              <p class="text-caption">Sĩ số lớp sẽ tăng từ 20 lên 21 học sinh.</p>
-              
-              <p style="margin-top:12px;"><strong>Phụ huynh liên kết:</strong></p>
-              <p>Nguyễn Văn Hoàng (Bố)</p>
-            </div>
-
-            <h4 style="font-size:13px; font-weight:700; margin-bottom:8px;">Phân quyền mặc định</h4>
-            <p class="text-caption">Học sinh và phụ huynh có quyền xem lịch học, điểm số, học phí và điểm danh. Chỉ giáo viên có quyền chỉnh sửa.</p>
+          <div class="form-group">
+            <label class="form-label" for="createPassword">Mật khẩu <span class="required">*</span></label>
+            <input class="form-control" id="createPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required>
+            <p class="text-caption">Ít nhất 8 ký tự, gồm chữ hoa, chữ số và ký tự đặc biệt.</p>
           </div>
         </div>
-
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('modalCreateAccount')">Hủy bỏ</button>
-        <button class="btn btn-primary" onclick="alert('Đã tạo thành công 2 tài khoản (Học sinh + Phụ huynh liên kết)!'); closeModal('modalCreateAccount');">
-          Tạo 2 tài khoản & liên kết
-        </button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalCreateAccount')">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+        </div>
+      </form>
     </div>
   </div>
+
+  <!-- Liên kết phụ huynh đã có với học sinh -->
+  <div class="modal-overlay" id="modalLinkParent">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Liên kết phụ huynh</h3>
+        <button class="modal-close" onclick="closeModal('modalLinkParent')">&times;</button>
+      </div>
+      <form id="linkParentForm">
+        <div class="modal-body">
+          <p class="text-secondary" id="linkStudentName"></p>
+          <input type="hidden" id="linkStudentCode">
+          <div id="linkParentMessage" class="alert user-management-message" role="status" hidden></div>
+          <div class="form-group">
+            <label class="form-label" for="linkParentUser">Tài khoản phụ huynh <span class="required">*</span></label>
+            <select class="form-control" id="linkParentUser" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="linkRelationship">Quan hệ với học sinh</label>
+            <input class="form-control" id="linkRelationship" maxlength="40" placeholder="Bố, mẹ, người giám hộ...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalLinkParent')">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary">Liên kết</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Đặt lại mật khẩu -->
+  <div class="modal-overlay" id="modalResetPassword">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Đặt lại mật khẩu</h3>
+        <button class="modal-close" onclick="closeModal('modalResetPassword')">&times;</button>
+      </div>
+      <form id="resetPasswordForm">
+        <div class="modal-body">
+          <p class="text-secondary" id="resetUserName"></p>
+          <input type="hidden" id="resetUserId">
+          <div id="resetPasswordMessage" class="alert user-management-message" role="status" hidden></div>
+          <div class="form-group">
+            <label class="form-label" for="resetNewPassword">Mật khẩu mới <span class="required">*</span></label>
+            <input class="form-control" id="resetNewPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="resetConfirmPassword">Xác nhận mật khẩu <span class="required">*</span></label>
+            <input class="form-control" id="resetConfirmPassword" type="password" minlength="8" maxlength="128" autocomplete="new-password" required>
+            <p class="text-caption">Mật khẩu cần có chữ hoa, chữ số và ký tự đặc biệt. Các phiên đang đăng nhập sẽ bị thu hồi.</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalResetPassword')">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary">Đặt lại mật khẩu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/modules/teacher/user-management.js"></script>
   <script>
-    AuthService.requireAuth('teacher');
-
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-    function filterUserRole(role, btn) {
-      document.querySelectorAll('.subnav-tab-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-
-    function checkSearchEmpty(val) {
-      if (val.trim().toLowerCase() === 'none' || val.trim().toLowerCase() === 'khongtimthay') {
-        document.getElementById('tableAccountContainer').style.display = 'none';
-        document.getElementById('emptySearchBox').style.display = 'block';
-      } else {
-        document.getElementById('tableAccountContainer').style.display = 'block';
-        document.getElementById('emptySearchBox').style.display = 'none';
-      }
-    }
-
-    function resetSearch() {
-      document.getElementById('searchUserInput').value = '';
-      checkSearchEmpty('');
-    }
+    document.addEventListener('DOMContentLoaded', () => UserManagementPage.init());
   </script>
 </body>
 </html>
