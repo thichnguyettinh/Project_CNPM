@@ -112,6 +112,52 @@ const AuthService = {
     return `${startYear}-${startYear + 1}`;
   },
 
+  initializePasswordVisibility(root = document) {
+    const fields = root.matches?.('input[type="password"]')
+      ? [root]
+      : root.querySelectorAll?.('input[type="password"]') || [];
+
+    fields.forEach(input => {
+      if (input.dataset.passwordVisibilityInitialized === 'true') return;
+
+      let wrapper = input.parentElement;
+      if (!wrapper?.classList.contains('password-input-wrap')) {
+        if (wrapper?.classList.contains('input-wrapper')) {
+          wrapper.classList.add('password-input-wrap');
+        } else {
+          wrapper = document.createElement('div');
+          wrapper.className = 'password-input-wrap';
+          input.parentNode.insertBefore(wrapper, input);
+          wrapper.appendChild(input);
+        }
+      }
+
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'password-visibility-toggle';
+      toggle.setAttribute('aria-label', 'Hiện mật khẩu');
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.title = 'Hiện mật khẩu';
+      toggle.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+      toggle.addEventListener('mousedown', event => event.preventDefault());
+      toggle.addEventListener('click', () => {
+        const isVisible = input.type === 'password';
+        input.type = isVisible ? 'text' : 'password';
+        toggle.setAttribute('aria-pressed', String(isVisible));
+        toggle.setAttribute('aria-label', isVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+        toggle.title = isVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu';
+        toggle.innerHTML = isVisible
+          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A11 11 0 0 1 12 5c7 0 11 7 11 7a13 13 0 0 1-3.1 3.8"/><path d="M6.6 6.6C3.6 8.3 1 12 1 12s4 7 11 7c1.2 0 2.3-.2 3.3-.6"/></svg>'
+          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      });
+
+      input.classList.add('password-toggle-input');
+      input.dataset.passwordVisibilityInitialized = 'true';
+      wrapper.appendChild(toggle);
+    });
+  },
+
   updateWorkspaceBranding(user = this.getCurrentUser()) {
     const role = user?.role;
     const workspaceLabel = role === 'teacher'
@@ -302,8 +348,15 @@ const AuthService = {
 window.AuthService = AuthService;
 
 const updateWorkspaceBranding = () => AuthService.updateWorkspaceBranding();
+const initializePasswordVisibility = () => {
+  AuthService.initializePasswordVisibility();
+};
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', updateWorkspaceBranding, { once: true });
+  document.addEventListener('DOMContentLoaded', () => {
+    updateWorkspaceBranding();
+    initializePasswordVisibility();
+  }, { once: true });
 } else {
   updateWorkspaceBranding();
+  initializePasswordVisibility();
 }

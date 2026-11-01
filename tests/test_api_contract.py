@@ -202,6 +202,27 @@ class ApiContractTests(unittest.TestCase):
         self.assertIn("AuthService.api('/profile')", profile_script)
         self.assertIn("method: 'PATCH'", profile_script)
 
+    def test_password_fields_have_shared_accessible_visibility_toggle(self):
+        root = Path(__file__).resolve().parents[1]
+        pages_with_password_fields = []
+        page_paths = [root / "index.html", *(root / "pages").rglob("*.html")]
+        for page_path in page_paths:
+            page = page_path.read_text(encoding="utf-8")
+            if re.search(r'<input\b[^>]*\btype=["\']password["\']', page, re.IGNORECASE):
+                pages_with_password_fields.append((page_path, page))
+
+        self.assertTrue(pages_with_password_fields)
+        for page_path, page in pages_with_password_fields:
+            self.assertIn("assets/js/auth.js", page, page_path.as_posix())
+            self.assertIn("assets/css/components.css", page, page_path.as_posix())
+
+        auth_script = (root / "assets/js/auth.js").read_text(encoding="utf-8")
+        self.assertIn("initializePasswordVisibility(root = document)", auth_script)
+        self.assertIn("password-visibility-toggle", auth_script)
+        self.assertIn("aria-pressed", auth_script)
+        self.assertIn("Ẩn mật khẩu", auth_script)
+        self.assertIn("Hiện mật khẩu", auth_script)
+
     def test_workspace_branding_uses_signed_in_user_and_current_academic_year(self):
         root = Path(__file__).resolve().parents[1]
         pages = list((root / "pages").rglob("*.html"))
