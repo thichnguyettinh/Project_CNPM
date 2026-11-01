@@ -16,6 +16,28 @@
   <style>
     .user-management-message[hidden], #tableAccountContainer[hidden], #emptySearchBox[hidden],
     #createLinkedStudentGroup[hidden], #createStudentCodeGroup[hidden] { display: none !important; }
+    #modalCreateAccount {
+      padding: 16px;
+      overflow-y: auto;
+    }
+    #modalCreateAccount .modal-container {
+      width: 100%;
+      max-height: calc(100vh - 32px);
+      display: flex;
+      flex-direction: column;
+    }
+    #modalCreateAccount form {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+    #modalCreateAccount .modal-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
