@@ -42,6 +42,9 @@
         <a href="classes.html" class="nav-item-link">
           <span>Lớp học</span>
         </a>
+        <a href="students.html" class="nav-item-link">
+          <span>Danh sách học sinh</span>
+        </a>
         <a href="users.html" class="nav-item-link">
           <span>Tài khoản</span>
         </a>
@@ -142,8 +145,8 @@
           <div class="stat-card">
             <div>
               <div class="stat-label">Học sinh đang học</div>
-              <div class="stat-value">96</div>
-              <div class="stat-desc">Trong 6 lớp học</div>
+              <div class="stat-value" id="teacherStudentCount">—</div>
+              <div class="stat-desc" id="teacherStudentCountHint">Đang tải sĩ số từ hệ thống…</div>
             </div>
             <div class="stat-icon success">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -232,30 +235,11 @@
                     <tr>
                       <th>Lớp học</th>
                       <th>Buổi học</th>
-                      <th>Có mặt</th>
+                      <th>Tham gia / Đã ghi</th>
                       <th>Trạng thái</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>Toán 11 - Nâng cao</strong></td>
-                      <td>22/10/2026</td>
-                      <td>17 / 18</td>
-                      <td><span class="badge badge-success"><span class="badge-dot"></span>Đã lưu</span></td>
-                    </tr>
-                    <tr>
-                      <td><strong>Toán 10 - Củng cố</strong></td>
-                      <td>22/10/2026</td>
-                      <td>15 / 16</td>
-                      <td><span class="badge badge-success"><span class="badge-dot"></span>Đã lưu</span></td>
-                    </tr>
-                    <tr>
-                      <td><strong>Toán 10 - Nền tảng</strong></td>
-                      <td>21/10/2026</td>
-                      <td>19 / 20</td>
-                      <td><span class="badge badge-success"><span class="badge-dot"></span>Đã lưu</span></td>
-                    </tr>
-                  </tbody>
+                  <tbody id="teacherRecentAttendanceRows"><tr><td colspan="4">Đang tải điểm danh gần đây…</td></tr></tbody>
                 </table>
               </div>
             </div>
@@ -373,9 +357,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
-  <script src="../../assets/js/modules/teacher/tuition-fee.js"></script>
-  <script>
-    AuthService.requireAuth('teacher');
-  </script>
+  <script src="../../assets/js/dashboard-attendance.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => DashboardAttendance.init('teacher'));</script>
 </body>
 </html>

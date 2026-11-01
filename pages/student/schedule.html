@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/student-schedule-live.css">
 </head>
 <body>
 
@@ -71,165 +72,49 @@
       <header class="app-header">
         <div class="header-breadcrumbs"><span>Không gian học sinh</span><span class="crumb-sep">/</span><span class="crumb-active">Lịch học</span></div>
         <div class="header-actions">
-          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <span id="studentScheduleToday" style="font-size: 13px; color: var(--color-text-secondary);"></span>
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">MA</div>
-            <span style="font-size:13px; font-weight:600;">Trần Minh Anh · Học sinh</span>
+            <span id="studentScheduleUser" style="font-size:13px; font-weight:600;">Học sinh</span>
           </div>
         </div>
       </header>
 
       <div class="app-content">
-        <!-- VIEW 1: LỊCH HỌC TUẦN -->
-        <div id="paneStudentWeek">
-          <div class="page-header-row">
-            <div>
-              <h1 class="title-page" style="font-size:24px;">Lịch học tuần</h1>
-              <p class="text-secondary" style="font-size:13px; margin-top:4px;">Lịch học của Trần Minh Anh · Năm học 2026-2027</p>
-            </div>
-          </div>
-
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <button class="btn btn-secondary btn-sm">Hôm nay</button>
-              <span style="font-weight:600; font-size:14.5px;">19–25 tháng 10, 2026</span>
-            </div>
-            <select class="form-control" style="width:140px;"><option>TO10A ▾</option></select>
-          </div>
-
-          <!-- Lưới lịch tuần học sinh -->
-          <div class="calendar-week-grid" style="margin-bottom:20px;">
-            <div class="calendar-header-col" style="background:#F8FAFC;"></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Thứ Hai</div><div class="cal-day-num">19</div></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Thứ Ba</div><div class="cal-day-num">20</div></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Thứ Tư</div><div class="cal-day-num">21</div></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Thứ Năm</div><div class="cal-day-num">22</div></div>
-            <div class="calendar-header-col" style="background:#EFF6FF;"><div class="cal-day-title" style="color:var(--color-primary); font-weight:700;">Thứ Sáu</div><div class="cal-day-num today">23</div></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Thứ Bảy</div><div class="cal-day-num">24</div></div>
-            <div class="calendar-header-col"><div class="cal-day-title">Chủ Nhật</div><div class="cal-day-num">25</div></div>
-
-            <div class="calendar-time-cell">17:30</div>
-            <div class="calendar-slot-cell">
-              <div class="cal-class-card" onclick="showSessionDetail('19/10/2026', 'Buổi 19', 'Ôn tập chương I')">
-                <h5>Toán 10 - Nền tảng</h5>
-                <p>P.201 · Cô Hà Linh</p>
-                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;">Đã học</span>
-              </div>
-            </div>
-            <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có lịch</span></div>
-            <div class="calendar-slot-cell">
-              <div class="cal-class-card" onclick="showSessionDetail('21/10/2026', 'Buổi 20', 'Kiểm tra chương I')">
-                <h5>Toán 10 - Nền tảng</h5>
-                <p>P.201 · Cô Hà Linh</p>
-                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;">Đã học</span>
-              </div>
-            </div>
-            <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có lịch</span></div>
-            <div class="calendar-slot-cell" style="background:#F0F7FF;">
-              <div class="cal-class-card active-now" onclick="showSessionDetail('23/10/2026', 'Buổi 21', 'Hàm số bậc hai: đồ thị và ứng dụng')">
-                <h5>Toán 10 - Nền tảng</h5>
-                <p>P.201 · Cô Hà Linh</p>
-                <span style="font-size:11px;">Hôm nay · Sắp diễn ra</span>
-              </div>
-            </div>
-            <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có lịch</span></div>
-            <div class="calendar-slot-cell"><span class="text-caption" style="display:block; text-align:center; margin-top:20px; color:#CBD5E1;">Không có lịch</span></div>
-          </div>
-
-          <div class="alert alert-info" style="margin-bottom:20px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-            <div>
-              <strong>Thay đổi phòng học tuần tới:</strong> Thứ Hai, 26/10: TO10A học tại phòng 202 thay cho phòng 201. Thời gian không đổi: 17:30–19:00.
-            </div>
+        <div class="page-header-row">
+          <div>
+            <h1 class="title-page">Thời khóa biểu của em</h1>
+            <p class="text-secondary">Các buổi học được lấy trực tiếp từ lớp em đang ghi danh. Khi giáo viên thêm hoặc bớt em khỏi lớp, hãy tải lại trang để xem lịch mới.</p>
           </div>
         </div>
-
-        <!-- VIEW 2: CHI TIẾT BUỔI HỌC CỦA HỌC SINH -->
-        <div id="paneStudentSessionDetail" style="display:none;">
-          <div style="margin-bottom:16px;">
-            <button class="btn btn-link btn-sm" onclick="hideSessionDetail()">← Lịch học tuần</button>
-            <h1 class="title-page" style="font-size:24px; margin-top:4px;">Chi tiết buổi học</h1>
-            <p class="text-caption" id="sessionSubTitle">Thứ Sáu, 23/10/2026 · Buổi 21</p>
-          </div>
-
-          <div style="background:#FFFFFF; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:20px; margin-bottom:20px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #E2E8F0; padding-bottom:14px;">
-              <div>
-                <h3 style="font-size:16px; font-weight:700;">Toán 10 - Nền tảng</h3>
-                <p class="text-caption">TO10A · Năm học 2026-2027</p>
-              </div>
-              <span class="badge badge-info">Sắp diễn ra</span>
+        <div id="studentScheduleMessage" class="alert alert-info" role="status" aria-live="polite" hidden></div>
+        <div class="card" style="padding:20px; margin-bottom:20px;">
+          <div class="schedule-controls">
+            <div class="schedule-control-buttons">
+              <button id="schedulePreviousWeek" type="button" class="btn btn-secondary btn-sm">← Tuần trước</button>
+              <button id="scheduleCurrentWeek" type="button" class="btn btn-secondary btn-sm">Tuần này</button>
+              <button id="scheduleNextWeek" type="button" class="btn btn-secondary btn-sm">Tuần sau →</button>
             </div>
-
-            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:20px;">
-              <div><span class="text-caption">Thời gian:</span><div style="font-weight:600;">17:30–19:00 (90 phút)</div></div>
-              <div><span class="text-caption">Phòng học:</span><div style="font-weight:600;">Phòng 201 · Tầng 2</div></div>
-              <div><span class="text-caption">Giáo viên:</span><div style="font-weight:600;">Nguyễn Hà Linh</div></div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
-              <div>
-                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Hàm số bậc hai: đồ thị và ứng dụng</h4>
-                <p style="font-size:13px; color:#475569; line-height:1.6; margin-bottom:12px;">
-                  Ôn tập dạng bài tìm giá trị lớn nhất, nhỏ nhất. Vận dụng đồ thị parabol để giải bài toán thực tế.
-                </p>
-                <div style="background:#F8FAFC; padding:12px; border-radius:8px; font-size:12.5px; color:#334155; line-height:1.6; margin-bottom:16px;">
-                  <strong>Mục tiêu buổi học:</strong><br>
-                  • Xác định đỉnh, trục đối xứng và chiều biến thiên của hàm số.<br>
-                  • Tìm giá trị lớn nhất, nhỏ nhất trên một khoảng.
-                </div>
-
-                <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Tài liệu buổi học</h4>
-                <div style="display:flex; align-items:center; justify-content:space-between; background:#FAFDFE; padding:12px; border-radius:8px; border:1px solid #E2E8F0;">
-                  <div>
-                    <div style="font-weight:600; font-size:13px;">Hàm số bậc hai - Tài liệu buổi 21.pdf</div>
-                    <div class="text-caption">PDF · 1.2 MB · Nguyễn Hà Linh</div>
-                  </div>
-                  <button class="btn btn-secondary btn-sm" onclick="alert('Đang tải tài liệu buổi 21...')">📥 Tải tài liệu</button>
-                </div>
-              </div>
-
-              <div>
-                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:14px; margin-bottom:16px;">
-                  <h5 style="font-size:13px; font-weight:700; margin-bottom:6px;">Thông tin lớp</h5>
-                  <div style="font-size:12.5px; color:#475569; line-height:1.6;">
-                    Môn: Toán · Khối 10<br>
-                    Sĩ số: 20 học sinh<br>
-                    Lịch: Thứ Hai, Tư, Sáu 17:30–19:00
-                  </div>
-                </div>
-
-                <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:14px;">
-                  <h5 style="font-size:13px; font-weight:700; margin-bottom:6px;">Buổi học tiếp theo</h5>
-                  <p style="font-size:12px; color:#475569;">Thứ Hai, 26/10/2026 · 17:30–19:00 tại Phòng 202.</p>
-                </div>
-              </div>
+            <div class="schedule-control-filter">
+              <label class="form-label" for="scheduleStudentClass">Lớp học</label>
+              <select id="scheduleStudentClass" class="form-control" aria-label="Chọn lớp học"><option value="">Đang tải…</option></select>
             </div>
           </div>
+          <p id="scheduleWeekLabel" class="text-secondary" style="font-weight:600; margin-top:16px;">Đang tải tuần học…</p>
         </div>
-
-        <div class="feature-slot">
-          <span class="slot-tag">SLOT: UC-10 STUDENT TIMETABLE VIEW</span>
-          <p class="slot-desc">Khung kết nối API: fetchScheduleByWeek(), downloadSessionAttachment().</p>
-          <span class="code-hint">window.StudentScheduleModule</span>
-        </div>
+        <div id="studentScheduleGrid" class="schedule-week-cards" aria-live="polite"></div>
+        <section id="studentSessionDetail" class="card" style="padding:20px; margin-top:20px;" hidden>
+          <h2 class="title-card" style="margin-bottom:14px;">Chi tiết buổi học</h2>
+          <div id="studentSessionDetailBody"></div>
+          <button id="studentSessionClose" class="btn btn-secondary btn-sm" type="button" style="margin-top:16px;">Đóng chi tiết</button>
+        </section>
       </div>
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/modules/student/schedule-view.js"></script>
   <script>
-    AuthService.requireAuth('student');
-
-    function showSessionDetail(date, session, topic) {
-      document.getElementById('paneStudentWeek').style.display = 'none';
-      document.getElementById('paneStudentSessionDetail').style.display = 'block';
-    }
-
-    function hideSessionDetail() {
-      document.getElementById('paneStudentSessionDetail').style.display = 'none';
-      document.getElementById('paneStudentWeek').style.display = 'block';
-    }
+    document.addEventListener('DOMContentLoaded', () => StudentSchedulePage.init());
   </script>
 </body>
 </html>

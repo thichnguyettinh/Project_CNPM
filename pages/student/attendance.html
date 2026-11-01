@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="../../assets/css/variables.css">
   <link rel="stylesheet" href="../../assets/css/base.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
@@ -20,7 +20,7 @@
     <!-- SIDEBAR -->
     <aside class="app-sidebar">
       <div class="sidebar-brand">
-        
+
         <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG HỌC SINH</span></div>
       </div>
       <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
@@ -71,137 +71,57 @@
       <header class="app-header">
         <div class="header-breadcrumbs"><span>Không gian học sinh</span><span class="crumb-sep">/</span><span class="crumb-active">Lịch sử điểm danh</span></div>
         <div class="header-actions">
-          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Dữ liệu theo tài khoản đăng nhập</span>
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">MA</div>
-            <span style="font-size:13px; font-weight:600;">Trần Minh Anh · Học sinh</span>
+            <span id="roleHeaderName" style="font-size:13px; font-weight:600;">Học sinh</span>
           </div>
         </div>
       </header>
 
       <div class="app-content">
-        <!-- Header -->
-        <div class="page-header-row">
-          <div>
-            <h1 class="title-page" style="font-size:24px;">Lịch sử điểm danh</h1>
-            <p class="text-secondary" style="font-size:13px; margin-top:4px;">Trần Minh Anh · HS001 · Theo dõi việc tham gia từng buổi học.</p>
-          </div>
-        </div>
+        <div class="page-header-row"><div><h1 class="title-page">Lịch sử điểm danh</h1>
+          <p id="historyIdentity" class="text-secondary">Đang tải thông tin…</p></div></div>
+        <div id="historyMessage" class="alert alert-info" role="status" aria-live="polite" hidden></div>
+        <div class="card" style="padding:18px; margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap; align-items:end;">
 
-        <div style="display:flex; gap:12px; margin-bottom:20px;">
-          <select class="form-control" style="width:240px; font-weight:600;"><option>Toán 10 - Nền tảng (TO10A)</option></select>
-          <select class="form-control" style="width:160px;"><option>Tháng 10/2026</option></select>
+          <div style="flex:1; min-width:180px;"><label class="form-label" for="filterClass">Lớp học</label>
+            <select id="filterClass" class="form-control"><option value="">Tất cả lớp</option></select></div>
+          <div style="flex:1; min-width:140px;"><label class="form-label" for="filterMonth">Thời gian</label>
+            <select id="filterMonth" class="form-control"><option value="">Tất cả tháng</option></select></div>
+          <div style="flex:1; min-width:160px;"><label class="form-label" for="filterStatus">Trạng thái</label>
+            <select id="filterStatus" class="form-control">
+              <option value="">Tất cả trạng thái</option><option value="present">Có mặt</option>
+              <option value="absent">Vắng</option><option value="late">Trễ</option><option value="excused">Có phép</option>
+            </select></div>
         </div>
-
-        <!-- 4 Thống kê chuyên cần -->
-        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:20px;">
-          <div class="stat-card" style="padding:16px; border-left:4px solid #15803D;">
-            <div class="stat-value" style="font-size:24px; color:#15803D;">6 buổi</div>
-            <div class="stat-desc">Có mặt · Tham gia đúng giờ</div>
-          </div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #DC2626;">
-            <div class="stat-value" style="font-size:24px; color:#DC2626;">1 buổi</div>
-            <div class="stat-desc">Vắng · Chưa có lý do</div>
-          </div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #D97706;">
-            <div class="stat-value" style="font-size:24px; color:#D97706;">1 buổi</div>
-            <div class="stat-desc">Trễ · Thứ Tư, 07/10</div>
-          </div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #2563EB;">
-            <div class="stat-value" style="font-size:24px; color:#2563EB;">1 buổi</div>
-            <div class="stat-desc">Có phép · Nghỉ ốm 12/10</div>
-          </div>
+        <div style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:20px;">
+          <div class="stat-card" style="padding:15px; border-left:4px solid #15803D"><div id="history-present" class="stat-value" style="color:#15803D">0</div><div>Có mặt</div></div>
+          <div class="stat-card" style="padding:15px; border-left:4px solid #DC2626"><div id="history-absent" class="stat-value" style="color:#DC2626">0</div><div>Vắng</div></div>
+          <div class="stat-card" style="padding:15px; border-left:4px solid #D97706"><div id="history-late" class="stat-value" style="color:#D97706">0</div><div>Trễ</div></div>
+          <div class="stat-card" style="padding:15px; border-left:4px solid #2563EB"><div id="history-excused" class="stat-value" style="color:#2563EB">0</div><div>Có phép</div></div>
         </div>
-
-        <div class="alert alert-info" style="margin-bottom:20px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-          <div><strong>Đã tham gia 7/9 buổi · 77,8%:</strong> Tỷ lệ tham gia = (Có mặt + Trễ) / Tổng buổi đã diễn ra. Buổi hôm nay 23/10 chưa tính.</div>
-        </div>
-
-        <!-- Bảng chi tiết từng buổi điểm danh -->
         <div class="card" style="padding:20px; margin-bottom:20px;">
-          <h4 style="font-size:14px; font-weight:700; margin-bottom:14px;">Chi tiết điểm danh</h4>
-          <div class="table-container" style="box-shadow:none;">
-            <table class="table-custom">
-              <thead>
-                <tr>
-                  <th>Ngày / Buổi học</th>
-                  <th>Phòng học</th>
-                  <th>Trạng thái</th>
-                  <th>Ghi chú của giáo viên</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>21/10/2026 · Buổi 20</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-                <tr>
-                  <td><strong>19/10/2026 · Buổi 19</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-                <tr>
-                  <td><strong>16/10/2026 · Buổi 18</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-                <tr>
-                  <td><strong>14/10/2026 · Buổi 17</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-                <tr>
-                  <td><strong>12/10/2026 · Buổi 16</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-info">Có phép</span></td>
-                  <td>Nghỉ ốm · Phụ huynh đã xin phép</td>
-                </tr>
-                <tr>
-                  <td><strong>09/10/2026 · Buổi 15</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-danger">Vắng</span></td>
-                  <td>Chưa có lý do</td>
-                </tr>
-                <tr>
-                  <td><strong>07/10/2026 · Buổi 14</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-warning">Trễ</span></td>
-                  <td>Đến lúc 17:40 · Trễ 10 phút</td>
-                </tr>
-                <tr>
-                  <td><strong>05/10/2026 · Buổi 13</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-                <tr>
-                  <td><strong>02/10/2026 · Buổi 12</strong></td>
-                  <td>Phòng 201</td>
-                  <td><span class="badge badge-success">Có mặt</span></td>
-                  <td>Đúng giờ</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="text-caption">Tỷ lệ tham gia theo kết quả đã ghi nhận</div>
+          <div id="historyRate" style="font-size:24px; font-weight:700; margin:8px 0;">0/0 buổi · 0%</div>
+          <div class="text-secondary" id="historyTotal">0 buổi có điểm danh</div>
+          <div class="ratio-progress-bar" style="display:flex; overflow:hidden; margin-top:16px;">
+            <div class="ratio-seg-present" id="bar-present" style="width:0;"></div>
+            <div class="ratio-seg-absent" id="bar-absent" style="width:0;"></div>
+            <div class="ratio-seg-late" id="bar-late" style="width:0;"></div>
+            <div class="ratio-seg-excused" id="bar-excused" style="width:0;"></div>
           </div>
+          <p id="historyFormula" class="text-caption" style="margin-top:12px;"></p>
         </div>
-
-        <div class="feature-slot">
-          <span class="slot-tag">SLOT: STUDENT ATTENDANCE HISTORY</span>
-          <p class="slot-desc">Khung kết nối API: fetchStudentAttendanceLog().</p>
-          <span class="code-hint">window.StudentGradeProgressModule</span>
+        <div class="card" style="padding:20px;"><h3 class="title-card" style="margin-bottom:16px">Danh sách các buổi đã ghi điểm danh</h3>
+          <div class="table-container"><table class="table-custom"><thead><tr><th>Ngày</th><th>Lớp / Phòng / Giờ</th><th>Trạng thái</th><th>Ghi chú giáo viên</th></tr></thead>
+            <tbody id="historyRows"><tr><td colspan="4">Đang tải dữ liệu…</td></tr></tbody></table></div>
         </div>
       </div>
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
-  <script>
-    AuthService.requireAuth('student');
-  </script>
+  <script src="../../assets/js/attendance-history.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => AttendanceHistoryPage.init('student'));</script>
 </body>
 </html>

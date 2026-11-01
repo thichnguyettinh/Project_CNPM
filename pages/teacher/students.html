@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách học sinh - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <h2>Lớp Mình</h2>
+          <span>QUẢN LÝ LỚP HỌC THÊM</span>
+        </div>
+      </div>
+      <div class="sidebar-sub-brand">Lớp học cô Hà Linh<br>Năm học 2026-2027</div>
+
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link">
+          <span>Tổng quan</span>
+        </a>
+        <a href="classes.html" class="nav-item-link">
+          <span>Lớp học</span>
+        </a>
+        <a href="students.html" class="nav-item-link active">
+          <span>Danh sách học sinh</span>
+        </a>
+        <a href="users.html" class="nav-item-link">
+          <span>Tài khoản</span>
+        </a>
+        <a href="schedule.html" class="nav-item-link">
+          <span>Lịch học</span>
+        </a>
+        <a href="attendance.html" class="nav-item-link">
+          <span>Điểm danh</span>
+        </a>
+        <a href="grades.html" class="nav-item-link">
+          <span>Điểm số</span>
+        </a>
+        <a href="tuition.html" class="nav-item-link">
+          <span>Học phí</span>
+        </a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge">3</span>
+        </a>
+        <a href="profile.html" class="nav-item-link">
+          <span>Hồ sơ cá nhân</span>
+        </a>
+        <a href="profile.html#password" class="nav-item-link">
+          <span>Đổi mật khẩu</span>
+        </a>
+        <a href="help.html" class="nav-item-link">
+          <span>Trung tâm hướng dẫn</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge">HL</div>
+          <div class="user-mini-meta">
+            <h5>Nguyễn Hà Linh</h5>
+            <p>Giáo viên</p>
+          </div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs">
+          <span>Không gian giáo viên</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-active">Danh sách học sinh</span>
+        </div>
+        <div class="header-actions">
+          <span style="font-size: 13px; color: var(--color-text-secondary);">Dữ liệu theo tài khoản đăng nhập</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
+            <span id="roleHeaderName" style="font-size:13px; font-weight:600;">Giáo viên</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <div class="page-header-row">
+          <div><h1 class="title-page">Danh sách học sinh</h1>
+            <p class="text-secondary">Xem, ghi danh và bớt học sinh khỏi lớp. Sĩ số và quyền xem lịch học được đồng bộ từ dữ liệu ghi danh.</p></div>
+          <a class="btn btn-secondary btn-sm" href="classes.html">Về trang Lớp học</a>
+        </div>
+        <div id="studentMessage" class="alert alert-info" role="status" aria-live="polite" hidden></div>
+        <div class="card" style="padding:20px; margin-bottom:20px;">
+          <label class="form-label" for="studentClass">Lớp học đang quản lý</label>
+          <select id="studentClass" class="form-control" style="max-width:460px;"><option value="">Đang tải lớp…</option></select>
+          <p id="studentCount" class="text-secondary" style="margin-top:12px;">Đang tải sĩ số…</p>
+          <p id="studentScheduleHint" class="text-caption" style="margin-top:6px;">Khi ghi danh, lịch học sinh tự nhận các buổi đã được giáo viên lập cho lớp này.</p>
+        </div>
+        <div class="card" style="padding:20px; margin-bottom:20px;">
+          <h3 class="title-card">Thêm học sinh đã có tài khoản vào lớp</h3>
+          <form id="studentEnroll" style="display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin-top:12px;">
+            <div style="flex:1; min-width:260px;">
+              <label class="form-label" for="studentToAdd">Học sinh chưa ghi danh</label>
+              <select id="studentToAdd" class="form-control"><option value="">— Chọn học sinh —</option></select>
+            </div>
+            <button id="enrollButton" type="submit" class="btn btn-primary">Thêm vào lớp</button>
+          </form>
+          <p id="studentAvailableHint" class="text-caption" style="margin-top:8px;">Muốn tạo tài khoản học sinh mới? Dùng mục <strong>Tạo nhanh học sinh mới</strong> bên dưới, sau đó ghi danh vào lớp.</p>
+        </div>
+        <div class="card" style="padding:20px; margin-bottom:20px;">
+          <details id="studentCreateDetails">
+            <summary style="font-weight:700; cursor:pointer; color:var(--color-primary);">Chưa có tài khoản? Tạo nhanh học sinh mới</summary>
+            <p class="text-caption" style="margin:12px 0;">Biểu mẫu sử dụng API quản lý tài khoản để tạo học sinh phục vụ việc ghi danh. Không xóa hay thay đổi dữ liệu của học sinh khác.</p>
+            <form id="studentCreateForm" autocomplete="off" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;align-items:end;">
+              <div><label for="newStudentName" class="form-label">Họ tên *</label><input id="newStudentName" name="full_name" class="form-control" required maxlength="150" placeholder="Nguyễn Minh An"></div>
+              <div><label for="newStudentCode" class="form-label">Mã học sinh *</label><input id="newStudentCode" name="student_code" class="form-control" required maxlength="30" placeholder="HS002"></div>
+              <div><label for="newStudentUsername" class="form-label">Tên đăng nhập *</label><input id="newStudentUsername" name="username" class="form-control" required minlength="3" maxlength="50" placeholder="hocsinh002"></div>
+              <div><label for="newStudentEmail" class="form-label">Email (không bắt buộc)</label><input id="newStudentEmail" name="email" type="email" class="form-control" maxlength="254" placeholder="email@example.com"></div>
+              <div><label for="newStudentPassword" class="form-label">Mật khẩu khởi tạo *</label><input id="newStudentPassword" name="password" type="password" autocomplete="new-password" class="form-control" required minlength="8" maxlength="128" placeholder="Ít nhất 8 ký tự"></div>
+              <div><button id="studentCreateButton" type="submit" class="btn btn-secondary">Tạo tài khoản học sinh</button></div>
+            </form>
+            <p class="text-caption" style="margin-top:8px;">Mật khẩu cần có chữ hoa, chữ số và ký tự đặc biệt. Sau khi tạo, chọn học sinh ở mục <strong>Thêm học sinh đã có tài khoản vào lớp</strong> và nhấn <strong>Thêm vào lớp</strong>.</p>
+          </details>
+        </div>
+        <div class="card" style="padding:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <h3 class="title-card">Học sinh đang học trong lớp</h3>
+            <input id="studentSearch" class="form-control" style="max-width:300px;" placeholder="Tìm theo tên, mã hoặc email…" aria-label="Tìm học sinh">
+          </div>
+          <div class="table-container"><table class="table-custom"><thead><tr>
+            <th>STT</th><th>Mã học sinh</th><th>Họ tên</th><th>Liên hệ</th><th>Thao tác</th>
+          </tr></thead><tbody id="studentRows"><tr><td colspan="5">Đang tải…</td></tr></tbody></table></div>
+        </div>
+        <div class="card" style="padding:20px; margin-top:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+            <div>
+              <h3 class="title-card">Buổi học của lớp — đồng bộ với lịch học sinh</h3>
+              <p class="text-caption">Danh sách dưới đây lấy từ lịch buổi học do giáo viên lập. Khi ghi danh vào lớp, học sinh sẽ thấy những buổi này trong lịch của mình.</p>
+            </div>
+            <a class="btn btn-secondary btn-sm" href="schedule.html">Quản lý lịch học</a>
+          </div>
+          <div id="studentClassScheduleMessage" class="text-caption" aria-live="polite">Hãy chọn lớp học.</div>
+          <div class="table-container" style="margin-top:12px;"><table class="table-custom"><thead><tr>
+            <th>Ngày</th><th>Giờ</th><th>Nội dung</th><th>Phòng</th>
+          </tr></thead><tbody id="studentClassScheduleRows"><tr><td colspan="4">Chưa chọn lớp học.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/student-list.js"></script>
+  <script>
+    if (window.feather) feather.replace();
+    document.addEventListener('DOMContentLoaded', () => StudentListPage.init());
+  </script>
+</body>
+</html>

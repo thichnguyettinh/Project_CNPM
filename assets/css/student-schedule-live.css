@@ -1,0 +1,19 @@
+/* UC-05: lịch học sinh phản ánh các lớp đang ghi danh; không hiển thị dữ liệu mockup. */
+.schedule-controls{display:flex;gap:18px;align-items:end;justify-content:space-between;flex-wrap:wrap}
+.schedule-control-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.schedule-control-filter{min-width:220px;max-width:360px;flex:1}
+.schedule-week-cards{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
+.schedule-day-card{background:#fff;border:1px solid var(--color-border);border-radius:12px;padding:12px;min-height:170px}
+.schedule-day-card.is-today{border-color:var(--color-primary);box-shadow:0 0 0 1px var(--color-primary)}
+.schedule-day-heading{margin:0 0 12px;font-size:13px;font-weight:700;color:var(--color-text-main)}
+.schedule-day-date{display:block;font-size:12px;color:var(--color-text-secondary);margin-top:4px}
+.schedule-day-empty{font-size:12px;color:var(--color-text-secondary);line-height:1.5}
+.schedule-session-button{display:block;width:100%;text-align:left;border:1px solid #BFDBFE;background:#EFF6FF;border-radius:8px;padding:9px 8px;margin-bottom:8px;cursor:pointer;color:#1E3A8A;font:inherit}
+.schedule-session-button:hover,.schedule-session-button:focus-visible{outline:2px solid #2563EB}
+.schedule-session-time{font-weight:700;font-size:12px;display:block;margin-bottom:4px}
+.schedule-session-title{font-weight:650;font-size:12px;display:block;overflow-wrap:anywhere}
+.schedule-session-room{color:#475569;font-size:11px;display:block;margin-top:5px}
+.schedule-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.schedule-detail-grid p{margin:4px 0}
+@media(max-width:1200px){.schedule-week-cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:650px){.schedule-week-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.schedule-detail-grid{grid-template-columns:1fr}}
