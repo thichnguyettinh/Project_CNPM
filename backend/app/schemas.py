@@ -159,6 +159,32 @@ class ResultsSave(StrictModel):
     results: list[ResultEntry] = Field(min_length=1, max_length=500)
 
 
+class QuestionScoreEntry(StrictModel):
+    question_no: int = Field(ge=1, le=100)
+    max_score: Decimal = Field(gt=0, le=10, max_digits=4, decimal_places=2)
+    earned_score: Decimal = Field(ge=0, le=10, max_digits=4, decimal_places=2)
+
+    @model_validator(mode="after")
+    def validate_question_score(self):
+        if self.earned_score > self.max_score:
+            raise ValueError("Điểm đạt không được vượt điểm tối đa của câu.")
+        for value in (self.earned_score, self.max_score):
+            if value * 2 != (value * 2).to_integral_value():
+                raise ValueError("Điểm từng câu phải theo bước 0,5.")
+        return self
+
+
+class QuestionScoresSave(StrictModel):
+    questions: list[QuestionScoreEntry] = Field(min_length=1, max_length=100)
+
+    @model_validator(mode="after")
+    def unique_questions(self):
+        numbers = [q.question_no for q in self.questions]
+        if len(numbers) != len(set(numbers)):
+            raise ValueError("Không được trùng số câu.")
+        return self
+
+
 class InvoiceGenerate(StrictModel):
     class_id: str = Field(min_length=1, max_length=36)
     billing_year: int = Field(ge=2000, le=2200)
