@@ -184,3 +184,16 @@ class PaymentCreate(StrictModel):
     paid_at: datetime = Field(default_factory=datetime.now)
     reference_code: str | None = Field(default=None, max_length=100)
     note: str | None = Field(default=None, max_length=500)
+
+
+class TuitionReminderRequest(StrictModel):
+    custom_note: str | None = Field(default=None, max_length=500)
+    include_student: bool = False
+
+
+class BulkTuitionReminderRequest(StrictModel):
+    class_id: str | None = Field(default=None, max_length=36)
+    billing_year: int | None = Field(default=None, ge=2000, le=2200)
+    billing_month: int | None = Field(default=None, ge=1, le=12)
+    custom_note: str | None = Field(default=None, max_length=500)
+    include_student: bool = False

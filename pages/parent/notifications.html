@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
   <link rel="stylesheet" href="../../assets/css/notifications.css">
+  <link rel="stylesheet" href="../../assets/css/tuition.css">
 </head>
 <body>
 
@@ -21,7 +22,12 @@
     <!-- SIDEBAR -->
     <aside class="app-sidebar">
       <div class="sidebar-brand">
-        
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
         <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG PHỤ HUYNH</span></div>
       </div>
       <div class="sidebar-sub-brand">Đồng hành cùng học tập của con</div>
@@ -40,8 +46,8 @@
 
       <div class="sidebar-user-bottom">
         <div class="user-mini-profile">
-          <div class="avatar-badge" style="background:#FFFBEB; color:#A16207;">TM</div>
-          <div class="user-mini-meta"><h5>Nguyễn Thị Mai</h5><p>Phụ huynh</p></div>
+          <div class="avatar-badge" data-parent-avatar style="background:#FFFBEB; color:#A16207;">TM</div>
+          <div class="user-mini-meta"><h5 data-parent-name>Nguyễn Thị Mai</h5><p>Phụ huynh</p></div>
         </div>
         <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -54,52 +60,119 @@
       <header class="app-header">
         <div class="header-breadcrumbs"><span>Cổng phụ huynh</span><span class="crumb-sep">/</span><span class="crumb-active">Thông báo</span></div>
         <div class="header-actions">
-          <button class="btn btn-secondary btn-sm" onclick="alert('Hotline trung tâm: 028 3822 8888')">📞 Liên hệ trung tâm</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-open-parent-contact>📞 Liên hệ trung tâm</button>
           <div style="display:flex; align-items:center; gap:8px;">
-            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;">TM</div>
-            <span style="font-size:13px; font-weight:600;">Nguyễn Thị Mai · Phụ huynh</span>
+            <div class="avatar-badge" data-parent-avatar style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;">TM</div>
+            <span data-parent-header-label style="font-size:13px; font-weight:600;">Nguyễn Thị Mai · Phụ huynh</span>
           </div>
         </div>
       </header>
 
-      <div class="app-content">
+      <div class="app-content" id="parentNotificationsPageRoot">
         <!-- Header -->
         <div class="page-header-row">
           <div>
             <h1 class="title-page" style="font-size:24px;">Thông báo</h1>
-            <p class="text-secondary" style="font-size:13px; margin-top:4px;">Cập nhật học vụ, kết quả và bài tập dành riêng cho con em.</p>
+            <p class="text-secondary" style="font-size:13px; margin-top:4px;">Báo phí học kỳ, nhắc nhở hạn nộp học phí và cập nhật học vụ dành riêng cho con em.</p>
           </div>
-          <button class="btn btn-secondary btn-sm" type="button" data-mark-all-read>
-            ✓ Đánh dấu tất cả đã đọc
-          </button>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px; background:#FFFFFF; border:1px solid var(--color-border); padding:6px 12px; border-radius:999px;">
+              <div class="avatar-badge" id="parentNotifChildAvatar" style="width:24px; height:24px; font-size:10px; background:#E0F2FE; color:#0284C7;">MA</div>
+              <span id="parentNotifChildMeta" style="font-size:12.5px; font-weight:600;">Nguyễn Minh Anh (HS001 · Toán 8A)</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" type="button" data-mark-all-read>
+              ✓ Đánh dấu tất cả đã đọc
+            </button>
+          </div>
         </div>
 
-        <div class="notifications-tabs" role="tablist">
-          <button class="notifications-tab active" type="button" role="tab" aria-selected="true" data-notification-filter="all">Tất cả</button>
-          <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="unread">Chưa đọc</button>
-          <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="read">Đã đọc</button>
+        <!-- Banner nhắc hạn học phí khẩn (tự động hiển thị khi còn công nợ) -->
+        <div class="parent-tuition-due-banner" id="parentTuitionDueBanner" hidden>
+          <div>
+            <strong id="parentDueBannerTitle">Nhắc hạn nộp học phí</strong>
+            <p id="parentDueBannerDesc">Đang kiểm tra trạng thái học phí kỳ hiện tại...</p>
+          </div>
+          <a href="tuition.html" class="btn btn-primary btn-sm" id="parentDueBannerLink">Đối soát học phí →</a>
         </div>
 
-        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
-          <select class="notification-category-filter" aria-label="Lọc theo danh mục" data-notification-category>
-            <option value="all">Tất cả danh mục</option>
-            <option value="academic">Kết quả học tập</option>
-            <option value="assignment">Bài tập</option>
-            <option value="tuition">Học phí</option>
-            <option value="system">Hệ thống</option>
-          </select>
+        <!-- Bộ lọc trạng thái & Danh mục (Trang 28 PDF) -->
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+          <div class="notifications-tabs" role="tablist" style="margin-bottom:0;">
+            <button class="notifications-tab active" type="button" role="tab" aria-selected="true" data-notification-filter="all">Tất cả</button>
+            <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="unread">Chưa đọc</button>
+            <button class="notifications-tab" type="button" role="tab" aria-selected="false" data-notification-filter="read">Đã đọc</button>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnQuickFilterTuitionNotif">
+              💰 Báo phí &amp; Nhắc hạn
+            </button>
+            <select class="notification-category-filter" aria-label="Lọc theo danh mục" data-notification-category>
+              <option value="all">Tất cả danh mục</option>
+              <option value="academic">Kết quả học tập</option>
+              <option value="assignment">Bài tập</option>
+              <option value="tuition">Học phí</option>
+              <option value="system">Hệ thống</option>
+            </select>
+          </div>
         </div>
 
-        <section class="notification-list" data-notification-list aria-label="Danh sách thông báo"></section>
-        <div class="notification-empty" data-notification-empty>Không có thông báo phù hợp với bộ lọc.</div>
-        <p class="notification-count-summary" data-notification-summary></p>
-        <aside class="notification-system-note" data-system-note><span aria-hidden="true">ⓘ</span><div><strong>Thông báo trong hệ thống</strong><p>Các cập nhật chỉ hiển thị trong Lớp Mình. Hệ thống không tự động gửi SMS hoặc email cho học sinh, phụ huynh.</p></div><button type="button" aria-label="Đóng thông báo" data-dismiss-note>×</button></aside>
+        <!-- Bố cục 2 cột Master - Detail (Trang 28 PDF: Cột trái danh sách, Cột phải Chi tiết thông báo & Bảng đối soát học phí) -->
+        <div class="parent-notifications-layout">
+          <div>
+            <section class="notification-list" data-notification-list aria-label="Danh sách thông báo"></section>
+            <div class="notification-empty" data-notification-empty>Không có thông báo phù hợp với bộ lọc.</div>
+            <p class="notification-count-summary" data-notification-summary></p>
+          </div>
+
+          <aside class="parent-notif-detail-card" id="parentNotificationDetailPanel" aria-label="Chi tiết thông báo">
+            <div style="text-align:center; padding:32px 16px; color:var(--color-text-secondary);">
+              Đang tải chi tiết thông báo...
+            </div>
+          </aside>
+        </div>
+
+        <aside class="notification-system-note" data-system-note><span aria-hidden="true">ⓘ</span><div><strong>Thông báo trong hệ thống</strong><p>Các cập nhật báo phí, nhắc hạn nộp và học vụ hiển thị trực tiếp trong Lớp Mình. Hệ thống không tự động thu tiền trực tuyến hay gửi SMS ngoài hệ thống.</p></div><button type="button" aria-label="Đóng thông báo" data-dismiss-note>×</button></aside>
 
       </div>
     </main>
   </div>
+
+  <!-- MODAL: HƯỚNG DẪN THANH TOÁN NGOÀI HỆ THỐNG & LIÊN HỆ TRUNG TÂM -->
+  <div class="modal-overlay" id="modalParentTuitionContact">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Hướng dẫn nộp học phí &amp; Liên hệ</h3>
+          <p class="text-caption">Thanh toán ngoài hệ thống trực tiếp với giáo viên phụ trách</p>
+        </div>
+        <button type="button" class="modal-close" data-close-parent-contact>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" style="margin-bottom:14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div id="parentContactBankNote">
+            Liên hệ giáo viên phụ trách để nhận thông tin thanh toán.
+          </div>
+        </div>
+
+        <div class="tuition-kv-box">
+          <h4>Thông tin đối chiếu học phí</h4>
+          <div class="tuition-kv-row"><span>Giáo viên phụ trách:</span><strong id="parentContactTeacherName">Giáo viên Lớp Mình</strong></div>
+          <div class="tuition-kv-row"><span>Điện thoại / Zalo:</span><strong id="parentContactTeacherPhone">Liên hệ tại lớp</strong></div>
+          <div class="tuition-kv-row"><span>Email hỗ trợ:</span><span id="parentContactTeacherEmail">giaovien@lopminh.edu.vn</span></div>
+          <div class="tuition-kv-row"><span>Nội dung chuyển khoản gợi ý:</span><code id="parentContactSyntaxHint">Mã hóa đơn + Mã học sinh</code></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-close-parent-contact>Đã hiểu</button>
+      </div>
+    </div>
+  </div>
+
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/notifications.js"></script>
+  <script src="../../assets/js/modules/parent/tuition-invoice.js"></script>
   <script>
     AuthService.requireAuth('parent');
   </script>
