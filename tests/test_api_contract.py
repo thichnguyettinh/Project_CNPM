@@ -222,6 +222,11 @@ class ApiContractTests(unittest.TestCase):
         self.assertIn("aria-pressed", auth_script)
         self.assertIn("Ẩn mật khẩu", auth_script)
         self.assertIn("Hiện mật khẩu", auth_script)
+        self.assertIn("MutationObserver", auth_script)
+        component_styles = (root / "assets/css/components.css").read_text(encoding="utf-8")
+        self.assertIn("grid-template-columns: minmax(0, 1fr)", component_styles)
+        self.assertIn("grid-column: 1", component_styles)
+        self.assertIn("grid-row: 1", component_styles)
 
     def test_workspace_branding_uses_signed_in_user_and_current_academic_year(self):
         root = Path(__file__).resolve().parents[1]
@@ -244,6 +249,11 @@ class ApiContractTests(unittest.TestCase):
         self.assertIn("getAcademicYear(date = new Date())", auth_script)
         self.assertIn("Lớp học ${user.fullName || 'Giáo viên'}", auth_script)
         self.assertIn("updateWorkspaceBranding(serverUser)", auth_script)
+        self.assertIn(".app-header .header-actions", auth_script)
+        self.assertIn(".sidebar-user-bottom .user-mini-profile", auth_script)
+        self.assertIn("actions.querySelectorAll('.avatar-badge')", auth_script)
+        self.assertIn("toLocaleDateString('vi-VN'", auth_script)
+        self.assertIn("label.textContent = currentDate", auth_script)
 
     def test_unread_notification_count_uses_authenticated_user(self):
         connection = unittest.mock.Mock()

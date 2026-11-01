@@ -160,6 +160,19 @@ const AuthService = {
 
   updateWorkspaceBranding(user = this.getCurrentUser()) {
     const role = user?.role;
+    const fullName = user?.fullName?.trim();
+    const roleLabel = role === 'teacher' ? 'Giáo viên'
+      : role === 'student' ? 'Học sinh'
+        : role === 'parent' ? 'Phụ huynh' : '';
+    const nameParts = (fullName || '').split(/\s+/).filter(Boolean);
+    const initials = user?.avatarText
+      || nameParts.slice(-2).map(part => part[0]).join('').toLocaleUpperCase('vi-VN');
+    const currentDate = new Date().toLocaleDateString('vi-VN', {
+      weekday: 'long',
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
     const workspaceLabel = role === 'teacher'
       ? `Lớp học ${user.fullName || 'Giáo viên'}`
       : role === 'student' ? 'Cổng học sinh'
@@ -171,6 +184,39 @@ const AuthService = {
         document.createElement('br'),
         document.createTextNode(`Năm học ${this.getAcademicYear()}`)
       );
+    });
+
+    if (fullName && roleLabel) {
+      document.querySelectorAll('.sidebar-user-bottom .user-mini-profile').forEach(profile => {
+        const name = profile.querySelector('.user-mini-meta h5');
+        const avatar = profile.querySelector('.avatar-badge');
+        if (name) name.textContent = fullName;
+        if (avatar && initials) avatar.textContent = initials;
+      });
+
+      document.querySelectorAll('.app-header .header-actions').forEach(actions => {
+        actions.querySelectorAll('.avatar-badge').forEach(avatar => {
+          if (initials) avatar.textContent = initials;
+          const identity = Array.from(avatar.parentElement?.children || [])
+            .find(child => child.tagName === 'SPAN');
+          if (identity) identity.textContent = `${fullName} · ${roleLabel}`;
+        });
+        actions.querySelectorAll('[data-teacher-header-label]').forEach(label => {
+          label.textContent = `${fullName} · ${roleLabel}`;
+        });
+        actions.querySelectorAll('#roleHeaderName').forEach(label => {
+          label.textContent = `${fullName} · ${roleLabel}`;
+        });
+      });
+    }
+
+    document.querySelectorAll('.app-header .header-actions > span').forEach(label => {
+      if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(label.textContent)) {
+        label.textContent = currentDate;
+      }
+    });
+    document.querySelectorAll('#teacherCurrentDateLabel, #uc11-teacher-current-date').forEach(label => {
+      label.textContent = currentDate;
     });
 
     const academicYear = this.getAcademicYear();
@@ -350,6 +396,12 @@ window.AuthService = AuthService;
 const updateWorkspaceBranding = () => AuthService.updateWorkspaceBranding();
 const initializePasswordVisibility = () => {
   AuthService.initializePasswordVisibility();
+  const observer = new MutationObserver(records => {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node instanceof Element) AuthService.initializePasswordVisibility(node);
+    }));
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 };
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
