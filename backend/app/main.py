@@ -419,7 +419,8 @@ def get_profile(connection: Connection, user: Annotated[dict, Depends(current_us
         connection,
         """
         SELECT u.user_id, u.username, u.email, u.role, u.full_name, u.phone,
-               u.avatar_text, u.status, p.date_of_birth, p.address, p.biography
+               u.avatar_text, u.status, u.updated_at,
+               p.date_of_birth, p.address, p.biography
         FROM users u LEFT JOIN user_profiles p ON p.user_id = u.user_id
         WHERE u.user_id = %s
         """,
@@ -437,28 +438,41 @@ def update_profile(
     if not values:
         raise HTTPException(status_code=400, detail="Không có thông tin cần cập nhật.")
     user_values = {key: values.pop(key) for key in ("full_name", "email", "phone") if key in values}
+    if "full_name" in user_values:
+        user_values["full_name"] = (user_values["full_name"] or "").strip()
+        if not user_values["full_name"]:
+            raise HTTPException(status_code=422, detail="Họ và tên không được để trống.")
+    for field in ("email", "phone"):
+        if field in user_values:
+            user_values[field] = (user_values[field] or "").strip() or None
+    for field in ("address", "biography"):
+        if field in values and values[field] is not None:
+            values[field] = values[field].strip() or None
+
     if user_values:
         columns = ", ".join(f"{key} = %s" for key in user_values)
         connection.execute(
             f"UPDATE users SET {columns}, updated_at = NOW() WHERE user_id = %s",
             (*user_values.values(), user["user_id"]),
         )
-    if values:
+    else:
         connection.execute(
-            """
-            INSERT INTO user_profiles (user_id, date_of_birth, address, biography)
-            VALUES (%s, %s, %s, %s)
-            ON CONFLICT (user_id) DO UPDATE SET
-              date_of_birth = COALESCE(EXCLUDED.date_of_birth, user_profiles.date_of_birth),
-              address = COALESCE(EXCLUDED.address, user_profiles.address),
-              biography = COALESCE(EXCLUDED.biography, user_profiles.biography)
+            "UPDATE users SET updated_at = NOW() WHERE user_id = %s",
+            (user["user_id"],),
+        )
+    if values:
+        profile_columns = ", ".join(values)
+        placeholders = ", ".join(["%s"] * len(values))
+        update_columns = ", ".join(
+            f"{key} = EXCLUDED.{key}" for key in values
+        )
+        connection.execute(
+            f"""
+            INSERT INTO user_profiles (user_id, {profile_columns})
+            VALUES (%s, {placeholders})
+            ON CONFLICT (user_id) DO UPDATE SET {update_columns}
             """,
-            (
-                user["user_id"],
-                values.get("date_of_birth"),
-                values.get("address"),
-                values.get("biography"),
-            ),
+            (user["user_id"], *values.values()),
         )
     return get_profile(connection, user)
 

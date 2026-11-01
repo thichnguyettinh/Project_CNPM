@@ -1,4 +1,5 @@
 import unittest
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
@@ -13,6 +14,7 @@ from backend.app.main import (
     login,
     reset_user_password,
     unread_notification_count,
+    update_profile,
 )
 from backend.app.schemas import (
     InvoiceGenerate,
@@ -20,6 +22,7 @@ from backend.app.schemas import (
     PasswordChange,
     ParentLinkCreate,
     ResultEntry,
+    ProfileUpdate,
     UserCreate,
     UserPasswordReset,
 )
@@ -136,6 +139,91 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_profile_update_persists_user_and_profile_fields_and_returns_updated_at(self):
+        connection = unittest.mock.Mock()
+        user = {"user_id": "user-1"}
+        updated_profile = {
+            "user_id": "user-1",
+            "full_name": "Updated Name",
+            "email": None,
+            "phone": "0912345678",
+            "date_of_birth": None,
+            "address": None,
+            "biography": "Updated bio",
+            "updated_at": datetime(2026, 11, 2, tzinfo=timezone.utc),
+        }
+        payload = ProfileUpdate(
+            full_name=" Updated Name ",
+            email=" ",
+            phone=" 0912345678 ",
+            date_of_birth=None,
+            address=" ",
+            biography=" Updated bio ",
+        )
+
+        with patch("backend.app.main.fetch_one", return_value=updated_profile) as fetch:
+            result = update_profile(payload, connection, user)
+
+        self.assertEqual(result["updated_at"], updated_profile["updated_at"])
+        self.assertEqual(len(connection.execute.call_args_list), 2)
+        user_update = connection.execute.call_args_list[0].args
+        self.assertIn("updated_at = NOW()", user_update[0])
+        self.assertEqual(user_update[1], ("Updated Name", None, "0912345678", "user-1"))
+        profile_update = connection.execute.call_args_list[1].args
+        self.assertIn("ON CONFLICT (user_id) DO UPDATE SET", profile_update[0])
+        self.assertNotIn("COALESCE", profile_update[0])
+        self.assertEqual(
+            profile_update[1],
+            ("user-1", None, None, "Updated bio"),
+        )
+        self.assertIn("u.updated_at", fetch.call_args.args[1])
+
+    def test_profile_update_rejects_empty_name(self):
+        connection = unittest.mock.Mock()
+        with self.assertRaises(HTTPException) as raised:
+            update_profile(
+                ProfileUpdate(full_name="   "),
+                connection,
+                {"user_id": "user-1"},
+            )
+        self.assertEqual(raised.exception.status_code, 422)
+        connection.execute.assert_not_called()
+
+    def test_profile_pages_load_and_save_persisted_data(self):
+        root = Path(__file__).resolve().parents[1]
+        for role in ("teacher", "student", "parent"):
+            page = (root / f"pages/{role}/profile.html").read_text(encoding="utf-8")
+            self.assertIn('data-profile-role=', page)
+            self.assertIn("../../assets/js/profile.js", page)
+            self.assertIn("ProfileModule.save()", page)
+            self.assertIn("ProfileModule.load()", page)
+            self.assertIn('id="profileUpdatedAt"', page)
+        profile_script = (root / "assets/js/profile.js").read_text(encoding="utf-8")
+        self.assertIn("AuthService.api('/profile')", profile_script)
+        self.assertIn("method: 'PATCH'", profile_script)
+
+    def test_workspace_branding_uses_signed_in_user_and_current_academic_year(self):
+        root = Path(__file__).resolve().parents[1]
+        pages = list((root / "pages").rglob("*.html"))
+        for page_path in pages:
+            page = page_path.read_text(encoding="utf-8")
+            sidebar_brand = re.search(
+                r'<div class="sidebar-sub-brand"[^>]*>(.*?)</div>',
+                page,
+                re.DOTALL,
+            )
+            if sidebar_brand:
+                self.assertNotIn(
+                    "Lớp học cô Hà Linh", sidebar_brand.group(1), page_path.as_posix()
+                )
+                self.assertNotIn(
+                    "Năm học 2026-2027", sidebar_brand.group(1), page_path.as_posix()
+                )
+        auth_script = (root / "assets/js/auth.js").read_text(encoding="utf-8")
+        self.assertIn("getAcademicYear(date = new Date())", auth_script)
+        self.assertIn("Lớp học ${user.fullName || 'Giáo viên'}", auth_script)
+        self.assertIn("updateWorkspaceBranding(serverUser)", auth_script)
+
     def test_unread_notification_count_uses_authenticated_user(self):
         connection = unittest.mock.Mock()
         user = {"user_id": "user-1"}

@@ -106,6 +106,36 @@ const AuthService = {
     }
   },
 
+  getAcademicYear(date = new Date()) {
+    const calendarYear = date.getFullYear();
+    const startYear = date.getMonth() >= 7 ? calendarYear : calendarYear - 1;
+    return `${startYear}-${startYear + 1}`;
+  },
+
+  updateWorkspaceBranding(user = this.getCurrentUser()) {
+    const role = user?.role;
+    const workspaceLabel = role === 'teacher'
+      ? `Lớp học ${user.fullName || 'Giáo viên'}`
+      : role === 'student' ? 'Cổng học sinh'
+        : role === 'parent' ? 'Cổng phụ huynh' : '';
+    document.querySelectorAll('.sidebar-sub-brand').forEach(brand => {
+      if (!workspaceLabel) return;
+      brand.replaceChildren(
+        document.createTextNode(workspaceLabel),
+        document.createElement('br'),
+        document.createTextNode(`Năm học ${this.getAcademicYear()}`)
+      );
+    });
+
+    const academicYear = this.getAcademicYear();
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.parentElement?.closest('script, style')) continue;
+      node.nodeValue = node.nodeValue.replace(/\b20\d{2}[-–]20\d{2}\b/g, academicYear);
+    }
+  },
+
   getDashboardPath(role) {
     const isRoot = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/');
 
@@ -129,6 +159,7 @@ const AuthService = {
       return null;
     }
 
+    this.updateWorkspaceBranding(user);
     if (allowedRole && user.role !== allowedRole) {
       alert(`Bạn không có quyền truy cập khu vực này. Vai trò hiện tại của bạn là: ${this.getRoleLabel(user.role)}`);
       window.location.href = this.getDashboardPath(user.role);
@@ -139,6 +170,7 @@ const AuthService = {
     this.api('/auth/me')
       .then(serverUser => {
         localStorage.setItem(this.CURRENT_USER_KEY, JSON.stringify(serverUser));
+        this.updateWorkspaceBranding(serverUser);
       })
       .catch(error => {
         this.clearSession();
@@ -267,3 +299,10 @@ const AuthService = {
 };
 
 window.AuthService = AuthService;
+
+const updateWorkspaceBranding = () => AuthService.updateWorkspaceBranding();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', updateWorkspaceBranding, { once: true });
+} else {
+  updateWorkspaceBranding();
+}
