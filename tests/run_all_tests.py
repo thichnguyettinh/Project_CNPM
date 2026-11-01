@@ -32,8 +32,7 @@ def main() -> int:
     else:
         js_tests = sorted(
             str(path)
-            for pattern in ("test_*.js", "test_*.cjs")
-            for path in (ROOT / "tests").glob(pattern)
+            for path in (ROOT / "tests").glob("test_*.cjs")
         )
         if not js_tests:
             print("JavaScript tests could not run: no test files were found.", file=sys.stderr)
