@@ -40,9 +40,6 @@
         <a href="classes.html" class="nav-item-link active">
           <span>Lớp học</span>
         </a>
-        <a href="students.html" class="nav-item-link">
-          <span>Danh sách học sinh</span>
-        </a>
         <a href="users.html" class="nav-item-link">
           <span>Tài khoản</span>
         </a>
@@ -112,10 +109,13 @@
             <h1 class="title-page" style="font-size:24px;">Quản lý lớp học</h1>
             <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh.</p>
           </div>
-          <button class="btn btn-primary" onclick="openModal('modalCreateClass')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Tạo lớp học</span>
-          </button>
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a href="students.html" class="btn btn-secondary">Quản lý danh sách học sinh</a>
+            <button class="btn btn-primary" onclick="openModal('modalCreateClass')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Tạo lớp học</span>
+            </button>
+          </div>
         </div>
 
         <!-- 3 Thẻ thống kê nhỏ -->
