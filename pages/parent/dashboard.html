@@ -87,8 +87,8 @@
           <div style="display:flex; align-items:center; gap:12px; background:#FFFFFF; border:1px solid var(--color-border); padding:8px 16px; border-radius:30px;">
             <div class="avatar-badge" style="width:28px; height:28px; font-size:11px; background:#E0F2FE; color:#0284C7;">MA</div>
             <div style="font-size:13px; font-weight:600;">
-              Nguyễn Minh Anh
-              <span style="font-size:11px; font-weight:400; color:#64748B;">· Lớp 8 · Toán 8A · GV: Trần Hoàng Nam</span>
+              <span id="parentDashboardChildName">Đang tải học sinh…</span>
+              <span style="font-size:11px; font-weight:400; color:#64748B;">· Xem chuyên cần theo học sinh liên kết</span>
             </div>
             <span class="badge badge-neutral" style="font-size:11px;">Cổng phụ huynh ▾</span>
           </div>
@@ -126,9 +126,11 @@
           </div>
           <div class="stat-card">
             <div>
-              <div class="stat-label">Có mặt trong tháng</div>
-              <div class="stat-value" style="color:var(--color-success);">9/12 buổi</div>
-              <div class="stat-desc">1 vắng · 1 trễ · 1 có phép</div>
+              <div class="stat-label">Chuyên cần của con</div>
+              <div class="stat-value" id="parentAttendanceCount" style="color:var(--color-success);">—</div>
+              <div class="stat-desc" id="parentAttendanceDesc">Đang tải dữ liệu chuyên cần…</div>
+              <label class="form-label" for="parentAttendanceChild" style="margin-top:8px; font-size:11px;">Chọn học sinh</label>
+              <select id="parentAttendanceChild" class="form-control" style="font-size:12px; padding:6px; min-width:0; width:100%;" aria-label="Chọn con để xem chuyên cần"><option value="">Đang tải…</option></select>
             </div>
           </div>
           <div class="stat-card">
@@ -253,8 +255,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
-  <script>
-    AuthService.requireAuth('parent');
-  </script>
+  <script src="../../assets/js/dashboard-attendance.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => DashboardAttendance.init('parent'));</script>
 </body>
 </html>

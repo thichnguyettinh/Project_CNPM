@@ -662,3 +662,6 @@
   background: #F8FAFC;
   border-top: 1px solid var(--color-border);
 }
+
+/* Các thông báo trạng thái UC-05/UC-06 cần ẩn thật dù .alert đặt display:flex. */
+#studentMessage[hidden], #attendanceMessage[hidden], #historyMessage[hidden] { display: none; }

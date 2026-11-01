@@ -469,7 +469,7 @@ def list_users(connection: Connection, teacher: Teacher, role: str | None = None
                u.avatar_text, u.status, s.student_code,
                (SELECT string_agg(alias, ',') FROM user_aliases a WHERE a.user_id = u.user_id) AS aliases
         FROM users u LEFT JOIN students s ON s.user_id = u.user_id
-        WHERE (%s IS NULL OR u.role = %s)
+        WHERE (%s::text IS NULL OR u.role = %s)
         ORDER BY u.created_at DESC
         """,
         (role, role),
@@ -667,15 +667,38 @@ def enroll_student(
     )
     if not student:
         raise HTTPException(status_code=404, detail="Không tìm thấy học sinh.")
-    return fetch_one(
-        connection,
-        """
-        INSERT INTO class_enrollments (class_id, student_id, enrolled_on)
-        VALUES (%s, %s, %s)
-        RETURNING enrollment_id, class_id, student_id, enrolled_on, status
-        """,
-        (class_id, student["student_id"], payload.enrolled_on),
-    )
+    # Không cho ghi danh trùng, nhưng hỗ trợ phục hồi ghi danh đã kết thúc cùng ngày.
+    with transaction(connection):
+        active = fetch_one(
+            connection,
+            """SELECT enrollment_id FROM class_enrollments
+               WHERE class_id = %s AND student_id = %s AND status = 'active'""",
+            (class_id, student["student_id"]),
+        )
+        if active:
+            raise HTTPException(status_code=409, detail="Học sinh đã có trong lớp.")
+        old = fetch_one(
+            connection,
+            """SELECT enrollment_id FROM class_enrollments
+               WHERE class_id = %s AND student_id = %s AND enrolled_on = %s
+                 AND status <> 'active'""",
+            (class_id, student["student_id"], payload.enrolled_on),
+        )
+        if old:
+            return fetch_one(
+                connection,
+                """UPDATE class_enrollments SET status = 'active', ended_on = NULL
+                   WHERE enrollment_id = %s
+                   RETURNING enrollment_id, class_id, student_id, enrolled_on, status""",
+                (old["enrollment_id"],),
+            )
+        return fetch_one(
+            connection,
+            """INSERT INTO class_enrollments (class_id, student_id, enrolled_on)
+               VALUES (%s, %s, %s)
+               RETURNING enrollment_id, class_id, student_id, enrolled_on, status""",
+            (class_id, student["student_id"], payload.enrolled_on),
+        )
 
 
 @app.delete("/api/classes/{class_id}/students/{student_code}", status_code=204)
@@ -726,7 +749,7 @@ def list_students(
         JOIN users u ON u.user_id = s.user_id
         LEFT JOIN class_enrollments ce ON ce.student_id = s.student_id AND ce.status = 'active'
         LEFT JOIN classes c ON c.class_id = ce.class_id AND c.teacher_user_id = %s
-        WHERE c.class_id IS NOT NULL AND (%s IS NULL OR c.class_id = %s)
+        WHERE c.class_id IS NOT NULL AND (%s::varchar IS NULL OR c.class_id = %s)
         ORDER BY u.full_name
         """,
         (teacher["user_id"], class_id, class_id),
@@ -744,6 +767,25 @@ def student_me(connection: Connection, user: Annotated[dict, Depends(require_rol
         WHERE s.student_id = %s
         """,
         (student["student_id"],),
+    )
+
+
+@app.get("/api/children")
+def get_linked_children(
+    connection: Connection,
+    parent: Annotated[dict, Depends(require_roles("parent"))],
+):
+    """Học sinh đã liên kết với phụ huynh, kể cả khi chưa có điểm danh."""
+    return fetch_all(
+        connection,
+        """SELECT s.student_code, u.full_name
+           FROM parents p
+           JOIN student_parents sp ON sp.parent_id = p.parent_id
+           JOIN students s ON s.student_id = sp.student_id
+           JOIN users u ON u.user_id = s.user_id
+           WHERE p.user_id = %s
+           ORDER BY sp.is_primary DESC, u.full_name""",
+        (parent["user_id"],),
     )
 
 
@@ -927,18 +969,26 @@ def get_attendance(
         )
         if not authorized:
             raise HTTPException(status_code=403, detail="Bạn không có quyền xem điểm danh lớp này.")
+    conditions = ["ce.class_id = %s", "ce.status = 'active'"]
+    params: list[Any] = [session_id, session["class_id"]]
+    if user["role"] == "student":
+        conditions.append("s.user_id = %s")
+        params.append(user["user_id"])
+    elif user["role"] == "parent":
+        conditions.append("s.student_id = ANY(%s)")
+        params.append(linked_student_ids(connection, user["user_id"]))
     return fetch_all(
         connection,
-        """
+        f"""
         SELECT s.student_code, u.full_name, ar.status, ar.note, ar.marked_at
         FROM class_enrollments ce
         JOIN students s ON s.student_id = ce.student_id
         JOIN users u ON u.user_id = s.user_id
         LEFT JOIN attendance_records ar ON ar.student_id = s.student_id AND ar.session_id = %s
-        WHERE ce.class_id = %s AND ce.status = 'active'
+        WHERE {' AND '.join(conditions)}
         ORDER BY u.full_name
         """,
-        (session_id, session["class_id"]),
+        tuple(params),
     )
 
 
@@ -1024,7 +1074,8 @@ def attendance_history(
     return fetch_all(
         connection,
         f"""
-        SELECT cs.session_id, cs.starts_at, c.class_code, c.name AS class_name,
+        SELECT cs.session_id, cs.starts_at, cs.ends_at, cs.room,
+               c.class_code, c.name AS class_name, c.subject,
                s.student_code, u.full_name AS student_name, ar.status, ar.note
         FROM attendance_records ar
         JOIN class_sessions cs ON cs.session_id = ar.session_id

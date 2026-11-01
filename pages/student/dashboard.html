@@ -121,9 +121,9 @@
 
           <div class="stat-card">
             <div>
-              <div class="stat-label">Tham gia tháng 10</div>
-              <div class="stat-value" style="color:var(--color-success);">7 / 9 buổi</div>
-              <div class="stat-desc">6 có mặt · 1 trễ</div>
+              <div class="stat-label">Chuyên cần đã ghi nhận</div>
+              <div id="studentAttendanceCount" class="stat-value" style="color:var(--color-success);">—</div>
+              <div id="studentAttendanceDesc" class="stat-desc">Đang tải kết quả điểm danh…</div>
             </div>
             <div class="stat-icon warning">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5"/></svg>
@@ -215,12 +215,12 @@
             <div class="card">
               <div class="card-header">
                 <div>
-                  <h3 class="title-card">Điểm danh tháng 10</h3>
-                  <p class="text-caption">6 Có mặt · 1 Trễ · 1 Vắng · 1 Có phép</p>
+                  <h3 class="title-card">Điểm danh gần đây</h3>
+                  <p class="text-caption" id="studentRecentAttendanceSubtitle">Đang tải điểm danh từ hệ thống…</p>
                 </div>
                 <a href="attendance.html" class="btn btn-link">Xem lịch sử điểm danh →</a>
               </div>
-              <p class="text-caption">Tỷ lệ tham gia: <strong>77,8%</strong> (Có mặt + Trễ). Buổi hôm nay chưa điểm danh.</p>
+              <p class="text-caption" id="studentRecentAttendanceText">Đang tải lịch sử chuyên cần…</p>
             </div>
           </div>
 
@@ -282,8 +282,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js"></script>
-  <script>
-    AuthService.requireAuth('student');
-  </script>
+  <script src="../../assets/js/dashboard-attendance.js"></script>
+  <script>document.addEventListener('DOMContentLoaded', () => DashboardAttendance.init('student'));</script>
 </body>
 </html>
