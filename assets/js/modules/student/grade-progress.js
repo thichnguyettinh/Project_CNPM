@@ -5,7 +5,12 @@
  const C=window.UC11Core;
  const $=id=>document.getElementById(id);
  const state={user:null,rows:[],visible:[],req:0,detailReq:0};
- const notice=(msg,error=false)=>{const el=$('uc11-student-notice');el.textContent=msg||'';el.classList.toggle('uc11-error',!!error);};
+ const notice=(msg,error=false)=>{
+   const el=$('uc11-student-notice');
+   if(!el)return;
+   el.textContent=msg||'';
+   el.classList.toggle('uc11-error',!!error);
+ };
  function render(){
    const classCode=$('uc11-student-class').value;
    const data=state.rows.filter(r=>!classCode || r.class_code===classCode);
@@ -42,9 +47,10 @@
      $('uc11-student-class').innerHTML='<option value="">Tất cả các lớp</option>'+classes.map(c=>`<option value="${C.safe(c.code)}">${C.safe(c.name||c.code)} (${C.safe(c.code)})</option>`).join('');
      if(classes.some(c=>c.code===prev))$('uc11-student-class').value=prev;
      render();notice(`Đã tải ${rows.length} bài, trong đó có ${C.graded(rows).length} bài đã chấm.`);
-   }catch(e){if(req!==state.req)return;notice(e.message||'Không tải được kết quả.',true);
+   }catch(e){if(req!==state.req)return;console.error('Không thể tải kết quả học tập:',e);
+     notice('Chưa thể tải kết quả học tập. Vui lòng thử lại.',true);
      $('uc11-student-stats').innerHTML='';$('uc11-student-chart').textContent='Không có dữ liệu.';
-     $('uc11-student-results').innerHTML='<tr><td colspan="6">Không tải được kết quả. Hãy kiểm tra API hoặc đăng nhập lại.</td></tr>';
+     $('uc11-student-results').innerHTML='<tr><td colspan="6">Chưa thể tải kết quả. Vui lòng thử lại sau.</td></tr>';
    }
  }
  async function detail(id){

@@ -44,10 +44,99 @@
     .modal-overlay.active {
       display: flex;
     }
+    html.modal-open {
+      overflow: hidden;
+      scrollbar-gutter: stable;
+    }
+    #modalCreateClass {
+      align-items: flex-start;
+      justify-content: center;
+      overflow: auto;
+      overscroll-behavior: contain;
+      overflow-anchor: none;
+      padding: 24px 16px;
+    }
+    #modalCreateClass .create-class-modal-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: min(680px, calc(100vh - 48px));
+      flex-shrink: 0;
+      transition: none;
+      transform: none;
+      overflow-anchor: none;
+    }
+    #modalCreateClass.active .create-class-modal-container {
+      transform: none;
+    }
+    .create-class-modal-body {
+      flex: 1 1 0;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-anchor: none;
+    }
+    .create-class-modal-body .modal-footer {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-surface);
+    }
+    .class-form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+    .class-form-grid.equal-columns {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .class-form-grid > .form-group {
+      min-width: 0;
+    }
+    .classes-page-header {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .classes-page-header-title {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+    .classes-page-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex: 0 1 auto;
+      gap: 10px;
+      max-width: 100%;
+      flex-wrap: nowrap;
+    }
+    .classes-page-actions > .btn {
+      flex: 0 0 auto;
+      align-self: center;
+      height: 40px;
+      min-height: 40px;
+      margin: 0;
+      line-height: 1;
+      transform: none;
+    }
+    .classes-page-actions > .btn svg {
+      flex: 0 0 auto;
+    }
     .action-btn-group {
       display: inline-flex;
       gap: 4px;
       justify-content: flex-end;
+    }
+    @media (max-width: 600px) {
+      #modalCreateClass {
+        padding: 16px;
+      }
+      #modalCreateClass .create-class-modal-container {
+        height: calc(100vh - 32px);
+      }
+      .class-form-grid,
+      .class-form-grid.equal-columns {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+      }
     }
   </style>
 </head>
@@ -141,12 +230,12 @@
 
       <div class="app-content">
         <!-- Tiêu đề & Nút Tạo lớp học -->
-        <div class="page-header-row">
-          <div>
+        <div class="page-header-row classes-page-header">
+          <div class="classes-page-header-title">
             <h1 class="title-page" style="font-size:24px;">Quản lý lớp học</h1>
             <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh theo thời gian thực.</p>
           </div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <div class="classes-page-actions">
             <button class="btn btn-secondary" onclick="loadClassesList()" title="Tải lại danh sách lớp">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
               <span>Làm mới</span>
@@ -249,18 +338,18 @@
   <!-- MODAL 1: TẠO LỚP HỌC MỚI -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalCreateClass">
-    <div class="modal-container" style="max-width: 640px;">
+    <div class="modal-container create-class-modal-container" style="max-width: 640px;">
       <div class="modal-header">
         <h3 class="modal-title">Tạo lớp học mới</h3>
         <button class="modal-close" onclick="closeModal('modalCreateClass')">&times;</button>
       </div>
-      <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+      <div class="modal-body create-class-modal-body">
         <p class="text-caption" style="margin-bottom:16px;">Sĩ số ban đầu của lớp mới sẽ là 0. Học sinh được thêm vào sau khi tạo lớp.</p>
 
         <div id="createClassAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
 
         <form id="formCreateClass" onsubmit="handleCreateClass(event)">
-          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+          <div class="class-form-grid">
             <div class="form-group">
               <label class="form-label" for="newClassName">Tên lớp học <span class="required">*</span></label>
               <input type="text" class="form-control" id="newClassName" placeholder="Ví dụ: Toán 10 - Nền tảng" required>
@@ -271,7 +360,7 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div class="class-form-grid equal-columns">
             <div class="form-group">
               <label class="form-label" for="newClassSubject">Môn học <span class="required">*</span></label>
               <input type="text" class="form-control" id="newClassSubject" placeholder="Ví dụ: Toán" required>
@@ -485,9 +574,13 @@
     // Tiện ích modal
     function openModal(id) {
       document.getElementById(id).classList.add('active');
+      document.documentElement.classList.add('modal-open');
     }
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
+      if (!document.querySelector('.modal-overlay.active')) {
+        document.documentElement.classList.remove('modal-open');
+      }
     }
 
     // Định dạng tiền tệ VNĐ

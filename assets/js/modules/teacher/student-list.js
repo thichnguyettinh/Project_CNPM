@@ -27,9 +27,19 @@ window.StudentListModule = StudentListModule;
 const StudentListPage = {
   state: { classes: [], users: [], roster: [], sessions: [], classId: '', busy: false },
   el(id) { return document.getElementById(id); },
-  message(message, type = 'info') {
+  message(message, type = 'info', action = null) {
     const box = this.el('studentMessage');
-    box.textContent = message;
+    box.replaceChildren();
+    if (message) {
+      box.append(document.createTextNode(message));
+      if (action) {
+        box.append(document.createTextNode(' '));
+        const link = document.createElement('a');
+        link.href = action.href;
+        link.textContent = action.label;
+        box.append(link);
+      }
+    }
     box.className = `alert alert-${type}`;
     box.hidden = !message;
   },
@@ -59,7 +69,11 @@ const StudentListPage = {
       const first = classes.some(c => c.id === requested) ? requested : (classes[0]?.id || '');
       select.value = first;
       if (first) await this.selectClass(first);
-      else this.message('Chưa có lớp học. Hãy tạo lớp tại trang Lớp học hoặc qua API /docs.', 'info');
+      else this.message(
+        'Tài khoản của bạn chưa có lớp học để quản lý học sinh.',
+        'info',
+        { label: 'Tạo lớp học', href: 'classes.html' }
+      );
     } catch (error) { this.message(`Không tải được dữ liệu: ${error.message}`, 'danger'); }
   },
   async selectClass(classId) {

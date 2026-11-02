@@ -108,18 +108,22 @@
           <a href="students.html" class="btn btn-secondary btn-sm">Quản lý danh sách học sinh</a>
         </div>
         <div id="attendanceMessage" class="alert alert-info" role="status" aria-live="polite" hidden></div>
-        <div class="card" style="padding:20px; display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-          <div style="flex:1; min-width:230px;"><label class="form-label" for="attendanceClass">Lớp học</label>
+        <div class="card attendance-filter-card">
+          <div><label class="form-label" for="attendanceClass">Lớp học</label>
             <select id="attendanceClass" class="form-control"><option value="">Đang tải…</option></select></div>
-          <div style="flex:1; min-width:260px;"><label class="form-label" for="attendanceSession">Buổi học</label>
+          <div><label class="form-label" for="attendanceSession">Buổi học</label>
             <select id="attendanceSession" class="form-control"><option value="">— Chọn lớp trước —</option></select></div>
-          <div style="align-self:end;" id="attendanceRoom" class="text-caption"></div>
+          <div id="attendanceRoom" class="text-caption"></div>
+          <div id="attendanceNoClasses" class="attendance-no-classes" role="status" hidden>
+            <span>Tài khoản của bạn chưa có lớp học để điểm danh.</span>
+            <a class="btn btn-primary btn-sm" href="classes.html">Tạo lớp học</a>
+          </div>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-bottom:20px;">
-          <div class="stat-card" style="padding:16px; border-left:4px solid #15803D;"><div id="countPresent" class="stat-value" style="color:#15803D;">0</div><div>Có mặt</div></div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #DC2626;"><div id="countAbsent" class="stat-value" style="color:#DC2626;">0</div><div>Vắng</div></div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #D97706;"><div id="countLate" class="stat-value" style="color:#D97706;">0</div><div>Trễ</div></div>
-          <div class="stat-card" style="padding:16px; border-left:4px solid #2563EB;"><div id="countExcused" class="stat-value" style="color:#2563EB;">0</div><div>Có phép</div></div>
+        <div class="attendance-stats-grid">
+          <div class="stat-card attendance-stat-card attendance-stat-present"><div id="countPresent" class="stat-value">0</div><div>Có mặt</div></div>
+          <div class="stat-card attendance-stat-card attendance-stat-absent"><div id="countAbsent" class="stat-value">0</div><div>Vắng</div></div>
+          <div class="stat-card attendance-stat-card attendance-stat-late"><div id="countLate" class="stat-value">0</div><div>Trễ</div></div>
+          <div class="stat-card attendance-stat-card attendance-stat-excused"><div id="countExcused" class="stat-value">0</div><div>Có phép</div></div>
         </div>
         <div class="card" style="padding:20px;">
           <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:14px;">

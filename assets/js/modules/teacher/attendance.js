@@ -39,9 +39,19 @@ const TeacherAttendancePage = {
     { key: 'late', title: 'Trễ' },
     { key: 'excused', title: 'Có phép' }
   ],
-  message(message, type = 'info') {
+  message(message, type = 'info', action = null) {
     const box = this.el('attendanceMessage');
-    box.textContent = message;
+    box.replaceChildren();
+    if (message) {
+      box.append(document.createTextNode(message));
+      if (action) {
+        box.append(document.createTextNode(' '));
+        const link = document.createElement('a');
+        link.href = action.href;
+        link.textContent = action.label;
+        box.append(link);
+      }
+    }
     box.className = `alert alert-${type}`;
     box.hidden = !message;
   },
@@ -92,7 +102,10 @@ const TeacherAttendancePage = {
       const selected = classes.some(c => c.id === desired) ? desired : (classes[0]?.id || '');
       select.value = selected;
       if (selected) await this.selectClass(selected);
-      else this.message('Chưa có lớp học. Tạo lớp tại trang Lớp học hoặc qua API /docs.');
+      else {
+        this.el('attendanceNoClasses').hidden = false;
+        this.message('');
+      }
     } catch (error) { this.message(`Không thể tải lớp: ${error.message}`, 'danger'); }
   },
   async selectClass(classId) {
@@ -119,7 +132,11 @@ const TeacherAttendancePage = {
         const matchSession = desiredSession && sessions.find(s => String(s.session_id) === String(desiredSession));
         select.value = matchSession ? String(matchSession.session_id) : String(sessions[0].session_id);
         await this.selectSession(select.value);
-      } else this.message('Lớp chưa có buổi học. Hãy tạo buổi tại Lịch học hoặc qua API /docs.');
+      } else this.message(
+        'Lớp này chưa có buổi học để điểm danh.',
+        'info',
+        { label: 'Mở Lịch học để tạo buổi học', href: `schedule.html?class_id=${encodeURIComponent(classId)}` }
+      );
     } catch (error) { this.message(`Không tải được buổi học: ${error.message}`, 'danger'); }
   },
   async selectSession(sessionId) {

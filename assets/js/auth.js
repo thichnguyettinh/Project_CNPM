@@ -26,8 +26,8 @@ const AuthService = {
         ...options,
         headers
       });
-    } catch (error) {
-      throw new Error('Không kết nối được backend. Hãy kiểm tra API đang chạy.');
+    } catch {
+      throw new Error('Chưa thể kết nối để tải dữ liệu. Vui lòng thử lại sau.');
     }
 
     if (response.status === 204) return null;
@@ -47,8 +47,8 @@ const AuthService = {
     let response;
     try {
       response = await fetch(`${this.API_BASE_URL}${path}`, { headers });
-    } catch (error) {
-      throw new Error('Không kết nối được backend. Hãy kiểm tra API đang chạy.');
+    } catch {
+      throw new Error('Chưa thể kết nối để tải dữ liệu. Vui lòng thử lại sau.');
     }
 
     if (response.status === 204) return null;

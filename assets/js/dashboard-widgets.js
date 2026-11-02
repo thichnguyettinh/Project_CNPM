@@ -12,6 +12,21 @@ const DashboardWidgets = {
     if (isError) text.setAttribute('role', 'alert');
     node.append(text);
   },
+  showRetryMessage(id, message, retry) {
+    const node = this.el(id);
+    if (!node) return;
+    node.replaceChildren();
+    const text = document.createElement('p');
+    text.className = 'text-caption';
+    text.setAttribute('role', 'alert');
+    text.textContent = message;
+    const button = document.createElement('button');
+    button.className = 'btn btn-secondary btn-sm';
+    button.type = 'button';
+    button.textContent = 'Thử lại';
+    button.addEventListener('click', retry, { once: true });
+    node.append(text, button);
+  },
   formatDate(value) {
     if (!value) return 'Chưa có ngày';
     const date = new Date(value);
@@ -68,8 +83,12 @@ const DashboardWidgets = {
       );
     } catch (error) {
       console.error('Không thể nạp thông báo bảng điều khiển:', error);
-      unreadCount.textContent = 'Không tải được';
-      this.showMessage(list.id, `Không tải được thông báo: ${error.message}`, true);
+      unreadCount.textContent = 'Chưa tải được';
+      this.showRetryMessage(
+        list.id,
+        'Chưa thể tải thông báo. Vui lòng thử lại.',
+        () => this.loadNotifications()
+      );
     }
   },
   async loadStudent() {
@@ -134,8 +153,16 @@ const DashboardWidgets = {
       });
     } catch (error) {
       console.error('Không thể nạp dữ liệu học tập trên bảng điều khiển:', error);
-      this.showMessage(grades?.id, `Không tải được điểm số: ${error.message}`, true);
-      this.showMessage(assignmentsList?.id, `Không tải được bài tập: ${error.message}`, true);
+      this.showRetryMessage(
+        grades?.id,
+        'Chưa thể tải kết quả học tập. Vui lòng thử lại.',
+        () => this.loadStudent()
+      );
+      this.showRetryMessage(
+        assignmentsList?.id,
+        'Chưa thể tải bài tập. Vui lòng thử lại.',
+        () => this.loadStudent()
+      );
     }
   },
   parentProgressRequest: 0,
@@ -189,8 +216,12 @@ const DashboardWidgets = {
     } catch (error) {
       if (request !== this.parentProgressRequest) return;
       console.error('Không thể nạp tiến bộ học tập của học sinh:', error);
-      summary.textContent = 'Không tải được tiến bộ học tập.';
-      this.showMessage(chart.id, `Không tải được kết quả: ${error.message}`, true);
+      summary.textContent = 'Chưa thể tải tiến bộ học tập.';
+      this.showRetryMessage(
+        chart.id,
+        'Chưa thể tải kết quả học tập. Vui lòng thử lại.',
+        () => this.loadParentProgress(studentCode)
+      );
     }
   },
   init(role) {
