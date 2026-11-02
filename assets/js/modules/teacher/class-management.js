@@ -49,20 +49,17 @@ const ClassManagementModule = {
 
   // Đóng lớp học (chuyển sang trạng thái completed)
   closeClass(classId) {
-    return AuthService.api(`/classes/${encodeURIComponent(classId)}/close`, { method: 'POST' })
-      .catch(() => this.updateClass(classId, { status: 'completed' }));
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/close`, { method: 'POST' });
   },
 
   // Lưu trữ lớp học (chuyển sang trạng thái archived)
   archiveClass(classId) {
-    return AuthService.api(`/classes/${encodeURIComponent(classId)}/archive`, { method: 'POST' })
-      .catch(() => this.updateClass(classId, { status: 'archived' }));
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/archive`, { method: 'POST' });
   },
 
   // Khôi phục lớp học
   restoreClass(classId) {
-    return AuthService.api(`/classes/${encodeURIComponent(classId)}/restore`, { method: 'POST' })
-      .catch(() => this.updateClass(classId, { status: 'active' }));
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/restore`, { method: 'POST' });
   },
 
   // Lấy danh sách học sinh thuộc lớp

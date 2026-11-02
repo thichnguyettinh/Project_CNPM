@@ -118,6 +118,8 @@ const DashboardAttendance = {
       select.add(new Option('Chưa liên kết học sinh', ''));
       select.disabled = true;
       this.setText('parentDashboardChildName', 'Chưa có học sinh liên kết');
+      this.setText('parentDashboardChildCopy', 'Chưa có học sinh được liên kết với tài khoản này.');
+      this.setText('parentDashboardChildAvatar', 'HS');
       this.setText('parentAttendanceCount', '—');
       this.setText('parentAttendanceDesc', 'Chưa có hồ sơ học sinh được liên kết.');
       this.notifySelectedChild('');
@@ -128,7 +130,13 @@ const DashboardAttendance = {
     let firstUpdate = true;
     const update = () => {
       const child = children.find(entry => entry.student_code === select.value);
-      this.setText('parentDashboardChildName', child?.full_name || 'Học sinh');
+      const childName = child?.full_name || 'Học sinh';
+      this.setText('parentDashboardChildName', childName);
+      this.setText('parentDashboardChildCopy', `Theo dõi tiến bộ học tập của ${childName}.`);
+      this.setText(
+        'parentDashboardChildAvatar',
+        childName.split(/\s+/).slice(-2).map(part => part[0]).join('').toLocaleUpperCase('vi-VN')
+      );
       const own = records.filter(row => row.student_code === select.value);
       const c = this.count(own);
       this.setText('parentAttendanceCount', `${c.attended}/${c.total} buổi`);

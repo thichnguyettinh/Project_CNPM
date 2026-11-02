@@ -217,8 +217,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const systemNote = document.querySelector('[data-system-note]');
+  const dismissedNoteKey = 'lopminh_notification_system_note_dismissed';
+  try {
+    if (systemNote && sessionStorage.getItem(dismissedNoteKey) === 'true') {
+      systemNote.hidden = true;
+    }
+  } catch (error) {
+    console.warn('Không thể đọc trạng thái ẩn ghi chú thông báo:', error);
+  }
   document.querySelectorAll('[data-dismiss-note]').forEach(button => {
-    button.addEventListener('click', () => button.closest('.notification-system-note').remove());
+    button.addEventListener('click', () => {
+      const note = button.closest('.notification-system-note');
+      if (!note) return;
+      note.hidden = true;
+      try {
+        sessionStorage.setItem(dismissedNoteKey, 'true');
+      } catch (error) {
+        console.warn('Không thể lưu trạng thái ẩn ghi chú thông báo:', error);
+      }
+    });
   });
 
   list.replaceChildren();

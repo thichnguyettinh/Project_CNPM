@@ -150,8 +150,9 @@
               <input type="checkbox" id="rememberMe">
               <span>Ghi nhớ đăng nhập</span>
             </label>
-            <a href="javascript:void(0)" onclick="alert('Vui lòng liên hệ Giáo viên để được cấp lại mật khẩu mới.')" class="forgot-link">Quên mật khẩu?</a>
+            <a href="#forgotPasswordHelp" onclick="document.getElementById('forgotPasswordHelp').hidden = false" class="forgot-link">Quên mật khẩu?</a>
           </div>
+          <p id="forgotPasswordHelp" class="text-caption" role="status" hidden>Vui lòng liên hệ giáo viên phụ trách để được đặt lại mật khẩu. Vì tài khoản được cấp bởi giáo viên, hệ thống không tự gửi liên kết khôi phục qua email.</p>
 
           <!-- Nút Đăng nhập -->
           <button type="submit" class="btn btn-primary btn-login-submit">

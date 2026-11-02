@@ -129,8 +129,8 @@
           <a href="classes.html" class="stat-card" style="text-decoration:none; color:inherit; cursor:pointer;" title="Xem danh sách lớp học">
             <div>
               <div class="stat-label">Lớp đang giảng dạy</div>
-              <div class="stat-value" id="teacherClassCount">6</div>
-              <div class="stat-desc" id="teacherClassCountHint">Năm học 2026-2027</div>
+              <div class="stat-value" id="teacherClassCount">—</div>
+              <div class="stat-desc" id="teacherClassCountHint">Đang tải dữ liệu…</div>
             </div>
             <div class="stat-icon primary">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
@@ -140,8 +140,8 @@
           <a href="classes.html" class="stat-card" style="text-decoration:none; color:inherit; cursor:pointer;" title="Xem danh sách học sinh theo lớp">
             <div>
               <div class="stat-label">Học sinh đang học</div>
-              <div class="stat-value" id="teacherStudentCount">96</div>
-              <div class="stat-desc" id="teacherStudentCountHint">Trong 6 lớp học</div>
+              <div class="stat-value" id="teacherStudentCount">—</div>
+              <div class="stat-desc" id="teacherStudentCountHint">Đang tải dữ liệu…</div>
             </div>
             <div class="stat-icon success">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
@@ -249,29 +249,11 @@
             <div class="card teacher-dashboard-card--notifications">
               <div class="card-header" style="margin-bottom: 8px;">
                 <h3 class="title-card">Thông báo mới</h3>
-                <span class="badge badge-neutral" style="font-size:11px;">3 chưa đọc</span>
+                <span class="badge badge-neutral" id="teacherDashUnreadNotificationCount" style="font-size:11px;">Đang tải…</span>
               </div>
-              <div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Nhắc lịch dạy hôm nay</div>
-                  <div class="widget-notify-desc">Toán 10A bắt đầu lúc 17:30, phòng 201.</div>
-                </div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Học phí cần đối chiếu</div>
-                  <div class="widget-notify-desc">15 học sinh còn số dư tháng 10.</div>
-                </div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Đã lưu điểm kiểm tra</div>
-                  <div class="widget-notify-desc">Toán 10A - Kiểm tra chương I.</div>
-                </div>
+              <div id="teacherDashNotificationList" aria-live="polite">
+                <p class="text-caption">Đang tải thông báo…</p>
               </div>
-            </div>
-
-            <!-- Khung khoét lỗ Module Logic Giáo viên -->
-            <div class="feature-slot" style="margin-top:0;">
-              <span class="slot-tag">SLOT: TEACHER DASHBOARD API</span>
-              <div class="slot-desc" style="margin-bottom:8px;">Vùng tích hợp Service tổng hợp số liệu thực tế từ cơ sở dữ liệu.</div>
-              <span class="code-hint">window.TeacherDashboardModule</span>
             </div>
 
           </div>
@@ -390,6 +372,61 @@
       }
     }
 
+    async function loadTeacherDashboardNotifications() {
+      const listEl = document.getElementById('teacherDashNotificationList');
+      const unreadCountEl = document.getElementById('teacherDashUnreadNotificationCount');
+      if (!listEl || !unreadCountEl) return;
+
+      try {
+        const [notifications, unreadSummary] = await Promise.all([
+          AuthService.api('/notifications'),
+          AuthService.api('/notifications/unread-count')
+        ]);
+        if (!Array.isArray(notifications)) {
+          throw new Error('Dữ liệu thông báo từ máy chủ không hợp lệ.');
+        }
+        if (!Number.isInteger(unreadSummary.count) || unreadSummary.count < 0) {
+          throw new Error('Dữ liệu số thông báo chưa đọc từ máy chủ không hợp lệ.');
+        }
+
+        unreadCountEl.textContent = `${unreadSummary.count} chưa đọc`;
+        listEl.replaceChildren();
+        const latestNotifications = notifications.slice(0, 3);
+        if (latestNotifications.length === 0) {
+          const emptyMessage = document.createElement('p');
+          emptyMessage.className = 'text-caption';
+          emptyMessage.textContent = 'Chưa có thông báo.';
+          listEl.append(emptyMessage);
+          return;
+        }
+
+        latestNotifications.forEach(notification => {
+          if (typeof notification.title !== 'string' || typeof notification.body !== 'string') {
+            throw new Error('Nội dung thông báo từ máy chủ không hợp lệ.');
+          }
+          const item = document.createElement('div');
+          item.className = 'widget-notify-item';
+          const title = document.createElement('div');
+          title.className = 'widget-notify-title';
+          title.textContent = notification.title;
+          const body = document.createElement('div');
+          body.className = 'widget-notify-desc';
+          body.textContent = notification.body;
+          item.append(title, body);
+          listEl.append(item);
+        });
+      } catch (error) {
+        console.error('Không thể nạp thông báo bảng điều khiển:', error);
+        unreadCountEl.textContent = 'Không tải được';
+        listEl.replaceChildren();
+        const errorMessage = document.createElement('p');
+        errorMessage.className = 'text-caption';
+        errorMessage.setAttribute('role', 'alert');
+        errorMessage.textContent = `Không tải được thông báo: ${error.message}`;
+        listEl.append(errorMessage);
+      }
+    }
+
     function escapeHtml(text) {
       if (!text) return '';
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -399,6 +436,7 @@
       if (window.DashboardAttendance) DashboardAttendance.init('teacher');
       if (window.DashboardStats) DashboardStats.init('teacher');
       loadTeacherDashboard();
+      loadTeacherDashboardNotifications();
     });
   </script>
 </body>

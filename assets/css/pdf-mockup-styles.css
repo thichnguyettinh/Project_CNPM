@@ -111,6 +111,63 @@ a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge:not([data-notific
   font-size: 12px;
   color: var(--color-text-secondary);
 }
+.dashboard-data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #FAFDFE;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+.dashboard-data-row strong,
+.dashboard-assignment-item strong {
+  font-size: 13px;
+}
+.dashboard-data-score {
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+.dashboard-assignment-item {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  background: #F8FAFC;
+  border-radius: 8px;
+}
+.dashboard-progress-chart {
+  min-height: 150px;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid #CBD5E1;
+  border-left: 1px solid #CBD5E1;
+}
+.dashboard-progress-point {
+  min-width: 0;
+  flex: 1;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+.dashboard-progress-point strong,
+.dashboard-progress-point span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+}
+.dashboard-progress-bar {
+  width: min(28px, 70%);
+  min-height: 4px;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-primary);
+}
 
 /* Điểm danh 1 chạm (Attendance radio pills) */
 .attendance-btn-group {
@@ -165,6 +222,17 @@ a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge:not([data-notific
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   overflow: hidden;
+}
+
+.calendar-empty-state {
+  grid-column: 1 / -1;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--color-text-secondary);
+  text-align: center;
 }
 
 .calendar-header-col {

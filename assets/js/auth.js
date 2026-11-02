@@ -39,6 +39,27 @@ const AuthService = {
     return result;
   },
 
+  async apiBlob(path) {
+    const headers = new Headers();
+    const token = this.getToken();
+    if (token) headers.set('Authorization', `******`);
+
+    let response;
+    try {
+      response = await fetch(`${this.API_BASE_URL}${path}`, { headers });
+    } catch (error) {
+      throw new Error('Không kết nối được backend. Hãy kiểm tra API đang chạy.');
+    }
+
+    if (response.status === 204) return null;
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      if (response.status === 401) this.clearSession();
+      throw new Error(result.detail || `Yêu cầu thất bại (${response.status}).`);
+    }
+    return response.blob();
+  },
+
   updateNotificationIndicators() {
     const badges = document.querySelectorAll(
       'a.nav-item-link[href$="notifications.html"] .sidebar-nav-badge'

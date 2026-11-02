@@ -108,6 +108,13 @@ Dự án (project_cnpm/)
 - **Thông báo:** Các trang của giáo viên, học sinh và phụ huynh nạp danh sách từ `/api/notifications`; bộ lọc và trạng thái đã đọc đồng bộ với backend. Badge trên thanh điều hướng và chấm chuông hiển thị theo số chưa đọc từ `/api/notifications/unread-count`.
 - **Đăng xuất:** Nút đăng xuất ở cuối thanh bên trên các trang giáo viên, học sinh và phụ huynh gọi API thu hồi phiên rồi quay về trang đăng nhập; biểu tượng đã được đồng bộ giữa các vai trò.
 - **Số liệu tổng hợp:** Sĩ số, điểm trung bình, chuyên cần và công nợ được tính từ dữ liệu gốc, không lưu trùng.
+- **Dashboard giáo viên:** số lớp, sĩ số, buổi học trong tuần, điểm danh gần đây và thông báo được nạp từ API; khi API lỗi, giao diện báo lỗi thay vì hiển thị số mẫu.
+- **Dashboard học sinh:** lớp đang ghi danh, điểm, bài tập chưa nộp, chuyên cần, lịch sắp tới và thông báo dùng API. Trạng thái ban đầu là đang tải; tài khoản/ngày hiển thị theo phiên hiện tại.
+- **Dashboard phụ huynh:** học sinh liên kết, chuyên cần, điểm và tiến bộ, học phí, lịch sắp tới và thông báo dùng dữ liệu API. Không có buổi học hoặc dữ liệu thì giao diện nêu rõ trạng thái đó.
+- **Quản lý lớp và lịch giáo viên:** tạo/sửa/đóng/lưu trữ/khôi phục lớp; xuất CSV; tạo và dời lịch buổi học gọi API. Lịch/chi tiết không tự điền dữ liệu lớp mẫu.
+- **Quản lý tài khoản:** cập nhật và vô hiệu hóa/kích hoạt tài khoản qua API; thao tác lỗi được hiển thị trên giao diện.
+- **Ảnh đại diện:** hồ sơ hỗ trợ tải ảnh JPEG/PNG/WebP tối đa 5 MB qua API có xác thực, lưu trong PostgreSQL. Cần chạy lại `database/schema.sql` để tạo bảng `user_avatars` cho database đã có.
+- **Khôi phục mật khẩu:** hệ thống chưa có luồng email hoặc tự khôi phục; trang đăng nhập hướng dẫn liên hệ giáo viên, không báo thành công giả.
 
 #### Chạy backend trên Windows
 1. Cài PostgreSQL 14+ và Python 3.11+.
@@ -141,7 +148,7 @@ Dự án (project_cnpm/)
 
 - Schema chỉ tạo cấu trúc, chưa nhập dữ liệu mockup; seed demo tạo ba tài khoản thử nghiệm và liên kết học sinh-phụ huynh nhưng không tạo dữ liệu lớp học.
 - Chạy toàn bộ kiểm thử Python và JavaScript từ thư mục gốc: `python tests\run_all_tests.py` (cần Node.js trên `PATH` để chạy test JavaScript). Chỉ chạy test Python: `python -m unittest discover -s tests -p "test_*.py" -v`.
-- **Trạng thái giao diện:** Đăng nhập, xác thực phiên và thông báo đã dùng API. Một số màn hình nghiệp vụ khác vẫn hiển thị dữ liệu mẫu hoặc chưa nối toàn bộ form/bảng vào API. Có thể kiểm tra và thao tác trực tiếp các endpoint qua `/docs`; không xem dữ liệu mẫu trên những màn hình đó là dữ liệu PostgreSQL.
+- **Trạng thái giao diện:** Các dashboard và thao tác được liệt kê ở trên đã gọi API, nhưng chưa được xác minh end-to-end trên PostgreSQL trong mọi vai trò. Một số màn hình nghiệp vụ khác vẫn còn phần giao diện mẫu hoặc chưa nối toàn bộ form/bảng vào API; không xem nội dung mẫu ở các màn hình đó là dữ liệu PostgreSQL. Có thể kiểm tra endpoint qua `/docs`.
 
 ---
 
@@ -149,7 +156,7 @@ Dự án (project_cnpm/)
 
 | STT | Họ và tên | MSSV | Lớp | Vai trò | Phân công chính | Tiến độ theo mã nguồn |
 | :---: | :--- | :---: | :---: | :---: | :--- | :--- |
-| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất và giao diện thông báo ba vai trò** | **Hoàn thành các hạng mục được liệt kê chi tiết bên dưới. Trang thông báo hiện là giao diện mẫu, chưa đồng bộ với API.** |
+| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất và giao diện thông báo ba vai trò** | **Các mục có trạng thái được mô tả chi tiết bên dưới; thông báo và dashboard đã nối API, cần kiểm thử end-to-end trên PostgreSQL.** |
 | **2** | **Phạm Nguyễn Hoàng Kim** | **50.01.103.035** | 50.01.SPTIN.A | Thành viên | **Quản lý lớp (UC-03) & thời khóa biểu (UC-04)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
 | **3** | **Nguyễn Châu Thanh Thảo** | **50.01.103.069** | 50.01.SPTIN.B | Thành viên | **Danh sách học sinh (UC-05) & điểm danh (UC-06)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
 | **4** | **Nguyễn Duy Khánh Lân** | **50.01.103.036** | 50.01.SPTIN.B | Thành viên | **Đánh giá, bài tập (UC-07), sổ điểm và tiến bộ (UC-08, UC-11)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |

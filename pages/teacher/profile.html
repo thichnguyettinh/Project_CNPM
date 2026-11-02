@@ -130,7 +130,11 @@
                   <span class="badge badge-info">Giáo viên</span>
                   <div class="text-caption" style="margin-top:4px;">Thành viên từ 01/08/2026</div>
                 </div>
-                <button class="btn btn-secondary btn-sm" style="margin-left:auto;" onclick="alert('Mở cửa sổ chọn ảnh chân dung mới')">📷 Đổi ảnh</button>
+                <div style="margin-left:auto; text-align:right;">
+                  <input id="profileAvatarInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                  <button class="btn btn-secondary btn-sm" id="profileAvatarButton" type="button">Đổi ảnh</button>
+                  <div class="text-caption">JPEG, PNG hoặc WebP · tối đa 5 MB</div>
+                </div>
               </div>
 
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
@@ -186,7 +190,7 @@
               <div class="card" style="padding:20px;">
                 <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Bảo vệ tài khoản</h4>
                 <p class="text-caption" style="margin-bottom:14px;">Sử dụng mật khẩu riêng và không chia sẻ quyền giáo viên với học sinh hoặc phụ huynh.</p>
-                <button class="btn btn-secondary btn-sm" onclick="switchProfileTab('password', document.getElementById('subtabPwd'))">🔑 Đổi mật khẩu</button>
+                <button class="btn btn-secondary btn-sm" onclick="switchProfileTab('password', document.getElementById('subtabPwd'))">Đổi mật khẩu</button>
               </div>
             </div>
           </div>

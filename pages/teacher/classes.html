@@ -111,7 +111,7 @@
         <div class="user-mini-profile">
           <div class="avatar-badge" id="teacherAvatar">HL</div>
           <div class="user-mini-meta">
-            <h5 id="teacherName">Nguyễn Hà Linh</h5>
+            <h5 id="teacherName">Giáo viên</h5>
             <p>Giáo viên</p>
           </div>
         </div>
@@ -131,10 +131,10 @@
         </div>
 
         <div class="header-actions">
-          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <span id="teacherClassCurrentDate" style="font-size: 13px; color: var(--color-text-secondary);">Đang cập nhật ngày</span>
           <div style="display:flex; align-items:center; gap:8px;">
-            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
-            <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
+            <div class="avatar-badge" id="teacherClassHeaderAvatar" style="width:32px; height:32px; font-size:12px;">GV</div>
+            <span id="teacherClassHeaderName" style="font-size:13px; font-weight:600;">Giáo viên</span>
           </div>
         </div>
       </header>
@@ -175,7 +175,7 @@
           </div>
           <div class="stat-card" style="padding:16px;">
             <div>
-              <div class="stat-value" id="statWeeklySessions" style="font-size:22px;">12</div>
+              <div class="stat-value" id="statWeeklySessions" style="font-size:22px;">—</div>
               <div class="stat-desc">Buổi học mỗi tuần</div>
             </div>
           </div>
@@ -187,7 +187,7 @@
             <h3 class="title-card">Danh sách lớp học (<span id="totalClassCountBadge">0</span>)</h3>
             <button class="btn btn-secondary btn-sm" onclick="exportClassesToExcel()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              <span>Xuất danh sách</span>
+              <span>Tải danh sách CSV</span>
             </button>
           </div>
 
@@ -274,17 +274,17 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div class="form-group">
               <label class="form-label" for="newClassSubject">Môn học <span class="required">*</span></label>
-              <input type="text" class="form-control" id="newClassSubject" value="Toán" required>
+              <input type="text" class="form-control" id="newClassSubject" placeholder="Ví dụ: Toán" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="newClassRoom">Phòng học mặc định</label>
-              <input type="text" class="form-control" id="newClassRoom" placeholder="Phòng 201" value="Phòng 201">
+              <input type="text" class="form-control" id="newClassRoom" placeholder="Phòng học (không bắt buộc)">
             </div>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="newClassFee">Học phí / tháng (VNĐ) <span class="required">*</span></label>
-            <input type="number" class="form-control" id="newClassFee" placeholder="800000" min="0" step="50000" value="800000" required>
+            <input type="number" class="form-control" id="newClassFee" placeholder="Nhập số tiền" min="0" step="50000" required>
           </div>
 
           <div class="form-group">
@@ -372,29 +372,29 @@
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL 3: CHI TIẾT LỚP HỌC (Ví dụ: TO10A với 20 học sinh) -->
+  <!-- MODAL 3: CHI TIẾT LỚP HỌC -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalClassDetail">
     <div class="modal-container" style="max-width: 860px;">
       <div class="modal-header">
         <div>
           <h3 class="modal-title" id="detailClassName">Toán 10 - Nền tảng</h3>
-          <p class="text-caption" id="detailClassSubtitle">Mã lớp: TO10A · Giáo viên: Nguyễn Hà Linh</p>
+          <p class="text-caption" id="detailClassSubtitle">Đang tải thông tin lớp…</p>
         </div>
         <button class="modal-close" onclick="closeModal('modalClassDetail')">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
         <!-- Banner tóm tắt lớp -->
         <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-          <div><span class="badge badge-success" id="detailBadgeStatus">Đang giảng dạy</span> · Sĩ số: <strong id="detailStudentCount">20</strong> học sinh</div>
-          <div>Lịch học: <strong id="detailSchedule">Thứ 2, 4, 6 · 17:30–19:00</strong> · <span id="detailRoom">Phòng 201</span></div>
-          <div>Học phí: <strong id="detailFee">800.000 ₫/tháng</strong></div>
+          <div><span class="badge badge-neutral" id="detailBadgeStatus">Đang tải</span> · Sĩ số: <strong id="detailStudentCount">—</strong> học sinh</div>
+          <div>Lịch học: <strong id="detailSchedule">—</strong> · <span id="detailRoom">—</span></div>
+          <div>Học phí: <strong id="detailFee">—</strong></div>
         </div>
 
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; flex-wrap:wrap;">
           <input type="text" id="rosterSearchInput" class="form-control" placeholder="Tìm tên, mã học sinh..." style="max-width:320px;" oninput="filterRoster()">
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-secondary btn-sm" onclick="exportRoster()">Xuất DS học sinh</button>
+            <button class="btn btn-secondary btn-sm" onclick="exportRoster()">Tải DS học sinh CSV</button>
           </div>
         </div>
 
@@ -467,13 +467,20 @@
     // Kiểm tra đăng nhập vai trò giáo viên
     const currentUser = AuthService.requireAuth('teacher');
     if (currentUser) {
-      document.getElementById('teacherName').innerText = currentUser.fullName || 'Giáo viên';
-      document.getElementById('teacherAvatar').innerText = currentUser.avatarText || 'GV';
+      const fullName = currentUser.fullName || 'Giáo viên';
+      const avatarText = currentUser.avatarText || 'GV';
+      document.getElementById('teacherName').textContent = fullName;
+      document.getElementById('teacherAvatar').textContent = avatarText;
+      document.getElementById('teacherClassHeaderName').textContent = `${fullName} · Giáo viên`;
+      document.getElementById('teacherClassHeaderAvatar').textContent = avatarText;
     }
+    document.getElementById('teacherClassCurrentDate').textContent =
+      new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
 
     // Biến toàn cục lưu danh sách lớp & học sinh chi tiết
     let loadedClasses = [];
     let currentRosterStudents = [];
+    let currentRosterClassCode = '';
 
     // Tiện ích modal
     function openModal(id) {
@@ -528,13 +535,26 @@
     }
 
     // Cập nhật các thẻ thống kê
-    function updateStatistics(classes) {
+    async function updateStatistics(classes) {
       const activeClasses = classes.filter(c => c.status === 'active');
-      const totalStudents = activeClasses.reduce((sum, c) => sum + Number(c.student_count || 0), 0);
 
       document.getElementById('statClassCount').innerText = activeClasses.length;
-      document.getElementById('statStudentCount').innerText = totalStudents;
       document.getElementById('totalClassCountBadge').innerText = classes.length;
+      const weeklySessions = document.getElementById('statWeeklySessions');
+      try {
+        const summary = await AuthService.api('/dashboard');
+        document.getElementById('statStudentCount').textContent =
+          String(Number(summary.students?.student_count ?? 0));
+        weeklySessions.textContent = String(Number(summary.weekly_sessions ?? 0));
+        weeklySessions.title = '';
+      } catch (error) {
+        document.getElementById('statStudentCount').textContent = '—';
+        document.getElementById('statStudentCount').title =
+          `Không tải được sĩ số: ${error.message}`;
+        weeklySessions.textContent = '—';
+        weeklySessions.title = `Không tải được số buổi học trong tuần: ${error.message}`;
+        console.error('Không thể nạp thống kê lớp học:', error);
+      }
     }
 
     // Render bảng lớp học
@@ -558,8 +578,8 @@
         else if (c.status === 'archived') statusBadge = '<span class="badge badge-warning">Đã lưu trữ</span>';
         else if (c.status === 'planned') statusBadge = '<span class="badge badge-neutral">Dự kiến</span>';
 
-        const scheduleText = c.schedule_summary || 'Theo lịch phân công';
-        const roomText = c.room || 'Phòng 201';
+        const scheduleText = c.schedule_summary || 'Chưa có lịch cố định';
+          const roomText = c.room || '—';
         const feeText = formatVND(c.monthly_fee);
         const count = c.student_count || 0;
 
@@ -582,9 +602,9 @@
                 <button class="btn btn-link btn-sm" onclick="openEditClass('${c.id}')" title="Chỉnh sửa lớp">
                   <i data-feather="edit-2" class="feather-sm"></i>
                 </button>
-                <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('${c.id}', '${c.code}', '${escapeHtml(c.name)}')" title="Lưu trữ / Đóng lớp">
-                  <i data-feather="archive" class="feather-sm"></i>
-                </button>
+                ${c.status === 'archived'
+                  ? `<button class="btn btn-link btn-sm" onclick="restoreClass('${c.id}')" title="Khôi phục lớp"><i data-feather="rotate-ccw" class="feather-sm"></i></button>`
+                  : `<button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('${c.id}', '${c.code}', '${escapeHtml(c.name)}')" title="Lưu trữ / Đóng lớp"><i data-feather="archive" class="feather-sm"></i></button>`}
               </div>
             </td>
           </tr>
@@ -616,9 +636,6 @@
     // Mở modal tạo lớp mới
     function openCreateModal() {
       document.getElementById('formCreateClass').reset();
-      document.getElementById('newClassFee').value = "800000";
-      document.getElementById('newClassSubject').value = "Toán";
-      document.getElementById('newClassRoom').value = "Phòng 201";
       document.getElementById('createClassAlert').style.display = 'none';
       openModal('modalCreateClass');
     }
@@ -681,9 +698,9 @@
       document.getElementById('editClassId').value = targetClass.id || classId;
       document.getElementById('editClassCode').value = targetClass.code || targetClass.class_code || '';
       document.getElementById('editClassName').value = targetClass.name || '';
-      document.getElementById('editClassSubject').value = targetClass.subject || 'Toán';
+      document.getElementById('editClassSubject').value = targetClass.subject || '';
       document.getElementById('editClassRoom').value = targetClass.room || targetClass.default_room || '';
-      document.getElementById('editClassFee').value = targetClass.monthly_fee || 0;
+      document.getElementById('editClassFee').value = targetClass.monthly_fee ?? '';
       document.getElementById('editClassStatus').value = targetClass.status || 'active';
       document.getElementById('editClassDesc').value = targetClass.description || '';
 
@@ -729,11 +746,16 @@
       const cls = loadedClasses.find(c => c.id === classId || c.code === classCode || c.code === classId) || {};
       
       document.getElementById('detailClassName').innerText = cls.name || classCode || 'Chi tiết lớp học';
-      document.getElementById('detailClassSubtitle').innerText = `Mã lớp: ${cls.code || classCode} · Giáo viên: ${cls.teacher_name || 'Nguyễn Hà Linh'}`;
-      document.getElementById('detailStudentCount').innerText = cls.student_count || 0;
-      document.getElementById('detailSchedule').innerText = cls.schedule_summary || 'Lịch học cố định theo tuần';
-      document.getElementById('detailRoom').innerText = cls.room || 'Phòng 201';
-      document.getElementById('detailFee').innerText = formatVND(cls.monthly_fee);
+      document.getElementById('detailClassSubtitle').innerText = `Mã lớp: ${cls.code || classCode || '—'} · Giáo viên: ${cls.teacher_name || '—'}`;
+      document.getElementById('detailStudentCount').innerText = cls.student_count ?? '—';
+      document.getElementById('detailSchedule').innerText = cls.schedule_summary || 'Chưa có lịch cố định';
+      document.getElementById('detailRoom').innerText = cls.room || 'Chưa phân phòng';
+      document.getElementById('detailFee').innerText = cls.monthly_fee == null ? '—' : `${formatVND(cls.monthly_fee)}/tháng`;
+      const statusBadge = document.getElementById('detailBadgeStatus');
+      const statusLabels = { active: 'Đang giảng dạy', completed: 'Đã kết thúc', archived: 'Đã lưu trữ', planned: 'Dự kiến' };
+      statusBadge.textContent = statusLabels[cls.status] || 'Chưa rõ trạng thái';
+      statusBadge.className = `badge ${cls.status === 'active' ? 'badge-success' : 'badge-neutral'}`;
+      currentRosterClassCode = cls.code || classCode || 'lop-hoc';
 
       const rosterBody = document.getElementById('detailRosterBody');
       rosterBody.innerHTML = `
@@ -837,12 +859,51 @@
       }
     }
 
-    // Xuất báo cáo danh sách
+    async function restoreClass(classId) {
+      if (!confirm('Khôi phục lớp học này về trạng thái đang hoạt động?')) return;
+      try {
+        await ClassManagementModule.restoreClass(classId);
+        await loadClassesList();
+        alert('Đã khôi phục lớp học.');
+      } catch (error) {
+        alert(`Không thể khôi phục lớp học: ${error.message}`);
+      }
+    }
+
+    function downloadCsv(filename, rows) {
+      const csvCell = value => {
+        let text = String(value ?? '');
+        if (/^[\s]*[=+\-@]/.test(text)) text = `'${text}`;
+        return `"${text.replace(/"/g, '""')}"`;
+      };
+      const csv = `\uFEFF${rows.map(row => row.map(csvCell).join(',')).join('\r\n')}`;
+      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
     function exportClassesToExcel() {
-      alert('Đã xuất báo cáo tổng hợp danh sách các lớp học ra tệp Excel thành công!');
+      const rows = [
+        ['Mã lớp', 'Tên lớp', 'Môn học', 'Trạng thái', 'Sĩ số', 'Lịch học', 'Phòng', 'Học phí/tháng'],
+        ...loadedClasses.map(cls => [
+          cls.code, cls.name, cls.subject, cls.status, cls.student_count,
+          cls.schedule_summary || '', cls.room || '', cls.monthly_fee
+        ])
+      ];
+      downloadCsv('danh-sach-lop.csv', rows);
     }
     function exportRoster() {
-      alert('Đã xuất danh sách học sinh của lớp học ra tệp Excel thành công!');
+      const rows = [
+        ['Mã học sinh', 'Họ và tên', 'Ngày sinh', 'Phụ huynh', 'Điện thoại', 'Trạng thái'],
+        ...currentRosterStudents.map(student => [
+          student.student_code, student.full_name, student.date_of_birth,
+          student.parent_name, student.parent_phone || student.phone, student.status || 'active'
+        ])
+      ];
+      downloadCsv(`danh-sach-hoc-sinh-${currentRosterClassCode}.csv`, rows);
     }
 
     function escapeHtml(text) {

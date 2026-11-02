@@ -1,5 +1,6 @@
 const ProfileModule = {
   fields: [],
+  avatarUrls: [],
 
   formatTimestamp(value) {
     if (!value) return 'Chưa có thời gian cập nhật';
@@ -35,6 +36,9 @@ const ProfileModule = {
     const initials = nameParts.slice(-2).map(part => part[0]).join('').toLocaleUpperCase('vi-VN');
     document.querySelectorAll('[data-profile-avatar]').forEach(node => {
       node.textContent = initials;
+      node.style.backgroundImage = '';
+      node.style.backgroundSize = '';
+      node.style.backgroundPosition = '';
     });
 
     const updatedAt = document.getElementById('profileUpdatedAt');
@@ -70,6 +74,64 @@ const ProfileModule = {
         else updatedAt.textContent = 'Không tải được thời gian cập nhật';
       }
       return null;
+    }
+  },
+
+  async loadAvatar() {
+    try {
+      const blob = await AuthService.apiBlob('/profile/avatar');
+      this.avatarUrls.forEach(url => URL.revokeObjectURL(url));
+      this.avatarUrls = [];
+      if (!blob) return true;
+      const url = URL.createObjectURL(blob);
+      this.avatarUrls.push(url);
+      document.querySelectorAll('[data-profile-avatar]').forEach(node => {
+        node.textContent = '';
+        node.style.backgroundImage = `url("${url}")`;
+        node.style.backgroundSize = 'cover';
+        node.style.backgroundPosition = 'center';
+      });
+      return true;
+    } catch (error) {
+      console.error('Không thể tải ảnh đại diện:', error);
+      this.setStatus(`Không tải được ảnh đại diện: ${error.message}`, true);
+      return false;
+    }
+  },
+
+  async uploadAvatar(file) {
+    if (!file) return;
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      this.setStatus('Chỉ chấp nhận ảnh JPEG, PNG hoặc WebP.', true);
+      return;
+    }
+    if (file.size === 0 || file.size > 5 * 1024 * 1024) {
+      this.setStatus('Ảnh phải có dung lượng lớn hơn 0 và không vượt quá 5 MB.', true);
+      return;
+    }
+
+    const button = document.getElementById('profileAvatarButton');
+    const input = document.getElementById('profileAvatarInput');
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'Đang tải ảnh…';
+    }
+    this.setStatus('Đang tải ảnh đại diện…');
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      await AuthService.api('/profile/avatar', { method: 'PUT', body: formData });
+      if (!await this.loadAvatar()) throw new Error('Ảnh đã tải lên nhưng không thể hiển thị lại.');
+      this.setStatus('Đã cập nhật ảnh đại diện.');
+    } catch (error) {
+      this.setStatus(`Không cập nhật được ảnh đại diện: ${error.message}`, true);
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.textContent = 'Đổi ảnh';
+      }
+      if (input) input.value = '';
     }
   },
 
@@ -110,7 +172,12 @@ const ProfileModule = {
 
   async init() {
     this.fields = [...document.querySelectorAll('[data-profile-field]')];
+    const avatarButton = document.getElementById('profileAvatarButton');
+    const avatarInput = document.getElementById('profileAvatarInput');
+    avatarButton?.addEventListener('click', () => avatarInput?.click());
+    avatarInput?.addEventListener('change', () => this.uploadAvatar(avatarInput.files?.[0]));
     await this.load();
+    await this.loadAvatar();
   }
 };
 

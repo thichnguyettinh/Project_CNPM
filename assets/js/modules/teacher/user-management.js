@@ -68,6 +68,10 @@ const UserManagementPage = {
       event.preventDefault();
       this.resetAccountPassword();
     });
+    this.el('editAccountForm').addEventListener('submit', event => {
+      event.preventDefault();
+      this.saveAccountEdit();
+    });
     this.el('searchUserInput').addEventListener('input', event => {
       this.state.query = event.target.value.trim().toLocaleLowerCase('vi');
       this.render();
@@ -152,7 +156,20 @@ const UserManagementPage = {
       resetButton.className = 'btn btn-link btn-sm';
       resetButton.textContent = 'Đặt lại mật khẩu';
       resetButton.addEventListener('click', () => this.openPasswordReset(user));
-      actions.append(resetButton);
+      const editButton = document.createElement('button');
+      editButton.type = 'button';
+      editButton.className = 'btn btn-link btn-sm';
+      editButton.textContent = 'Chỉnh sửa';
+      editButton.addEventListener('click', () => this.openAccountEdit(user));
+      actions.append(editButton, resetButton);
+      if (user.status === 'active' || user.status === 'inactive') {
+        const statusButton = document.createElement('button');
+        statusButton.type = 'button';
+        statusButton.className = 'btn btn-link btn-sm';
+        statusButton.textContent = user.status === 'active' ? 'Vô hiệu hóa' : 'Kích hoạt';
+        statusButton.addEventListener('click', () => this.toggleAccountStatus(user));
+        actions.append(statusButton);
+      }
     });
   },
   updateCreateFields() {
@@ -296,6 +313,62 @@ const UserManagementPage = {
     } finally {
       this.el('resetNewPassword').value = '';
       this.el('resetConfirmPassword').value = '';
+      this.state.busy = false;
+    }
+  },
+  openAccountEdit(user) {
+    this.el('editUserId').value = user.id;
+    this.el('editFullName').value = user.full_name || '';
+    this.el('editEmail').value = user.email || '';
+    this.el('editPhone').value = user.phone || '';
+    this.el('editAccountMessage').hidden = true;
+    openModal('modalEditAccount');
+  },
+  async saveAccountEdit() {
+    const form = this.el('editAccountForm');
+    if (!form.reportValidity() || this.state.busy) return;
+    this.state.busy = true;
+    const payload = {
+      full_name: this.el('editFullName').value.trim(),
+      email: this.el('editEmail').value.trim() || null,
+      phone: this.el('editPhone').value.trim() || null,
+    };
+    try {
+      await UserManagementModule.updateUser(this.el('editUserId').value, payload);
+      closeModal('modalEditAccount');
+      const refreshed = await this.loadUsers();
+      this.message(
+        refreshed ? 'Đã cập nhật tài khoản.' : 'Đã cập nhật nhưng không tải lại được danh sách.',
+        refreshed ? 'success' : 'warning'
+      );
+    } catch (error) {
+      const box = this.el('editAccountMessage');
+      box.textContent = `Không cập nhật được tài khoản: ${error.message}`;
+      box.className = 'alert alert-danger';
+      box.hidden = false;
+    } finally {
+      this.state.busy = false;
+    }
+  },
+  async toggleAccountStatus(user) {
+    const activating = user.status !== 'active';
+    const action = activating ? 'kích hoạt' : 'vô hiệu hóa';
+    if (!confirm(`Bạn có chắc muốn ${action} tài khoản ${user.full_name}?`)) return;
+    this.state.busy = true;
+    try {
+      if (activating) {
+        await UserManagementModule.updateUser(user.id, { status: 'active' });
+      } else {
+        await UserManagementModule.deleteUser(user.id);
+      }
+      const refreshed = await this.loadUsers();
+      this.message(
+        refreshed ? `Đã ${action} tài khoản.` : `Đã ${action} nhưng không tải lại được danh sách.`,
+        refreshed ? 'success' : 'warning'
+      );
+    } catch (error) {
+      this.message(`Không thể ${action} tài khoản: ${error.message}`, 'danger');
+    } finally {
       this.state.busy = false;
     }
   },

@@ -11,7 +11,7 @@ from typing import Annotated, Any, Callable
 import psycopg
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .config import CORS_ORIGINS, DATABASE_URL, MAX_UPLOAD_BYTES, SESSION_HOURS, UPLOAD_DIR
@@ -475,6 +475,59 @@ def update_profile(
             (user["user_id"], *values.values()),
         )
     return get_profile(connection, user)
+
+
+@app.get("/api/profile/avatar")
+def get_profile_avatar(connection: Connection, user: Annotated[dict, Depends(current_user)]):
+    row = fetch_one(
+        connection,
+        "SELECT mime_type, image_data FROM user_avatars WHERE user_id = %s",
+        (user["user_id"],),
+    )
+    if not row:
+        return Response(status_code=204)
+    return Response(
+        content=row["image_data"],
+        media_type=row["mime_type"],
+        headers={
+            "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
+        },
+    )
+
+
+@app.put("/api/profile/avatar")
+def update_profile_avatar(
+    file: Annotated[UploadFile, File(...)],
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+):
+    content = file.file.read(5 * 1024 * 1024 + 1)
+    if not content:
+        raise HTTPException(status_code=400, detail="Ảnh đại diện đang trống.")
+    if len(content) > 5 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Ảnh đại diện không được vượt quá 5 MB.")
+
+    image_types = {
+        "image/jpeg": content.startswith(b"\xff\xd8\xff"),
+        "image/png": content.startswith(b"\x89PNG\r\n\x1a\n"),
+        "image/webp": content.startswith(b"RIFF") and content[8:12] == b"WEBP",
+    }
+    if file.content_type not in image_types or not image_types[file.content_type]:
+        raise HTTPException(status_code=415, detail="Chỉ chấp nhận ảnh JPEG, PNG hoặc WebP hợp lệ.")
+
+    connection.execute(
+        """
+        INSERT INTO user_avatars (user_id, mime_type, image_data, updated_at)
+        VALUES (%s, %s, %s, NOW())
+        ON CONFLICT (user_id) DO UPDATE
+        SET mime_type = EXCLUDED.mime_type,
+            image_data = EXCLUDED.image_data,
+            updated_at = NOW()
+        """,
+        (user["user_id"], file.content_type, content),
+    )
+    return {"message": "Đã cập nhật ảnh đại diện."}
 
 
 @app.get("/api/users")
@@ -2272,20 +2325,18 @@ def mark_all_notifications_read(connection: Connection, user: Annotated[dict, De
 
 
 def safe_fetch_weekly_sessions(connection: psycopg.Connection, teacher_id: str) -> int:
-    try:
-        row = fetch_one(
-            connection,
-            """
-            SELECT COUNT(*) AS count
-            FROM class_sessions cs JOIN classes c ON c.class_id = cs.class_id
-            WHERE c.teacher_user_id = %s AND cs.status <> 'cancelled'
-              AND cs.starts_at >= '2026-10-19 00:00:00+07' AND cs.starts_at <= '2026-10-25 23:59:59+07'
-            """,
-            (teacher_id,),
-        )
-        return int((row or {}).get("count", 12))
-    except (StopIteration, Exception):
-        return 12
+    row = fetch_one(
+        connection,
+        """
+        SELECT COUNT(*) AS count
+        FROM class_sessions cs JOIN classes c ON c.class_id = cs.class_id
+        WHERE c.teacher_user_id = %s AND cs.status <> 'cancelled'
+          AND cs.starts_at >= date_trunc('week', NOW())
+          AND cs.starts_at < date_trunc('week', NOW()) + INTERVAL '1 week'
+        """,
+        (teacher_id,),
+    )
+    return int(row["count"]) if row else 0
 
 
 @app.get("/api/dashboard")

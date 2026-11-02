@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
 </head>
-<body>
+<body data-dashboard-role="student">
 
   <div class="app-layout">
     <!-- SIDEBAR HỌC SINH -->
@@ -57,9 +57,9 @@
 
       <div class="sidebar-user-bottom">
         <div class="user-mini-profile">
-          <div class="avatar-badge" style="background:#F0FDF4; color:#15803D;">MA</div>
+          <div class="avatar-badge" id="studentSidebarAvatar" style="background:#F0FDF4; color:#15803D;">HS</div>
           <div class="user-mini-meta">
-            <h5>Trần Minh Anh</h5>
+            <h5 id="studentSidebarName">Học sinh</h5>
             <p>Học sinh</p>
           </div>
         </div>
@@ -78,10 +78,10 @@
           <span class="crumb-active">Tổng quan</span>
         </div>
         <div class="header-actions">
-          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <span id="studentCurrentDate" style="font-size: 13px; color: var(--color-text-secondary);">Đang cập nhật ngày</span>
           <div style="display:flex; align-items:center; gap:8px;">
-            <div class="avatar-badge" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">MA</div>
-            <span style="font-size:13px; font-weight:600;">Trần Minh Anh · Học sinh</span>
+            <div class="avatar-badge" id="studentHeaderAvatar" style="width:32px; height:32px; font-size:12px; background:#F0FDF4; color:#15803D;">HS</div>
+            <span id="studentHeaderName" style="font-size:13px; font-weight:600;">Học sinh</span>
           </div>
         </div>
       </header>
@@ -90,8 +90,8 @@
         <!-- Chào buổi sáng học sinh -->
         <div class="page-header-row" style="margin-bottom: 20px;">
           <div>
-            <h1 class="title-page" style="font-size:26px;">Chào buổi sáng, Minh Anh!</h1>
-            <p class="text-secondary" style="margin-top:4px;">Thứ Sáu, 23/10/2026 · Sẵn sàng cho một ngày học hiệu quả</p>
+            <h1 id="studentGreeting" class="title-page" style="font-size:26px;">Tổng quan học tập</h1>
+            <p id="studentGreetingDate" class="text-secondary" style="margin-top:4px;">Đang cập nhật ngày…</p>
           </div>
         </div>
 
@@ -101,7 +101,7 @@
             <div>
               <div class="stat-label">Lớp đang học</div>
               <div class="stat-value" id="studentClassCount">—</div>
-              <div class="stat-desc" id="studentClassCountHint">Lớp học trong năm học 2026-2027</div>
+              <div class="stat-desc" id="studentClassCountHint">Đang tải dữ liệu…</div>
             </div>
             <div class="stat-icon primary">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/></svg>
@@ -152,7 +152,7 @@
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Buổi học sắp tới</h3>
-                  <p class="text-caption">Toán 10 - Nền tảng · TO10A</p>
+                  <p class="text-caption" id="studentUpcomingSubtitle">Lịch học của bạn</p>
                 </div>
                 <a href="schedule.html" class="btn btn-link">Xem lịch tuần →</a>
               </div>
@@ -167,25 +167,12 @@
               <div class="card-header">
                 <div>
                   <h3 class="title-card">Điểm số gần đây</h3>
-                  <p class="text-caption">Đã được cô Hà Linh công bố</p>
+                  <p class="text-caption" id="studentRecentGradesSubtitle">Đang tải điểm số…</p>
                 </div>
                 <a href="grades.html" class="btn btn-link">Xem kết quả học tập →</a>
               </div>
-              <div style="display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:#FAFDFE; border-radius:8px; border:1px solid var(--color-border);">
-                  <div>
-                    <div style="font-size:13.5px; font-weight:600;">Kiểm tra chương I - Hàm số</div>
-                    <p class="text-caption">21/10/2026</p>
-                  </div>
-                  <div style="font-size:18px; font-weight:700; color:var(--color-primary);">8,5 / 10</div>
-                </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:#FAFDFE; border-radius:8px; border:1px solid var(--color-border);">
-                  <div>
-                    <div style="font-size:13.5px; font-weight:600;">Kiểm tra 15 phút - Tập hợp</div>
-                    <p class="text-caption">14/10/2026</p>
-                  </div>
-                  <div style="font-size:18px; font-weight:700; color:var(--color-primary);">7,5 / 10</div>
-                </div>
+              <div id="studentRecentGradesList" style="display:flex; flex-direction:column; gap:10px;">
+                <p class="text-caption">Đang tải điểm số…</p>
               </div>
             </div>
 
@@ -210,17 +197,8 @@
                 <h3 class="title-card">Bài tập cần hoàn thành</h3>
                 <a href="assignments.html" class="btn btn-link">Xem tất cả →</a>
               </div>
-              <div style="display:flex; flex-direction:column; gap:12px;">
-                <div style="padding:12px; border:1px solid #FECACA; background:#FEF2F2; border-radius:8px;">
-                  <div style="font-size:13px; font-weight:700; color:#B91C1C;">Đồ thị hàm số bậc hai</div>
-                  <div style="font-size:11.5px; color:#DC2626; margin:2px 0;">Hạn nộp: 26/10/2026 · 17:00</div>
-                  <span class="badge badge-danger">Chưa nộp</span>
-                </div>
-                <div style="padding:12px; border:1px solid var(--color-border); background:#F8FAFC; border-radius:8px;">
-                  <div style="font-size:13px; font-weight:700;">Giá trị lớn nhất, nhỏ nhất</div>
-                  <div style="font-size:11.5px; color:#64748B; margin:2px 0;">Hạn nộp: 28/10/2026 · 17:00</div>
-                  <span class="badge badge-warning">Chưa nộp</span>
-                </div>
+              <div id="studentPendingAssignmentsList" style="display:flex; flex-direction:column; gap:12px;">
+                <p class="text-caption">Đang tải bài tập…</p>
               </div>
             </div>
 
@@ -228,30 +206,13 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="title-card">Thông báo mới</h3>
-                <span class="badge badge-neutral">3 chưa đọc</span>
+                <span class="badge badge-neutral" id="dashboardUnreadNotificationCount">Đang tải…</span>
               </div>
-              <div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Đã công bố kết quả kiểm tra chương I</div>
-                  <div class="widget-notify-desc">Minh Anh đạt 8,5 / 10. Cô Hà Linh đã ra soát câu 3 và cập nhật.</div>
-                </div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Nhắc nộp bài: Đồ thị hàm số bậc hai</div>
-                  <div class="widget-notify-desc">Hoàn thành 5 bài tự luận và nộp trước 17:00 ngày 26/10.</div>
-                </div>
-                <div class="widget-notify-item">
-                  <div class="widget-notify-title">Đổi phòng buổi học ngày 26/10</div>
-                  <div class="widget-notify-desc">Lớp TO10A chuyển từ phòng 201 sang phòng 202.</div>
-                </div>
+              <div id="dashboardNotificationList" aria-live="polite">
+                <p class="text-caption">Đang tải thông báo…</p>
               </div>
             </div>
 
-            <!-- Slot Student Module -->
-            <div class="feature-slot" style="margin-top:0;">
-              <span class="slot-tag">SLOT: STUDENT DASHBOARD API</span>
-              <p class="slot-desc">Đã thiết lập khung hàm: fetchStudentSchedule(), fetchStudentGrades(), submitHomework().</p>
-              <span class="code-hint">window.StudentGradeProgressModule</span>
-            </div>
           </div>
 
         </div>
@@ -262,10 +223,21 @@
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/dashboard-attendance.js"></script>
   <script src="../../assets/js/dashboard-stats.js"></script>
+  <script src="../../assets/js/dashboard-widgets.js"></script>
   <script>
     const studentUser = AuthService.requireAuth('student');
 
     document.addEventListener('DOMContentLoaded', () => {
+      const fullName = studentUser?.fullName?.trim() || 'Học sinh';
+      const avatarText = studentUser?.avatarText || fullName.split(/\s+/).slice(-2).map(part => part[0]).join('').toLocaleUpperCase('vi-VN');
+      document.getElementById('studentSidebarName').textContent = fullName;
+      document.getElementById('studentHeaderName').textContent = `${fullName} · Học sinh`;
+      document.getElementById('studentSidebarAvatar').textContent = avatarText;
+      document.getElementById('studentHeaderAvatar').textContent = avatarText;
+      const date = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+      document.getElementById('studentCurrentDate').textContent = date;
+      document.getElementById('studentGreeting').textContent = `Chào mừng, ${fullName}!`;
+      document.getElementById('studentGreetingDate').textContent = `${date} · Sẵn sàng cho một ngày học hiệu quả`;
       if (window.DashboardAttendance) DashboardAttendance.init('student');
       loadStudentDashboard();
     });
@@ -288,7 +260,7 @@
                     ${isFirst ? 'Buổi sắp tới' : 'Buổi tiếp theo'} · ${dateStr} · ${startTime}–${endTime}
                   </div>
                   <h4 style="font-size:14.5px; font-weight:600; margin:3px 0;">${escapeHtml(s.topic || s.class_name)}</h4>
-                  <p class="text-caption">${escapeHtml(s.class_code)} · ${escapeHtml(s.room || 'Phòng 201')} · ${escapeHtml(s.teacher_name || 'Giáo viên')}</p>
+                  <p class="text-caption">${escapeHtml(s.class_code)} · ${escapeHtml(s.room || 'Chưa xếp phòng')} · ${escapeHtml(s.teacher_name || 'Giáo viên')}</p>
                 </div>
                 <div style="text-align:right;">
                   <span class="badge ${isFirst ? 'badge-info' : 'badge-neutral'}" style="margin-bottom:6px;">${isFirst ? 'Sắp diễn ra' : 'Sắp tới'}</span><br>
@@ -302,6 +274,11 @@
         }
       } catch (err) {
         console.error('Không thể nạp dữ liệu bảng điều khiển học sinh:', err);
+        const listEl = document.getElementById('studentUpcomingList');
+        if (listEl) {
+          listEl.textContent = `Không tải được lịch học: ${err.message}`;
+          listEl.setAttribute('role', 'alert');
+        }
       }
     }
 

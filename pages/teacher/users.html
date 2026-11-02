@@ -267,6 +267,37 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="modalEditAccount">
+    <div class="modal-container" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Chỉnh sửa tài khoản</h3>
+        <button type="button" class="modal-close" onclick="closeModal('modalEditAccount')">&times;</button>
+      </div>
+      <form id="editAccountForm">
+        <div class="modal-body">
+          <input type="hidden" id="editUserId">
+          <div id="editAccountMessage" class="alert user-management-message" role="alert" hidden></div>
+          <div class="form-group">
+            <label class="form-label" for="editFullName">Họ và tên</label>
+            <input class="form-control" id="editFullName" maxlength="150" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editEmail">Email</label>
+            <input class="form-control" id="editEmail" type="email" maxlength="254">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editPhone">Số điện thoại</label>
+            <input class="form-control" id="editPhone" maxlength="30">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditAccount')">Hủy bỏ</button>
+          <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Liên kết phụ huynh đã có với học sinh -->
   <div class="modal-overlay" id="modalLinkParent">
     <div class="modal-container" style="max-width: 520px;">
