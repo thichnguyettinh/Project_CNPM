@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kết quả học tập của con - Lớp Mình</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/base.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/dashboard.css">
+  <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/uc11.css">
+  <link rel="stylesheet" href="../../assets/css/parent-grades.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-text"><h2>Lớp Mình</h2><span>CỔNG PHỤ HUYNH</span></div>
+      </div>
+      <div class="sidebar-sub-brand">Đồng hành cùng học tập của con</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-item-link"><span>Tổng quan</span></a>
+        <a href="schedule.html" class="nav-item-link"><span>Lịch học</span></a>
+        <a href="attendance.html" class="nav-item-link"><span>Điểm danh</span></a>
+        <a href="grades.html" class="nav-item-link active" aria-current="page"><span>Kết quả học tập</span></a>
+        <a href="tuition.html" class="nav-item-link"><span>Học phí</span></a>
+        <a href="notifications.html" class="nav-item-link">
+          <span>Thông báo</span>
+          <span class="sidebar-nav-badge" data-unread-badge hidden></span>
+        </a>
+        <a href="profile.html" class="nav-item-link"><span>Hồ sơ phụ huynh</span></a>
+        <a href="profile.html#password" class="nav-item-link"><span>Cài đặt mật khẩu</span></a>
+        <a href="help.html" class="nav-item-link"><span>Trung tâm hướng dẫn</span></a>
+      </nav>
+      <div class="sidebar-user-bottom">
+        <div class="user-mini-profile">
+          <div class="avatar-badge parent-grades-avatar" id="parentGradesAvatar">PH</div>
+          <div class="user-mini-meta"><h5 id="parentGradesSidebarName">Phụ huynh</h5><p>Phụ huynh</p></div>
+        </div>
+        <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-breadcrumbs"><span>Cổng phụ huynh</span><span class="crumb-sep">/</span><span class="crumb-active">Kết quả học tập</span></div>
+        <div class="header-actions">
+          <span class="parent-grades-date" id="parentGradesDate"></span>
+          <div class="parent-grades-header-user">
+            <div class="avatar-badge parent-grades-avatar" id="parentGradesHeaderAvatar">PH</div>
+            <span id="parentGradesHeaderName">Phụ huynh · Cổng phụ huynh</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="app-content">
+        <div class="page-header-row parent-grades-heading">
+          <div>
+            <h1 class="title-page">Kết quả học tập</h1>
+            <p class="text-secondary" id="parentGradesIdentity">Theo dõi điểm số và nhận xét của học sinh đã liên kết.</p>
+          </div>
+          <button class="btn btn-secondary" type="button" id="parentGradesRefresh">Tải lại kết quả</button>
+        </div>
+
+        <div class="card parent-grades-filters">
+          <label class="parent-grades-filter">
+            <span>Học sinh</span>
+            <select class="form-control" id="parentGradesChild" aria-label="Chọn học sinh liên kết">
+              <option value="">Đang tải học sinh…</option>
+            </select>
+          </label>
+          <label class="parent-grades-filter">
+            <span>Tháng</span>
+            <select class="form-control" id="parentGradesMonth" aria-label="Lọc theo tháng">
+              <option value="">Tất cả tháng</option>
+            </select>
+          </label>
+          <label class="parent-grades-filter">
+            <span>Lớp học</span>
+            <select class="form-control" id="parentGradesClass" aria-label="Lọc theo lớp">
+              <option value="">Tất cả các lớp</option>
+            </select>
+          </label>
+          <label class="parent-grades-filter">
+            <span>Loại đánh giá</span>
+            <select class="form-control" id="parentGradesType" aria-label="Lọc theo loại đánh giá">
+              <option value="">Tất cả bài đánh giá</option>
+            </select>
+          </label>
+        </div>
+        <div id="parentGradesNotice" class="uc11-notice" role="status" aria-live="polite"></div>
+        <div class="uc11-stats parent-grades-stats" id="parentGradesStats"></div>
+
+        <section class="card uc11-panel">
+          <h2 class="title-card">Tiến độ học tập</h2>
+          <div id="parentGradesChart" class="uc11-chart parent-grades-chart"></div>
+          <p class="text-caption">Biểu đồ chỉ gồm các bài đánh giá đã có điểm trong bộ lọc hiện tại; điểm trung bình là trung bình cộng.</p>
+          <h3 class="uc11-subtitle">Nhận xét gần nhất từ giáo viên</h3>
+          <div id="parentGradesComment" class="uc11-comment parent-grades-comment">Đang tải nhận xét…</div>
+        </section>
+
+        <section class="card uc11-panel">
+          <h2 class="title-card">Danh sách kết quả học tập</h2>
+          <div class="table-container">
+            <table class="table-custom uc11-table parent-grades-table">
+              <thead>
+                <tr><th>Bài đánh giá</th><th>Lớp</th><th>Ngày</th><th>Loại</th><th>Điểm</th><th>Nhận xét / giáo viên</th></tr>
+              </thead>
+              <tbody id="parentGradesResults">
+                <tr><td colspan="6">Đang tải kết quả…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/uc11-core.js"></script>
+  <script src="../../assets/js/modules/parent/grade-progress.js"></script>
+</body>
+</html>

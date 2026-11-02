@@ -9,12 +9,14 @@ from pydantic import ValidationError
 
 from backend.app.main import (
     app,
+    can_view_student,
     dashboard,
     get_linked_children,
     link_parent_to_student,
     login,
     reset_user_password,
     student_me,
+    student_progress,
     unread_notification_count,
     update_profile,
 )
@@ -141,6 +143,40 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_parent_progress_uses_linked_student_guard_and_deduplicates_enrollments(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user", "role": "parent"}
+        progress = [{
+            "assignment_id": "assignment-1",
+            "title": "Bài kiểm tra",
+            "score": 8.5,
+            "graded_by_name": "Giáo viên",
+        }]
+
+        with (
+            patch("backend.app.main.can_view_student") as guard,
+            patch("backend.app.main.fetch_all", return_value=progress) as fetch,
+        ):
+            result = student_progress("HS001", connection, parent)
+
+        self.assertEqual(result, progress)
+        guard.assert_called_once_with(connection, parent, "HS001")
+        query = fetch.call_args.args[1]
+        self.assertIn("SELECT DISTINCT student_id, class_id", query)
+        self.assertIn("grader.full_name AS graded_by_name", query)
+        self.assertIn("LEFT JOIN users grader ON grader.user_id = r.graded_by", query)
+
+    def test_parent_cannot_view_unlinked_student_progress(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user", "role": "parent"}
+        student = {"student_id": 17, "student_code": "HS017", "user_id": "student-user"}
+
+        with patch("backend.app.main.fetch_one", side_effect=[student, None]):
+            with self.assertRaises(HTTPException) as raised:
+                can_view_student(connection, parent, "HS017")
+
+        self.assertEqual(raised.exception.status_code, 403)
+
     def test_parent_profile_lists_only_children_linked_to_authenticated_parent(self):
         connection = unittest.mock.Mock()
         parent = {"user_id": "parent-user"}

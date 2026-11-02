@@ -1,0 +1,18 @@
+.parent-grades-heading{align-items:flex-start;}
+.parent-grades-filters{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:16px;padding:18px;margin:18px 0 10px;}
+.parent-grades-filter{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:600;color:#475569;}
+.parent-grades-filter select{width:100%;min-width:0;}
+.parent-grades-stats{grid-template-columns:repeat(3,minmax(0,1fr));}
+.parent-grades-chart{min-height:180px;}
+.parent-grades-comment{border-left:3px solid #2563eb;padding:10px 14px;background:#f8fafc;border-radius:0 8px 8px 0;}
+.parent-grades-date{font-size:13px;color:var(--color-text-secondary);}
+.parent-grades-header-user{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;}
+.parent-grades-avatar{width:32px;height:32px;font-size:12px;background:#fffbeb;color:#a16207;}
+.parent-grades-table{min-width:760px;}
+.parent-grades-table td:nth-child(5){white-space:nowrap;font-weight:700;}
+.parent-grades-no-data{color:#64748b;text-align:center;padding:24px !important;}
+@media(max-width:850px){.parent-grades-filters{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:560px){
+  .parent-grades-filters,.parent-grades-stats{grid-template-columns:1fr;}
+  .parent-grades-date{display:none;}
+}

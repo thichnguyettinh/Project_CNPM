@@ -2279,12 +2279,17 @@ def student_progress(
         """
         SELECT a.assignment_id, a.title, a.assignment_type, a.assigned_at,
                c.class_code, c.name AS class_name, r.score, r.teacher_comment, r.graded_at,
+               grader.full_name AS graded_by_name,
                ROUND(AVG(r.score) OVER (PARTITION BY a.class_id)::numeric, 2) AS class_average
         FROM students s
-        JOIN class_enrollments ce ON ce.student_id = s.student_id
+        JOIN (
+            SELECT DISTINCT student_id, class_id
+            FROM class_enrollments
+        ) ce ON ce.student_id = s.student_id
         JOIN classes c ON c.class_id = ce.class_id
         JOIN assignments a ON a.class_id = c.class_id AND a.status <> 'draft'
         LEFT JOIN assignment_results r ON r.assignment_id = a.assignment_id AND r.student_id = s.student_id
+        LEFT JOIN users grader ON grader.user_id = r.graded_by
         WHERE s.student_code = %s
         ORDER BY a.assigned_at DESC
         """,
