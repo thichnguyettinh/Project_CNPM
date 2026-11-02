@@ -160,7 +160,7 @@ Dự án (project_cnpm/)
 
 | STT | Họ và tên | MSSV | Lớp | Vai trò | Phân công chính | Tiến độ theo mã nguồn |
 | :---: | :--- | :---: | :---: | :---: | :--- | :--- |
-| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), UC-10 (Đồng bộ thời khóa biểu), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất và giao diện thông báo ba vai trò** | **Hoàn thành nội dung được phân công.** |
+| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), UC-10 (Đồng bộ thời khóa biểu), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất, giao diện thông báo ba vai trò, trang lỗi/bảo trì và điều khoản sử dụng/quyền riêng tư** | **Hoàn thành nội dung được phân công.** |
 | **2** | **Phạm Nguyễn Hoàng Kim** | **50.01.103.035** | 50.01.SPTIN.A | Thành viên | **Quản lý lớp (UC-03) & thời khóa biểu (UC-04)** | **Hoàn thành nội dung được phân công.** |
 | **3** | **Nguyễn Châu Thanh Thảo** | **50.01.103.069** | 50.01.SPTIN.B | Thành viên | **Danh sách học sinh (UC-05) & điểm danh (UC-06)** | **Hoàn thành nội dung được phân công.** |
 | **4** | **Nguyễn Duy Khánh Lân** | **50.01.103.036** | 50.01.SPTIN.B | Thành viên | **Đánh giá, bài tập (UC-07), sổ điểm và tiến bộ (UC-08, UC-11)** | **Hoàn thành nội dung được phân công.** |
@@ -181,6 +181,8 @@ Dự án (project_cnpm/)
   * **Hồ sơ và đổi mật khẩu:** các trang hồ sơ cho giáo viên, học sinh, phụ huynh; checklist và thanh đo độ mạnh mật khẩu.
   * **Trung tâm hướng dẫn và điều hướng:** trang hướng dẫn theo từng vai trò; liên kết trong sidebar; biểu tượng đăng xuất học sinh/phụ huynh đồng bộ.
   * **Thông báo:** trang của cả ba vai trò gọi API `/api/notifications`, lọc trạng thái/danh mục và lưu trạng thái đã đọc qua API. Mục thông báo trong sidebar điều hướng tới trang tương ứng.
+  * **Trang lỗi và bảo trì:** hoàn thành các trang thông báo lỗi 404, lỗi máy chủ 500 và bảo trì; có hướng dẫn phù hợp cho người dùng và nút thử lại ở trang 500/bảo trì.
+  * **Điều khoản sử dụng và bảo mật thông tin:** hoàn thành trang điều khoản sử dụng, chính sách quyền riêng tư; mô tả tài khoản, dữ liệu được xử lý, bảo vệ thông tin và cách người dùng gửi yêu cầu.
   * **Đồng bộ thời khóa biểu phụ huynh (UC-10):** danh sách học sinh liên kết và lịch buổi học được tải từ API; API giới hạn lịch theo học sinh đã liên kết với tài khoản phụ huynh.
   * **Tài liệu và kiểm thử bảo mật:** README hướng dẫn chạy hệ thống; có kiểm thử backend cho hashing/salt, khóa đăng nhập và kiểm tra một số hợp đồng API.
 * **Kiểm thử bổ sung:**
@@ -192,6 +194,8 @@ Dự án (project_cnpm/)
   * `pages/student/profile.html`, `pages/parent/profile.html`: hồ sơ và đổi mật khẩu cho học sinh/phụ huynh.
   * `pages/teacher/help.html`, `pages/student/help.html`, `pages/parent/help.html`: trung tâm hướng dẫn theo vai trò.
   * `pages/teacher/notifications.html`, `pages/student/notifications.html`, `pages/parent/notifications.html`: giao diện thông báo mẫu theo vai trò.
+  * `404.html`, `500.html`, `maintenance.html`: trang thông báo khi không tìm thấy trang, lỗi máy chủ và bảo trì.
+  * `pages/terms.html`: điều khoản sử dụng và chính sách quyền riêng tư/bảo mật thông tin.
 * **Code/API phụ trách:** `assets/js/auth.js`, `assets/js/modules/teacher/user-management.js`, `assets/js/modules/parent/schedule-page.js`, `assets/js/modules/parent/schedule-view.js`, `assets/js/notifications.js`, `backend/app/`, `database/schema.sql`, `database/seed_test_accounts.sql`.
 
 #### 2. Phạm Nguyễn Hoàng Kim
