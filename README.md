@@ -21,6 +21,7 @@ Tên thư mục và tệp bên dưới giữ nguyên như trong mã nguồn:
 ```text
 Dự án (project_cnpm/)
 ├── Trang đăng nhập (index.html)
+├── Trang thông báo lỗi (404.html, 500.html, maintenance.html)
 ├── Tài liệu dự án (README.md)
 ├── Ảnh minh họa giao diện (images/)
 │   ├── Mẫu thông báo giáo viên (thong_bao_giao_vien.jpg)
@@ -35,6 +36,7 @@ Dự án (project_cnpm/)
 │   │   ├── Kiểu theo bản mẫu (pdf-mockup-styles.css)
 │   │   ├── Trang đăng nhập (login.css)
 │   │   ├── Trung tâm hướng dẫn (help-center.css)
+│   │   ├── Trang trạng thái lỗi và bảo trì (error-pages.css)
 │   │   └── Trang thông báo (notifications.css)
 │   └── Mã giao diện (js/)
 │       ├── Xác thực và gọi API (auth.js)
@@ -106,6 +108,7 @@ Dự án (project_cnpm/)
 - **Đổi mật khẩu:** Giáo viên, phụ huynh và học sinh có trang/tab đổi mật khẩu riêng trong hồ sơ (`profile.html#password`). Biểu mẫu hiển thị checklist cập nhật theo lúc gõ và thanh đo độ mạnh (Yếu/Trung bình/Mạnh); cần nhập mật khẩu hiện tại, mật khẩu mới đạt chính sách và xác nhận mật khẩu. Các phiên đăng nhập bị thu hồi sau khi đổi.
 - **Trung tâm hướng dẫn:** Mỗi vai trò có trang trợ giúp riêng tại `pages/teacher/help.html`, `pages/student/help.html` và `pages/parent/help.html`; liên kết được đặt trong thanh điều hướng của các trang cùng vai trò.
 - **Thông báo:** Các trang của giáo viên, học sinh và phụ huynh nạp danh sách từ `/api/notifications`; bộ lọc và trạng thái đã đọc đồng bộ với backend. Badge trên thanh điều hướng và chấm chuông hiển thị theo số chưa đọc từ `/api/notifications/unread-count`.
+- **Trang trạng thái:** `404.html`, `500.html` và `maintenance.html` hướng dẫn người dùng khi không tìm thấy trang, gặp lỗi máy chủ hoặc hệ thống bảo trì. Các trang dùng CSS dùng chung và không phụ thuộc API. Khi triển khai, cần cấu hình máy chủ/hosting để ánh xạ lỗi HTTP 404, 500 hoặc chế độ bảo trì đến trang tương ứng; `python -m http.server` chỉ phục vụ tệp trực tiếp và không tự ánh xạ trang lỗi tùy chỉnh.
 - **Đăng xuất:** Nút đăng xuất ở cuối thanh bên trên các trang giáo viên, học sinh và phụ huynh gọi API thu hồi phiên rồi quay về trang đăng nhập; biểu tượng đã được đồng bộ giữa các vai trò.
 - **Số liệu tổng hợp:** Sĩ số, điểm trung bình, chuyên cần và công nợ được tính từ dữ liệu gốc, không lưu trùng.
 - **Dashboard giáo viên:** số lớp, sĩ số, buổi học trong tuần, điểm danh gần đây và thông báo được nạp từ API; khi API lỗi, giao diện báo lỗi thay vì hiển thị số mẫu.

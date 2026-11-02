@@ -183,7 +183,7 @@ class ApiContractTests(unittest.TestCase):
         self.assertIn('href="pages/terms.html"', login_page)
         self.assertIn("Điều khoản sử dụng và Chính sách quyền riêng tư", terms_page)
         self.assertIn("Lưu trữ và bảo vệ thông tin", terms_page)
-        self.assertIn("Quyền và yêu cầu liên quan đến thông tin", terms_page)
+        self.assertIn("Yêu cầu của người dùng", terms_page)
         self.assertNotIn("phiên bản đồ án", terms_page)
 
         for role in ("teacher", "student", "parent"):
