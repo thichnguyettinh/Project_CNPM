@@ -1020,8 +1020,22 @@ def student_me(connection: Connection, user: Annotated[dict, Depends(require_rol
     return fetch_one(
         connection,
         """
-        SELECT s.student_id, s.student_code, u.full_name, u.email, u.phone
+        SELECT s.student_id, s.student_code, s.status AS student_status, s.created_at,
+               u.full_name, u.email, u.phone, p.date_of_birth, p.address,
+               guardian.full_name AS guardian_name,
+               guardian.phone AS guardian_phone,
+               guardian.email AS guardian_email,
+               guardian.relationship AS guardian_relationship
         FROM students s JOIN users u ON u.user_id = s.user_id
+        LEFT JOIN user_profiles p ON p.user_id = u.user_id
+        LEFT JOIN LATERAL (
+          SELECT parent.full_name, parent.phone, parent.email, sp.relationship
+          FROM student_parents sp
+          JOIN parents parent ON parent.parent_id = sp.parent_id
+          WHERE sp.student_id = s.student_id
+          ORDER BY sp.is_primary DESC, sp.linked_at
+          LIMIT 1
+        ) guardian ON TRUE
         WHERE s.student_id = %s
         """,
         (student["student_id"],),

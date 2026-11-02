@@ -59,14 +59,136 @@ const ProfileModule = {
     }
   },
 
+  formatDate(value) {
+    if (!value) return 'Chưa cập nhật';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'Chưa cập nhật';
+    return new Intl.DateTimeFormat('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(date);
+  },
+
+  renderStudentDetails(student) {
+    const values = {
+      studentCode: student.student_code || 'Chưa cập nhật',
+      studentJoinedAt: `Thành viên từ ${this.formatDate(student.created_at)}`,
+      studentStatus: student.student_status === 'active'
+        ? 'Đang học'
+        : student.student_status === 'graduated'
+          ? 'Đã tốt nghiệp'
+          : student.student_status === 'inactive'
+            ? 'Ngừng học'
+            : 'Chưa cập nhật',
+      studentSchoolClass: 'Chưa cập nhật trong hồ sơ hệ thống',
+      studentSchoolName: 'Chưa cập nhật trong hồ sơ hệ thống',
+      studentGuardianName: student.guardian_name || 'Chưa có phụ huynh liên kết',
+      studentGuardianRelationship: student.guardian_relationship || 'Chưa cập nhật',
+      studentGuardianPhone: student.guardian_phone || 'Chưa cập nhật',
+      studentGuardianEmail: student.guardian_email || 'Chưa cập nhật',
+    };
+    Object.entries(values).forEach(([id, value]) => {
+      const element = document.getElementById(id);
+      if (!element) return;
+      if (element instanceof HTMLInputElement) element.value = value;
+      else element.textContent = value;
+    });
+    const status = document.getElementById('studentStatus');
+    if (status) status.classList.toggle('badge-success', student.student_status === 'active');
+  },
+
+  renderStudentClasses(classes) {
+    const list = document.getElementById('studentProfileClasses');
+    if (!list) return;
+    list.replaceChildren();
+    const activeClasses = classes.filter(item => item.status !== 'archived');
+    if (!activeClasses.length) {
+      const empty = document.createElement('p');
+      empty.className = 'text-caption';
+      empty.textContent = 'Chưa có lớp học được ghi danh.';
+      list.append(empty);
+      return;
+    }
+
+    activeClasses.forEach(item => {
+      const card = document.createElement('article');
+      card.className = 'student-profile-class-item';
+      const title = document.createElement('p');
+      title.className = 'student-profile-class-name';
+      title.textContent = `${item.name || 'Lớp học'}${item.code ? ` (${item.code})` : ''}`;
+      const details = document.createElement('p');
+      details.className = 'text-caption';
+      details.textContent = [
+        item.teacher_name ? `Giáo viên: ${item.teacher_name}` : '',
+        item.schedule_summary || '',
+        item.room ? `Phòng: ${item.room}` : ''
+      ].filter(Boolean).join(' · ') || 'Chưa có thông tin lịch học.';
+      card.append(title, details);
+      list.append(card);
+    });
+  },
+
+  async loadStudentDetails() {
+    const [studentResult, classesResult] = await Promise.allSettled([
+      AuthService.api('/students/me'),
+      AuthService.api('/classes')
+    ]);
+    if (studentResult.status === 'fulfilled') {
+      this.renderStudentDetails(studentResult.value);
+    } else {
+      const notice = document.getElementById('studentProfileDetailsStatus');
+      if (notice) notice.textContent = `Không tải được thông tin học sinh: ${studentResult.reason.message}`;
+      [
+        'studentCode',
+        'studentJoinedAt',
+        'studentStatus',
+        'studentGuardianName',
+        'studentGuardianRelationship',
+        'studentGuardianPhone',
+        'studentGuardianEmail'
+      ].forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = 'Không tải được dữ liệu';
+      });
+    }
+    if (classesResult.status === 'fulfilled') {
+      this.renderStudentClasses(classesResult.value);
+    } else {
+      const list = document.getElementById('studentProfileClasses');
+      if (list) {
+        list.replaceChildren();
+        const error = document.createElement('p');
+        error.className = 'text-caption';
+        error.textContent = `Không tải được danh sách lớp: ${classesResult.reason.message}`;
+        list.append(error);
+      }
+    }
+  },
+
   async load() {
     this.setStatus('');
     try {
       const profile = await AuthService.api('/profile');
       this.render(profile);
+      const today = document.getElementById('profileTodayLabel');
+      if (today) {
+        today.textContent = new Intl.DateTimeFormat('vi-VN', {
+          weekday: 'long',
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).format(new Date());
+      }
+      if (document.body.dataset.profileRole === 'student') {
+        await this.loadStudentDetails();
+      }
       return profile;
     } catch (error) {
       this.setStatus(`Không tải được hồ sơ: ${error.message}`, true);
+      document.querySelectorAll('[data-profile-name]').forEach(node => {
+        node.textContent = 'Không tải được hồ sơ';
+      });
       const updatedAt = document.getElementById('profileUpdatedAt');
       if (updatedAt) {
         const content = updatedAt.querySelector('[data-profile-updated-text]');
@@ -94,7 +216,6 @@ const ProfileModule = {
       return true;
     } catch (error) {
       console.error('Không thể tải ảnh đại diện:', error);
-      this.setStatus(`Không tải được ảnh đại diện: ${error.message}`, true);
       return false;
     }
   },

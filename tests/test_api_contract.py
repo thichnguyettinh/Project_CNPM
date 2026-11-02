@@ -13,6 +13,7 @@ from backend.app.main import (
     link_parent_to_student,
     login,
     reset_user_password,
+    student_me,
     unread_notification_count,
     update_profile,
 )
@@ -139,6 +140,30 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_student_me_returns_profile_and_primary_guardian_details(self):
+        connection = unittest.mock.Mock()
+        student = {
+            "student_id": 17,
+            "student_code": "HS017",
+            "student_status": "active",
+            "guardian_name": "Parent Name",
+            "guardian_relationship": "Mẹ",
+            "guardian_phone": "0900000000",
+        }
+
+        with (
+            patch("backend.app.main.require_student_id", return_value={"student_id": 17}),
+            patch("backend.app.main.fetch_one", return_value=student) as fetch,
+        ):
+            result = student_me(connection, {"user_id": "student-user"})
+
+        self.assertEqual(result, student)
+        query = fetch.call_args.args[1]
+        self.assertIn("LEFT JOIN user_profiles", query)
+        self.assertIn("LEFT JOIN LATERAL", query)
+        self.assertIn("ORDER BY sp.is_primary DESC, sp.linked_at", query)
+        self.assertEqual(fetch.call_args.args[2], (17,))
+
     def test_profile_update_persists_user_and_profile_fields_and_returns_updated_at(self):
         connection = unittest.mock.Mock()
         user = {"user_id": "user-1"}
@@ -201,6 +226,17 @@ class ApiContractTests(unittest.TestCase):
         profile_script = (root / "assets/js/profile.js").read_text(encoding="utf-8")
         self.assertIn("AuthService.api('/profile')", profile_script)
         self.assertIn("method: 'PATCH'", profile_script)
+        self.assertIn("AuthService.api('/students/me')", profile_script)
+        self.assertIn("AuthService.api('/classes')", profile_script)
+        student_profile = (root / "pages/student/profile.html").read_text(encoding="utf-8")
+        for sample_value in ("Trần Minh Anh", "Trần Thị Hương", "HS001", "10A1", "090 123 4500"):
+            self.assertNotIn(sample_value, student_profile)
+        self.assertNotIn("🔑 Đổi mật khẩu", student_profile)
+        self.assertIn("Không tải được dữ liệu", profile_script)
+        self.assertNotIn(
+            "Không tải được ảnh đại diện: ${error.message}",
+            profile_script,
+        )
 
     def test_password_fields_have_shared_accessible_visibility_toggle(self):
         root = Path(__file__).resolve().parents[1]
