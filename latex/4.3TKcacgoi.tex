@@ -175,13 +175,15 @@
 
 
 
-\begin{table}[!htbp]
+\clearpage
+\begin{landscape}
+\begin{table}[p]
   \centering
   \caption{Bảng ánh xạ đầy đủ 12 Use Case với các thành phần kiến trúc trong 5 tầng.}
   \label{tab:uc_mapping}
-  \fontsize{6.8pt}{8.2pt}\selectfont
-  \renewcommand{\arraystretch}{1.18}
-  \begin{tabularx}{\textwidth}{@{}l p{2.7cm} p{3.7cm} p{4.3cm} p{4.2cm} X@{}}
+  \fontsize{7.8pt}{9.6pt}\selectfont
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}p{4.8cm} >{\raggedright\arraybackslash}X@{}}
     \toprule
     \textbf{Mã UC} & \textbf{Tên Use Case} & \textbf{Boundary (View)} & \textbf{Control (Controller)} & \textbf{Entity (Domain Model)} & \textbf{Repository (Persistence)} \\
     \midrule
@@ -201,6 +203,7 @@
   \end{tabularx}
 \end{table}
 \clearpage
+\end{landscape}
 %
 %===========================================================================
 

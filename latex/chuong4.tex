@@ -687,6 +687,1172 @@ Các ràng buộc không chỉ kiểm tra kiểu dữ liệu mà còn bảo đ�
 Cơ sở dữ liệu được thiết kế thuần quan hệ; không bắt buộc có collection MongoDB như báo cáo mẫu. Những dữ liệu linh hoạt như bản ghi trước/sau thay đổi có thể lưu bằng \texttt{JSONB} trong PostgreSQL. Sơ đồ quan hệ và đặc tả bảng là nền tảng cho mục 4.3 (thiết kế gói), mục 4.4--4.5 (thiết kế lớp), xây dựng và kiểm thử chương trình.
 
 \section{Thiết kế chi tiết các gói}
+
+% ĐỊNH NGHĨA BẢNG MÀU HỌC THUẬT PASTEL NHẠT & VIỀN ĐẬM CHUẨN UML 2.x
+% ===========================================================================
+\definecolor{pres_fill}{HTML}{EEF4FA}
+\definecolor{pres_tab}{HTML}{D6E6F4}
+\definecolor{app_fill}{HTML}{F3EFFA}
+\definecolor{app_tab}{HTML}{E2D8F3}
+\definecolor{dom_fill}{HTML}{EEF7F2}
+\definecolor{dom_tab}{HTML}{D4EBDD}
+\definecolor{pers_fill}{HTML}{FDF5EC}
+\definecolor{pers_tab}{HTML}{F7E2C8}
+\definecolor{infr_fill}{HTML}{F2F4F7}
+\definecolor{infr_tab}{HTML}{DCE1E8}
+\definecolor{sub_fill}{HTML}{FFFFFF}
+\definecolor{sub_tab}{HTML}{E8EEF5}
+\definecolor{cls_fill}{HTML}{FFFFFF}
+\definecolor{ifc_fill}{HTML}{F9FBFD}
+\definecolor{umlBorder}{HTML}{2C3E50}
+\definecolor{umlText}{HTML}{111827}
+\definecolor{umlDepColor}{HTML}{1F2937}
+
+\ifdefined\pdfextension
+  \newcommand{\RawPDF}[1]{\pdfextension literal{#1}}
+\else
+  \ifdefined\pdfliteral
+    \newcommand{\RawPDF}[1]{\pdfliteral{#1}}
+  \else
+    \newcommand{\RawPDF}[1]{\special{pdf:literal #1}}
+  \fi
+\fi
+
+\newif\ifusetikz
+\usetikztrue
+\tikzset{
+  umlDep/.style={
+    draw=umlDepColor,
+    line width=0.8pt,
+    dashed,
+    dash pattern=on 4.5pt off 3pt,
+    -{Straight Barb[open, length=6.5pt, width=5.5pt]}
+  }
+}
+% ===========================================================================
+% 0. Khung nền trắng của sơ đồ (#1=width_cm, #2=height_cm)
+\newcommand{\UMLCanvasBg}[2]{%
+  \ifusetikz
+    \fill[white] (0,0) rectangle (#1,#2);%
+  \else
+    \put(0,0){\textcolor{white}{\rule{#1cm}{#2cm}}}%
+  \fi
+}
+
+% 1. Macro vẽ UML 2.x Package có phần tab ở góc trên bên trái
+% #1=x, #2=y, #3=w, #4=h, #5=tab_w, #6=tab_h, #7=body_fill, #8=tab_fill, #9=y_plus_h
+\newcommand{\UMLPackage}[9]{%
+  \ifusetikz
+    \filldraw[fill=#8, draw=umlBorder, line width=0.75pt] (#1, #9) rectangle ({#1+#5}, {#9+#6});%
+    \filldraw[fill=#7, draw=umlBorder, line width=0.85pt] (#1, #2) rectangle ({#1+#3}, #9);%
+  \else
+    \setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.75pt}%
+    \put(#1,#9){\textcolor{#8}{\rule{#5cm}{#6cm}}}%
+    \put(#1,#9){\textcolor{umlBorder}{\framebox(#5,#6){}}}%
+    \setlength{\fboxrule}{0.85pt}%
+    \put(#1,#2){\textcolor{#7}{\rule{#3cm}{#4cm}}}%
+    \put(#1,#2){\textcolor{umlBorder}{\framebox(#3,#4){}}}%
+  \fi
+}
+
+% 2. Macro vẽ hộp Class / Interface bên trong Package (#1=x, #2=y, #3=w, #4=h, #5=fill_color)
+\newcommand{\UMLClassBox}[5]{%
+  \ifusetikz
+    \filldraw[fill=#5, draw=umlBorder, line width=0.65pt] (#1, #2) rectangle ({#1+#3}, {#2+#4});%
+  \else
+    \setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.65pt}%
+    \put(#1,#2){\textcolor{#5}{\rule{#3cm}{#4cm}}}%
+    \put(#1,#2){\textcolor{umlBorder}{\framebox(#3,#4){}}}%
+  \fi
+}
+
+% 3. Macro vẽ đường kẻ ngang phân cách bên trong Package / Class (#1=x, #2=y, #3=len_cm, #4=len_bp)
+\newcommand{\UMLHLine}[4]{%
+  \ifusetikz
+    \draw[draw=umlBorder!75, line width=0.5pt] (#1, #2) -- ({#1+#3}, #2);%
+  \else
+    \put(#1,#2){\RawPDF{q 0.5 w [] 0 d 0.35 0.42 0.50 RG 0 0 m #4 0 l S Q}}%
+  \fi
+}
+
+% 4. Các Macro đặt nhãn văn bản căn trái (W), căn phải (E), căn giữa (C)
+\newcommand{\UMLTextW}[3]{%
+  \ifusetikz
+    \node[text=umlText, anchor=west, inner sep=0pt] at (#1, #2) {#3};%
+  \else
+    \put(#1,#2){\makebox(0,0)[l]{\textcolor{umlText}{#3}}}%
+  \fi
+}
+\newcommand{\UMLTextE}[3]{%
+  \ifusetikz
+    \node[text=umlText, anchor=east, inner sep=0pt] at (#1, #2) {#3};%
+  \else
+    \put(#1,#2){\makebox(0,0)[r]{\textcolor{umlText}{#3}}}%
+  \fi
+}
+\newcommand{\UMLTextC}[3]{%
+  \ifusetikz
+    \node[text=umlText, anchor=center, inner sep=0pt] at (#1, #2) {#3};%
+  \else
+    \put(#1,#2){\makebox(0,0)[c]{\textcolor{umlText}{#3}}}%
+  \fi
+}
+
+% 5. Macro đặt nhãn Stereotype trên đường nối Dependency (có nền trắng che nét đứt bên dưới)
+\newcommand{\UMLDepLabel}[3]{%
+  \ifusetikz
+    \node[font=\fontsize{6.2pt}{7.2pt}\selectfont\itshape, text=umlText, fill=white, inner sep=1.2pt] at (#1, #2) {#3};%
+  \else
+    \put(#1,#2){\makebox(0,0)[c]{\setlength{\fboxsep}{1.2pt}\colorbox{white}{\textcolor{umlText}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape #3}}}}%
+  \fi
+}
+
+% 6. Macro vẽ đoạn thẳng nét đứt Dependency (#1=x1, #2=y1, #3=x2, #4=y2, #5=dx_bp, #6=dy_bp)
+\newcommand{\UMLDashSeg}[6]{%
+  \ifusetikz
+    \draw[draw=umlDepColor, line width=0.8pt, dashed, dash pattern=on 4.5pt off 3pt] (#1, #2) -- (#3, #4);%
+  \else
+    \put(#1,#2){\RawPDF{q 0.8 w [4.5 3] 0 d 0.12 0.16 0.22 RG 0 0 m #5 #6 l S Q}}%
+  \fi
+}
+
+% 7. Macro vẽ đầu mũi tên rỗng chuẩn UML 2.x tại (#3,#4) hướng từ (#1,#2)
+\newcommand{\UMLArrowHead}[8]{%
+  \ifusetikz
+    \draw[umlDep] (#1, #2) -- (#3, #4);%
+  \else
+    \put(#3,#4){\RawPDF{q 0.95 w [] 0 d 1 J 1 j 0.12 0.16 0.22 RG #5 #6 m 0 0 l #7 #8 l S Q}}%
+  \fi
+}
+
+
+\clearpage
+\begin{landscape}
+\begin{table}[p]
+  \centering
+  \caption{Bảng ánh xạ đầy đủ 12 Use Case với các thành phần kiến trúc trong 5 tầng.}
+  \label{tab:uc_mapping}
+  \fontsize{7.8pt}{9.6pt}\selectfont
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabularx}{\linewidth}{@{}l >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{4.2cm} >{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}p{4.8cm} >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Mã UC} & \textbf{Tên Use Case} & \textbf{Boundary (View)} & \textbf{Control (Controller)} & \textbf{Entity (Domain Model)} & \textbf{Repository (Persistence)} \\
+    \midrule
+    UC-01 & Đăng nhập & \texttt{AuthenticationView::} \newline \texttt{GiaoDienDangNhap} & \texttt{AuthenticationController::} \newline \texttt{DieuKhienXacThuc} & \texttt{Identity::TaiKhoan}, \newline \texttt{Identity::VaiTro} & \texttt{UserRepository} \\
+    UC-02 & Quản lý người dùng \& phân quyền & \texttt{UserManagementView::} \newline \texttt{GiaoDienNguoiDung} & \texttt{UserManagementController::} \newline \texttt{DieuKhienNguoiDung} & \texttt{TaiKhoan}, \texttt{VaiTro}, \newline \texttt{HocSinh}, \texttt{LienKetPHHS} & \texttt{UserRepository}, \newline \texttt{StudentRepository}, \newline \texttt{ParentStudentRepository} \\
+    UC-03 & Quản lý lớp học & \texttt{ClassManagementView::} \newline \texttt{GiaoDienQuanLyLop} & \texttt{ClassManagementController::} \newline \texttt{DieuKhienLopHoc} & \texttt{ClassManagement::LopHoc} & \texttt{ClassRepository} \\
+    UC-04 & Lập thời khóa biểu & \texttt{SchedulingView::} \newline \texttt{GiaoDienThoiKhoaBieu} & \texttt{SchedulingController::} \newline \texttt{DieuKhienLichHoc} & \texttt{Scheduling::BuoiHoc}, \newline \texttt{ClassManagement::LopHoc} & \texttt{ScheduleRepository}, \newline \texttt{ClassRepository} \\
+    UC-05 & Quản lý danh sách học sinh & \texttt{ClassManagementView::} \newline \texttt{GiaoDienDanhSachLop} & \texttt{EnrollmentController::} \newline \texttt{DieuKhienGhiDanh} & \texttt{GhiDanhLop}, \texttt{LopHoc}, \newline \texttt{HocSinh} & \texttt{EnrollmentRepository}, \newline \texttt{StudentRepository}, \newline \texttt{ClassRepository} \\
+    UC-06 & Điểm danh & \texttt{AttendanceView::} \newline \texttt{GiaoDienDiemDanh} & \texttt{AttendanceController::} \newline \texttt{DieuKhienDiemDanh} & \texttt{DiemDanh}, \texttt{BuoiHoc}, \newline \texttt{HocSinh}, \texttt{GhiDanhLop} & \texttt{AttendanceRepository}, \newline \texttt{ScheduleRepository}, \newline \texttt{EnrollmentRepository} \\
+    UC-07 & Quản lý bài tập \& bài kiểm tra & \texttt{AssessmentView::} \newline \texttt{GiaoDienBaiKiemTra} & \texttt{AssessmentController::} \newline \texttt{DieuKhienBaiKiemTra} & \texttt{Assessment::BaiKiemTra}, \newline \texttt{ClassManagement::LopHoc} & \texttt{AssessmentRepository}, \newline \texttt{ClassRepository} \\
+    UC-08 & Cập nhật điểm số & \texttt{AssessmentView::} \newline \texttt{GiaoDienNhapDiem} & \texttt{GradeController::} \newline \texttt{DieuKhienDiemSo} & \texttt{DiemSo}, \texttt{BaiKiemTra}, \newline \texttt{HocSinh}, \texttt{ThongBao} & \texttt{GradeRepository}, \newline \texttt{AssessmentRepository}, \newline \texttt{NotificationRepository} \\
+    UC-09 & Quản lý học phí & \texttt{TuitionView::} \newline \texttt{GiaoDienHocPhi} & \texttt{TuitionController::} \newline \texttt{DieuKhienHocPhi} & \texttt{KhoanHocPhi}, \texttt{HocSinh}, \newline \texttt{LopHoc}, \texttt{ThongBao} & \texttt{TuitionRepository}, \newline \texttt{EnrollmentRepository}, \newline \texttt{NotificationRepository} \\
+    UC-10 & Tra cứu lịch học & \texttt{LookupView::} \newline \texttt{GiaoDienTraCuuLich} & \texttt{AcademicLookupController::} \newline \texttt{DieuKhienTraCuu} & \texttt{BuoiHoc}, \texttt{LopHoc}, \newline \texttt{GhiDanhLop}, \texttt{LienKetPHHS} & \texttt{ScheduleRepository}, \newline \texttt{EnrollmentRepository}, \newline \texttt{ParentStudentRepository} \\
+    UC-11 & Tra cứu kết quả \& điểm danh & \texttt{LookupView::} \newline \texttt{GiaoDienTraCuuKetQua} & \texttt{AcademicLookupController::} \newline \texttt{DieuKhienTraCuu} & \texttt{DiemSo}, \texttt{BaiKiemTra}, \newline \texttt{DiemDanh}, \texttt{LienKetPHHS} & \texttt{GradeRepository}, \newline \texttt{AttendanceRepository}, \newline \texttt{ParentStudentRepository} \\
+    UC-12 & Tra cứu học phí & \texttt{LookupView::} \newline \texttt{GiaoDienTraCuuHocPhi} & \texttt{AcademicLookupController::} \newline \texttt{DieuKhienTraCuu} & \texttt{KhoanHocPhi}, \texttt{HocSinh}, \newline \texttt{LopHoc}, \texttt{LienKetPHHS} & \texttt{TuitionRepository}, \newline \texttt{ParentStudentRepository} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\clearpage
+\end{landscape}
+%
+%===========================================================================
+
+% SƠ ĐỒ: PKG_01_Architecture_Overview - SƠ ĐỒ 01: TỔNG QUAN KIẾN TRÚC PHÂN TẦNG (PKG_01_Architecture_Overview)
+% ===========================================================================
+\begin{landscape}
+\vspace{-0.2cm}\begin{figure}[p]
+  \centering
+  \resizebox{!}{13.4cm}{%
+  \begin{tikzpicture}[x=1cm, y=1cm, >=Straight Barb]
+    % Khung nền trắng chuẩn học thuật (27.00cm x 17.80cm)
+    \UMLCanvasBg{27.00}{17.80}
+    \UMLTextC{13.50}{17.48}{\fontsize{10.5pt}{12.5pt}\selectfont\bfseries SƠ ĐỒ 01: TỔNG QUAN KIẾN TRÚC PHÂN TẦNG (PKG\_01\_Architecture\_Overview)}
+
+    % -----------------------------------------------------------------------
+    % 1. CÁC GÓI (UML PACKAGES & SUB-PACKAGES)
+    % -----------------------------------------------------------------------
+    % Package: Presentation (Presentation Layer (Tầng Giao diện))
+    \UMLPackage{0.50}{13.30}{19.20}{3.20}{4.20}{0.50}{pres_fill}{pres_tab}{16.50}
+    \UMLTextW{0.65}{16.75}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{16.20}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Presentation Layer (Tầng Giao diện)}
+    \UMLTextE{19.50}{16.20}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape 12 Lớp Boundary (View) | UC-01 .. UC-12}
+    % Package: P_TeacherPortal (TeacherPortal)
+    \UMLPackage{0.90}{13.60}{5.80}{2.05}{2.80}{0.40}{sub_fill}{sub_tab}{15.65}
+    \UMLTextW{1.02}{15.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}subsystem\guillemotright{}}
+    \UMLTextC{3.80}{15.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries TeacherPortal}
+    \UMLHLine{1.02}{15.13}{5.56}{157.61}
+    \UMLTextW{1.06}{14.84}{\fontsize{6.1pt}{7.3pt}\selectfont + UserManagementView, ClassMgmtView}
+    \UMLTextW{1.06}{14.38}{\fontsize{6.1pt}{7.3pt}\selectfont + SchedulingView, AttendanceView}
+    \UMLTextW{1.06}{13.93}{\fontsize{6.1pt}{7.3pt}\selectfont + AssessmentView, TuitionView (UC-02..09)}
+    % Package: P_StudentParentPortal (Student & Parent Portals)
+    \UMLPackage{7.10}{13.60}{5.80}{2.05}{3.20}{0.40}{sub_fill}{sub_tab}{15.65}
+    \UMLTextW{7.22}{15.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}subsystem\guillemotright{}}
+    \UMLTextC{10.00}{15.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Student \& Parent Portals}
+    \UMLHLine{7.22}{15.13}{5.56}{157.61}
+    \UMLTextW{7.26}{14.84}{\fontsize{6.1pt}{7.3pt}\selectfont + StudentPortal (Tra cứu Lịch, Kết quả)}
+    \UMLTextW{7.26}{14.38}{\fontsize{6.1pt}{7.3pt}\selectfont + ParentPortal (Lịch, Kết quả, Học phí)}
+    \UMLTextW{7.26}{13.93}{\fontsize{6.1pt}{7.3pt}\selectfont + Reuse: LookupView (UC-10, UC-11, UC-12)}
+    % Package: P_SharedAuthView (Shared Functional Views)
+    \UMLPackage{13.30}{13.60}{6.00}{2.05}{3.00}{0.40}{sub_fill}{sub_tab}{15.65}
+    \UMLTextW{13.42}{15.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.30}{15.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Shared Functional Views}
+    \UMLHLine{13.42}{15.13}{5.76}{163.28}
+    \UMLTextW{13.46}{14.84}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthenticationView (GiaoDienDangNhap)}
+    \UMLTextW{13.46}{14.38}{\fontsize{6.1pt}{7.3pt}\selectfont + LookupView (GiaoDienTraCuuLich,}
+    \UMLTextW{13.46}{13.93}{\fontsize{6.1pt}{7.3pt}\selectfont   GiaoDienTraCuuKetQua, GiaoDienTraCuuHocPhi)}
+    % Package: Application (Application Layer (Tầng Điều khiển Nghiệp vụ))
+    \UMLPackage{0.50}{8.70}{19.20}{3.20}{4.50}{0.50}{app_fill}{app_tab}{11.90}
+    \UMLTextW{0.65}{12.15}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{11.60}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Application Layer (Tầng Điều khiển Nghiệp vụ)}
+    \UMLTextE{19.50}{11.60}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape 10 Lớp Control \& Giao diện I*Repository}
+    % Package: A_CoreAdminCtrl (Core & Class Controllers)
+    \UMLPackage{0.90}{9.00}{5.80}{2.05}{3.00}{0.40}{sub_fill}{sub_tab}{11.05}
+    \UMLTextW{1.02}{11.25}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.80}{10.79}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Core \& Class Controllers}
+    \UMLHLine{1.02}{10.53}{5.56}{157.61}
+    \UMLTextW{1.06}{10.24}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthenticationController (DieuKhienXacThuc)}
+    \UMLTextW{1.06}{9.79}{\fontsize{6.1pt}{7.3pt}\selectfont + UserMgmtController (DieuKhienNguoiDung)}
+    \UMLTextW{1.06}{9.33}{\fontsize{6.1pt}{7.3pt}\selectfont + Class / Scheduling / EnrollmentController}
+    % Package: A_AcademicCtrl (Academic & Tuition Controllers)
+    \UMLPackage{7.10}{9.00}{5.80}{2.05}{3.20}{0.40}{sub_fill}{sub_tab}{11.05}
+    \UMLTextW{7.22}{11.25}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.00}{10.79}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Academic \& Tuition Controllers}
+    \UMLHLine{7.22}{10.53}{5.56}{157.61}
+    \UMLTextW{7.26}{10.24}{\fontsize{6.1pt}{7.3pt}\selectfont + AttendanceController (DieuKhienDiemDanh)}
+    \UMLTextW{7.26}{9.79}{\fontsize{6.1pt}{7.3pt}\selectfont + Assessment \& GradeController (UC-07, 08)}
+    \UMLTextW{7.26}{9.33}{\fontsize{6.1pt}{7.3pt}\selectfont + TuitionController (DieuKhienHocPhi)}
+    % Package: A_LookupContracts (Lookup & Repo Contracts)
+    \UMLPackage{13.30}{9.00}{6.00}{2.05}{3.00}{0.40}{sub_fill}{sub_tab}{11.05}
+    \UMLTextW{13.42}{11.25}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.30}{10.79}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Lookup \& Repo Contracts}
+    \UMLHLine{13.42}{10.53}{5.76}{163.28}
+    \UMLTextW{13.46}{10.24}{\fontsize{6.1pt}{7.3pt}\selectfont + AcademicLookupController (DieuKhienTraCuu)}
+    \UMLTextW{13.46}{9.79}{\fontsize{6.1pt}{7.3pt}\selectfont + NotificationController [Đề xuất điều phối]}
+    \UMLTextW{13.46}{9.33}{\fontsize{6.1pt}{7.3pt}\selectfont + \guillemotleft{}interface\guillemotright{} I*Repository Contracts}
+    % Package: Domain (Domain Layer (Mô hình Miền))
+    \UMLPackage{0.50}{0.70}{9.70}{6.40}{4.00}{0.50}{dom_fill}{dom_tab}{7.10}
+    \UMLTextW{0.65}{7.35}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{6.80}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Domain Layer (Mô hình Miền)}
+    \UMLTextE{10.00}{6.80}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape 8 Gói Miền | 12 Lớp Entity}
+    % Package: D_IdentityProfile (Identity & UserProfile)
+    \UMLPackage{0.85}{4.00}{4.30}{2.15}{2.80}{0.38}{sub_fill}{sub_tab}{6.15}
+    \UMLTextW{0.97}{6.34}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.00}{5.89}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Identity \& UserProfile}
+    \UMLHLine{0.97}{5.63}{4.06}{115.09}
+    \UMLTextW{1.01}{5.33}{\fontsize{6.1pt}{7.3pt}\selectfont + Identity: TaiKhoan, VaiTro}
+    \UMLTextW{1.01}{4.84}{\fontsize{6.1pt}{7.3pt}\selectfont + UserProfile: HocSinh,}
+    \UMLTextW{1.01}{4.35}{\fontsize{6.1pt}{7.3pt}\selectfont   LienKetPHHS}
+    % Package: D_ClassSchedule (Class & Scheduling)
+    \UMLPackage{5.50}{4.00}{4.35}{2.15}{2.80}{0.38}{sub_fill}{sub_tab}{6.15}
+    \UMLTextW{5.62}{6.34}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{7.67}{5.89}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Class \& Scheduling}
+    \UMLHLine{5.62}{5.63}{4.11}{116.50}
+    \UMLTextW{5.66}{5.33}{\fontsize{6.1pt}{7.3pt}\selectfont + ClassManagement: LopHoc,}
+    \UMLTextW{5.66}{4.84}{\fontsize{6.1pt}{7.3pt}\selectfont   GhiDanhLop}
+    \UMLTextW{5.66}{4.35}{\fontsize{6.1pt}{7.3pt}\selectfont + Scheduling: BuoiHoc}
+    % Package: D_AttendAssess (Attendance & Assessment)
+    \UMLPackage{0.85}{1.05}{4.30}{2.15}{3.00}{0.38}{sub_fill}{sub_tab}{3.20}
+    \UMLTextW{0.97}{3.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.00}{2.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Attendance \& Assessment}
+    \UMLHLine{0.97}{2.68}{4.06}{115.09}
+    \UMLTextW{1.01}{2.38}{\fontsize{6.1pt}{7.3pt}\selectfont + Attendance: DiemDanh}
+    \UMLTextW{1.01}{1.89}{\fontsize{6.1pt}{7.3pt}\selectfont + Assessment: BaiKiemTra,}
+    \UMLTextW{1.01}{1.40}{\fontsize{6.1pt}{7.3pt}\selectfont   DiemSo}
+    % Package: D_TuitionNotif (Tuition & Notification)
+    \UMLPackage{5.50}{1.05}{4.35}{2.15}{2.80}{0.38}{sub_fill}{sub_tab}{3.20}
+    \UMLTextW{5.62}{3.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{7.67}{2.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Tuition \& Notification}
+    \UMLHLine{5.62}{2.68}{4.11}{116.50}
+    \UMLTextW{5.66}{2.38}{\fontsize{6.1pt}{7.3pt}\selectfont + Tuition: KhoanHocPhi}
+    \UMLTextW{5.66}{1.89}{\fontsize{6.1pt}{7.3pt}\selectfont + Notification: ThongBao}
+    \UMLTextW{5.66}{1.40}{\fontsize{6.1pt}{7.3pt}\selectfont   (Hiển thị trên website)}
+    % Package: Persistence (Persistence Layer)
+    \UMLPackage{11.50}{0.70}{8.20}{6.40}{4.20}{0.50}{pers_fill}{pers_tab}{7.10}
+    \UMLTextW{11.65}{7.35}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{11.70}{6.80}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Persistence Layer}
+    \UMLTextE{19.50}{6.80}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape 11 Lớp Repository (Data Access)}
+    % Package: R_CoreRepos (Identity, Profile & Class Repositories)
+    \UMLPackage{11.90}{4.00}{7.40}{2.15}{4.20}{0.38}{sub_fill}{sub_tab}{6.15}
+    \UMLTextW{12.02}{6.34}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{15.60}{5.89}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Identity, Profile \& Class Repositories}
+    \UMLHLine{12.02}{5.63}{7.16}{202.96}
+    \UMLTextW{12.06}{5.20}{\fontsize{6.1pt}{7.3pt}\selectfont + UserRepo, StudentRepo, ParentStudentRepo}
+    \UMLTextW{12.06}{4.47}{\fontsize{6.1pt}{7.3pt}\selectfont + ClassRepo, EnrollmentRepo, ScheduleRepo}
+    % Package: R_AcademicRepos (Academic, Tuition & Notification Repositories)
+    \UMLPackage{11.90}{1.05}{7.40}{2.15}{4.50}{0.38}{sub_fill}{sub_tab}{3.20}
+    \UMLTextW{12.02}{3.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{15.60}{2.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Academic, Tuition \& Notification Repositories}
+    \UMLHLine{12.02}{2.68}{7.16}{202.96}
+    \UMLTextW{12.06}{2.25}{\fontsize{6.1pt}{7.3pt}\selectfont + AttendanceRepo, AssessmentRepo, GradeRepo}
+    \UMLTextW{12.06}{1.52}{\fontsize{6.1pt}{7.3pt}\selectfont + TuitionRepository, NotificationRepository}
+    % Package: Infrastructure (Infrastructure Layer [Đề xuất])
+    \UMLPackage{21.10}{0.70}{5.40}{15.80}{3.60}{0.50}{infr_fill}{infr_tab}{16.50}
+    \UMLTextW{21.25}{16.75}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{21.30}{16.20}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Infrastructure Layer [Đề xuất]}
+    % Package: I_Security (Security)
+    \UMLPackage{21.45}{11.00}{4.70}{4.30}{2.40}{0.40}{sub_fill}{sub_tab}{15.30}
+    \UMLTextW{21.57}{15.50}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.80}{15.04}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Security}
+    \UMLHLine{21.57}{14.78}{4.46}{126.43}
+    \UMLTextW{21.61}{14.27}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthenticationService}
+    \UMLTextW{21.61}{13.36}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthorizationService}
+    \UMLTextW{21.61}{12.46}{\fontsize{6.1pt}{7.3pt}\selectfont + PasswordService}
+    \UMLTextW{21.61}{11.55}{\fontsize{6.1pt}{7.3pt}\selectfont + SessionManager}
+    % Package: I_Notification (NotificationInfrastructure)
+    \UMLPackage{21.45}{6.60}{4.70}{3.30}{3.40}{0.40}{sub_fill}{sub_tab}{9.90}
+    \UMLTextW{21.57}{10.10}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.80}{9.64}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries NotificationInfrastructure}
+    \UMLHLine{21.57}{9.38}{4.46}{126.43}
+    \UMLTextW{21.61}{8.88}{\fontsize{6.1pt}{7.3pt}\selectfont + NotificationService}
+    \UMLTextW{21.61}{8.01}{\fontsize{6.1pt}{7.3pt}\selectfont   (Điều phối hiển thị thông báo}
+    \UMLTextW{21.61}{7.14}{\fontsize{6.1pt}{7.3pt}\selectfont    nội bộ trên Website)}
+    % Package: I_Database (Database)
+    \UMLPackage{21.45}{1.10}{4.70}{4.40}{2.40}{0.40}{sub_fill}{sub_tab}{5.50}
+    \UMLTextW{21.57}{5.70}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.80}{5.24}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Database}
+    \UMLHLine{21.57}{4.98}{4.46}{126.43}
+    \UMLTextW{21.61}{4.46}{\fontsize{6.1pt}{7.3pt}\selectfont + DatabaseContext}
+    \UMLTextW{21.61}{3.52}{\fontsize{6.1pt}{7.3pt}\selectfont   (Quản lý Unit of Work / Phiên)}
+    \UMLTextW{21.61}{2.59}{\fontsize{6.1pt}{7.3pt}\selectfont + DatabaseConnector}
+    \UMLTextW{21.61}{1.66}{\fontsize{6.1pt}{7.3pt}\selectfont   (Quản lý kết nối CSDL quan hệ)}
+
+    % -----------------------------------------------------------------------
+    % 3. QUAN HỆ PHỤ THUỘC (UML 2.x DEPENDENCIES: DASHED + OPEN ARROW)
+    % -----------------------------------------------------------------------
+    % Presentation phụ thuộc một chiều vào Application
+    \UMLDashSeg{10.00}{13.30}{10.00}{11.90}{0.00}{-39.69}
+    \UMLArrowHead{10.00}{13.30}{10.00}{11.90}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{11.35}{12.60}{\guillemotleft{}use / invoke\guillemotright{}}
+    % Application điều phối nghiệp vụ và thao tác trên Domain Model
+    \UMLDashSeg{5.35}{8.70}{5.35}{7.10}{0.00}{-45.35}
+    \UMLArrowHead{5.35}{8.70}{5.35}{7.10}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{6.65}{7.90}{\guillemotleft{}manipulate\guillemotright{}}
+    % Application gọi Persistence thông qua hợp đồng truy xuất dữ liệu
+    \UMLDashSeg{15.60}{8.70}{15.60}{7.10}{0.00}{-45.35}
+    \UMLArrowHead{15.60}{8.70}{15.60}{7.10}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{16.95}{7.90}{\guillemotleft{}data access\guillemotright{}}
+    % Persistence ánh xạ dữ liệu vào các thực thể Domain
+    \UMLDashSeg{11.50}{3.90}{10.20}{3.90}{-36.85}{0.00}
+    \UMLArrowHead{11.50}{3.90}{10.20}{3.90}{6.06}{-3.09}{6.06}{3.09}
+    \UMLDepLabel{10.85}{4.22}{\guillemotleft{}map\guillemotright{}}
+    % Application sử dụng dịch vụ xác thực và phân quyền trong Infrastructure
+    \UMLDashSeg{19.70}{11.40}{21.45}{11.40}{49.61}{0.00}
+    \UMLArrowHead{19.70}{11.40}{21.45}{11.40}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{20.57}{11.70}{\guillemotleft{}security\guillemotright{}}
+    % Application gọi dịch vụ hiển thị thông báo trên website
+    \UMLDashSeg{19.70}{9.40}{21.45}{9.40}{49.61}{0.00}
+    \UMLArrowHead{19.70}{9.40}{21.45}{9.40}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{20.57}{9.70}{\guillemotleft{}notify\guillemotright{}}
+    % Persistence sử dụng DatabaseContext và DatabaseConnector để truy vấn CSDL
+    \UMLDashSeg{19.70}{3.30}{21.45}{3.30}{49.61}{0.00}
+    \UMLArrowHead{19.70}{3.30}{21.45}{3.30}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{20.57}{3.62}{\guillemotleft{}db session\guillemotright{}}
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ gói tổng quan kiến trúc 5 tầng của Hệ thống Quản lý Lớp học thêm (PKG\_01\_Architecture\_Overview).}
+  \label{fig:pkg_01_architecture_overview}
+\end{figure}
+\end{landscape}
+\clearpage
+
+% ===========================================================================
+% SƠ ĐỒ: PKG_02_Presentation - SƠ ĐỒ 02: PHÂN RÃ TẦNG GIAO DIỆN NGƯỜI DÙNG (PKG_02_Presentation)
+% ===========================================================================
+\begin{landscape}
+\vspace{-0.2cm}\begin{figure}[p]
+  \centering
+  \resizebox{!}{13.4cm}{%
+  \begin{tikzpicture}[x=1cm, y=1cm, >=Straight Barb]
+    % Khung nền trắng chuẩn học thuật (27.00cm x 17.80cm)
+    \UMLCanvasBg{27.00}{17.80}
+    \UMLTextC{13.50}{17.48}{\fontsize{10.5pt}{12.5pt}\selectfont\bfseries SƠ ĐỒ 02: PHÂN RÃ TẦNG GIAO DIỆN NGƯỜI DÙNG (PKG\_02\_Presentation)}
+
+    % -----------------------------------------------------------------------
+    % 1. CÁC GÓI (UML PACKAGES & SUB-PACKAGES)
+    % -----------------------------------------------------------------------
+    % Package: Presentation (Presentation Layer (Tầng Giao diện Người dùng))
+    \UMLPackage{0.50}{3.50}{26.00}{12.90}{4.50}{0.50}{pres_fill}{pres_tab}{16.40}
+    \UMLTextW{0.65}{16.65}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{16.10}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Presentation Layer (Tầng Giao diện Người dùng)}
+    \UMLTextE{26.30}{16.10}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Phân tách Cổng giao diện theo Vai trò (Portals) \& Gói giao diện Chức năng (Views)}
+    % Package: TeacherPortal (TeacherPortal)
+    \UMLPackage{1.20}{13.00}{7.50}{2.00}{3.00}{0.40}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{1.32}{15.20}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}subsystem\guillemotright{}}
+    \UMLTextC{4.95}{14.74}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries TeacherPortal}
+    \UMLTextC{4.95}{14.32}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Tác nhân: Giáo viên (ACT-01)}
+    \UMLHLine{1.32}{14.10}{7.26}{205.80}
+    \UMLTextW{1.36}{13.80}{\fontsize{6.1pt}{7.3pt}\selectfont + Điều hướng quản trị: UC-02 đến UC-09}
+    \UMLTextW{1.36}{13.33}{\fontsize{6.1pt}{7.3pt}\selectfont + Sử dụng: AuthenticationView (UC-01) \& 6 View quản lý}
+    % Package: StudentPortal (StudentPortal)
+    \UMLPackage{9.75}{13.00}{7.50}{2.00}{3.00}{0.40}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{9.87}{15.20}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}subsystem\guillemotright{}}
+    \UMLTextC{13.50}{14.74}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries StudentPortal}
+    \UMLTextC{13.50}{14.32}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Tác nhân: Học sinh (ACT-02)}
+    \UMLHLine{9.87}{14.10}{7.26}{205.80}
+    \UMLTextW{9.91}{13.80}{\fontsize{6.1pt}{7.3pt}\selectfont + Cổng thông tin học tập cá nhân: UC-01, UC-10, UC-11}
+    \UMLTextW{9.91}{13.33}{\fontsize{6.1pt}{7.3pt}\selectfont + Tái sử dụng: GiaoDienTraCuuLich, GiaoDienTraCuuKetQua}
+    % Package: ParentPortal (ParentPortal)
+    \UMLPackage{18.30}{13.00}{7.50}{2.00}{3.00}{0.40}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{18.42}{15.20}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}subsystem\guillemotright{}}
+    \UMLTextC{22.05}{14.74}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries ParentPortal}
+    \UMLTextC{22.05}{14.32}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Tác nhân: Phụ huynh (ACT-03)}
+    \UMLHLine{18.42}{14.10}{7.26}{205.80}
+    \UMLTextW{18.46}{13.80}{\fontsize{6.1pt}{7.3pt}\selectfont + Cổng theo dõi con em (qua LienKetPHHS): UC-01, 10, 11, 12}
+    \UMLTextW{18.46}{13.33}{\fontsize{6.1pt}{7.3pt}\selectfont + Tái sử dụng: Trọn bộ LookupView (Lịch, Kết quả, Học phí)}
+    % Package: UserManagementView (UserManagementView)
+    \UMLPackage{1.20}{8.50}{5.50}{2.60}{3.40}{0.40}{sub_fill}{sub_tab}{11.10}
+    \UMLTextW{1.32}{11.30}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.95}{10.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries UserManagementView}
+    \UMLTextC{3.95}{10.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-02}
+    \UMLHLine{1.32}{10.20}{5.26}{149.10}
+    \UMLTextW{1.36}{9.88}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienNguoiDung}
+    \UMLTextW{1.36}{9.37}{\fontsize{6.1pt}{7.3pt}\selectfont - Cấp tài khoản HS \& PH}
+    \UMLTextW{1.36}{8.86}{\fontsize{6.1pt}{7.3pt}\selectfont - Phân quyền vai trò người dùng}
+    % Package: ClassManagementView (ClassManagementView)
+    \UMLPackage{7.60}{8.50}{5.50}{2.60}{3.50}{0.40}{sub_fill}{sub_tab}{11.10}
+    \UMLTextW{7.72}{11.30}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.35}{10.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries ClassManagementView}
+    \UMLTextC{10.35}{10.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-03, UC-05}
+    \UMLHLine{7.72}{10.20}{5.26}{149.10}
+    \UMLTextW{7.76}{9.88}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienQuanLyLop (UC-03)}
+    \UMLTextW{7.76}{9.37}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienDanhSachLop (UC-05)}
+    \UMLTextW{7.76}{8.86}{\fontsize{6.1pt}{7.3pt}\selectfont - Quản lý lớp \& ghi danh học sinh}
+    % Package: SchedulingView (SchedulingView)
+    \UMLPackage{14.00}{8.50}{5.50}{2.60}{2.80}{0.40}{sub_fill}{sub_tab}{11.10}
+    \UMLTextW{14.12}{11.30}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.75}{10.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries SchedulingView}
+    \UMLTextC{16.75}{10.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-04}
+    \UMLHLine{14.12}{10.20}{5.26}{149.10}
+    \UMLTextW{14.16}{9.88}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienThoiKhoaBieu}
+    \UMLTextW{14.16}{9.37}{\fontsize{6.1pt}{7.3pt}\selectfont - Lập lịch học theo tuần / ca học}
+    \UMLTextW{14.16}{8.86}{\fontsize{6.1pt}{7.3pt}\selectfont - Quản lý danh sách buổi học}
+    % Package: AuthenticationView (AuthenticationView [Shared])
+    \UMLPackage{20.40}{8.50}{5.40}{2.60}{3.60}{0.40}{sub_fill}{sub_tab}{11.10}
+    \UMLTextW{20.52}{11.30}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.10}{10.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AuthenticationView [Shared]}
+    \UMLTextC{23.10}{10.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-01 (Dùng chung 3 vai trò)}
+    \UMLHLine{20.52}{10.20}{5.16}{146.27}
+    \UMLTextW{20.56}{9.88}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienDangNhap}
+    \UMLTextW{20.56}{9.37}{\fontsize{6.1pt}{7.3pt}\selectfont - Xác thực thông tin đăng nhập}
+    \UMLTextW{20.56}{8.86}{\fontsize{6.1pt}{7.3pt}\selectfont - Điều hướng theo VaiTro (GV/HS/PH)}
+    % Package: AttendanceView (AttendanceView)
+    \UMLPackage{1.20}{4.00}{5.50}{2.80}{2.80}{0.40}{sub_fill}{sub_tab}{6.80}
+    \UMLTextW{1.32}{7.00}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.95}{6.54}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AttendanceView}
+    \UMLTextC{3.95}{6.12}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-06}
+    \UMLHLine{1.32}{5.90}{5.26}{149.10}
+    \UMLTextW{1.36}{5.55}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienDiemDanh}
+    \UMLTextW{1.36}{4.97}{\fontsize{6.1pt}{7.3pt}\selectfont - Điểm danh chuyên cần theo BuoiHoc}
+    \UMLTextW{1.36}{4.39}{\fontsize{6.1pt}{7.3pt}\selectfont - Ghi nhận trạng thái \& ghi chú}
+    % Package: AssessmentView (AssessmentView)
+    \UMLPackage{7.60}{4.00}{5.50}{2.80}{2.80}{0.40}{sub_fill}{sub_tab}{6.80}
+    \UMLTextW{7.72}{7.00}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.35}{6.54}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AssessmentView}
+    \UMLTextC{10.35}{6.12}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-07, UC-08}
+    \UMLHLine{7.72}{5.90}{5.26}{149.10}
+    \UMLTextW{7.76}{5.55}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienBaiKiemTra (UC-07)}
+    \UMLTextW{7.76}{4.97}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienNhapDiem (UC-08)}
+    \UMLTextW{7.76}{4.39}{\fontsize{6.1pt}{7.3pt}\selectfont - Quản lý bài tập/kiểm tra \& nhập điểm}
+    % Package: TuitionView (TuitionView)
+    \UMLPackage{14.00}{4.00}{5.50}{2.80}{2.40}{0.40}{sub_fill}{sub_tab}{6.80}
+    \UMLTextW{14.12}{7.00}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.75}{6.54}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries TuitionView}
+    \UMLTextC{16.75}{6.12}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-09}
+    \UMLHLine{14.12}{5.90}{5.26}{149.10}
+    \UMLTextW{14.16}{5.55}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienHocPhi}
+    \UMLTextW{14.16}{4.97}{\fontsize{6.1pt}{7.3pt}\selectfont - Lập khoản thu học phí theo kỳ}
+    \UMLTextW{14.16}{4.39}{\fontsize{6.1pt}{7.3pt}\selectfont - Ghi nhận số tiền thực nhận từ PH}
+    % Package: LookupView (LookupView [Shared HS & PH])
+    \UMLPackage{20.40}{4.00}{5.40}{2.80}{3.80}{0.40}{sub_fill}{sub_tab}{6.80}
+    \UMLTextW{20.52}{7.00}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.10}{6.54}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries LookupView [Shared HS \& PH]}
+    \UMLTextC{23.10}{6.12}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Ánh xạ: UC-10, UC-11, UC-12}
+    \UMLHLine{20.52}{5.90}{5.16}{146.27}
+    \UMLTextW{20.56}{5.55}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienTraCuuLich (UC-10)}
+    \UMLTextW{20.56}{4.97}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienTraCuuKetQua (UC-11)}
+    \UMLTextW{20.56}{4.39}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}boundary\guillemotright{} GiaoDienTraCuuHocPhi (UC-12)}
+    % Package: AppTarget (Application Layer (Các gói Controller điều phối nghiệp vụ))
+    \UMLPackage{0.50}{0.50}{26.00}{1.65}{4.50}{0.42}{app_fill}{app_tab}{2.15}
+    \UMLTextW{0.62}{2.36}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextC{13.50}{1.89}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Application Layer (Các gói Controller điều phối nghiệp vụ)}
+    \UMLTextC{13.50}{1.47}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape 10 Gói Controller điều phối UC-01 .. UC-12}
+    \UMLHLine{0.62}{1.25}{25.76}{730.20}
+    \UMLTextW{0.66}{0.90}{\fontsize{6.1pt}{7.3pt}\selectfont + Authentication, UserManagement, ClassManagement, Scheduling, Enrollment, Attendance, Assessment, Grade, Tuition \& AcademicLookupController}
+
+    % -----------------------------------------------------------------------
+    % 3. QUAN HỆ PHỤ THUỘC (UML 2.x DEPENDENCIES: DASHED + OPEN ARROW)
+    % -----------------------------------------------------------------------
+    \UMLDashSeg{3.95}{13.00}{3.95}{11.50}{0.00}{-42.52}
+    \UMLArrowHead{3.95}{13.00}{3.95}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{3.35}{12.25}{\guillemotleft{}use\guillemotright{}}
+    \UMLDashSeg{5.20}{13.00}{5.20}{12.30}{0.00}{-19.84}
+    \UMLDashSeg{5.20}{12.30}{10.35}{12.30}{145.98}{0.00}
+    \UMLDashSeg{10.35}{12.30}{10.35}{11.50}{0.00}{-22.68}
+    \UMLArrowHead{10.35}{12.30}{10.35}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{7.83}{12.50}{\guillemotleft{}use\guillemotright{}}
+    \UMLDashSeg{6.00}{13.00}{6.00}{12.05}{0.00}{-26.93}
+    \UMLDashSeg{6.00}{12.05}{16.75}{12.05}{304.72}{0.00}
+    \UMLDashSeg{16.75}{12.05}{16.75}{11.50}{0.00}{-15.59}
+    \UMLArrowHead{16.75}{12.05}{16.75}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{2.00}{13.00}{2.00}{12.40}{0.00}{-17.01}
+    \UMLDashSeg{2.00}{12.40}{0.82}{12.40}{-33.45}{0.00}
+    \UMLDashSeg{0.82}{12.40}{0.82}{5.40}{0.00}{-198.43}
+    \UMLDashSeg{0.82}{5.40}{1.20}{5.40}{10.77}{0.00}
+    \UMLArrowHead{0.82}{5.40}{1.20}{5.40}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{1.32}{12.62}{\guillemotleft{}use\guillemotright{}}
+    \UMLDashSeg{6.70}{13.00}{6.70}{11.82}{0.00}{-33.45}
+    \UMLDashSeg{6.70}{11.82}{7.15}{11.82}{12.76}{0.00}
+    \UMLDashSeg{7.15}{11.82}{7.15}{7.80}{0.00}{-113.95}
+    \UMLDashSeg{7.15}{7.80}{10.35}{7.80}{90.71}{0.00}
+    \UMLDashSeg{10.35}{7.80}{10.35}{7.20}{0.00}{-17.01}
+    \UMLArrowHead{10.35}{7.80}{10.35}{7.20}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{7.30}{13.00}{7.30}{11.68}{0.00}{-37.42}
+    \UMLDashSeg{7.30}{11.68}{13.55}{11.68}{177.17}{0.00}
+    \UMLDashSeg{13.55}{11.68}{13.55}{7.80}{0.00}{-109.98}
+    \UMLDashSeg{13.55}{7.80}{16.75}{7.80}{90.71}{0.00}
+    \UMLDashSeg{16.75}{7.80}{16.75}{7.20}{0.00}{-17.01}
+    \UMLArrowHead{16.75}{7.80}{16.75}{7.20}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{8.10}{13.00}{8.10}{12.65}{0.00}{-9.92}
+    \UMLDashSeg{8.10}{12.65}{22.30}{12.65}{402.52}{0.00}
+    \UMLDashSeg{22.30}{12.65}{22.30}{11.50}{0.00}{-32.60}
+    \UMLArrowHead{22.30}{12.65}{22.30}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{13.50}{13.00}{13.50}{12.65}{0.00}{-9.92}
+    \UMLDashSeg{13.50}{12.65}{23.10}{12.65}{272.13}{0.00}
+    \UMLDashSeg{23.10}{12.65}{23.10}{11.50}{0.00}{-32.60}
+    \UMLArrowHead{23.10}{12.65}{23.10}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{18.15}{12.87}{\guillemotleft{}shared auth (UC-01)\guillemotright{}}
+    \UMLDashSeg{22.10}{13.00}{22.10}{12.65}{0.00}{-9.92}
+    \UMLDashSeg{22.10}{12.65}{23.90}{12.65}{51.02}{0.00}
+    \UMLDashSeg{23.90}{12.65}{23.90}{11.50}{0.00}{-32.60}
+    \UMLArrowHead{23.90}{12.65}{23.90}{11.50}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{15.60}{13.00}{15.60}{11.90}{0.00}{-31.18}
+    \UMLDashSeg{15.60}{11.90}{19.82}{11.90}{119.62}{0.00}
+    \UMLDashSeg{19.82}{11.90}{19.82}{8.00}{0.00}{-110.55}
+    \UMLDashSeg{19.82}{8.00}{22.30}{8.00}{70.30}{0.00}
+    \UMLDashSeg{22.30}{8.00}{22.30}{7.20}{0.00}{-22.68}
+    \UMLArrowHead{22.30}{8.00}{22.30}{7.20}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{19.25}{8.22}{\guillemotleft{}reuse UC-10,11\guillemotright{}}
+    \UMLDashSeg{20.08}{13.00}{20.08}{7.65}{0.00}{-151.65}
+    \UMLDashSeg{20.08}{7.65}{23.90}{7.65}{108.28}{0.00}
+    \UMLDashSeg{23.90}{7.65}{23.90}{7.20}{0.00}{-12.76}
+    \UMLArrowHead{23.90}{7.65}{23.90}{7.20}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{20.59}{7.43}{\guillemotleft{}reuse UC-10,11,12\guillemotright{}}
+    \UMLDashSeg{3.95}{3.50}{3.95}{2.15}{0.00}{-38.27}
+    \UMLArrowHead{3.95}{3.50}{3.95}{2.15}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{4.90}{2.83}{\guillemotleft{}invoke\guillemotright{}}
+    \UMLDashSeg{10.35}{3.50}{10.35}{2.15}{0.00}{-38.27}
+    \UMLArrowHead{10.35}{3.50}{10.35}{2.15}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{11.30}{2.83}{\guillemotleft{}invoke\guillemotright{}}
+    \UMLDashSeg{16.75}{3.50}{16.75}{2.15}{0.00}{-38.27}
+    \UMLArrowHead{16.75}{3.50}{16.75}{2.15}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{17.70}{2.83}{\guillemotleft{}invoke\guillemotright{}}
+    \UMLDashSeg{23.10}{3.50}{23.10}{2.15}{0.00}{-38.27}
+    \UMLArrowHead{23.10}{3.50}{23.10}{2.15}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{24.05}{2.83}{\guillemotleft{}query\guillemotright{}}
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ phân rã gói tầng Presentation, phân tách các Portal theo vai trò và các gói giao diện chức năng (PKG\_02\_Presentation).}
+  \label{fig:pkg_02_presentation}
+\end{figure}
+\end{landscape}
+\clearpage
+
+% ===========================================================================
+% SƠ ĐỒ: PKG_03_Application - SƠ ĐỒ 03: PHÂN RÃ TẦNG ĐIỀU KHIỂN NGHIỆP VỤ (PKG_03_Application)
+% ===========================================================================
+\begin{landscape}
+\vspace{-0.2cm}\begin{figure}[p]
+  \centering
+  \resizebox{!}{13.4cm}{%
+  \begin{tikzpicture}[x=1cm, y=1cm, >=Straight Barb]
+    % Khung nền trắng chuẩn học thuật (27.00cm x 17.80cm)
+    \UMLCanvasBg{27.00}{17.80}
+    \UMLTextC{13.50}{17.48}{\fontsize{10.5pt}{12.5pt}\selectfont\bfseries SƠ ĐỒ 03: PHÂN RÃ TẦNG ĐIỀU KHIỂN NGHIỆP VỤ (PKG\_03\_Application)}
+
+    % -----------------------------------------------------------------------
+    % 1. CÁC GÓI (UML PACKAGES & SUB-PACKAGES)
+    % -----------------------------------------------------------------------
+    % Package: Application (Application Layer (Tầng Điều khiển & Điều phối Nghiệp vụ))
+    \UMLPackage{0.50}{4.40}{26.00}{12.00}{4.80}{0.50}{app_fill}{app_tab}{16.40}
+    \UMLTextW{0.65}{16.65}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{16.10}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Application Layer (Tầng Điều khiển \& Điều phối Nghiệp vụ)}
+    \UMLTextE{26.30}{16.10}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Giữ nguyên tên 10 lớp Control tiếng Việt trong báo cáo | Ánh xạ đầy đủ UC-01 .. UC-12}
+    % Package: AuthenticationController (AuthenticationController)
+    \UMLPackage{1.00}{12.60}{5.70}{2.35}{3.80}{0.38}{sub_fill}{sub_tab}{14.95}
+    \UMLTextW{1.12}{15.14}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.85}{14.69}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AuthenticationController}
+    \UMLTextC{3.85}{14.27}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-01 (Đăng nhập)}
+    \UMLHLine{1.12}{14.05}{5.46}{154.77}
+    \UMLTextW{1.16}{13.77}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienXacThuc}
+    \UMLTextW{1.16}{13.34}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Identity (TaiKhoan, VaiTro)}
+    \UMLTextW{1.16}{12.91}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IUserRepository}
+    % Package: UserManagementController (UserManagementController)
+    \UMLPackage{7.40}{12.60}{5.70}{2.35}{3.90}{0.38}{sub_fill}{sub_tab}{14.95}
+    \UMLTextW{7.52}{15.14}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.25}{14.69}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries UserManagementController}
+    \UMLTextC{10.25}{14.27}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-02 (Người dùng \& Quyền)}
+    \UMLHLine{7.52}{14.05}{5.46}{154.77}
+    \UMLTextW{7.56}{13.77}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienNguoiDung}
+    \UMLTextW{7.56}{13.34}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Identity, UserProfile}
+    \UMLTextW{7.56}{12.91}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IUser, IStudent, IParentStudent}
+    % Package: ClassManagementController (ClassManagementController)
+    \UMLPackage{13.80}{12.60}{5.70}{2.35}{3.90}{0.38}{sub_fill}{sub_tab}{14.95}
+    \UMLTextW{13.92}{15.14}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.65}{14.69}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries ClassManagementController}
+    \UMLTextC{16.65}{14.27}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-03 (Quản lý lớp học)}
+    \UMLHLine{13.92}{14.05}{5.46}{154.77}
+    \UMLTextW{13.96}{13.77}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienLopHoc}
+    \UMLTextW{13.96}{13.34}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::ClassManagement (LopHoc)}
+    \UMLTextW{13.96}{12.91}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IClassRepository}
+    % Package: SchedulingController (SchedulingController)
+    \UMLPackage{20.20}{12.60}{5.70}{2.35}{3.40}{0.38}{sub_fill}{sub_tab}{14.95}
+    \UMLTextW{20.32}{15.14}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.05}{14.69}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries SchedulingController}
+    \UMLTextC{23.05}{14.27}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-04 (Lập thời khóa biểu)}
+    \UMLHLine{20.32}{14.05}{5.46}{154.77}
+    \UMLTextW{20.36}{13.77}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienLichHoc}
+    \UMLTextW{20.36}{13.34}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Scheduling (BuoiHoc), LopHoc}
+    \UMLTextW{20.36}{12.91}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IScheduleRepository, IClassRepo}
+    % Package: EnrollmentController (EnrollmentController)
+    \UMLPackage{1.00}{9.00}{5.70}{2.35}{3.40}{0.38}{sub_fill}{sub_tab}{11.35}
+    \UMLTextW{1.12}{11.54}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.85}{11.09}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries EnrollmentController}
+    \UMLTextC{3.85}{10.67}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-05 (Danh sách học sinh)}
+    \UMLHLine{1.12}{10.45}{5.46}{154.77}
+    \UMLTextW{1.16}{10.18}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienGhiDanh}
+    \UMLTextW{1.16}{9.75}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::GhiDanhLop, LopHoc, HocSinh}
+    \UMLTextW{1.16}{9.32}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IEnrollmentRepo, IStudentRepo}
+    % Package: AttendanceController (AttendanceController)
+    \UMLPackage{7.40}{9.00}{5.70}{2.35}{3.40}{0.38}{sub_fill}{sub_tab}{11.35}
+    \UMLTextW{7.52}{11.54}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.25}{11.09}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AttendanceController}
+    \UMLTextC{10.25}{10.67}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-06 (Điểm danh)}
+    \UMLHLine{7.52}{10.45}{5.46}{154.77}
+    \UMLTextW{7.56}{10.18}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienDiemDanh}
+    \UMLTextW{7.56}{9.75}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::DiemDanh, BuoiHoc, HocSinh}
+    \UMLTextW{7.56}{9.32}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IAttendanceRepo, IScheduleRepo}
+    % Package: AssessmentController (AssessmentController)
+    \UMLPackage{13.80}{9.00}{5.70}{2.35}{3.40}{0.38}{sub_fill}{sub_tab}{11.35}
+    \UMLTextW{13.92}{11.54}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.65}{11.09}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AssessmentController}
+    \UMLTextC{16.65}{10.67}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-07 (Bài tập \& Kiểm tra)}
+    \UMLHLine{13.92}{10.45}{5.46}{154.77}
+    \UMLTextW{13.96}{10.18}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienBaiKiemTra}
+    \UMLTextW{13.96}{9.75}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Assessment (BaiKiemTra), LopHoc}
+    \UMLTextW{13.96}{9.32}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IAssessmentRepository}
+    % Package: GradeController (GradeController)
+    \UMLPackage{20.20}{9.00}{5.70}{2.35}{2.80}{0.38}{sub_fill}{sub_tab}{11.35}
+    \UMLTextW{20.32}{11.54}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.05}{11.09}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries GradeController}
+    \UMLTextC{23.05}{10.67}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-08 (Cập nhật điểm số)}
+    \UMLHLine{20.32}{10.45}{5.46}{154.77}
+    \UMLTextW{20.36}{10.18}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienDiemSo}
+    \UMLTextW{20.36}{9.75}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::DiemSo, BaiKiemTra, HocSinh}
+    \UMLTextW{20.36}{9.32}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: IGradeRepo, IAssessmentRepo}
+    % Package: TuitionController (TuitionController)
+    \UMLPackage{1.00}{4.90}{5.70}{2.75}{3.00}{0.38}{sub_fill}{sub_tab}{7.65}
+    \UMLTextW{1.12}{7.84}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{3.85}{7.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries TuitionController}
+    \UMLTextC{3.85}{6.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-09 (Quản lý học phí)}
+    \UMLHLine{1.12}{6.75}{5.46}{154.77}
+    \UMLTextW{1.16}{6.48}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienHocPhi}
+    \UMLTextW{1.16}{6.06}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Tuition (KhoanHocPhi),}
+    \UMLTextW{1.16}{5.63}{\fontsize{6.1pt}{7.3pt}\selectfont    HocSinh, LopHoc}
+    \UMLTextW{1.16}{5.21}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: ITuitionRepo, IEnrollmentRepo}
+    % Package: AcademicLookupController (AcademicLookupController)
+    \UMLPackage{7.40}{4.90}{5.70}{2.75}{3.80}{0.38}{sub_fill}{sub_tab}{7.65}
+    \UMLTextW{7.52}{7.84}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.25}{7.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AcademicLookupController}
+    \UMLTextC{10.25}{6.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Use Case: UC-10, UC-11, UC-12 (Tra cứu)}
+    \UMLHLine{7.52}{6.75}{5.46}{154.77}
+    \UMLTextW{7.56}{6.48}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}control\guillemotright{} DieuKhienTraCuu (Đa năng)}
+    \UMLTextW{7.56}{6.06}{\fontsize{6.1pt}{7.3pt}\selectfont - Kiểm tra LienKetPHHS khi PH tra cứu}
+    \UMLTextW{7.56}{5.63}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: ISchedule, IAttendance, IGrade,}
+    \UMLTextW{7.56}{5.21}{\fontsize{6.1pt}{7.3pt}\selectfont    ITuition, IParentStudentRepository}
+    % Package: NotificationController (NotificationController)
+    \UMLPackage{13.80}{4.90}{5.70}{2.75}{3.50}{0.38}{sub_fill}{sub_tab}{7.65}
+    \UMLTextW{13.92}{7.84}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.65}{7.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries NotificationController}
+    \UMLTextC{16.65}{6.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape [Thành phần kiến trúc đề xuất]}
+    \UMLHLine{13.92}{6.75}{5.46}{154.77}
+    \UMLTextW{13.96}{6.48}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}service\guillemotright{} DieuPhoiThongBaoNoiBo}
+    \UMLTextW{13.96}{6.06}{\fontsize{6.1pt}{7.3pt}\selectfont - Tạo ThongBao web khi có lịch/điểm/học phí}
+    \UMLTextW{13.96}{5.63}{\fontsize{6.1pt}{7.3pt}\selectfont -> Domain::Notification (ThongBao)}
+    \UMLTextW{13.96}{5.21}{\fontsize{6.1pt}{7.3pt}\selectfont -> Repo: INotificationRepository}
+    % Package: RepositoryContracts (RepositoryInterfaces)
+    \UMLPackage{20.20}{4.90}{5.70}{2.75}{3.40}{0.38}{ifc_fill}{sub_tab}{7.65}
+    \UMLTextW{20.32}{7.84}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.05}{7.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries RepositoryInterfaces}
+    \UMLTextC{23.05}{6.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Hợp đồng truy xuất dữ liệu (DIP)}
+    \UMLHLine{20.32}{6.75}{5.46}{154.77}
+    \UMLTextW{20.36}{6.48}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}interface\guillemotright{} IUser, IStudent, IParentStudent}
+    \UMLTextW{20.36}{6.06}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}interface\guillemotright{} IClass, IEnrollment, ISchedule}
+    \UMLTextW{20.36}{5.63}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}interface\guillemotright{} IAttendance, IAssessment, IGrade}
+    \UMLTextW{20.36}{5.21}{\fontsize{6.1pt}{7.3pt}\selectfont \guillemotleft{}interface\guillemotright{} ITuition, INotificationRepository}
+    % Package: TargetDomain (Domain Layer (8 Gói Mô hình Miền Nghiệp vụ))
+    \UMLPackage{0.50}{0.50}{10.60}{2.15}{4.20}{0.40}{dom_fill}{dom_tab}{2.65}
+    \UMLTextW{0.62}{2.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextC{5.80}{2.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Domain Layer (8 Gói Mô hình Miền Nghiệp vụ)}
+    \UMLTextC{5.80}{1.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Identity, UserProfile, ClassManagement, Scheduling, Attendance, Assessment, Tuition, Notification}
+    \UMLHLine{0.62}{1.75}{10.36}{293.67}
+    \UMLTextW{0.66}{1.15}{\fontsize{6.1pt}{7.3pt}\selectfont + Các Controller chỉ phụ thuộc vào những gói Entity thuộc phạm vi Use Case tương ứng.}
+    % Package: TargetPersistence (Persistence Layer (11 Repositories))
+    \UMLPackage{11.70}{0.50}{7.60}{2.15}{3.80}{0.40}{pers_fill}{pers_tab}{2.65}
+    \UMLTextW{11.82}{2.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextC{15.50}{2.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Persistence Layer (11 Repositories)}
+    \UMLTextC{15.50}{1.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Thực thi các giao diện \guillemotleft{}interface\guillemotright{} I*Repository}
+    \UMLHLine{11.82}{1.75}{7.36}{208.63}
+    \UMLTextW{11.86}{1.15}{\fontsize{6.1pt}{7.3pt}\selectfont + UserRepository .. NotificationRepository}
+    % Package: TargetInfrastructure (Infrastructure Layer (Security & Web Notif))
+    \UMLPackage{19.90}{0.50}{6.60}{2.15}{4.00}{0.40}{infr_fill}{infr_tab}{2.65}
+    \UMLTextW{20.02}{2.85}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextC{23.20}{2.39}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Infrastructure Layer (Security \& Web Notif)}
+    \UMLTextC{23.20}{1.97}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Security Services \& NotificationService}
+    \UMLHLine{20.02}{1.75}{6.36}{180.28}
+    \UMLTextW{20.06}{1.15}{\fontsize{6.1pt}{7.3pt}\selectfont + Kiểm tra phân quyền trước khi thực thi Use Case}
+
+    % -----------------------------------------------------------------------
+    % 3. QUAN HỆ PHỤ THUỘC (UML 2.x DEPENDENCIES: DASHED + OPEN ARROW)
+    % -----------------------------------------------------------------------
+    % Assessment triggers Notification
+    \UMLDashSeg{18.80}{9.00}{18.80}{8.03}{0.00}{-27.50}
+    \UMLArrowHead{18.80}{9.00}{18.80}{8.03}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDashSeg{21.80}{9.00}{21.80}{8.50}{0.00}{-14.17}
+    \UMLDashSeg{21.80}{8.50}{17.20}{8.50}{-130.39}{0.00}
+    \UMLDashSeg{17.20}{8.50}{17.20}{8.03}{0.00}{-13.32}
+    \UMLArrowHead{17.20}{8.50}{17.20}{8.03}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{19.63}{8.72}{\guillemotleft{}trigger\guillemotright{}}
+    \UMLDashSeg{5.20}{7.65}{5.20}{8.50}{0.00}{24.09}
+    \UMLDashSeg{5.20}{8.50}{15.60}{8.50}{294.80}{0.00}
+    \UMLDashSeg{15.60}{8.50}{15.60}{8.03}{0.00}{-13.32}
+    \UMLArrowHead{15.60}{8.50}{15.60}{8.03}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{9.98}{8.72}{\guillemotleft{}trigger\guillemotright{}}
+    \UMLDashSeg{19.50}{6.30}{20.20}{6.30}{19.84}{0.00}
+    \UMLArrowHead{19.50}{6.30}{20.20}{6.30}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDashSeg{24.20}{9.00}{24.20}{8.03}{0.00}{-27.50}
+    \UMLArrowHead{24.20}{9.00}{24.20}{8.03}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{25.55}{8.52}{\guillemotleft{}use interface\guillemotright{}}
+    \UMLDashSeg{5.80}{4.40}{5.80}{2.65}{0.00}{-49.61}
+    \UMLArrowHead{5.80}{4.40}{5.80}{2.65}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{7.90}{3.53}{\guillemotleft{}manipulate Domain Entities\guillemotright{}}
+    \UMLDashSeg{15.50}{4.40}{15.50}{2.65}{0.00}{-49.61}
+    \UMLArrowHead{15.50}{4.40}{15.50}{2.65}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{17.35}{3.53}{\guillemotleft{}call via I*Repository\guillemotright{}}
+    \UMLDashSeg{23.20}{4.40}{23.20}{2.65}{0.00}{-49.61}
+    \UMLArrowHead{23.20}{4.40}{23.20}{2.65}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{24.85}{3.53}{\guillemotleft{}authorize \& notify\guillemotright{}}
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ phân rã gói tầng Application, ánh xạ 10 lớp Control vào UC-01..UC-12 và quan hệ với Domain, Repository Interfaces (PKG\_03\_Application).}
+  \label{fig:pkg_03_application}
+\end{figure}
+\end{landscape}
+\clearpage
+
+% ===========================================================================
+% SƠ ĐỒ: PKG_04_Domain_Model - SƠ ĐỒ 04: PHÂN RÃ MÔ HÌNH MIỀN NGHIỆP VỤ (PKG_04_Domain_Model)
+% ===========================================================================
+\begin{landscape}
+\vspace{-0.2cm}\begin{figure}[p]
+  \centering
+  \resizebox{!}{13.4cm}{%
+  \begin{tikzpicture}[x=1cm, y=1cm, >=Straight Barb]
+    % Khung nền trắng chuẩn học thuật (27.00cm x 17.80cm)
+    \UMLCanvasBg{27.00}{17.80}
+    \UMLTextC{13.50}{17.48}{\fontsize{10.5pt}{12.5pt}\selectfont\bfseries SƠ ĐỒ 04: PHÂN RÃ MÔ HÌNH MIỀN NGHIỆP VỤ (PKG\_04\_Domain\_Model)}
+
+    % -----------------------------------------------------------------------
+    % 1. CÁC GÓI (UML PACKAGES & SUB-PACKAGES)
+    % -----------------------------------------------------------------------
+    % Package: Domain (Domain Layer (Mô hình Miền Nghiệp vụ - 8 Gói & 12 Lớp Entity))
+    \UMLPackage{0.50}{0.60}{26.00}{15.80}{5.20}{0.50}{dom_fill}{dom_tab}{16.40}
+    \UMLTextW{0.65}{16.65}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{0.70}{16.10}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Domain Layer (Mô hình Miền Nghiệp vụ - 8 Gói \& 12 Lớp Entity)}
+    \UMLTextE{26.30}{16.10}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Phụ thuộc một chiều về phía các gói hạt nhân (Identity, UserProfile, ClassManagement)}
+    % Package: Identity (Identity)
+    \UMLPackage{1.10}{10.10}{5.20}{4.90}{2.40}{0.42}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{1.25}{15.21}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{1.30}{14.70}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Identity}
+    \UMLTextE{6.10}{14.70}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Định danh}
+    % Package: UserProfile (UserProfile)
+    \UMLPackage{7.50}{10.10}{5.20}{4.90}{2.60}{0.42}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{7.65}{15.21}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{7.70}{14.70}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries UserProfile}
+    \UMLTextE{12.50}{14.70}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Hồ sơ HS \& PH}
+    % Package: ClassManagement (ClassManagement)
+    \UMLPackage{13.90}{10.10}{5.20}{4.90}{3.20}{0.42}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{14.05}{15.21}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{14.10}{14.70}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries ClassManagement}
+    % Package: Scheduling (Scheduling)
+    \UMLPackage{20.30}{10.10}{5.20}{4.90}{2.60}{0.42}{sub_fill}{sub_tab}{15.00}
+    \UMLTextW{20.45}{15.21}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{20.50}{14.70}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Scheduling}
+    \UMLTextE{25.30}{14.70}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Thời khóa biểu}
+    % Package: Notification (Notification)
+    \UMLPackage{1.10}{1.10}{5.20}{5.10}{2.60}{0.42}{sub_fill}{sub_tab}{6.20}
+    \UMLTextW{1.25}{6.41}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{1.30}{5.90}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Notification}
+    \UMLTextE{6.10}{5.90}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Thông báo Web}
+    % Package: Tuition (Tuition)
+    \UMLPackage{7.50}{1.10}{5.20}{5.10}{2.20}{0.42}{sub_fill}{sub_tab}{6.20}
+    \UMLTextW{7.65}{6.41}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{7.70}{5.90}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Tuition}
+    \UMLTextE{12.50}{5.90}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Quản lý Học phí}
+    % Package: Assessment (Assessment)
+    \UMLPackage{13.90}{1.10}{5.20}{5.10}{2.60}{0.42}{sub_fill}{sub_tab}{6.20}
+    \UMLTextW{14.05}{6.41}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{14.10}{5.90}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Assessment}
+    \UMLTextE{18.90}{5.90}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Kiểm tra \& Điểm số}
+    % Package: Attendance (Attendance)
+    \UMLPackage{20.30}{1.10}{5.20}{5.10}{2.60}{0.42}{sub_fill}{sub_tab}{6.20}
+    \UMLTextW{20.45}{6.41}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{20.50}{5.90}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Attendance}
+    \UMLTextE{25.30}{5.90}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Điểm danh}
+
+    % -----------------------------------------------------------------------
+    % 2. CÁC LỚP PHÂN TÍCH / GIAO DIỆN (CLASSES & INTERFACES)
+    % -----------------------------------------------------------------------
+    % Node: E_TaiKhoan (TaiKhoan)
+    \UMLClassBox{1.40}{12.60}{4.60}{1.75}{cls_fill}
+    \UMLTextC{3.70}{14.16}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{3.70}{13.89}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries TaiKhoan}
+    \UMLHLine{1.40}{13.71}{4.60}{130.39}
+    \UMLTextW{1.52}{13.54}{\fontsize{6.2pt}{7.2pt}\selectfont - maTaiKhoan: String}
+    \UMLTextW{1.52}{13.28}{\fontsize{6.2pt}{7.2pt}\selectfont - tenDangNhap: String}
+    \UMLTextW{1.52}{13.03}{\fontsize{6.2pt}{7.2pt}\selectfont - matKhauBam: String}
+    \UMLTextW{1.52}{12.77}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiHoatDong: Boolean}
+    % Node: E_VaiTro (VaiTro)
+    \UMLClassBox{1.40}{10.40}{4.60}{1.75}{cls_fill}
+    \UMLTextC{3.70}{11.96}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{3.70}{11.69}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries VaiTro}
+    \UMLHLine{1.40}{11.51}{4.60}{130.39}
+    \UMLTextW{1.52}{11.30}{\fontsize{6.2pt}{7.2pt}\selectfont - maVaiTro: String}
+    \UMLTextW{1.52}{10.96}{\fontsize{6.2pt}{7.2pt}\selectfont - tenVaiTro: String (GV / HS / PH)}
+    \UMLTextW{1.52}{10.61}{\fontsize{6.2pt}{7.2pt}\selectfont - moTaQuyenHan: String}
+    % Node: E_HocSinh (HocSinh)
+    \UMLClassBox{7.80}{12.60}{4.60}{1.75}{cls_fill}
+    \UMLTextC{10.10}{14.16}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{10.10}{13.89}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries HocSinh}
+    \UMLHLine{7.80}{13.71}{4.60}{130.39}
+    \UMLTextW{7.92}{13.54}{\fontsize{6.2pt}{7.2pt}\selectfont - maHocSinh: String}
+    \UMLTextW{7.92}{13.28}{\fontsize{6.2pt}{7.2pt}\selectfont - hoTen: String, ngaySinh: Date}
+    \UMLTextW{7.92}{13.03}{\fontsize{6.2pt}{7.2pt}\selectfont - soDienThoai: String}
+    \UMLTextW{7.92}{12.77}{\fontsize{6.2pt}{7.2pt}\selectfont - maTaiKhoanHS: String}
+    % Node: E_LienKetPHHS (LienKetPHHS)
+    \UMLClassBox{7.80}{10.40}{4.60}{1.75}{cls_fill}
+    \UMLTextC{10.10}{11.96}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{10.10}{11.69}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries LienKetPHHS}
+    \UMLHLine{7.80}{11.51}{4.60}{130.39}
+    \UMLTextW{7.92}{11.34}{\fontsize{6.2pt}{7.2pt}\selectfont - maLienKet: String}
+    \UMLTextW{7.92}{11.08}{\fontsize{6.2pt}{7.2pt}\selectfont - maTaiKhoanPH: String}
+    \UMLTextW{7.92}{10.83}{\fontsize{6.2pt}{7.2pt}\selectfont - maHocSinh: String}
+    \UMLTextW{7.92}{10.57}{\fontsize{6.2pt}{7.2pt}\selectfont - quanHeVoiHS: String}
+    % Node: E_LopHoc (LopHoc)
+    \UMLClassBox{14.20}{12.60}{4.60}{1.75}{cls_fill}
+    \UMLTextC{16.50}{14.16}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{16.50}{13.89}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries LopHoc}
+    \UMLHLine{14.20}{13.71}{4.60}{130.39}
+    \UMLTextW{14.32}{13.54}{\fontsize{6.2pt}{7.2pt}\selectfont - maLop: String, tenLop: String}
+    \UMLTextW{14.32}{13.28}{\fontsize{6.2pt}{7.2pt}\selectfont - monHoc: String, khoiLop: String}
+    \UMLTextW{14.32}{13.03}{\fontsize{6.2pt}{7.2pt}\selectfont - mucHocPhiTheoKy: Decimal}
+    \UMLTextW{14.32}{12.77}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiLop: String}
+    % Node: E_GhiDanhLop (GhiDanhLop)
+    \UMLClassBox{14.20}{10.40}{4.60}{1.75}{cls_fill}
+    \UMLTextC{16.50}{11.96}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{16.50}{11.69}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries GhiDanhLop}
+    \UMLHLine{14.20}{11.51}{4.60}{130.39}
+    \UMLTextW{14.32}{11.34}{\fontsize{6.2pt}{7.2pt}\selectfont - maGhiDanh: String}
+    \UMLTextW{14.32}{11.08}{\fontsize{6.2pt}{7.2pt}\selectfont - maLop: String, maHocSinh: String}
+    \UMLTextW{14.32}{10.83}{\fontsize{6.2pt}{7.2pt}\selectfont - ngayGhiDanh: Date}
+    \UMLTextW{14.32}{10.57}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiTheoHoc: String}
+    % Node: E_BuoiHoc (BuoiHoc)
+    \UMLClassBox{20.60}{11.20}{4.60}{2.80}{cls_fill}
+    \UMLTextC{22.90}{13.81}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{22.90}{13.54}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries BuoiHoc}
+    \UMLHLine{20.60}{13.36}{4.60}{130.39}
+    \UMLTextW{20.72}{13.15}{\fontsize{6.2pt}{7.2pt}\selectfont - maBuoiHoc: String}
+    \UMLTextW{20.72}{12.80}{\fontsize{6.2pt}{7.2pt}\selectfont - maLop: String (FK -> LopHoc)}
+    \UMLTextW{20.72}{12.45}{\fontsize{6.2pt}{7.2pt}\selectfont - ngayHoc: Date}
+    \UMLTextW{20.72}{12.11}{\fontsize{6.2pt}{7.2pt}\selectfont - gioBatDau: Time, gioKetThuc: Time}
+    \UMLTextW{20.72}{11.76}{\fontsize{6.2pt}{7.2pt}\selectfont - chuDeBaiGiang: String}
+    \UMLTextW{20.72}{11.41}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiBuoiHoc: String}
+    % Node: E_ThongBao (ThongBao)
+    \UMLClassBox{1.40}{2.10}{4.60}{3.00}{cls_fill}
+    \UMLTextC{3.70}{4.91}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{3.70}{4.64}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries ThongBao}
+    \UMLHLine{1.40}{4.46}{4.60}{130.39}
+    \UMLTextW{1.52}{4.23}{\fontsize{6.2pt}{7.2pt}\selectfont - maThongBao: String}
+    \UMLTextW{1.52}{3.85}{\fontsize{6.2pt}{7.2pt}\selectfont - maTaiKhoanNhan: String}
+    \UMLTextW{1.52}{3.47}{\fontsize{6.2pt}{7.2pt}\selectfont - tieuDe: String}
+    \UMLTextW{1.52}{3.09}{\fontsize{6.2pt}{7.2pt}\selectfont - noiDung: String}
+    \UMLTextW{1.52}{2.71}{\fontsize{6.2pt}{7.2pt}\selectfont - thoiGianTao: DateTime}
+    \UMLTextW{1.52}{2.33}{\fontsize{6.2pt}{7.2pt}\selectfont - daDoc: Boolean (Hiển thị Web)}
+    % Node: E_KhoanHocPhi (KhoanHocPhi)
+    \UMLClassBox{7.80}{1.90}{4.60}{3.30}{cls_fill}
+    \UMLTextC{10.10}{5.01}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{10.10}{4.74}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries KhoanHocPhi}
+    \UMLHLine{7.80}{4.56}{4.60}{130.39}
+    \UMLTextW{7.92}{4.34}{\fontsize{6.2pt}{7.2pt}\selectfont - maKhoanThu: String}
+    \UMLTextW{7.92}{3.97}{\fontsize{6.2pt}{7.2pt}\selectfont - maHocSinh: String, maLop: String}
+    \UMLTextW{7.92}{3.60}{\fontsize{6.2pt}{7.2pt}\selectfont - kyThuHocPhi: String}
+    \UMLTextW{7.92}{3.23}{\fontsize{6.2pt}{7.2pt}\selectfont - soTienPhaiDong: Decimal}
+    \UMLTextW{7.92}{2.86}{\fontsize{6.2pt}{7.2pt}\selectfont - soTienThucNhan: Decimal}
+    \UMLTextW{7.92}{2.49}{\fontsize{6.2pt}{7.2pt}\selectfont - ngayGhiNhanThu: Date}
+    \UMLTextW{7.92}{2.12}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiThanhToan: String}
+    % Node: E_BaiKiemTra (BaiKiemTra)
+    \UMLClassBox{14.20}{3.75}{4.60}{1.80}{cls_fill}
+    \UMLTextC{16.50}{5.36}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{16.50}{5.09}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries BaiKiemTra}
+    \UMLHLine{14.20}{4.91}{4.60}{130.39}
+    \UMLTextW{14.32}{4.74}{\fontsize{6.2pt}{7.2pt}\selectfont - maBaiKiemTra: String}
+    \UMLTextW{14.32}{4.46}{\fontsize{6.2pt}{7.2pt}\selectfont - maLop: String, tenBai: String}
+    \UMLTextW{14.32}{4.20}{\fontsize{6.2pt}{7.2pt}\selectfont - loaiDanhGia: String, heSo: Float}
+    \UMLTextW{14.32}{3.92}{\fontsize{6.2pt}{7.2pt}\selectfont - ngayToChuc: Date}
+    % Node: E_DiemSo (DiemSo)
+    \UMLClassBox{14.20}{1.45}{4.60}{1.95}{cls_fill}
+    \UMLTextC{16.50}{3.21}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{16.50}{2.94}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries DiemSo}
+    \UMLHLine{14.20}{2.76}{4.60}{130.39}
+    \UMLTextW{14.32}{2.57}{\fontsize{6.2pt}{7.2pt}\selectfont - maDiem: String}
+    \UMLTextW{14.32}{2.26}{\fontsize{6.2pt}{7.2pt}\selectfont - maBaiKiemTra: String}
+    \UMLTextW{14.32}{1.95}{\fontsize{6.2pt}{7.2pt}\selectfont - maHocSinh: String}
+    \UMLTextW{14.32}{1.64}{\fontsize{6.2pt}{7.2pt}\selectfont - diemSo: Float, nhanXetGV: String}
+    % Node: E_DiemDanh (DiemDanh)
+    \UMLClassBox{20.60}{2.10}{4.60}{3.00}{cls_fill}
+    \UMLTextC{22.90}{4.91}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}entity\guillemotright{}}
+    \UMLTextC{22.90}{4.64}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries DiemDanh}
+    \UMLHLine{20.60}{4.46}{4.60}{130.39}
+    \UMLTextW{20.72}{4.23}{\fontsize{6.2pt}{7.2pt}\selectfont - maDiemDanh: String}
+    \UMLTextW{20.72}{3.85}{\fontsize{6.2pt}{7.2pt}\selectfont - maBuoiHoc: String (FK -> BuoiHoc)}
+    \UMLTextW{20.72}{3.47}{\fontsize{6.2pt}{7.2pt}\selectfont - maHocSinh: String (FK -> HocSinh)}
+    \UMLTextW{20.72}{3.09}{\fontsize{6.2pt}{7.2pt}\selectfont - trangThaiCoMat: String}
+    \UMLTextW{20.72}{2.71}{\fontsize{6.2pt}{7.2pt}\selectfont - ghiChuChuyenCan: String}
+    \UMLTextW{20.72}{2.33}{\fontsize{6.2pt}{7.2pt}\selectfont - thoiGianCapNhat: DateTime}
+
+    % -----------------------------------------------------------------------
+    % 3. QUAN HỆ PHỤ THUỘC (UML 2.x DEPENDENCIES: DASHED + OPEN ARROW)
+    % -----------------------------------------------------------------------
+    \UMLDashSeg{7.50}{12.55}{6.30}{12.55}{-34.02}{0.00}
+    \UMLArrowHead{7.50}{12.55}{6.30}{12.55}{6.06}{-3.09}{6.06}{3.09}
+    \UMLDepLabel{6.90}{12.85}{\guillemotleft{}depend\guillemotright{}}
+    \UMLDashSeg{13.90}{12.55}{12.70}{12.55}{-34.02}{0.00}
+    \UMLArrowHead{13.90}{12.55}{12.70}{12.55}{6.06}{-3.09}{6.06}{3.09}
+    \UMLDepLabel{13.30}{12.85}{\guillemotleft{}depend\guillemotright{}}
+    \UMLDashSeg{20.30}{12.55}{19.10}{12.55}{-34.02}{0.00}
+    \UMLArrowHead{20.30}{12.55}{19.10}{12.55}{6.06}{-3.09}{6.06}{3.09}
+    \UMLDepLabel{19.70}{12.85}{\guillemotleft{}depend\guillemotright{}}
+    \UMLDashSeg{3.70}{6.62}{3.70}{10.10}{0.00}{98.65}
+    \UMLArrowHead{3.70}{6.62}{3.70}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{2.35}{8.36}{\guillemotleft{}target account\guillemotright{}}
+    \UMLDashSeg{8.60}{6.62}{8.60}{10.10}{0.00}{98.65}
+    \UMLArrowHead{8.60}{6.62}{8.60}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{7.75}{8.53}{\guillemotleft{}student\guillemotright{}}
+    \UMLDashSeg{11.60}{6.20}{11.60}{9.15}{0.00}{83.62}
+    \UMLDashSeg{11.60}{9.15}{15.20}{9.15}{102.05}{0.00}
+    \UMLDashSeg{15.20}{9.15}{15.20}{10.10}{0.00}{26.93}
+    \UMLArrowHead{15.20}{9.15}{15.20}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{12.25}{9.40}{\guillemotleft{}class/term\guillemotright{}}
+    \UMLDashSeg{17.60}{6.20}{17.60}{10.10}{0.00}{110.55}
+    \UMLArrowHead{17.60}{6.20}{17.60}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{18.75}{8.15}{\guillemotleft{}class exam\guillemotright{}}
+    \UMLDashSeg{15.20}{6.62}{15.20}{8.25}{0.00}{46.20}
+    \UMLDashSeg{15.20}{8.25}{10.00}{8.25}{-147.40}{0.00}
+    \UMLDashSeg{10.00}{8.25}{10.00}{10.10}{0.00}{52.44}
+    \UMLArrowHead{10.00}{8.25}{10.00}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{12.66}{8.50}{\guillemotleft{}student grade\guillemotright{}}
+    \UMLDashSeg{23.50}{6.20}{23.50}{10.10}{0.00}{110.55}
+    \UMLArrowHead{23.50}{6.20}{23.50}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{24.45}{8.15}{\guillemotleft{}session\guillemotright{}}
+    \UMLDashSeg{21.60}{6.62}{21.60}{7.35}{0.00}{20.69}
+    \UMLDashSeg{21.60}{7.35}{10.80}{7.35}{-306.14}{0.00}
+    \UMLDashSeg{10.80}{7.35}{10.80}{10.10}{0.00}{77.95}
+    \UMLArrowHead{10.80}{7.35}{10.80}{10.10}{-3.09}{-6.06}{3.09}{-6.06}
+    \UMLDepLabel{16.90}{7.10}{\guillemotleft{}student attendance\guillemotright{}}
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ phân rã gói tầng Domain gồm 8 gói miền nghiệp vụ và 12 lớp thực thể phân tích (PKG\_04\_Domain\_Model).}
+  \label{fig:pkg_04_domain_model}
+\end{figure}
+\end{landscape}
+\clearpage
+
+
+% ===========================================================================
+% SƠ ĐỒ: PKG_05_Persistence_Infrastructure - SƠ ĐỒ 05: PHÂN RÃ TẦNG TRUY XUẤT DỮ LIỆU & HẠ TẦNG (PKG_05_Persistence_Infrastructure)
+% ===========================================================================
+\begin{landscape}
+\vspace{-0.2cm}\begin{figure}[p]
+  \centering
+  \resizebox{!}{13.4cm}{%
+  \begin{tikzpicture}[x=1cm, y=1cm, >=Straight Barb]
+    % Khung nền trắng chuẩn học thuật (27.00cm x 17.80cm)
+    \UMLCanvasBg{27.00}{17.80}
+    \UMLTextC{13.50}{17.48}{\fontsize{10.5pt}{12.5pt}\selectfont\bfseries SƠ ĐỒ 05: PHÂN RÃ TẦNG TRUY XUẤT DỮ LIỆU \& HẠ TẦNG (PKG\_05\_Persistence\_Infrastructure)}
+
+    % -----------------------------------------------------------------------
+    % 1. CÁC GÓI (UML PACKAGES & SUB-PACKAGES)
+    % -----------------------------------------------------------------------
+    % Package: Persistence (Persistence Layer (Tầng Truy xuất Dữ liệu - 11 Lớp Repository))
+    \UMLPackage{1.40}{11.20}{25.10}{5.20}{4.80}{0.50}{pers_fill}{pers_tab}{16.40}
+    \UMLTextW{1.55}{16.65}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{1.60}{16.10}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Persistence Layer (Tầng Truy xuất Dữ liệu - 11 Lớp Repository)}
+    \UMLTextE{26.30}{16.10}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Lưu trữ \& truy xuất nhóm thực thể Domain tương ứng (Không phụ thuộc ngược vào View)}
+    % Package: RepoGroup1 (IdentityAndProfileRepos)
+    \UMLPackage{1.80}{11.60}{5.60}{3.60}{3.60}{0.38}{sub_fill}{sub_tab}{15.20}
+    \UMLTextW{1.92}{15.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{4.60}{14.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries IdentityAndProfileRepos}
+    \UMLTextC{4.60}{14.52}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Nhóm Định danh \& Hồ sơ}
+    \UMLHLine{1.92}{14.30}{5.36}{151.94}
+    \UMLTextW{1.96}{13.99}{\fontsize{6.1pt}{7.3pt}\selectfont + UserRepository}
+    \UMLTextW{1.96}{13.48}{\fontsize{6.1pt}{7.3pt}\selectfont   (TaiKhoan, VaiTro)}
+    \UMLTextW{1.96}{12.97}{\fontsize{6.1pt}{7.3pt}\selectfont + StudentRepository (HocSinh)}
+    \UMLTextW{1.96}{12.46}{\fontsize{6.1pt}{7.3pt}\selectfont + ParentStudentRepository}
+    \UMLTextW{1.96}{11.95}{\fontsize{6.1pt}{7.3pt}\selectfont   (LienKetPHHS)}
+    % Package: RepoGroup2 (ClassAndScheduleRepos)
+    \UMLPackage{7.90}{11.60}{5.60}{3.60}{3.60}{0.38}{sub_fill}{sub_tab}{15.20}
+    \UMLTextW{8.02}{15.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.70}{14.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries ClassAndScheduleRepos}
+    \UMLTextC{10.70}{14.52}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Nhóm Lớp học \& Lịch học}
+    \UMLHLine{8.02}{14.30}{5.36}{151.94}
+    \UMLTextW{8.06}{13.99}{\fontsize{6.1pt}{7.3pt}\selectfont + ClassRepository (LopHoc)}
+    \UMLTextW{8.06}{13.48}{\fontsize{6.1pt}{7.3pt}\selectfont + EnrollmentRepository}
+    \UMLTextW{8.06}{12.97}{\fontsize{6.1pt}{7.3pt}\selectfont   (GhiDanhLop)}
+    \UMLTextW{8.06}{12.46}{\fontsize{6.1pt}{7.3pt}\selectfont + ScheduleRepository}
+    \UMLTextW{8.06}{11.95}{\fontsize{6.1pt}{7.3pt}\selectfont   (BuoiHoc)}
+    % Package: RepoGroup3 (AttendanceAndAssessRepos)
+    \UMLPackage{14.00}{11.60}{5.60}{3.60}{3.90}{0.38}{sub_fill}{sub_tab}{15.20}
+    \UMLTextW{14.12}{15.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.80}{14.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries AttendanceAndAssessRepos}
+    \UMLTextC{16.80}{14.52}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Nhóm Chuyên cần \& Đánh giá}
+    \UMLHLine{14.12}{14.30}{5.36}{151.94}
+    \UMLTextW{14.16}{13.99}{\fontsize{6.1pt}{7.3pt}\selectfont + AttendanceRepository (DiemDanh)}
+    \UMLTextW{14.16}{13.48}{\fontsize{6.1pt}{7.3pt}\selectfont + AssessmentRepository}
+    \UMLTextW{14.16}{12.97}{\fontsize{6.1pt}{7.3pt}\selectfont   (BaiKiemTra)}
+    \UMLTextW{14.16}{12.46}{\fontsize{6.1pt}{7.3pt}\selectfont + GradeRepository}
+    \UMLTextW{14.16}{11.95}{\fontsize{6.1pt}{7.3pt}\selectfont   (DiemSo)}
+    % Package: RepoGroup4 (TuitionAndNotifRepos)
+    \UMLPackage{20.10}{11.60}{5.90}{3.60}{3.40}{0.38}{sub_fill}{sub_tab}{15.20}
+    \UMLTextW{20.22}{15.39}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.05}{14.94}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries TuitionAndNotifRepos}
+    \UMLTextC{23.05}{14.52}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Nhóm Học phí \& Thông báo}
+    \UMLHLine{20.22}{14.30}{5.66}{160.44}
+    \UMLTextW{20.26}{13.92}{\fontsize{6.1pt}{7.3pt}\selectfont + TuitionRepository}
+    \UMLTextW{20.26}{13.29}{\fontsize{6.1pt}{7.3pt}\selectfont   (KhoanHocPhi)}
+    \UMLTextW{20.26}{12.65}{\fontsize{6.1pt}{7.3pt}\selectfont + NotificationRepository}
+    \UMLTextW{20.26}{12.02}{\fontsize{6.1pt}{7.3pt}\selectfont   (ThongBao hiển thị Website)}
+    % Package: DomainRef (Domain Layer)
+    \UMLPackage{1.40}{6.70}{25.10}{2.90}{4.80}{0.46}{dom_fill}{dom_tab}{9.60}
+    \UMLTextW{1.55}{9.83}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{1.60}{9.30}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Domain Layer}
+    % Package: DomGroup1 (Identity & UserProfile)
+    \UMLPackage{1.80}{7.00}{5.60}{1.55}{3.20}{0.36}{sub_fill}{sub_tab}{8.55}
+    \UMLTextW{1.92}{8.73}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{4.60}{8.29}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Identity \& UserProfile}
+    \UMLHLine{1.92}{8.03}{5.36}{151.94}
+    \UMLTextW{1.96}{7.54}{\fontsize{6.1pt}{7.3pt}\selectfont TaiKhoan, VaiTro, HocSinh, LienKetPHHS}
+    % Package: DomGroup2 (ClassManagement & Scheduling)
+    \UMLPackage{7.90}{7.00}{5.60}{1.55}{4.00}{0.36}{sub_fill}{sub_tab}{8.55}
+    \UMLTextW{8.02}{8.73}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{10.70}{8.29}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries ClassManagement \& Scheduling}
+    \UMLHLine{8.02}{8.03}{5.36}{151.94}
+    \UMLTextW{8.06}{7.54}{\fontsize{6.1pt}{7.3pt}\selectfont LopHoc, GhiDanhLop, BuoiHoc}
+    % Package: DomGroup3 (Attendance & Assessment)
+    \UMLPackage{14.00}{7.00}{5.60}{1.55}{3.60}{0.36}{sub_fill}{sub_tab}{8.55}
+    \UMLTextW{14.12}{8.73}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{16.80}{8.29}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Attendance \& Assessment}
+    \UMLHLine{14.12}{8.03}{5.36}{151.94}
+    \UMLTextW{14.16}{7.54}{\fontsize{6.1pt}{7.3pt}\selectfont DiemDanh, BaiKiemTra, DiemSo}
+    % Package: DomGroup4 (Tuition & Notification)
+    \UMLPackage{20.10}{7.00}{5.90}{1.55}{3.20}{0.36}{sub_fill}{sub_tab}{8.55}
+    \UMLTextW{20.22}{8.73}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.05}{8.29}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Tuition \& Notification}
+    \UMLHLine{20.22}{8.03}{5.66}{160.44}
+    \UMLTextW{20.26}{7.54}{\fontsize{6.1pt}{7.3pt}\selectfont KhoanHocPhi, ThongBao}
+    % Package: Infrastructure (Infrastructure Layer (Tầng Hạ tầng Kỹ thuật) [Thành phần kiến trúc đề xuất])
+    \UMLPackage{1.40}{0.50}{25.10}{4.70}{4.80}{0.50}{infr_fill}{infr_tab}{5.20}
+    \UMLTextW{1.55}{5.45}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}layer\guillemotright{}}
+    \UMLTextW{1.60}{4.90}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Infrastructure Layer (Tầng Hạ tầng Kỹ thuật) [Thành phần kiến trúc đề xuất]}
+    \UMLTextE{26.30}{4.90}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Không dùng cổng thanh toán online, không gửi SMS/Email ngoài đặc tả}
+    % Package: InfraDatabase (Database)
+    \UMLPackage{1.80}{0.90}{9.20}{3.20}{2.40}{0.38}{sub_fill}{sub_tab}{4.10}
+    \UMLTextW{1.95}{4.29}{\fontsize{6.8pt}{8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextW{2.00}{3.80}{\fontsize{8.2pt}{9.8pt}\selectfont\bfseries Database}
+    \UMLTextE{10.80}{3.80}{\fontsize{6.2pt}{7.4pt}\selectfont\itshape Phiên làm việc \& Kết nối CSDL}
+    % Package: InfraSecurity (Security)
+    \UMLPackage{11.50}{0.90}{8.20}{3.20}{2.40}{0.38}{sub_fill}{sub_tab}{4.10}
+    \UMLTextW{11.62}{4.29}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{15.60}{3.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries Security}
+    \UMLTextC{15.60}{3.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Bảo mật, Băm mật khẩu \& Phiên đăng nhập}
+    \UMLHLine{11.62}{3.20}{7.96}{225.64}
+    \UMLTextW{11.66}{2.87}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthenticationService (Xác thực đăng nhập UC-01)}
+    \UMLTextW{11.66}{2.34}{\fontsize{6.1pt}{7.3pt}\selectfont + AuthorizationService (Kiểm tra quyền GV/HS/PH)}
+    \UMLTextW{11.66}{1.80}{\fontsize{6.1pt}{7.3pt}\selectfont + PasswordService (Mã hóa / kiểm tra mật khẩu băm)}
+    \UMLTextW{11.66}{1.27}{\fontsize{6.1pt}{7.3pt}\selectfont + SessionManager (Quản lý phiên làm việc)}
+    % Package: InfraNotification (NotificationInfrastructure)
+    \UMLPackage{20.20}{0.90}{5.80}{3.20}{3.80}{0.38}{sub_fill}{sub_tab}{4.10}
+    \UMLTextW{20.32}{4.29}{\fontsize{6.5pt}{7.8pt}\selectfont\itshape \guillemotleft{}package\guillemotright{}}
+    \UMLTextC{23.10}{3.84}{\fontsize{7.8pt}{9.2pt}\selectfont\bfseries NotificationInfrastructure}
+    \UMLTextC{23.10}{3.42}{\fontsize{6.0pt}{7.2pt}\selectfont\itshape Hạ tầng Hiển thị Thông báo Web}
+    \UMLHLine{20.32}{3.20}{5.56}{157.61}
+    \UMLTextW{20.36}{2.87}{\fontsize{6.1pt}{7.3pt}\selectfont + NotificationService}
+    \UMLTextW{20.36}{2.34}{\fontsize{6.1pt}{7.3pt}\selectfont   - Đẩy và hiển thị thông báo}
+    \UMLTextW{20.36}{1.80}{\fontsize{6.1pt}{7.3pt}\selectfont     trực tiếp trên giao diện Website}
+    \UMLTextW{20.36}{1.27}{\fontsize{6.1pt}{7.3pt}\selectfont   - Không gửi SMS / Email ngoại vi}
+
+    % -----------------------------------------------------------------------
+    % 2. CÁC LỚP PHÂN TÍCH / GIAO DIỆN (CLASSES & INTERFACES)
+    % -----------------------------------------------------------------------
+    % Node: C_DatabaseContext (DatabaseContext)
+    \UMLClassBox{2.00}{1.15}{3.65}{2.15}{cls_fill}
+    \UMLTextC{3.83}{3.11}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}infrastructure\guillemotright{}}
+    \UMLTextC{3.83}{2.84}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries DatabaseContext}
+    \UMLHLine{2.00}{2.66}{3.65}{103.46}
+    \UMLTextW{2.12}{2.38}{\fontsize{6.2pt}{7.2pt}\selectfont + beginTransaction()}
+    \UMLTextW{2.12}{1.90}{\fontsize{6.2pt}{7.2pt}\selectfont + commit() / rollback()}
+    \UMLTextW{2.12}{1.43}{\fontsize{6.2pt}{7.2pt}\selectfont + createPreparedStatement()}
+    % Node: C_DatabaseConnector (DatabaseConnector)
+    \UMLClassBox{7.15}{1.15}{3.65}{2.15}{cls_fill}
+    \UMLTextC{8.97}{3.11}{\fontsize{6.2pt}{7.2pt}\selectfont\itshape \guillemotleft{}infrastructure\guillemotright{}}
+    \UMLTextC{8.97}{2.84}{\fontsize{7.4pt}{8.8pt}\selectfont\bfseries DatabaseConnector}
+    \UMLHLine{7.15}{2.66}{3.65}{103.46}
+    \UMLTextW{7.27}{2.38}{\fontsize{6.2pt}{7.2pt}\selectfont - connectionString: String}
+    \UMLTextW{7.27}{1.90}{\fontsize{6.2pt}{7.2pt}\selectfont + openConnection()}
+    \UMLTextW{7.27}{1.43}{\fontsize{6.2pt}{7.2pt}\selectfont + closeConnection()}
+
+    % -----------------------------------------------------------------------
+    % 3. QUAN HỆ PHỤ THUỘC (UML 2.x DEPENDENCIES: DASHED + OPEN ARROW)
+    % -----------------------------------------------------------------------
+    \UMLDashSeg{6.20}{11.60}{6.20}{8.55}{0.00}{-86.46}
+    \UMLArrowHead{6.20}{11.60}{6.20}{8.55}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{7.35}{10.53}{\guillemotleft{}persist/map\guillemotright{}}
+    \UMLDashSeg{12.20}{11.60}{12.20}{8.55}{0.00}{-86.46}
+    \UMLArrowHead{12.20}{11.60}{12.20}{8.55}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{13.35}{10.53}{\guillemotleft{}persist/map\guillemotright{}}
+    \UMLDashSeg{18.20}{11.60}{18.20}{8.55}{0.00}{-86.46}
+    \UMLArrowHead{18.20}{11.60}{18.20}{8.55}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{19.35}{10.53}{\guillemotleft{}persist/map\guillemotright{}}
+    \UMLDashSeg{24.20}{11.60}{24.20}{8.55}{0.00}{-86.46}
+    \UMLArrowHead{24.20}{11.60}{24.20}{8.55}{3.09}{6.06}{-3.09}{6.06}
+    \UMLDepLabel{23.00}{10.53}{\guillemotleft{}persist/map\guillemotright{}}
+    % Persistence truy cập CSDL thông qua DatabaseContext
+    \UMLDashSeg{1.40}{13.60}{0.65}{13.60}{-21.26}{0.00}
+    \UMLDashSeg{0.65}{13.60}{0.65}{2.22}{0.00}{-322.58}
+    \UMLDashSeg{0.65}{2.22}{2.00}{2.22}{38.27}{0.00}
+    \UMLArrowHead{0.65}{2.22}{2.00}{2.22}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{2.40}{5.94}{\guillemotleft{}use DatabaseContext\guillemotright{}}
+    \UMLDashSeg{5.65}{2.22}{7.15}{2.22}{42.52}{0.00}
+    \UMLArrowHead{5.65}{2.22}{7.15}{2.22}{-6.06}{3.09}{-6.06}{-3.09}
+    \UMLDepLabel{6.40}{2.54}{\guillemotleft{}connect\guillemotright{}}
+  \end{tikzpicture}%
+  }
+  \caption{Sơ đồ phân rã gói tầng Persistence (11 Repositories) và tầng Infrastructure (Database, Security, NotificationInfrastructure) (PKG\_05\_Persistence\_Infrastructure).}
+  \label{fig:pkg_05_persistence_infrastructure}
+\end{figure}
+\end{landscape}
+\clearpage
+
+
 \section{Thiết kế giao diện}
 \setcounter{secnumdepth}{3} % Hiển thị 4.6.3.1, 4.6.3.2, ...
 \subsection{Giao diện dành cho giáo viên}
