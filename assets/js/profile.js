@@ -129,6 +129,84 @@ const ProfileModule = {
     });
   },
 
+  renderParentChildren(children) {
+    const list = document.getElementById('parentProfileChildren');
+    if (!list) return;
+    list.replaceChildren();
+    if (!children.length) {
+      const empty = document.createElement('p');
+      empty.className = 'text-caption';
+      empty.textContent = 'Tài khoản này chưa liên kết với học sinh nào.';
+      list.append(empty);
+      return;
+    }
+
+    children.forEach(child => {
+      const card = document.createElement('article');
+      card.className = 'parent-profile-child';
+      const heading = document.createElement('div');
+      heading.className = 'parent-profile-child-heading';
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar-badge';
+      avatar.textContent = (child.full_name || 'HS').trim().split(/\s+/).slice(-2)
+        .map(part => part[0]).join('').toLocaleUpperCase('vi-VN');
+      const nameBlock = document.createElement('div');
+      const name = document.createElement('strong');
+      name.textContent = child.full_name || 'Học sinh';
+      const code = document.createElement('p');
+      code.className = 'text-caption';
+      code.textContent = `Mã học sinh: ${child.student_code || 'Chưa cập nhật'}`;
+      nameBlock.append(name, code);
+      heading.append(avatar, nameBlock);
+
+      const details = document.createElement('p');
+      details.className = 'text-caption parent-profile-child-details';
+      const status = child.student_status === 'active'
+        ? 'Đang học'
+        : child.student_status === 'graduated'
+          ? 'Đã tốt nghiệp'
+          : child.student_status === 'inactive'
+            ? 'Ngừng học'
+            : 'Chưa cập nhật';
+      details.textContent = [
+        `Quan hệ: ${child.relationship || 'Chưa cập nhật'}`,
+        `Trạng thái: ${status}`
+      ].join(' · ');
+      card.append(heading, details);
+      list.append(card);
+    });
+  },
+
+  renderParentAccount(profile) {
+    const status = document.getElementById('parentAccountStatus');
+    const createdAt = document.getElementById('parentAccountCreatedAt');
+    if (status) {
+      status.textContent = profile.status === 'active'
+        ? 'Đang hoạt động'
+        : profile.status === 'inactive'
+          ? 'Ngừng hoạt động'
+          : 'Chưa cập nhật';
+    }
+    if (createdAt) createdAt.textContent = this.formatDate(profile.created_at);
+  },
+
+  async loadParentDetails(profile) {
+    this.renderParentAccount(profile);
+    try {
+      const children = await AuthService.api('/children');
+      this.renderParentChildren(Array.isArray(children) ? children : []);
+    } catch (error) {
+      const list = document.getElementById('parentProfileChildren');
+      if (list) {
+        list.replaceChildren();
+        const notice = document.createElement('p');
+        notice.className = 'text-caption';
+        notice.textContent = `Không tải được học sinh đã liên kết: ${error.message}`;
+        list.append(notice);
+      }
+    }
+  },
+
   async loadStudentDetails() {
     const [studentResult, classesResult] = await Promise.allSettled([
       AuthService.api('/students/me'),
@@ -182,6 +260,8 @@ const ProfileModule = {
       }
       if (document.body.dataset.profileRole === 'student') {
         await this.loadStudentDetails();
+      } else if (document.body.dataset.profileRole === 'parent') {
+        await this.loadParentDetails(profile);
       }
       return profile;
     } catch (error) {

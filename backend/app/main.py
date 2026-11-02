@@ -419,7 +419,7 @@ def get_profile(connection: Connection, user: Annotated[dict, Depends(current_us
         connection,
         """
         SELECT u.user_id, u.username, u.email, u.role, u.full_name, u.phone,
-               u.avatar_text, u.status, u.updated_at,
+               u.avatar_text, u.status, u.created_at, u.updated_at,
                p.date_of_birth, p.address, p.biography
         FROM users u LEFT JOIN user_profiles p ON p.user_id = u.user_id
         WHERE u.user_id = %s
@@ -473,6 +473,20 @@ def update_profile(
             ON CONFLICT (user_id) DO UPDATE SET {update_columns}
             """,
             (user["user_id"], *values.values()),
+        )
+    if user.get("role") == "parent":
+        connection.execute(
+            """
+            INSERT INTO parents (user_id, full_name, phone, email)
+            SELECT user_id, full_name, phone, email
+            FROM users
+            WHERE user_id = %s
+            ON CONFLICT (user_id) DO UPDATE SET
+              full_name = EXCLUDED.full_name,
+              phone = EXCLUDED.phone,
+              email = EXCLUDED.email
+            """,
+            (user["user_id"],),
         )
     return get_profile(connection, user)
 
@@ -1050,7 +1064,8 @@ def get_linked_children(
     """Học sinh đã liên kết với phụ huynh, kể cả khi chưa có điểm danh."""
     return fetch_all(
         connection,
-        """SELECT s.student_code, u.full_name
+        """SELECT s.student_code, u.full_name, s.status AS student_status,
+                  sp.relationship, sp.is_primary
            FROM parents p
            JOIN student_parents sp ON sp.parent_id = p.parent_id
            JOIN students s ON s.student_id = sp.student_id

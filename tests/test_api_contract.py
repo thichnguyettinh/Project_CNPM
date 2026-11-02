@@ -10,6 +10,7 @@ from pydantic import ValidationError
 from backend.app.main import (
     app,
     dashboard,
+    get_linked_children,
     link_parent_to_student,
     login,
     reset_user_password,
@@ -140,6 +141,42 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_parent_profile_lists_only_children_linked_to_authenticated_parent(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user"}
+        children = [{
+            "student_code": "HS001",
+            "full_name": "Học sinh thử nghiệm",
+            "relationship": "Phụ huynh",
+            "student_status": "active",
+        }]
+
+        with patch("backend.app.main.fetch_all", return_value=children) as fetch:
+            result = get_linked_children(connection, parent)
+
+        self.assertEqual(result, children)
+        query = fetch.call_args.args[1]
+        self.assertIn("JOIN student_parents sp ON sp.parent_id = p.parent_id", query)
+        self.assertIn("WHERE p.user_id = %s", query)
+        self.assertIn("sp.relationship", query)
+        self.assertEqual(fetch.call_args.args[2], ("parent-user",))
+
+    def test_parent_profile_update_keeps_parent_record_in_sync(self):
+        connection = unittest.mock.Mock()
+        user = {"user_id": "parent-user", "role": "parent"}
+        payload = ProfileUpdate(full_name="Updated Parent", phone="0900000000")
+        profile = {"full_name": "Updated Parent"}
+
+        with patch("backend.app.main.fetch_one", return_value=profile):
+            result = update_profile(payload, connection, user)
+
+        self.assertEqual(result, profile)
+        self.assertEqual(len(connection.execute.call_args_list), 2)
+        parent_sync = connection.execute.call_args_list[1]
+        self.assertIn("INSERT INTO parents", parent_sync.args[0])
+        self.assertIn("ON CONFLICT (user_id) DO UPDATE SET", parent_sync.args[0])
+        self.assertEqual(parent_sync.args[1], ("parent-user",))
+
     def test_student_me_returns_profile_and_primary_guardian_details(self):
         connection = unittest.mock.Mock()
         student = {
@@ -202,6 +239,7 @@ class ApiContractTests(unittest.TestCase):
             ("user-1", None, None, "Updated bio"),
         )
         self.assertIn("u.updated_at", fetch.call_args.args[1])
+        self.assertIn("u.created_at", fetch.call_args.args[1])
 
     def test_profile_update_rejects_empty_name(self):
         connection = unittest.mock.Mock()
@@ -232,6 +270,24 @@ class ApiContractTests(unittest.TestCase):
         for sample_value in ("Trần Minh Anh", "Trần Thị Hương", "HS001", "10A1", "090 123 4500"):
             self.assertNotIn(sample_value, student_profile)
         self.assertNotIn("🔑 Đổi mật khẩu", student_profile)
+        parent_profile = (root / "pages/parent/profile.html").read_text(encoding="utf-8")
+        for sample_value in (
+            "Nguyễn Thị Mai",
+            "Nguyễn Minh Anh",
+            "HS-2026-0812",
+            "Toán 8A",
+            "Trần Hoàng Nam",
+            "01/09/2026",
+        ):
+            self.assertNotIn(sample_value, parent_profile)
+        self.assertIn("AuthService.api('/children')", profile_script)
+        self.assertIn("loadParentDetails(profile)", profile_script)
+        self.assertIn("id=\"parentProfileChildren\"", parent_profile)
+        self.assertIn("../../assets/css/profile.css", parent_profile)
+        test_seed = (root / "database/seed_test_accounts.sql").read_text(encoding="utf-8")
+        self.assertIn("JOIN users su ON su.user_id = s.user_id", test_seed)
+        self.assertIn("JOIN users pu ON pu.username = 'parent'", test_seed)
+        self.assertIn("WHERE su.username = 'student'", test_seed)
         self.assertIn("Không tải được dữ liệu", profile_script)
         self.assertNotIn(
             "Không tải được ảnh đại diện: ${error.message}",

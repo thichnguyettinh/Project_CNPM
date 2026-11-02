@@ -1,0 +1,30 @@
+.parent-profile-child {
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: #F8FAFC;
+}
+
+.parent-profile-child + .parent-profile-child {
+  margin-top: 10px;
+}
+
+.parent-profile-child-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.parent-profile-child-heading strong {
+  color: var(--color-text-main);
+  font-size: 14px;
+}
+
+.parent-profile-child-heading .text-caption {
+  margin: 3px 0 0;
+}
+
+.parent-profile-child-details {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}

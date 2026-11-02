@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/profile.css">
 </head>
 <body data-profile-role="parent">
 
@@ -39,8 +40,8 @@
 
       <div class="sidebar-user-bottom">
         <div class="user-mini-profile">
-          <div class="avatar-badge" data-profile-avatar style="background:#FFFBEB; color:#A16207;">TM</div>
-          <div class="user-mini-meta"><h5 data-profile-name>Nguyễn Thị Mai</h5><p>Phụ huynh</p></div>
+          <div class="avatar-badge" data-profile-avatar style="background:#FFFBEB; color:#A16207;"></div>
+          <div class="user-mini-meta"><h5 data-profile-name>Đang tải hồ sơ…</h5><p>Phụ huynh</p></div>
         </div>
         <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất" aria-label="Đăng xuất">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -55,8 +56,8 @@
         <div class="header-actions">
           <button class="btn btn-secondary btn-sm" onclick="alert('Hotline trung tâm: 028 3822 8888')">📞 Liên hệ trung tâm</button>
           <div style="display:flex; align-items:center; gap:8px;">
-            <div class="avatar-badge" data-profile-avatar style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;">TM</div>
-            <span style="font-size:13px; font-weight:600;"><span data-profile-name>Nguyễn Thị Mai</span> · Phụ huynh</span>
+            <div class="avatar-badge" data-profile-avatar style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;"></div>
+            <span style="font-size:13px; font-weight:600;"><span data-profile-name>Đang tải hồ sơ…</span> · Phụ huynh</span>
           </div>
         </div>
       </header>
@@ -81,9 +82,9 @@
             <!-- Cột thông tin phụ huynh -->
             <div class="card" style="padding:24px;">
               <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid #E2E8F0;">
-                <div class="avatar-badge" data-profile-avatar style="width:56px; height:56px; font-size:20px; background:#FFFBEB; color:#A16207;">TM</div>
+                <div class="avatar-badge" data-profile-avatar style="width:56px; height:56px; font-size:20px; background:#FFFBEB; color:#A16207;"></div>
                 <div>
-                  <h3 style="font-size:17px; font-weight:700;" data-profile-name>Nguyễn Thị Mai</h3>
+                  <h3 style="font-size:17px; font-weight:700;" data-profile-name>Đang tải hồ sơ…</h3>
                   <span class="badge badge-warning">Phụ huynh</span>
                 </div>
               </div>
@@ -121,29 +122,17 @@
             <div style="display:flex; flex-direction:column; gap:16px;">
               <div class="card" style="padding:20px;">
                 <h4 style="font-size:14px; font-weight:700; margin-bottom:12px;">Học sinh đã liên kết</h4>
-                <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-                  <div class="avatar-badge" style="width:36px; height:36px; font-size:12px; background:#E0F2FE; color:#0284C7;">MA</div>
-                  <div>
-                    <strong style="font-size:14px;">Nguyễn Minh Anh</strong>
-                    <div class="text-caption">Mã học sinh: HS-2026-0812</div>
-                  </div>
-                </div>
-                <div style="font-size:13px; line-height:1.7; color:#475569;">
-                  <div>Khối lớp: <strong>Lớp 8</strong></div>
-                  <div>Lớp tại trung tâm: <strong>Toán 8A</strong></div>
-                  <div>Giáo viên: <strong>Trần Hoàng Nam</strong></div>
-                  <div>Quan hệ: <strong>Mẹ</strong></div>
-                </div>
+                <div id="parentProfileChildren"><p class="text-caption">Đang tải học sinh đã liên kết…</p></div>
               </div>
 
               <div class="card" style="padding:20px;">
                 <h4 style="font-size:14px; font-weight:700; margin-bottom:8px;">Thông tin tài khoản</h4>
                 <div style="font-size:13px; line-height:1.7; color:#475569; margin-bottom:12px;">
                   <div>Vai trò: <strong>Phụ huynh</strong></div>
-                  <div>Trạng thái: <span class="badge badge-success">Đang hoạt động</span></div>
-                  <div>Ngày tạo: <strong>01/09/2026</strong></div>
+                  <div>Trạng thái: <span id="parentAccountStatus" class="badge">Đang tải…</span></div>
+                  <div>Ngày tạo: <strong id="parentAccountCreatedAt">Đang tải…</strong></div>
                 </div>
-                <button class="btn btn-secondary btn-sm" onclick="switchParentProfileTab('password', document.getElementById('btnParentPwd'))">🔑 Cài đặt mật khẩu</button>
+                <button class="btn btn-secondary btn-sm" onclick="switchParentProfileTab('password', document.getElementById('btnParentPwd'))">Cài đặt mật khẩu</button>
               </div>
             </div>
           </div>
@@ -195,7 +184,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/profile.js"></script>
+  <script src="../../assets/js/profile.js?v=20261102-2"></script>
   <script>
     AuthService.requireAuth('parent');
     AuthService.updatePasswordStrength('parentNewPassword', 'parentPasswordChecklist', 'parentPasswordMeter', 'parentPasswordStrengthLabel');
