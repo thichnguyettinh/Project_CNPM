@@ -62,7 +62,7 @@ const DashboardStats = {
       });
     }
     if (role === 'parent') {
-      this.el('parentAttendanceChild')?.addEventListener('change', event => {
+      this.el('parentAttendanceChild')?.addEventListener?.('change', event => {
         this.renderChild(event.target.value || '');
       });
       window.addEventListener('dashboard:child-selected', event => {

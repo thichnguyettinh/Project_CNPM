@@ -114,7 +114,10 @@ const TeacherAttendancePage = {
         String(s.session_id)
       )));
       if (sessions.length) {
-        select.value = String(sessions[0].session_id);
+        const urlParams = new URLSearchParams(location.search);
+        const desiredSession = urlParams.get('session_id');
+        const matchSession = desiredSession && sessions.find(s => String(s.session_id) === String(desiredSession));
+        select.value = matchSession ? String(matchSession.session_id) : String(sessions[0].session_id);
         await this.selectSession(select.value);
       } else this.message('Lớp chưa có buổi học. Hãy tạo buổi tại Lịch học hoặc qua API /docs.');
     } catch (error) { this.message(`Không tải được buổi học: ${error.message}`, 'danger'); }
