@@ -1,0 +1,119 @@
+.terms-page {
+  min-height: 100vh;
+  padding: 28px 20px 56px;
+  background: #F4F7FB;
+}
+
+.terms-header {
+  width: min(900px, 100%);
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.terms-brand {
+  color: var(--color-text-main);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.terms-card {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 52px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+.terms-eyebrow {
+  margin-bottom: 8px;
+  color: var(--color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.terms-card h1 {
+  max-width: 700px;
+  margin-bottom: 8px;
+  color: var(--color-text-main);
+  font-size: clamp(26px, 5vw, 36px);
+  line-height: 1.2;
+}
+
+.terms-updated {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.terms-notice {
+  margin: 24px 0 32px;
+  padding: 16px 18px;
+  border: 1px solid #BFDBFE;
+  border-radius: 10px;
+  background: #EFF6FF;
+  color: #1E3A8A;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.terms-card section + section {
+  margin-top: 28px;
+}
+
+.terms-card section h2 {
+  margin-bottom: 10px;
+  color: var(--color-text-main);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.terms-card section p,
+.terms-card section li {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+.terms-card section p + p {
+  margin-top: 10px;
+}
+
+.terms-card section ul {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.terms-card section li + li {
+  margin-top: 6px;
+}
+
+.terms-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 36px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+@media (max-width: 520px) {
+  .terms-page {
+    padding: 16px 12px 32px;
+  }
+
+  .terms-header {
+    align-items: flex-start;
+  }
+
+  .terms-footer {
+    flex-direction: column;
+  }
+}

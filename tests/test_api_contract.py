@@ -176,6 +176,20 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_terms_and_privacy_page_is_linked_from_login_and_role_help(self):
+        root = Path(__file__).resolve().parents[1]
+        login_page = (root / "index.html").read_text(encoding="utf-8")
+        terms_page = (root / "pages/terms.html").read_text(encoding="utf-8")
+        self.assertIn('href="pages/terms.html"', login_page)
+        self.assertIn("Điều khoản sử dụng và Chính sách quyền riêng tư", terms_page)
+        self.assertIn("Lưu trữ và bảo vệ thông tin", terms_page)
+        self.assertIn("Quyền và yêu cầu liên quan đến thông tin", terms_page)
+        self.assertNotIn("phiên bản đồ án", terms_page)
+
+        for role in ("teacher", "student", "parent"):
+            help_page = (root / f"pages/{role}/help.html").read_text(encoding="utf-8")
+            self.assertIn('href="../terms.html"', help_page)
+
     def test_parent_schedule_can_filter_to_a_linked_student(self):
         connection = unittest.mock.Mock()
         parent = {"user_id": "parent-user", "role": "parent"}
