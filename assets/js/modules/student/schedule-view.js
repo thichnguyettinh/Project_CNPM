@@ -1,10 +1,19 @@
-/** UC-05 / UC-04: lịch của học sinh lấy từ các lớp ghi danh đang hoạt động và buổi học thật. */
+/**
+ * THỜI KHÓA BIỂU HỌC SINH (STUDENT SCHEDULE MODULE)
+ * Phụ trách: Phạm Nguyễn Hoàng Kim & Nhóm Lớp Mình
+ */
 const StudentScheduleModule = {
-  getMyClasses() { return AuthService.api('/classes'); },
+  getMyClasses() {
+    return AuthService.api('/classes');
+  },
+
+  // Lấy danh sách lịch học của học sinh đang đăng nhập
   getMySchedule(filters = {}) {
     const q = new URLSearchParams(filters).toString();
     return AuthService.api(`/sessions${q ? `?${q}` : ''}`);
   },
+
+  // Lấy chi tiết buổi học
   getSessionDetail(sessionId) {
     return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}`);
   }

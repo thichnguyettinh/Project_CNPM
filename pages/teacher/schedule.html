@@ -13,6 +13,47 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .cal-class-card {
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .cal-class-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .cal-nav-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+      font-weight: bold;
+      color: var(--color-text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cal-nav-btn:hover {
+      background: #F1F5F9;
+    }
+    .badge-completed {
+      background: #E2E8F0;
+      color: #475569;
+    }
+  </style>
 </head>
 <body>
 
@@ -72,9 +113,9 @@
 
       <div class="sidebar-user-bottom">
         <div class="user-mini-profile">
-          <div class="avatar-badge">HL</div>
+          <div class="avatar-badge" id="teacherAvatar">HL</div>
           <div class="user-mini-meta">
-            <h5>Nguyễn Hà Linh</h5>
+            <h5 id="teacherName">Nguyễn Hà Linh</h5>
             <p>Giáo viên</p>
           </div>
         </div>
@@ -93,7 +134,7 @@
           <span class="crumb-active">Lịch học</span>
         </div>
         <div class="header-actions">
-          <span style="font-size: 13px; color: var(--color-text-secondary);">Thứ Sáu, 23/10/2026</span>
+          <span style="font-size: 13px; color: var(--color-text-secondary);" id="headerDateLabel">Thứ Sáu, 23/10/2026</span>
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="avatar-badge" style="width:32px; height:32px; font-size:12px;">HL</div>
             <span style="font-size:13px; font-weight:600;">Nguyễn Hà Linh · Giáo viên</span>
@@ -105,166 +146,70 @@
         <!-- Header Lịch học -->
         <div class="page-header-row">
           <div>
-            <h1 class="title-page" style="font-size:24px;">Lịch học</h1>
-            <p class="text-secondary" style="margin-top:4px;">Theo dõi toàn bộ lịch giảng dạy trong tuần của cô Hà Linh.</p>
+            <h1 class="title-page" style="font-size:24px;">Lịch học & Thời khóa biểu</h1>
+            <p class="text-secondary" style="margin-top:4px;">Theo dõi toàn bộ lịch giảng dạy các lớp học theo thời gian thực.</p>
           </div>
-          <button class="btn btn-primary" onclick="alert('Mở form thêm buổi học mới')">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <span>Thêm buổi học</span>
-          </button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" onclick="loadSchedule()" title="Tải lại lịch">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Làm mới</span>
+            </button>
+            <button class="btn btn-primary" onclick="openAddSessionModal()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Thêm buổi học</span>
+            </button>
+          </div>
         </div>
 
         <!-- Toolbar điều hướng lịch -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
           <div style="display:flex; align-items:center; gap:12px;">
-            <button class="btn btn-secondary btn-sm">Hôm nay</button>
-            <div style="font-weight:600; font-size:15px; color:var(--color-text-main); display:flex; align-items:center; gap:8px;">
-              <span style="cursor:pointer;">&lt;</span>
-              <span>19–25 tháng 10, 2026</span>
-              <span style="cursor:pointer;">&gt;</span>
+            <button class="btn btn-secondary btn-sm" onclick="goToDefaultWeek()">Tuần thiết kế (19–25/10)</button>
+            <button class="btn btn-secondary btn-sm" onclick="goToCurrentWeek()">Hôm nay</button>
+            <div style="font-weight:700; font-size:15px; color:var(--color-text-main); display:flex; align-items:center; gap:8px;">
+              <button class="cal-nav-btn" onclick="prevWeek()" title="Tuần trước">&lt;</button>
+              <span id="weekDisplayLabel" style="min-width: 170px; text-align: center;">19–25 tháng 10, 2026</span>
+              <button class="cal-nav-btn" onclick="nextWeek()" title="Tuần sau">&gt;</button>
             </div>
           </div>
           <div style="display:flex; gap:12px;">
-            <select class="form-control" style="width:160px;"><option>Tất cả lớp học</option><option>Toán 10 - Nền tảng</option></select>
-            <select class="form-control" style="width:150px;"><option>Xem theo tuần</option><option>Xem theo tháng</option></select>
+            <select class="form-control" id="classSelectFilter" style="width:200px;" onchange="loadSchedule()">
+              <option value="">Tất cả lớp học</option>
+            </select>
           </div>
         </div>
 
         <!-- LƯỚI THỜI KHÓA BIỂU TUẦN -->
-        <div class="calendar-week-grid" style="margin-bottom: 24px;">
-          <div class="calendar-header-col" style="background:#F8FAFC;"></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Thứ Hai</div><div class="cal-day-num">19</div></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Thứ Ba</div><div class="cal-day-num">20</div></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Thứ Tư</div><div class="cal-day-num">21</div></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Thứ Năm</div><div class="cal-day-num">22</div></div>
-          <div class="calendar-header-col" style="background:#EFF6FF;"><div class="cal-day-title" style="color:var(--color-primary); font-weight:700;">Thứ Sáu</div><div class="cal-day-num today">23</div></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Thứ Bảy</div><div class="cal-day-num">24</div></div>
-          <div class="calendar-header-col"><div class="cal-day-title">Chủ Nhật</div><div class="cal-day-num">25</div></div>
-
-          <!-- Dòng 08:00 -->
-          <div class="calendar-time-cell">08:00</div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nền tảng', 'P.201', '08:00–10:00')">
-              <h5>Toán 11 - Nền tảng</h5>
-              <p>TO11B · P.201</p>
-              <span>Nguyễn Hà Linh</span>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 9 - Vào lớp 10', 'P.201', '08:00–10:00')">
-              <h5>Toán 9 - Vào lớp 10</h5>
-              <p>TO9A · P.201</p>
-              <span>Nguyễn Hà Linh</span>
-            </div>
-          </div>
-
-          <!-- Dòng 17:30 -->
-          <div class="calendar-time-cell">17:30</div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
-              <h5>Toán 10 - Nền tảng</h5>
-              <p>TO10A · P.201</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nâng cao', 'P.201', '17:30–19:00')">
-              <h5>Toán 11 - Nâng cao</h5>
-              <p>TO11A · P.201</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
-              <h5>Toán 10 - Nền tảng</h5>
-              <p>TO10A · P.201</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 11 - Nâng cao', 'P.201', '17:30–19:00')">
-              <h5>Toán 11 - Nâng cao</h5>
-              <p>TO11A · P.201</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell" style="background:#F0F7FF;">
-            <!-- Buổi học hôm nay active -->
-            <div class="cal-class-card active-now" onclick="openSessionModal('Toán 10 - Nền tảng', 'P.201', '17:30–19:00')">
-              <h5>Toán 10 - Nền tảng</h5>
-              <p>TO10A · P.201</p>
-              <span>Sắp diễn ra</span>
-            </div>
-          </div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
-
-          <!-- Dòng 19:15 -->
-          <div class="calendar-time-cell">19:15</div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
-              <h5>Toán 12 - Luyện thi</h5>
-              <p>TO12A · P.202</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Củng cố', 'P.202', '19:15–20:45')">
-              <h5>Toán 10 - Củng cố</h5>
-              <p>TO10B · P.202</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
-              <h5>Toán 12 - Luyện thi</h5>
-              <p>TO12A · P.202</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 10 - Củng cố', 'P.202', '19:15–20:45')">
-              <h5>Toán 10 - Củng cố</h5>
-              <p>TO10B · P.202</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell">
-            <div class="cal-class-card" onclick="openSessionModal('Toán 12 - Luyện thi', 'P.202', '19:15–20:45')">
-              <h5>Toán 12 - Luyện thi</h5>
-              <p>TO12A · P.202</p>
-            </div>
-          </div>
-          <div class="calendar-slot-cell"></div>
-          <div class="calendar-slot-cell"></div>
+        <div class="calendar-week-grid" id="calendarWeekGrid" style="margin-bottom: 24px;">
+          <!-- Header 7 ngày được sinh động bằng JavaScript -->
         </div>
 
-        <!-- Khung khoét lỗ Module Thời khóa biểu -->
-        <div class="feature-slot">
-          <span class="slot-tag">SLOT: UC-04 TIMETABLE & SCHEDULING</span>
-          <p class="slot-desc">Đã thiết lập khung hàm: getSchedules(), addScheduleSession(), checkConflict().</p>
-          <span class="code-hint">window.ScheduleModule</span>
-        </div>
       </div>
     </main>
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL: CHI TIẾT BUỔI HỌC -->
+  <!-- MODAL 1: CHI TIẾT BUỔI HỌC -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalSessionDetail">
-    <div class="modal-container" style="max-width: 540px;">
+    <div class="modal-container" style="max-width: 560px;">
       <div class="modal-header">
         <div>
           <h3 class="modal-title">Chi tiết buổi học</h3>
-          <p class="text-caption">Thứ Sáu, 23/10/2026 · Buổi 21</p>
+          <p class="text-caption" id="sessionModalSubtitle">Thứ Sáu, 23/10/2026</p>
         </div>
         <button class="modal-close" onclick="closeModal('modalSessionDetail')">&times;</button>
       </div>
       <div class="modal-body">
+        <input type="hidden" id="currentSessionId">
+        <input type="hidden" id="currentSessionClassId">
+
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
           <div>
-            <h4 style="font-size:16px; font-weight:700;" id="sessionModalTitle">Toán 10 - Nền tảng</h4>
-            <p class="text-caption">TO10A · Nguyễn Hà Linh</p>
+            <h4 style="font-size:17px; font-weight:700;" id="sessionModalTitle">Toán 10 - Nền tảng</h4>
+            <p class="text-caption" id="sessionModalTeacher">TO10A · Nguyễn Hà Linh</p>
           </div>
-          <span class="badge badge-info">Sắp diễn ra</span>
+          <span class="badge badge-info" id="sessionModalStatusBadge">Sắp diễn ra</span>
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:16px; background:#F8FAFC; padding:12px; border-radius:8px;">
@@ -273,47 +218,403 @@
             <div style="font-weight:600; font-size:13.5px;" id="sessionModalTime">17:30–19:00 · 90 phút</div>
           </div>
           <div>
-            <div style="font-size:11px; color:#64748B;">Phòng học</div>
+            <div style="font-size:11px; color:#64748B;">Phòng học & Sĩ số</div>
             <div style="font-weight:600; font-size:13.5px;" id="sessionModalRoom">Phòng 201 · 20 học sinh</div>
           </div>
         </div>
 
         <div style="margin-bottom:16px;">
           <div style="font-size:13px; font-weight:600; margin-bottom:4px;">Nội dung buổi học</div>
-          <p style="font-size:13px; color:#475569; line-height:1.5;">
+          <p style="font-size:13px; color:#475569; line-height:1.5;" id="sessionModalTopic">
             Hàm số bậc hai: đồ thị và ứng dụng. Ôn tập dạng bài tìm giá trị lớn nhất, nhỏ nhất.
           </p>
         </div>
 
-        <div class="alert alert-warning" style="margin-bottom:0;">
+        <div class="alert alert-info" id="sessionAttendanceNotice" style="margin-bottom:0;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
           <div>
-            <strong>Chưa điểm danh:</strong> Danh sách 20 học sinh đã sẵn sàng. Điểm danh sẽ được lưu cho buổi học ngày 23/10/2026.
+            <strong>Điểm danh điện tử:</strong> Nhấn nút bên dưới để chuyển thẳng sang sổ điểm danh điện tử cho buổi học này.
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="display:flex; justify-content:space-between;">
         <button class="btn btn-secondary" onclick="closeModal('modalSessionDetail')">Đóng</button>
-        <a href="attendance.html" class="btn btn-primary">
-          Điểm danh buổi học
-        </a>
+        <button class="btn btn-primary" onclick="goToAttendance()">
+          Chuyển sang điểm danh →
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL 2: THÊM BUỔI HỌC MỚI -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalAddSession">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Thêm buổi học mới</h3>
+        <button class="modal-close" onclick="closeModal('modalAddSession')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="addSessionAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
+
+        <form id="formAddSession" onsubmit="handleAddSession(event)">
+          <div class="form-group">
+            <label class="form-label">Chọn lớp học <span class="required">*</span></label>
+            <select class="form-control" id="addSessionClassId" required>
+              <option value="">-- Chọn lớp học --</option>
+            </select>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1.5fr 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Ngày học <span class="required">*</span></label>
+              <input type="date" class="form-control" id="addSessionDate" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bắt đầu <span class="required">*</span></label>
+              <input type="time" class="form-control" id="addSessionStart" value="17:30" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kết thúc <span class="required">*</span></label>
+              <input type="time" class="form-control" id="addSessionEnd" value="19:00" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Phòng học</label>
+            <input type="text" class="form-control" id="addSessionRoom" placeholder="Phòng 201" value="Phòng 201">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Nội dung bài học / Chuyên đề</label>
+            <input type="text" class="form-control" id="addSessionTopic" placeholder="Ví dụ: Ôn tập chương Hàm số">
+          </div>
+
+          <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalAddSession')">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitAddSession">
+              Tạo buổi học
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="../../assets/js/auth.js"></script>
+  <script src="../../assets/js/modules/teacher/class-management.js"></script>
   <script src="../../assets/js/modules/teacher/schedule.js"></script>
   <script>
-    AuthService.requireAuth('teacher');
+    // Kiểm tra quyền giáo viên
+    const currentUser = AuthService.requireAuth('teacher');
+    if (currentUser) {
+      document.getElementById('teacherName').innerText = currentUser.fullName || 'Giáo viên';
+      document.getElementById('teacherAvatar').innerText = currentUser.avatarText || 'HL';
+    }
 
+    // Modal
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
-    function openSessionModal(title, room, time) {
-      document.getElementById('sessionModalTitle').innerText = title;
-      document.getElementById('sessionModalRoom').innerText = room + ' · 20 học sinh';
-      document.getElementById('sessionModalTime').innerText = time + ' · 90 phút';
+    // Quản lý tuần hiện tại (Mặc định: Thứ Hai 19/10/2026 theo PDF thiết kế)
+    const DEFAULT_START_DATE = new Date(2026, 9, 19); // Oct is month index 9
+    let currentWeekStart = new Date(DEFAULT_START_DATE);
+
+    let allLoadedSessions = [];
+    let teacherClasses = [];
+
+    // Tên thứ trong tuần
+    const DAY_NAMES = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'];
+
+    // Lấy ngày thứ Hai của tuần chứa date
+    function getMonday(d) {
+      const date = new Date(d);
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      date.setDate(diff);
+      date.setHours(0, 0, 0, 0);
+      return date;
+    }
+
+    function formatDateISO(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Điều hướng tuần
+    function prevWeek() {
+      currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+      loadSchedule();
+    }
+    function nextWeek() {
+      currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+      loadSchedule();
+    }
+    function goToDefaultWeek() {
+      currentWeekStart = new Date(DEFAULT_START_DATE);
+      loadSchedule();
+    }
+    function goToCurrentWeek() {
+      currentWeekStart = getMonday(new Date());
+      loadSchedule();
+    }
+
+    // Nạp danh sách lớp vào bộ lọc
+    async function loadClassOptions() {
+      try {
+        const classes = await ClassManagementModule.getClasses();
+        teacherClasses = classes || [];
+        const filterSelect = document.getElementById('classSelectFilter');
+        const modalSelect = document.getElementById('addSessionClassId');
+
+        filterSelect.innerHTML = '<option value="">Tất cả lớp học</option>';
+        modalSelect.innerHTML = '<option value="">-- Chọn lớp học --</option>';
+
+        teacherClasses.forEach(c => {
+          filterSelect.innerHTML += `<option value="${c.code}">${c.name} (${c.code})</option>`;
+          modalSelect.innerHTML += `<option value="${c.id}">${c.name} (${c.code})</option>`;
+        });
+      } catch (e) {
+        console.error('Không thể nạp danh sách lớp:', e);
+      }
+    }
+
+    // Nạp lịch tuần từ API
+    async function loadSchedule() {
+      const weekStart = new Date(currentWeekStart);
+      const weekEnd = new Date(currentWeekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+
+      // Cập nhật nhãn tuần
+      const label = `${weekStart.getDate()}–${weekEnd.getDate()} tháng ${weekStart.getMonth() + 1}, ${weekStart.getFullYear()}`;
+      document.getElementById('weekDisplayLabel').innerText = label;
+
+      const classFilter = document.getElementById('classSelectFilter').value;
+
+      try {
+        const filter = {
+          date_from: formatDateISO(weekStart),
+          date_to: formatDateISO(weekEnd)
+        };
+        if (classFilter) filter.class_id = classFilter;
+
+        const sessions = await ScheduleModule.getSchedules(filter);
+        allLoadedSessions = Array.isArray(sessions) ? sessions : [];
+        renderWeekGrid(weekStart, allLoadedSessions);
+      } catch (error) {
+        console.error('Lỗi nạp lịch học:', error);
+      }
+    }
+
+    // Render lưới tuần
+    function renderWeekGrid(weekStart, sessions) {
+      const grid = document.getElementById('calendarWeekGrid');
+      grid.innerHTML = '';
+
+      // Định nghĩa các khung giờ chuẩn
+      const TIME_SLOTS = ['08:00', '17:30', '19:15'];
+
+      // Header hàng 1: Cột trống góc trái trên
+      const cornerHeader = document.createElement('div');
+      cornerHeader.className = 'calendar-header-col';
+      cornerHeader.style.background = '#F8FAFC';
+      grid.appendChild(cornerHeader);
+
+      // 7 cột header ngày
+      const todayISO = formatDateISO(new Date());
+      for (let i = 0; i < 7; i++) {
+        const colDate = new Date(weekStart);
+        colDate.setDate(colDate.getDate() + i);
+        const colISO = formatDateISO(colDate);
+        const isToday = colISO === '2026-10-23' || colISO === todayISO;
+
+        const colDiv = document.createElement('div');
+        colDiv.className = 'calendar-header-col';
+        if (isToday) colDiv.style.background = '#EFF6FF';
+
+        colDiv.innerHTML = `
+          <div class="cal-day-title" style="${isToday ? 'color:var(--color-primary); font-weight:700;' : ''}">${DAY_NAMES[i]}</div>
+          <div class="cal-day-num ${isToday ? 'today' : ''}">${colDate.getDate()}</div>
+        `;
+        grid.appendChild(colDiv);
+      }
+
+      // Render từng khung giờ
+      TIME_SLOTS.forEach(slotTime => {
+        // Cột nhãn giờ
+        const timeCell = document.createElement('div');
+        timeCell.className = 'calendar-time-cell';
+        timeCell.innerText = slotTime;
+        grid.appendChild(timeCell);
+
+        // 7 ô tương ứng 7 ngày
+        for (let dayIdx = 0; dayIdx < 7; dayIdx++) {
+          const slotDate = new Date(weekStart);
+          slotDate.setDate(slotDate.getDate() + dayIdx);
+          const dateStr = formatDateISO(slotDate);
+          const isFocusDay = dateStr === '2026-10-23';
+
+          const slotCell = document.createElement('div');
+          slotCell.className = 'calendar-slot-cell';
+          if (isFocusDay) slotCell.style.background = '#F0F7FF';
+
+          // Tìm các buổi học thuộc ngày và khung giờ này
+          const matchedSessions = sessions.filter(s => {
+            const sDate = s.starts_at.slice(0, 10);
+            const sTime = s.starts_at.slice(11, 16);
+            return sDate === dateStr && sTime === slotTime;
+          });
+
+          matchedSessions.forEach(s => {
+            const startTime = s.starts_at.slice(11, 16);
+            const endTime = s.ends_at.slice(11, 16);
+            const isCompleted = s.status === 'completed';
+            const isActiveNow = isFocusDay && startTime === '17:30';
+
+            const card = document.createElement('div');
+            card.className = `cal-class-card ${isActiveNow ? 'active-now' : ''}`;
+            if (isCompleted) {
+              card.style.borderLeft = '3px solid #94A3B8';
+              card.style.background = '#F8FAFC';
+            }
+
+            card.innerHTML = `
+              <h5>${escapeHtml(s.class_name)}</h5>
+              <p>${escapeHtml(s.class_code)} · ${escapeHtml(s.room || 'P.201')}</p>
+              <span style="font-size:11px;">${startTime}–${endTime} ${isActiveNow ? '· Sắp diễn ra' : ''}</span>
+            `;
+
+            card.onclick = () => openSessionModal(s.session_id);
+            slotCell.appendChild(card);
+          });
+
+          grid.appendChild(slotCell);
+        }
+      });
+    }
+
+    // Mở modal chi tiết buổi học
+    async function openSessionModal(sessionId) {
+      let session = allLoadedSessions.find(s => s.session_id === sessionId);
+      if (!session) {
+        try {
+          session = await ScheduleModule.getSessionDetail(sessionId);
+        } catch (e) {
+          alert('Không tìm thấy thông tin buổi học.');
+          return;
+        }
+      }
+
+      document.getElementById('currentSessionId').value = session.session_id;
+      document.getElementById('currentSessionClassId').value = session.class_id;
+
+      document.getElementById('sessionModalTitle').innerText = session.class_name;
+      document.getElementById('sessionModalTeacher').innerText = `${session.class_code} · ${session.teacher_name || 'Nguyễn Hà Linh'}`;
+
+      const sDate = session.starts_at.slice(0, 10);
+      const startTime = session.starts_at.slice(11, 16);
+      const endTime = session.ends_at.slice(11, 16);
+      
+      const parts = sDate.split('-');
+      const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      document.getElementById('sessionModalSubtitle').innerText = `Ngày ${formattedDate} · Lớp ${session.class_code}`;
+
+      document.getElementById('sessionModalTime').innerText = `${startTime}–${endTime} · ${formattedDate}`;
+      document.getElementById('sessionModalRoom').innerText = `${session.room || 'Phòng 201'} · ${session.student_count || 20} học sinh`;
+      document.getElementById('sessionModalTopic').innerText = session.topic || 'Ôn tập kiến thức trọng tâm và giải bài tập rèn luyện.';
+
+      const badge = document.getElementById('sessionModalStatusBadge');
+      if (session.status === 'completed') {
+        badge.className = 'badge badge-completed';
+        badge.innerText = 'Đã hoàn thành';
+      } else {
+        badge.className = 'badge badge-info';
+        badge.innerText = 'Sắp diễn ra';
+      }
+
       openModal('modalSessionDetail');
     }
+
+    // Điều hướng sang trang điểm danh với session_id và class_id
+    function goToAttendance() {
+      const sessionId = document.getElementById('currentSessionId').value;
+      const classId = document.getElementById('currentSessionClassId').value;
+      window.location.href = `attendance.html?session_id=${encodeURIComponent(sessionId)}&class_id=${encodeURIComponent(classId)}`;
+    }
+
+    // Mở modal thêm buổi học
+    function openAddSessionModal() {
+      document.getElementById('formAddSession').reset();
+      document.getElementById('addSessionDate').value = '2026-10-23';
+      document.getElementById('addSessionStart').value = '17:30';
+      document.getElementById('addSessionEnd').value = '19:00';
+      document.getElementById('addSessionRoom').value = 'Phòng 201';
+      document.getElementById('addSessionAlert').style.display = 'none';
+      openModal('modalAddSession');
+    }
+
+    // Xử lý tạo buổi học mới
+    async function handleAddSession(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btnSubmitAddSession');
+      const alertBox = document.getElementById('addSessionAlert');
+      alertBox.style.display = 'none';
+
+      const classId = document.getElementById('addSessionClassId').value;
+      const dateVal = document.getElementById('addSessionDate').value;
+      const startVal = document.getElementById('addSessionStart').value;
+      const endVal = document.getElementById('addSessionEnd').value;
+      const room = document.getElementById('addSessionRoom').value.trim();
+      const topic = document.getElementById('addSessionTopic').value.trim();
+
+      if (!classId || !dateVal || !startVal || !endVal) {
+        alertBox.innerText = 'Vui lòng điền đầy đủ lớp học, ngày và thời gian.';
+        alertBox.style.display = 'block';
+        return;
+      }
+
+      const startsAt = `${dateVal}T${startVal}:00+07:00`;
+      const endsAt = `${dateVal}T${endVal}:00+07:00`;
+
+      btn.disabled = true;
+      btn.innerText = 'Đang tạo...';
+
+      try {
+        await ScheduleModule.addSchedule({
+          class_id: classId,
+          starts_at: startsAt,
+          ends_at: endsAt,
+          room: room || 'Phòng 201',
+          topic: topic || null
+        });
+        closeModal('modalAddSession');
+        await loadSchedule();
+        alert('Tạo buổi học thành công!');
+      } catch (error) {
+        alertBox.innerText = error.message;
+        alertBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Tạo buổi học';
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Khởi tạo
+    loadClassOptions();
+    loadSchedule();
   </script>
 </body>
 </html>
