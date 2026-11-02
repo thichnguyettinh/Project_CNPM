@@ -29,6 +29,7 @@ from backend.app.schemas import (
     ResultEntry,
     ProfileUpdate,
     UserCreate,
+    UserUpdate,
     UserPasswordReset,
 )
 from backend.app.security import (
@@ -86,6 +87,37 @@ class SecurityTests(unittest.TestCase):
 
 
 class RequestValidationTests(unittest.TestCase):
+    def test_phone_number_must_contain_exactly_ten_digits(self):
+        valid_phone = "0912345678"
+        self.assertEqual(ProfileUpdate(phone=f" {valid_phone} ").phone, valid_phone)
+        self.assertEqual(UserCreate(
+            username="parent01",
+            full_name="Parent One",
+            role="parent",
+            linked_student_code="HS001",
+            password="StrongPass1!",
+            phone=valid_phone,
+        ).phone, valid_phone)
+        self.assertEqual(UserUpdate(phone=valid_phone).phone, valid_phone)
+
+        payloads = (
+            lambda value: ProfileUpdate(phone=value),
+            lambda value: UserCreate(
+                username="parent01",
+                full_name="Parent One",
+                role="parent",
+                linked_student_code="HS001",
+                password="StrongPass1!",
+                phone=value,
+            ),
+            lambda value: UserUpdate(phone=value),
+        )
+        for invalid_phone in ("123456789", "12345678901", "090 1234567", "+84912345678"):
+            for build_payload in payloads:
+                with self.subTest(phone=invalid_phone, payload=build_payload):
+                    with self.assertRaises(ValidationError):
+                        build_payload(invalid_phone)
+
     def test_password_policy_requires_all_four_criteria(self):
         self.assertEqual(password_policy_errors("Abcdef1!"), [])
         self.assertEqual(
@@ -323,6 +355,18 @@ class ApiContractTests(unittest.TestCase):
         self.assertEqual(raised.exception.status_code, 422)
         connection.execute.assert_not_called()
 
+    def test_profile_update_rejects_empty_phone(self):
+        connection = unittest.mock.Mock()
+        with self.assertRaises(HTTPException) as raised:
+            update_profile(
+                ProfileUpdate(phone=""),
+                connection,
+                {"user_id": "user-1"},
+            )
+        self.assertEqual(raised.exception.status_code, 422)
+        self.assertEqual(raised.exception.detail, "Số điện thoại không được để trống.")
+        connection.execute.assert_not_called()
+
     def test_profile_pages_load_and_save_persisted_data(self):
         root = Path(__file__).resolve().parents[1]
         for role in ("teacher", "student", "parent"):
@@ -332,11 +376,16 @@ class ApiContractTests(unittest.TestCase):
             self.assertIn("ProfileModule.save()", page)
             self.assertIn("ProfileModule.load()", page)
             self.assertIn('id="profileUpdatedAt"', page)
+            self.assertIn('pattern="[0-9]{10}"', page)
+            self.assertIn('maxlength="10"', page)
         profile_script = (root / "assets/js/profile.js").read_text(encoding="utf-8")
         self.assertIn("AuthService.api('/profile')", profile_script)
         self.assertIn("method: 'PATCH'", profile_script)
         self.assertIn("AuthService.api('/students/me')", profile_script)
         self.assertIn("AuthService.api('/classes')", profile_script)
+        user_management_page = (root / "pages/teacher/users.html").read_text(encoding="utf-8")
+        self.assertEqual(user_management_page.count('pattern="[0-9]{10}"'), 2)
+        self.assertEqual(user_management_page.count('maxlength="10"'), 2)
         student_profile = (root / "pages/student/profile.html").read_text(encoding="utf-8")
         for sample_value in ("Trần Minh Anh", "Trần Thị Hương", "HS001", "10A1", "090 123 4500"):
             self.assertNotIn(sample_value, student_profile)

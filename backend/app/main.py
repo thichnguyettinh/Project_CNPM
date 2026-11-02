@@ -442,9 +442,12 @@ def update_profile(
         user_values["full_name"] = (user_values["full_name"] or "").strip()
         if not user_values["full_name"]:
             raise HTTPException(status_code=422, detail="Họ và tên không được để trống.")
-    for field in ("email", "phone"):
-        if field in user_values:
-            user_values[field] = (user_values[field] or "").strip() or None
+    if "phone" in user_values:
+        user_values["phone"] = (user_values["phone"] or "").strip()
+        if not user_values["phone"]:
+            raise HTTPException(status_code=422, detail="Số điện thoại không được để trống.")
+    if "email" in user_values:
+        user_values["email"] = (user_values["email"] or "").strip() or None
     for field in ("address", "biography"):
         if field in values and values[field] is not None:
             values[field] = values[field].strip() or None

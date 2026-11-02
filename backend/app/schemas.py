@@ -1,14 +1,31 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BeforeValidator, BaseModel, ConfigDict, Field, model_validator
 
 from .security import password_policy_errors
 
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+def normalize_phone(value: object) -> object:
+    if isinstance(value, str):
+        phone = value.strip()
+        if not phone:
+            return None
+        if len(phone) != 10 or not phone.isascii() or not phone.isdigit():
+            raise ValueError("Số điện thoại phải gồm đúng 10 chữ số.")
+        return phone
+    return value
+
+
+PhoneNumber = Annotated[
+    str | None,
+    BeforeValidator(normalize_phone),
+]
 
 
 class LoginRequest(StrictModel):
@@ -20,7 +37,7 @@ class UserCreate(StrictModel):
     username: str = Field(min_length=3, max_length=50)
     email: str | None = Field(default=None, max_length=254)
     full_name: str = Field(min_length=1, max_length=150)
-    phone: str | None = Field(default=None, max_length=30)
+    phone: PhoneNumber = None
     role: Literal["student", "parent"]
     password: str = Field(min_length=8, max_length=128)
     student_code: str | None = Field(default=None, max_length=30)
@@ -42,7 +59,7 @@ class UserCreate(StrictModel):
 class UserUpdate(StrictModel):
     full_name: str | None = Field(default=None, min_length=1, max_length=150)
     email: str | None = Field(default=None, max_length=254)
-    phone: str | None = Field(default=None, max_length=30)
+    phone: PhoneNumber = None
     status: Literal["active", "inactive", "locked"] | None = None
 
 
@@ -77,7 +94,7 @@ class PasswordChange(StrictModel):
 class ProfileUpdate(StrictModel):
     full_name: str | None = Field(default=None, min_length=1, max_length=150)
     email: str | None = Field(default=None, max_length=254)
-    phone: str | None = Field(default=None, max_length=30)
+    phone: PhoneNumber = None
     date_of_birth: date | None = None
     address: str | None = Field(default=None, max_length=255)
     biography: str | None = None

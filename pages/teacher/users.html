@@ -237,7 +237,8 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="createPhone">Số điện thoại</label>
-            <input class="form-control" id="createPhone" maxlength="30">
+            <input class="form-control" id="createPhone" type="tel" inputmode="numeric"
+              pattern="[0-9]{10}" maxlength="10" title="Số điện thoại phải gồm đúng 10 chữ số.">
           </div>
           <div class="form-group" id="createStudentCodeGroup">
             <label class="form-label" for="createStudentCode">Mã học sinh <span class="required">*</span></label>
@@ -287,7 +288,8 @@
           </div>
           <div class="form-group">
             <label class="form-label" for="editPhone">Số điện thoại</label>
-            <input class="form-control" id="editPhone" maxlength="30">
+            <input class="form-control" id="editPhone" type="tel" inputmode="numeric"
+              pattern="[0-9]{10}" maxlength="10" title="Số điện thoại phải gồm đúng 10 chữ số.">
           </div>
         </div>
         <div class="modal-footer">
