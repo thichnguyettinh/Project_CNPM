@@ -1083,18 +1083,31 @@ def list_sessions(
     class_id: str | None = None,
     date_from: date | None = None,
     date_to: date | None = None,
+    student_code: str | None = None,
 ):
     params: list[Any] = []
     where = ["cs.status <> 'cancelled'"]
     if user["role"] == "teacher":
+        if student_code:
+            raise HTTPException(status_code=403, detail="Bạn không có quyền lọc lịch theo học sinh.")
         where.append("c.teacher_user_id = %s")
         params.append(user["user_id"])
     elif user["role"] == "student":
+        if student_code:
+            raise HTTPException(status_code=403, detail="Bạn không có quyền lọc lịch theo học sinh.")
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce JOIN students s ON s.student_id = ce.student_id WHERE ce.class_id = c.class_id AND ce.status = 'active' AND s.user_id = %s)")
         params.append(user["user_id"])
     else:
         where.append("EXISTS (SELECT 1 FROM class_enrollments ce JOIN student_parents sp ON sp.student_id = ce.student_id JOIN parents p ON p.parent_id = sp.parent_id WHERE ce.class_id = c.class_id AND ce.status = 'active' AND p.user_id = %s)")
         params.append(user["user_id"])
+        if student_code:
+            student = can_view_student(connection, user, student_code)
+            where.append(
+                "EXISTS (SELECT 1 FROM class_enrollments selected_ce "
+                "WHERE selected_ce.class_id = c.class_id "
+                "AND selected_ce.student_id = %s AND selected_ce.status = 'active')"
+            )
+            params.append(student["student_id"])
     if class_id:
         where.append("(c.class_id = %s OR c.class_code = %s)")
         params.extend([class_id, class_id])

@@ -12,6 +12,7 @@ from backend.app.main import (
     can_view_student,
     dashboard,
     get_linked_children,
+    list_sessions,
     link_parent_to_student,
     login,
     reset_user_password,
@@ -143,6 +144,40 @@ class RequestValidationTests(unittest.TestCase):
 
 
 class ApiContractTests(unittest.TestCase):
+    def test_parent_schedule_can_filter_to_a_linked_student(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user", "role": "parent"}
+        sessions = [{"session_id": 41, "class_code": "TO10A"}]
+
+        with (
+            patch(
+                "backend.app.main.can_view_student",
+                return_value={"student_id": 17, "student_code": "HS017"},
+            ) as guard,
+            patch("backend.app.main.fetch_all", return_value=sessions) as fetch,
+        ):
+            result = list_sessions(
+                connection,
+                parent,
+                student_code="HS017",
+            )
+
+        self.assertEqual(result, sessions)
+        guard.assert_called_once_with(connection, parent, "HS017")
+        query = fetch.call_args.args[1]
+        self.assertIn("selected_ce.student_id = %s", query)
+        self.assertIn("p.user_id = %s", query)
+        self.assertEqual(fetch.call_args.args[2], ("parent-user", 17))
+
+    def test_non_parent_cannot_filter_schedule_by_student_code(self):
+        connection = unittest.mock.Mock()
+        student = {"user_id": "student-user", "role": "student"}
+
+        with self.assertRaises(HTTPException) as raised:
+            list_sessions(connection, student, student_code="HS001")
+
+        self.assertEqual(raised.exception.status_code, 403)
+
     def test_parent_progress_uses_linked_student_guard_and_deduplicates_enrollments(self):
         connection = unittest.mock.Mock()
         parent = {"user_id": "parent-user", "role": "parent"}

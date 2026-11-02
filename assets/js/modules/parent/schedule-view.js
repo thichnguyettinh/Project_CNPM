@@ -10,19 +10,14 @@ const ParentScheduleModule = {
     if (filter.date_from) params.append('date_from', filter.date_from);
     if (filter.date_to) params.append('date_to', filter.date_to);
     if (filter.class_id) params.append('class_id', filter.class_id);
+    if (filter.student_code) params.append('student_code', filter.student_code);
 
     const query = params.toString();
     return AuthService.api(`/sessions${query ? `?${query}` : ''}`);
   },
 
-  // Lấy chi tiết một buổi học
-  getSessionDetail(sessionId) {
-    return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}`);
-  },
-
-  // Lấy danh sách con và thông tin tổng quan
-  getDashboard() {
-    return AuthService.api('/dashboard');
+  getLinkedChildren() {
+    return AuthService.api('/children');
   }
 };
 
