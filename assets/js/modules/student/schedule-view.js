@@ -51,6 +51,28 @@ const StudentSchedulePage = {
       timeZone: 'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit',hourCycle:'h23'
     }).format(new Date(iso));
   },
+  formatWeekRange(start, end) {
+    const first = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'long' });
+    const last = new Intl.DateTimeFormat('vi-VN', {
+      day: 'numeric', month: 'long', year: 'numeric'
+    });
+    return `${first.format(start)} – ${last.format(end)}`;
+  },
+  selectedClasses() {
+    return this.state.classId
+      ? this.state.classes.filter(item => String(item.id) === String(this.state.classId))
+      : this.state.classes;
+  },
+  timeSlots() {
+    const slots = new Set(['08:00', '12:00', '17:30', '20:00']);
+    this.state.sessions.forEach(session => slots.add(this.formatTime(session.starts_at)));
+    this.selectedClasses().forEach(classItem => {
+      for (const match of (classItem.schedule_summary || '').matchAll(/\b([01]\d|2[0-3]):[0-5]\d\b/g)) {
+        slots.add(match[0]);
+      }
+    });
+    return [...slots].sort();
+  },
   textElement(tag, text, className='') {
     const element = document.createElement(tag);
     element.textContent = text;
@@ -69,6 +91,8 @@ const StudentSchedulePage = {
     const name = current?.fullName || current?.full_name || 'Học sinh';
     this.el('studentScheduleUser').textContent = `${name} · Học sinh`;
     this.el('studentScheduleToday').textContent = `Hôm nay: ${this.formatDate(new Date())}`;
+    this.el('studentScheduleSubtitle').textContent =
+      `Lịch học của ${name} · Năm học ${AuthService.getAcademicYear()}`;
     this.state.weekStart = this.weekMonday(new Date());
     this.el('schedulePreviousWeek').addEventListener('click', () => this.moveWeek(-7));
     this.el('scheduleCurrentWeek').addEventListener('click', () => {this.state.weekStart=this.weekMonday(new Date());this.loadWeek();});
@@ -85,6 +109,7 @@ const StudentSchedulePage = {
       const select=this.el('scheduleStudentClass');
       select.replaceChildren(new Option('Tất cả lớp đang học',''));
       this.state.classes.forEach(c => select.add(new Option(`${c.name} (${c.code})`,c.id)));
+      select.disabled = this.state.classes.length === 0;
       await this.loadWeek();
     } catch(error) {
       this.message(`Không thể tải lịch học: ${error.message}`,'danger');
@@ -98,7 +123,7 @@ const StudentSchedulePage = {
   async loadWeek() {
     const start=this.state.weekStart;
     const end=this.addDays(start,6);
-    this.el('scheduleWeekLabel').textContent = `Tuần ${this.formatDate(start)} – ${this.formatDate(end)}`;
+    this.el('scheduleWeekLabel').textContent = this.formatWeekRange(start, end);
     this.el('studentSessionDetail').hidden=true;
     this.message('Đang tải buổi học trong tuần…');
     const classId=this.state.classId;
@@ -119,29 +144,78 @@ const StudentSchedulePage = {
     }
   },
   render() {
-    const grid=this.el('studentScheduleGrid');grid.replaceChildren();
+    const grid=this.el('studentScheduleGrid');
+    grid.replaceChildren();
+    const sessions = this.state.sessions;
+    const classes = this.selectedClasses();
     const today=this.localDate(new Date());
     const days=['Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy','Chủ Nhật'];
-    for(let i=0;i<7;i++){
-      const date=this.addDays(this.state.weekStart,i);
+    const dates=days.map((_,index)=>this.addDays(this.state.weekStart,index));
+    grid.style.setProperty('--schedule-day-count', String(days.length));
+    grid.append(this.textElement('div','Thời gian','student-calendar-corner'));
+    dates.forEach((date,index)=>{
       const dayKey=this.localDate(date);
-      const card=this.textElement('section','','schedule-day-card'+(dayKey===today?' is-today':''));
-      const head=this.textElement('h3',days[i],'schedule-day-heading');
-      head.append(this.textElement('span',this.formatDate(date),'schedule-day-date'));
-      card.append(head);
-      const sessions=this.state.sessions.filter(s=>this.dayForSession(s.starts_at)===dayKey);
-      if(!sessions.length){card.append(this.textElement('p','Không có buổi học','schedule-day-empty'));}
-      for(const session of sessions){
-        const button=this.textElement('button','','schedule-session-button');
-        button.type='button';
-        button.append(this.textElement('span',`${this.formatTime(session.starts_at)}–${this.formatTime(session.ends_at)}`,'schedule-session-time'));
-        button.append(this.textElement('span',session.class_name||session.class_code||'Lớp học','schedule-session-title'));
-        button.append(this.textElement('span',session.room||'Chưa có phòng','schedule-session-room'));
-        button.addEventListener('click',()=>this.showDetail(session.session_id));
-        card.append(button);
-      }
-      grid.append(card);
+      const heading=this.textElement('div','',`student-calendar-day-heading${dayKey===today?' is-today':''}`);
+      heading.append(
+        this.textElement('span',days[index],'student-calendar-day-name'),
+        this.textElement('strong',String(date.getDate()),'student-calendar-day-number')
+      );
+      heading.setAttribute('aria-label',`${days[index]} ${this.formatDate(date)}`);
+      grid.append(heading);
+    });
+
+    this.timeSlots().forEach(time=>{
+      grid.append(this.textElement('div',time,'student-calendar-time'));
+      dates.forEach(date=>{
+        const dayKey=this.localDate(date);
+        const cell=this.textElement('div','',`student-calendar-cell${dayKey===today?' is-today':''}`);
+        sessions.filter(session=>
+          this.dayForSession(session.starts_at)===dayKey &&
+          this.formatTime(session.starts_at)===time
+        ).forEach(session=>{
+          const card=this.textElement('article','','student-calendar-session');
+          card.append(
+            this.textElement('strong',`${this.formatTime(session.starts_at)}–${this.formatTime(session.ends_at)}`,'student-calendar-session-time'),
+            this.textElement('strong',session.class_name||session.class_code||'Lớp học','student-calendar-session-title'),
+            this.textElement('span',`${session.class_code||''}${session.class_code?' · ':''}${session.room||'Chưa có phòng'}`,'student-calendar-session-meta'),
+            this.textElement('span',session.teacher_name||'Giáo viên phụ trách','student-calendar-session-meta')
+          );
+          if(session.topic) card.append(this.textElement('span',session.topic,'student-calendar-session-topic'));
+          const detail=this.textElement('button','Chi tiết →','student-calendar-session-link');
+          detail.type='button';
+          detail.addEventListener('click',()=>this.showDetail(session.session_id));
+          card.append(detail);
+          cell.append(card);
+        });
+        grid.append(cell);
+      });
+    });
+
+    this.el('studentScheduleCount').textContent =
+      `${sessions.length} buổi học · ${classes.length} lớp${this.state.classId?' · Đang lọc theo lớp':''}. Chọn buổi học để xem nội dung và tài liệu.`;
+    this.renderFixedSchedules(classes);
+  },
+  renderFixedSchedules(classes) {
+    const list=this.el('studentFixedSchedules');
+    list.replaceChildren();
+    const scheduled=classes.filter(item=>item.schedule_summary);
+    if(!scheduled.length){
+      list.append(this.textElement('p','Chưa có lịch học cố định được thiết lập cho các lớp của em.','schedule-fixed-empty'));
+      return;
     }
+    scheduled.forEach(classItem=>{
+      const card=this.textElement('article','','schedule-fixed-item');
+      card.append(
+        this.textElement('h3',`${classItem.name} (${classItem.code})`,'schedule-fixed-title'),
+        this.textElement('p',classItem.schedule_summary,'schedule-fixed-time'),
+        this.textElement(
+          'p',
+          `${classItem.teacher_name||'Chưa có giáo viên'} · ${classItem.room?`Phòng ${classItem.room}`:'Chưa phân phòng'}`,
+          'schedule-fixed-meta'
+        )
+      );
+      list.append(card);
+    });
   },
   async showDetail(sessionId){
     this.el('studentSessionDetail').hidden=false;

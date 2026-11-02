@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/schedule.css">
   <style>
     .modal-overlay {
       display: none;
@@ -55,7 +56,7 @@
     }
   </style>
 </head>
-<body>
+<body class="schedule-page teacher-schedule-page">
 
   <div class="app-layout">
     <!-- SIDEBAR -->
@@ -144,7 +145,7 @@
 
       <div class="app-content">
         <!-- Header Lịch học -->
-        <div class="page-header-row">
+        <div class="page-header-row schedule-page-header">
           <div>
             <h1 class="title-page" style="font-size:24px;">Lịch học & Thời khóa biểu</h1>
             <p class="text-secondary" style="margin-top:4px;">Theo dõi toàn bộ lịch giảng dạy các lớp học theo thời gian thực.</p>
@@ -162,17 +163,17 @@
         </div>
 
         <!-- Toolbar điều hướng lịch -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-          <div style="display:flex; align-items:center; gap:12px;">
+        <div class="schedule-toolbar">
+          <div class="schedule-toolbar-group">
             <button class="btn btn-secondary btn-sm" onclick="goToCurrentWeek()">Tuần này</button>
             <button class="btn btn-secondary btn-sm" onclick="goToCurrentWeek()">Hôm nay</button>
-            <div style="font-weight:700; font-size:15px; color:var(--color-text-main); display:flex; align-items:center; gap:8px;">
+            <div class="schedule-toolbar-group">
               <button class="cal-nav-btn" onclick="prevWeek()" title="Tuần trước">&lt;</button>
-              <span id="weekDisplayLabel" style="min-width: 170px; text-align: center;">Đang tải tuần hiện tại…</span>
+              <span id="weekDisplayLabel" class="schedule-week-label">Đang tải tuần hiện tại…</span>
               <button class="cal-nav-btn" onclick="nextWeek()" title="Tuần sau">&gt;</button>
             </div>
           </div>
-          <div style="display:flex; gap:12px;">
+          <div class="schedule-toolbar-group">
             <select class="form-control" id="classSelectFilter" style="width:200px;" onchange="loadSchedule()">
               <option value="">Tất cả lớp học</option>
             </select>
@@ -460,19 +461,16 @@
       const grid = document.getElementById('calendarWeekGrid');
       grid.innerHTML = '';
 
-      const TIME_SLOTS = [...new Set(sessions.map(session => session.starts_at.slice(11, 16)))].sort();
-      if (!TIME_SLOTS.length) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'calendar-empty-state';
-        emptyState.setAttribute('role', 'status');
-        emptyState.textContent = 'Chưa có buổi học trong tuần này.';
-        grid.appendChild(emptyState);
-        return;
-      }
+      const standardSlots = ['08:00', '17:30', '19:15'];
+      const TIME_SLOTS = [...new Set([
+        ...standardSlots,
+        ...sessions.map(session => session.starts_at.slice(11, 16))
+      ])].sort();
 
       // Header hàng 1: Cột trống góc trái trên
       const cornerHeader = document.createElement('div');
       cornerHeader.className = 'calendar-header-col';
+      cornerHeader.textContent = 'Thời gian';
       cornerHeader.style.background = '#F8FAFC';
       grid.appendChild(cornerHeader);
 
@@ -512,6 +510,7 @@
 
           const slotCell = document.createElement('div');
           slotCell.className = 'calendar-slot-cell';
+          if (isFocusDay) slotCell.classList.add('is-today');
           if (isFocusDay) slotCell.style.background = '#F0F7FF';
 
           // Tìm các buổi học thuộc ngày và khung giờ này
@@ -530,8 +529,7 @@
             const card = document.createElement('div');
             card.className = `cal-class-card ${isActiveNow ? 'active-now' : ''}`;
             if (isCompleted) {
-              card.style.borderLeft = '3px solid #94A3B8';
-              card.style.background = '#F8FAFC';
+              card.classList.add('is-completed');
             }
 
             card.innerHTML = `

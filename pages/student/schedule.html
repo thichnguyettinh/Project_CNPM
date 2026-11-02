@@ -14,8 +14,9 @@
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
   <link rel="stylesheet" href="../../assets/css/student-schedule-live.css">
+  <link rel="stylesheet" href="../../assets/css/schedule.css">
 </head>
-<body>
+<body class="schedule-page student-schedule-page">
 
   <div class="app-layout">
     <!-- SIDEBAR -->
@@ -81,28 +82,33 @@
       </header>
 
       <div class="app-content">
-        <div class="page-header-row">
+        <div class="page-header-row schedule-page-header">
           <div>
-            <h1 class="title-page">Thời khóa biểu của em</h1>
-            <p class="text-secondary">Các buổi học được lấy trực tiếp từ lớp em đang ghi danh. Khi giáo viên thêm hoặc bớt em khỏi lớp, hãy tải lại trang để xem lịch mới.</p>
+            <h1 class="title-page">Lịch học tuần</h1>
+            <p id="studentScheduleSubtitle" class="text-secondary">Lịch học và các buổi đã lên kế hoạch của em.</p>
           </div>
         </div>
         <div id="studentScheduleMessage" class="alert alert-info" role="status" aria-live="polite" hidden></div>
-        <div class="card" style="padding:20px; margin-bottom:20px;">
-          <div class="schedule-controls">
-            <div class="schedule-control-buttons">
-              <button id="schedulePreviousWeek" type="button" class="btn btn-secondary btn-sm">← Tuần trước</button>
-              <button id="scheduleCurrentWeek" type="button" class="btn btn-secondary btn-sm">Tuần này</button>
-              <button id="scheduleNextWeek" type="button" class="btn btn-secondary btn-sm">Tuần sau →</button>
-            </div>
-            <div class="schedule-control-filter">
-              <label class="form-label" for="scheduleStudentClass">Lớp học</label>
-              <select id="scheduleStudentClass" class="form-control" aria-label="Chọn lớp học"><option value="">Đang tải…</option></select>
-            </div>
+        <div class="schedule-week-toolbar">
+          <div class="schedule-week-toolbar-actions">
+            <button id="scheduleCurrentWeek" type="button" class="btn btn-secondary btn-sm">Hôm nay</button>
+            <button id="schedulePreviousWeek" type="button" class="btn btn-secondary btn-sm" aria-label="Tuần trước">‹</button>
+            <button id="scheduleNextWeek" type="button" class="btn btn-secondary btn-sm" aria-label="Tuần sau">›</button>
           </div>
-          <p id="scheduleWeekLabel" class="text-secondary" style="font-weight:600; margin-top:16px;">Đang tải tuần học…</p>
+          <p id="scheduleWeekLabel" class="schedule-week-label">Đang tải tuần học…</p>
+          <div class="schedule-week-class-filter">
+            <label class="sr-only" for="scheduleStudentClass">Lớp học</label>
+            <select id="scheduleStudentClass" class="form-control" aria-label="Chọn lớp học"><option value="">Đang tải…</option></select>
+          </div>
         </div>
-        <div id="studentScheduleGrid" class="schedule-week-cards" aria-live="polite"></div>
+        <div class="student-calendar-scroll">
+          <div id="studentScheduleGrid" class="student-calendar-grid" aria-live="polite"></div>
+        </div>
+        <p id="studentScheduleCount" class="schedule-week-count" aria-live="polite"></p>
+        <section class="schedule-fixed-card">
+          <h2 class="title-card">Lịch học cố định</h2>
+          <div id="studentFixedSchedules" class="schedule-fixed-list"></div>
+        </section>
         <section id="studentSessionDetail" class="card" style="padding:20px; margin-top:20px;" hidden>
           <h2 class="title-card" style="margin-bottom:14px;">Chi tiết buổi học</h2>
           <div id="studentSessionDetailBody"></div>
@@ -112,7 +118,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/modules/student/schedule-view.js"></script>
+  <script src="../../assets/js/modules/student/schedule-view.js?v=20261102-3"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => StudentSchedulePage.init());
   </script>

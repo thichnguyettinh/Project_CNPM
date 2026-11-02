@@ -1,0 +1,544 @@
+.student-schedule-page .schedule-page-header,
+.teacher-schedule-page .schedule-page-header {
+  margin-bottom: 20px;
+}
+
+.student-schedule-page .schedule-week-toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) minmax(180px, 240px);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.student-schedule-page .schedule-week-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.student-schedule-page .schedule-week-label {
+  margin: 0;
+  color: var(--color-text-main);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.student-schedule-page .schedule-week-class-filter .form-control {
+  width: 100%;
+}
+
+.student-schedule-page .student-calendar-scroll {
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.student-schedule-page .student-calendar-grid {
+  display: grid;
+  grid-template-columns: 64px repeat(var(--schedule-day-count, 7), minmax(128px, 1fr));
+  min-width: 990px;
+  background: var(--color-surface);
+}
+
+.student-schedule-page .student-calendar-corner,
+.student-schedule-page .student-calendar-day-heading {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--color-border);
+  background: #F8FAFC;
+}
+
+.student-schedule-page .student-calendar-corner {
+  left: 0;
+  z-index: 3;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.student-schedule-page .student-calendar-day-heading {
+  flex-direction: column;
+  gap: 3px;
+  border-left: 1px solid var(--color-border);
+}
+
+.student-schedule-page .student-calendar-day-heading.is-today {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+.student-schedule-page .student-calendar-day-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-schedule-page .student-calendar-day-number {
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.student-schedule-page .student-calendar-time,
+.student-schedule-page .student-calendar-cell {
+  min-height: 116px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.student-schedule-page .student-calendar-time {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  padding: 12px 5px;
+  background: #F8FAFC;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.student-schedule-page .student-calendar-cell {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 6px;
+  border-left: 1px solid var(--color-border);
+}
+
+.student-schedule-page .student-calendar-cell.is-today {
+  background: #F7FAFF;
+}
+
+.student-schedule-page .student-calendar-session {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding: 9px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--color-info-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-input);
+  background: var(--color-info-bg);
+  color: var(--color-text-main);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.student-schedule-page .student-calendar-session-time {
+  color: var(--color-primary);
+  font-size: 10px;
+}
+
+.student-schedule-page .student-calendar-session-title {
+  font-size: 12px;
+}
+
+.student-schedule-page .student-calendar-session-meta,
+.student-schedule-page .student-calendar-session-topic {
+  color: var(--color-text-secondary);
+}
+
+.student-schedule-page .student-calendar-session-link {
+  justify-self: start;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.student-schedule-page .schedule-week-count {
+  margin: 12px 2px 20px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.student-schedule-page .schedule-fixed-card {
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.student-schedule-page .schedule-fixed-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.student-schedule-page .schedule-fixed-item {
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  background: #F8FAFC;
+}
+
+.student-schedule-page .schedule-fixed-title {
+  margin: 0 0 8px;
+  color: var(--color-text-main);
+  font-size: 14px;
+}
+
+.student-schedule-page .schedule-fixed-time,
+.student-schedule-page .schedule-fixed-meta,
+.student-schedule-page .schedule-fixed-empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.student-schedule-page .schedule-fixed-time {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.student-schedule-page .schedule-fixed-meta {
+  margin-top: 5px;
+}
+
+.student-schedule-page .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.student-schedule-page .schedule-week-card {
+  min-width: 0;
+  min-height: 310px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.student-schedule-page .schedule-day-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: -14px -14px 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.student-schedule-page .schedule-day-date {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.student-schedule-page .schedule-week-card.is-today {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary), var(--shadow-sm);
+}
+
+.student-schedule-page .schedule-week-card.is-today .schedule-day-heading {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+.student-schedule-page .schedule-day-sessions {
+  display: grid;
+  min-height: 250px;
+  align-content: start;
+  gap: 10px;
+}
+
+.student-schedule-page .schedule-session-button {
+  padding: 11px;
+  border-color: var(--color-info-border);
+  background: var(--color-info-bg);
+  border-radius: var(--radius-input);
+}
+
+.student-schedule-page .schedule-session-time {
+  color: var(--color-primary);
+  font-size: 12px;
+}
+
+.student-schedule-page .schedule-session-title {
+  font-size: 13px;
+}
+
+.student-schedule-page .schedule-session-room {
+  font-size: 12px;
+}
+
+.teacher-schedule-page .schedule-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.teacher-schedule-page .schedule-toolbar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.teacher-schedule-page .schedule-week-label {
+  min-width: 220px;
+  color: var(--color-text-main);
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.teacher-schedule-page .calendar-week-grid {
+  grid-template-columns: 72px repeat(7, minmax(132px, 1fr));
+  min-width: 996px;
+  overflow: auto;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+}
+
+.teacher-schedule-page .calendar-header-col {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-width: 132px;
+  min-height: 82px;
+  padding: 13px 8px;
+  background: #F8FAFC;
+}
+
+.teacher-schedule-page .calendar-header-col:first-child {
+  left: 0;
+  z-index: 3;
+  min-width: 72px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.teacher-schedule-page .cal-day-title {
+  margin-bottom: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.teacher-schedule-page .cal-day-num {
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.teacher-schedule-page .cal-day-num.today {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.teacher-schedule-page .calendar-time-cell {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-height: 150px;
+  padding: 14px 6px;
+  background: #F8FAFC;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.teacher-schedule-page .calendar-slot-cell {
+  min-width: 132px;
+  min-height: 150px;
+  padding: 8px;
+  background: var(--color-surface);
+}
+
+.teacher-schedule-page .calendar-slot-cell.is-today {
+  background: #FAFBFF;
+}
+
+.teacher-schedule-page .calendar-slot-cell:empty::after {
+  display: block;
+  min-height: 132px;
+  content: "";
+}
+
+.teacher-schedule-page .cal-class-card {
+  min-height: 112px;
+  padding: 11px 12px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-info-border);
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-info-bg);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  cursor: pointer;
+}
+
+.teacher-schedule-page .cal-class-card h5 {
+  margin-bottom: 7px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.teacher-schedule-page .cal-class-card p {
+  margin: 0 0 7px;
+  overflow-wrap: anywhere;
+}
+
+.teacher-schedule-page .cal-class-card span {
+  color: var(--color-text-secondary);
+}
+
+.teacher-schedule-page .cal-class-card.active-now {
+  border: 2px solid var(--color-primary);
+  border-left-width: 3px;
+  background: var(--color-info-bg);
+  color: var(--color-text-main);
+  box-shadow: 0 0 0 1px rgba(21, 101, 192, 0.08);
+}
+
+.teacher-schedule-page .cal-class-card.active-now h5,
+.teacher-schedule-page .cal-class-card.active-now p,
+.teacher-schedule-page .cal-class-card.active-now span {
+  color: inherit;
+}
+
+.teacher-schedule-page .cal-class-card.is-completed {
+  border-color: var(--color-border) !important;
+  border-left: 3px solid #94A3B8 !important;
+  background: #F8FAFC !important;
+}
+
+.teacher-schedule-page .cal-class-card.is-completed h5,
+.teacher-schedule-page .cal-class-card.is-completed p,
+.teacher-schedule-page .cal-class-card.is-completed span {
+  color: var(--color-text-secondary);
+}
+
+.teacher-schedule-page .cal-nav-btn {
+  width: 36px;
+  height: 38px;
+  border-radius: var(--radius-input);
+  background: var(--color-surface);
+}
+
+@media (max-width: 900px) {
+  .student-schedule-page .schedule-week-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .student-schedule-page .schedule-week-label {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .student-schedule-page .schedule-week-toolbar-actions {
+    grid-column: 1;
+  }
+
+  .student-schedule-page .schedule-week-class-filter {
+    grid-column: 2;
+  }
+
+  .student-schedule-page .schedule-week-cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .student-schedule-page .schedule-week-toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .student-schedule-page .schedule-week-label,
+  .student-schedule-page .schedule-week-toolbar-actions,
+  .student-schedule-page .schedule-week-class-filter {
+    grid-column: 1;
+  }
+
+  .student-schedule-page .schedule-week-toolbar-actions {
+    justify-content: center;
+  }
+
+  .student-schedule-page .schedule-fixed-card {
+    padding: 14px;
+  }
+
+  .student-schedule-page .schedule-week-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .student-schedule-page .schedule-week-card {
+    min-height: 250px;
+    padding: 11px;
+  }
+
+  .student-schedule-page .schedule-day-heading {
+    margin: -11px -11px 10px;
+    padding: 10px 11px;
+  }
+
+  .student-schedule-page .schedule-day-sessions {
+    min-height: 205px;
+  }
+
+  .teacher-schedule-page .schedule-toolbar {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-schedule-page .schedule-toolbar-group {
+    justify-content: space-between;
+  }
+
+  .teacher-schedule-page .schedule-week-label {
+    min-width: 0;
+  }
+
+  .teacher-schedule-page .schedule-toolbar select {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .student-schedule-page .schedule-week-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
