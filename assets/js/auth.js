@@ -33,7 +33,7 @@ const AuthService = {
     if (response.status === 204) return null;
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
-      if (response.status === 401) this.clearSession();
+      if (response.status === 401 && path === '/auth/me') this.clearSession();
       throw new Error(result.detail || `Yêu cầu thất bại (${response.status}).`);
     }
     return result;
@@ -54,7 +54,6 @@ const AuthService = {
     if (response.status === 204) return null;
     if (!response.ok) {
       const result = await response.json().catch(() => ({}));
-      if (response.status === 401) this.clearSession();
       throw new Error(result.detail || `Yêu cầu thất bại (${response.status}).`);
     }
     return response.blob();
@@ -287,10 +286,11 @@ const AuthService = {
         window.dispatchEvent(new CustomEvent('auth:user-updated', { detail: serverUser }));
       })
       .catch(error => {
-        this.clearSession();
         alert(error.message);
-        const isRoot = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/');
-        window.location.href = isRoot ? 'index.html' : '../../index.html';
+        if (!this.getToken()) {
+          const isRoot = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/');
+          window.location.href = isRoot ? 'index.html' : '../../index.html';
+        }
       });
     return user;
   },
