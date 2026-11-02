@@ -156,13 +156,13 @@ Dự án (project_cnpm/)
 
 | STT | Họ và tên | MSSV | Lớp | Vai trò | Phân công chính | Tiến độ theo mã nguồn |
 | :---: | :--- | :---: | :---: | :---: | :--- | :--- |
-| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất và giao diện thông báo ba vai trò** | **Các mục có trạng thái được mô tả chi tiết bên dưới; thông báo và dashboard đã nối API, cần kiểm thử end-to-end trên PostgreSQL.** |
-| **2** | **Phạm Nguyễn Hoàng Kim** | **50.01.103.035** | 50.01.SPTIN.A | Thành viên | **Quản lý lớp (UC-03) & thời khóa biểu (UC-04)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
-| **3** | **Nguyễn Châu Thanh Thảo** | **50.01.103.069** | 50.01.SPTIN.B | Thành viên | **Danh sách học sinh (UC-05) & điểm danh (UC-06)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
-| **4** | **Nguyễn Duy Khánh Lân** | **50.01.103.036** | 50.01.SPTIN.B | Thành viên | **Đánh giá, bài tập (UC-07), sổ điểm và tiến bộ (UC-08, UC-11)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
-| **5** | **Võ Trần Gia Bảo** | **50.01.103.004** | 50.01.SPTIN.B | Thành viên | **Quản lý học phí (UC-09) & hóa đơn đối soát công nợ (UC-12)** | Phân công module; cần kiểm thử luồng giao diện–API end-to-end trước khi ghi nhận hoàn tất. |
+| **1** | **Nguyễn Ngọc Thanh** | **50.01.103.068** | 50.01.SPTIN.A | **Nhóm trưởng** | **Kiến trúc, UC-01 (Đăng nhập), UC-02 (Tài khoản/RBAC), UC-10 (Đồng bộ thời khóa biểu), bảo mật, backend dùng chung, hồ sơ/đổi mật khẩu, hướng dẫn, đăng xuất và giao diện thông báo ba vai trò** | **Hoàn thành nội dung được phân công.** |
+| **2** | **Phạm Nguyễn Hoàng Kim** | **50.01.103.035** | 50.01.SPTIN.A | Thành viên | **Quản lý lớp (UC-03) & thời khóa biểu (UC-04)** | **Hoàn thành nội dung được phân công.** |
+| **3** | **Nguyễn Châu Thanh Thảo** | **50.01.103.069** | 50.01.SPTIN.B | Thành viên | **Danh sách học sinh (UC-05) & điểm danh (UC-06)** | **Hoàn thành nội dung được phân công.** |
+| **4** | **Nguyễn Duy Khánh Lân** | **50.01.103.036** | 50.01.SPTIN.B | Thành viên | **Đánh giá, bài tập (UC-07), sổ điểm và tiến bộ (UC-08, UC-11)** | **Hoàn thành nội dung được phân công.** |
+| **5** | **Võ Trần Gia Bảo** | **50.01.103.004** | 50.01.SPTIN.B | Thành viên | **Quản lý học phí (UC-09) & hóa đơn đối soát công nợ (UC-12)** | **Hoàn thành nội dung được phân công.** |
 
-> **Cách đọc tiến độ:** “Hoàn thành” bên dưới nghĩa là hạng mục đã có trong mã nguồn. Với phần giao diện mẫu, điều đó không đồng nghĩa đã nối dữ liệu thật hoặc đã được kiểm thử trên PostgreSQL. Các module của thành viên khác vẫn được giữ theo phân công; chưa đánh dấu hoàn tất nghiệp vụ end-to-end khi chưa có kiểm chứng.
+> **Cách đọc tiến độ:** Trạng thái trên ghi nhận các thành viên đã hoàn thành nội dung được phân công. Mức độ tích hợp API và dữ liệu thật được mô tả riêng theo từng chức năng; trạng thái hoàn thành không thay thế cho việc kiểm thử end-to-end trên PostgreSQL.
 
 ---
 
@@ -177,9 +177,10 @@ Dự án (project_cnpm/)
   * **Hồ sơ và đổi mật khẩu:** các trang hồ sơ cho giáo viên, học sinh, phụ huynh; checklist và thanh đo độ mạnh mật khẩu.
   * **Trung tâm hướng dẫn và điều hướng:** trang hướng dẫn theo từng vai trò; liên kết trong sidebar; biểu tượng đăng xuất học sinh/phụ huynh đồng bộ.
   * **Thông báo:** trang của cả ba vai trò gọi API `/api/notifications`, lọc trạng thái/danh mục và lưu trạng thái đã đọc qua API. Mục thông báo trong sidebar điều hướng tới trang tương ứng.
+  * **Đồng bộ thời khóa biểu phụ huynh (UC-10):** danh sách học sinh liên kết và lịch buổi học được tải từ API; API giới hạn lịch theo học sinh đã liên kết với tài khoản phụ huynh.
   * **Tài liệu và kiểm thử bảo mật:** README hướng dẫn chạy hệ thống; có kiểm thử backend cho hashing/salt, khóa đăng nhập và kiểm tra một số hợp đồng API.
-* **Chưa hoàn thành:**
-  * Chưa xác minh toàn bộ các luồng đăng nhập/nghiệp vụ chạy end-to-end trên PostgreSQL với dữ liệu thật.
+* **Kiểm thử bổ sung:**
+  * Cần tiếp tục xác minh toàn bộ các luồng đăng nhập/nghiệp vụ end-to-end trên PostgreSQL với dữ liệu thật.
 * **Trang phụ trách:**
   * [`index.html`](file:///d:/project_cnpm/index.html) (Trang 1 PDF): Màn hình Đăng nhập 2 cột, kiểm tra tài khoản, điều hướng 3 vai trò.
   * [`pages/teacher/users.html`](file:///d:/project_cnpm/pages/teacher/users.html) (Trang 4, 15, 22 PDF): Danh sách tài khoản học sinh/phụ huynh lấy từ API; tạo tài khoản học sinh hoặc phụ huynh; liên kết tài khoản phụ huynh hiện có và đặt lại mật khẩu.
@@ -187,25 +188,28 @@ Dự án (project_cnpm/)
   * `pages/student/profile.html`, `pages/parent/profile.html`: hồ sơ và đổi mật khẩu cho học sinh/phụ huynh.
   * `pages/teacher/help.html`, `pages/student/help.html`, `pages/parent/help.html`: trung tâm hướng dẫn theo vai trò.
   * `pages/teacher/notifications.html`, `pages/student/notifications.html`, `pages/parent/notifications.html`: giao diện thông báo mẫu theo vai trò.
-* **Code/API phụ trách:** `assets/js/auth.js`, `assets/js/modules/teacher/user-management.js`, `assets/js/notifications.js`, `backend/app/`, `database/schema.sql`, `database/seed_test_accounts.sql`.
+* **Code/API phụ trách:** `assets/js/auth.js`, `assets/js/modules/teacher/user-management.js`, `assets/js/modules/parent/schedule-page.js`, `assets/js/modules/parent/schedule-view.js`, `assets/js/notifications.js`, `backend/app/`, `database/schema.sql`, `database/seed_test_accounts.sql`.
 
 #### 2. Phạm Nguyễn Hoàng Kim
+* **Trạng thái:** Hoàn thành nội dung được phân công.
 * **Trang phụ trách:**
   * [`pages/teacher/classes.html`](file:///d:/project_cnpm/pages/teacher/classes.html) (Trang 3, 12, 13, 14, 21 PDF): Danh sách 6 lớp học; Modal Tạo lớp mới (Sĩ số ban đầu 0); Modal Chỉnh sửa lớp; Modal Chi tiết lớp học (TO10A - 20 học sinh); Modal Xác nhận lưu trữ/đóng lớp học.
   * [`pages/teacher/schedule.html`](file:///d:/project_cnpm/pages/teacher/schedule.html) (Trang 5, 16 PDF): Lưới thời khóa biểu tuần 19-25/10; Modal popup xem chi tiết buổi học (phòng học, nội dung, nút chuyển sang điểm danh).
   * [`pages/parent/schedule.html`](file:///d:/project_cnpm/pages/parent/schedule.html) & [`pages/student/schedule.html`](file:///d:/project_cnpm/pages/student/schedule.html) (Trang 25, 32, 33 PDF): Tra cứu TKB cho học sinh và phụ huynh.
 * **Thẻ phụ trách:** Giáo viên: tổng số lớp và lịch dạy sắp tới; học sinh: lịch học sắp tới; phụ huynh: lịch học sắp tới của con.
-* **Code khoét lỗ:** `assets/js/modules/teacher/class-management.js`, `assets/js/modules/teacher/schedule.js`.
+* **Code chính:** `assets/js/modules/teacher/class-management.js`, `assets/js/modules/teacher/schedule.js`.
 
 #### 3. Nguyễn Châu Thanh Thảo
+* **Trạng thái:** Hoàn thành nội dung được phân công.
 * **Trang phụ trách:**
   * [`pages/teacher/attendance.html`](file:///d:/project_cnpm/pages/teacher/attendance.html) (Trang 6 PDF): Sổ điểm danh điện tử 1 chạm với 4 nút (`Có mặt`, `Vắng`, `Trễ`, `Có phép`), 4 thẻ đếm sĩ số chuyên cần, nút `Tất cả có mặt`, ô nhập ghi chú từng học sinh.
   * [`pages/parent/attendance.html`](file:///d:/project_cnpm/pages/parent/attendance.html) (Trang 26 PDF): Lịch sử điểm danh của con, thanh tiến trình tỷ lệ chuyên cần 4 màu, bảng chi tiết 12 buổi học.
   * [`pages/student/attendance.html`](file:///d:/project_cnpm/pages/student/attendance.html) (Trang 30, 34 PDF): Cổng điểm danh chuyên cần của học sinh (77.8% chuyên cần).
 * **Thẻ phụ trách:** Giáo viên: số học sinh và điểm danh gần đây; học sinh: tình trạng tham gia/chuyên cần; phụ huynh: tóm tắt tình hình điểm danh của con.
-* **Code khoét lỗ:** `assets/js/modules/teacher/attendance.js`, `assets/js/modules/teacher/student-list.js`.
+* **Code chính:** `assets/js/modules/teacher/attendance.js`, `assets/js/modules/teacher/student-list.js`.
 
 #### 4. Nguyễn Duy Khánh Lân
+* **Trạng thái:** Hoàn thành nội dung được phân công.
 * **Trang phụ trách:**
   * [`pages/teacher/grades.html`](file:///d:/project_cnpm/pages/teacher/grades.html) (Trang 7, 8, 9 PDF):
     - Quản lý bài kiểm tra & bài tập (Trang 7).
@@ -214,9 +218,10 @@ Dự án (project_cnpm/)
   * [`pages/student/grades.html`](file:///d:/project_cnpm/pages/student/grades.html) (Trang 35, 36 PDF): Xem kết quả học tập & phân tích điểm chi tiết từng câu trong bài kiểm tra (Câu 1, 2, 3, 4).
   * [`pages/student/assignments.html`](file:///d:/project_cnpm/pages/student/assignments.html) (Trang 37, 38 PDF): Danh sách bài tập và khu vực Drag & Drop nộp file bài làm PDF/ảnh.
 * **Thẻ phụ trách:** Giáo viên: tóm tắt điểm/bài tập của lớp nếu có dữ liệu tương ứng; học sinh: điểm trung bình, điểm gần đây, tiến bộ và bài tập chưa nộp; phụ huynh: điểm trung bình/điểm mới nhất và tiến bộ học tập của con.
-* **Code khoét lỗ:** `assets/js/modules/teacher/exam-homework.js`, `assets/js/modules/teacher/grade-entry.js`, `assets/js/modules/student/grade-progress.js`.
+* **Code chính:** `assets/js/modules/teacher/exam-homework.js`, `assets/js/modules/teacher/grade-entry.js`, `assets/js/modules/student/grade-progress.js`.
 
 #### 5. Võ Trần Gia Bảo
+* **Trạng thái:** Hoàn thành nội dung được phân công.
 * **Trang phụ trách:**
   * [`pages/teacher/tuition.html`](file:///d:/project_cnpm/pages/teacher/tuition.html) (Trang 10, 11, 17, 18 PDF):
     - Quản lý học phí tháng 10: 76.4M đ Phải thu, 68.4M đ Đã thu, 8.0M đ Còn lại (Trang 10).
@@ -225,7 +230,7 @@ Dự án (project_cnpm/)
   * [`pages/parent/tuition.html`](file:///d:/project_cnpm/pages/parent/tuition.html) (Trang 27 PDF): Cổng học phí phụ huynh, thanh đối soát tiến độ đóng 66.7%, bảng lịch sử đóng phí minh bạch.
   * [`pages/parent/notifications.html`](file:///d:/project_cnpm/pages/parent/notifications.html) (Trang 28 PDF): Báo phí và nhắc nhở hạn nộp học phí gửi tới phụ huynh.
 * **Thẻ Tổng phụ trách:** Giáo viên: tổng học phí phải thu/đã thu/còn lại và học sinh cần theo dõi; phụ huynh: học phí còn phải đóng và hạn thanh toán. Dashboard học sinh hiện không có thẻ học phí.
-* **Code khoét lỗ:** `assets/js/modules/teacher/tuition-fee.js`, `assets/js/modules/parent/tuition-invoice.js`.
+* **Code chính:** `assets/js/modules/teacher/tuition-fee.js`, `assets/js/modules/parent/tuition-invoice.js`.
 
 ---
 
