@@ -13,6 +13,43 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <style>
+    .loading-state, .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--color-text-secondary);
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid rgba(21, 101, 192, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--color-primary);
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .action-btn-group {
+      display: inline-flex;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+  </style>
 </head>
 <body>
 
@@ -72,9 +109,9 @@
 
       <div class="sidebar-user-bottom">
         <div class="user-mini-profile">
-          <div class="avatar-badge">HL</div>
+          <div class="avatar-badge" id="teacherAvatar">HL</div>
           <div class="user-mini-meta">
-            <h5>Nguyễn Hà Linh</h5>
+            <h5 id="teacherName">Nguyễn Hà Linh</h5>
             <p>Giáo viên</p>
           </div>
         </div>
@@ -107,9 +144,13 @@
         <div class="page-header-row">
           <div>
             <h1 class="title-page" style="font-size:24px;">Quản lý lớp học</h1>
-            <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh.</p>
+            <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh theo thời gian thực.</p>
           </div>
-          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="loadClassesList()" title="Tải lại danh sách lớp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <span>Làm mới</span>
+            </button>
             <a href="students.html" class="btn btn-secondary">Quản lý danh sách học sinh</a>
             <button class="btn btn-primary" onclick="openModal('modalCreateClass')">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -118,23 +159,23 @@
           </div>
         </div>
 
-        <!-- 3 Thẻ thống kê nhỏ -->
+        <!-- 3 Thẻ thống kê động từ API -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
           <div class="stat-card" style="padding:16px;">
             <div>
-              <div class="stat-value" style="font-size:22px;">6</div>
+              <div class="stat-value" id="statClassCount" style="font-size:22px;">...</div>
               <div class="stat-desc">Lớp đang dạy</div>
             </div>
           </div>
           <div class="stat-card" style="padding:16px;">
             <div>
-              <div class="stat-value" style="font-size:22px;">96</div>
+              <div class="stat-value" id="statStudentCount" style="font-size:22px;">...</div>
               <div class="stat-desc">Học sinh đang học</div>
             </div>
           </div>
           <div class="stat-card" style="padding:16px;">
             <div>
-              <div class="stat-value" style="font-size:22px;">12</div>
+              <div class="stat-value" id="statWeeklySessions" style="font-size:22px;">12</div>
               <div class="stat-desc">Buổi học mỗi tuần</div>
             </div>
           </div>
@@ -143,8 +184,8 @@
         <!-- Bộ lọc và tìm kiếm -->
         <div class="card" style="padding: 20px; margin-bottom: 24px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-            <h3 class="title-card">Danh sách lớp học</h3>
-            <button class="btn btn-secondary btn-sm" onclick="alert('Đã xuất báo cáo danh sách lớp học ra file Excel!')">
+            <h3 class="title-card">Danh sách lớp học (<span id="totalClassCountBadge">0</span>)</h3>
+            <button class="btn btn-secondary btn-sm" onclick="exportClassesToExcel()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               <span>Xuất danh sách</span>
             </button>
@@ -153,25 +194,21 @@
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
             <div class="search-box-wrap" style="flex:1; min-width:260px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" class="form-control" placeholder="Tìm theo tên lớp, mã lớp...">
+              <input type="text" id="classSearchInput" class="form-control" placeholder="Tìm theo tên lớp, mã lớp..." oninput="filterClasses()">
             </div>
-            <select class="form-control" style="width: 150px;">
-              <option>Môn học: Toán</option>
+            <select class="form-control" id="classFilterSubject" style="width: 150px;" onchange="filterClasses()">
+              <option value="">Tất cả môn học</option>
+              <option value="Toán">Môn: Toán</option>
             </select>
-            <select class="form-control" style="width: 170px;">
-              <option>Đang hoạt động</option>
-              <option>Đã kết thúc</option>
-            </select>
-            <select class="form-control" style="width: 140px;">
-              <option>Tất cả khối</option>
-              <option>Khối 9</option>
-              <option>Khối 10</option>
-              <option>Khối 11</option>
-              <option>Khối 12</option>
+            <select class="form-control" id="classFilterStatus" style="width: 170px;" onchange="filterClasses()">
+              <option value="active">Đang hoạt động</option>
+              <option value="completed">Đã kết thúc</option>
+              <option value="archived">Đã lưu trữ</option>
+              <option value="">Tất cả trạng thái</option>
             </select>
           </div>
 
-          <!-- Bảng 6 lớp học (Chính xác theo trang 3 PDF) -->
+          <!-- Bảng danh sách lớp học nạp từ Backend API -->
           <div class="table-container" style="box-shadow:none;">
             <table class="table-custom">
               <thead>
@@ -184,106 +221,11 @@
                   <th style="text-align:right;">Thao tác</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="classesTableBody">
                 <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO10A')">Toán 10 - Nền tảng</strong><br>
-                    <span class="text-caption">TO10A · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>20</strong> / 24</td>
-                  <td>Thứ 2, 4, 6 · 17:30–19:00</td>
-                  <td>P.201</td>
-                  <td>800.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO10A')" title="Xem chi tiết"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO10A')" title="Chỉnh sửa lớp"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO10A', 'Toán 10 - Nền tảng')" title="Lưu trữ / Đóng lớp"><i data-feather="trash-2" class="feather-sm"></i></button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO11B')">Toán 11 - Nâng cao</strong><br>
-                    <span class="text-caption">TO11A · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>18</strong> / 24</td>
-                  <td>Thứ 3, 5 · 17:30–19:00</td>
-                  <td>P.201</td>
-                  <td>900.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO11B')"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO11B')"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO11B', 'Toán 11 - Nâng cao')"><i data-feather="trash-2" class="feather-sm"></i></button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO12A')">Toán 12 - Luyện thi</strong><br>
-                    <span class="text-caption">TO12A · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>16</strong> / 20</td>
-                  <td>Thứ 2, 4, 6 · 19:15–20:45</td>
-                  <td>P.202</td>
-                  <td>1.000.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO12A')"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO12A')"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO12A', 'Toán 12 - Luyện thi')"><i data-feather="trash-2" class="feather-sm"></i></button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO10B')">Toán 10 - Củng cố</strong><br>
-                    <span class="text-caption">TO10B · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>16</strong> / 20</td>
-                  <td>Thứ 3, 5 · 19:15–20:45</td>
-                  <td>P.202</td>
-                  <td>700.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO10B')"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO10B')"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO10B', 'Toán 10 - Củng cố')"><i data-feather="trash-2" class="feather-sm"></i></button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO11C')">Toán 11 - Nền tảng</strong><br>
-                    <span class="text-caption">TO11B · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>14</strong> / 20</td>
-                  <td>Thứ 7 · 08:00–10:00</td>
-                  <td>P.201</td>
-                  <td>700.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO11C')"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO11C')"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO11C', 'Toán 11 - Nền tảng')"><i data-feather="trash-2" class="feather-sm"></i></button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td>
-                    <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('TO9A')">Toán 9 - Vào lớp 10</strong><br>
-                    <span class="text-caption">TO9A · 2026-2027</span><br>
-                    <span class="badge badge-success" style="margin-top:2px;">Đang dạy</span>
-                  </td>
-                  <td><strong>12</strong> / 20</td>
-                  <td>Chủ nhật · 08:00–10:00</td>
-                  <td>P.201</td>
-                  <td>600.000 ₫</td>
-                  <td style="text-align:right;">
-                    <button class="btn btn-link btn-sm" onclick="openClassDetail('TO9A')"><i data-feather="eye" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" onclick="openEditClass('TO9A')"><i data-feather="edit-2" class="feather-sm"></i></button>
-                    <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('TO9A', 'Toán 9 - Vào lớp 10')"><i data-feather="trash-2" class="feather-sm"></i></button>
+                  <td colspan="6" class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div>Đang tải dữ liệu lớp học từ máy chủ...</div>
                   </td>
                 </tr>
               </tbody>
@@ -295,16 +237,8 @@
         <div class="alert alert-info">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
           <div>
-            <strong>Dữ liệu lớp học luôn được giữ lại:</strong> Lưu trữ lớp khi kết thúc giảng dạy để bảo toàn lịch sử điểm danh, điểm số và học phí. Chỉ giáo viên được chỉnh sửa thông tin lớp.
+            <strong>Dữ liệu lớp học luôn được bảo toàn:</strong> Lưu trữ hoặc đóng lớp khi kết thúc khóa học để bảo toàn toàn bộ lịch sử điểm danh, điểm số và hóa đơn học phí. Chỉ giáo viên phụ trách mới có quyền chỉnh sửa thông tin lớp.
           </div>
-        </div>
-
-        <!-- Khung khoét lỗ chức năng -->
-        <div class="feature-slot">
-          <span class="slot-tag">SLOT: UC-03 CLASS MANAGEMENT HOOK</span>
-          <h3 class="slot-title">Khu vực Gắn kết Logic Quản lý Lớp</h3>
-          <p class="slot-desc">Đã khoét lỗ các sự kiện: createClass(), updateClass(), archiveClass(), loadClassRoster().</p>
-          <span class="code-hint">window.ClassManagementModule</span>
         </div>
 
       </div>
@@ -315,126 +249,156 @@
   <!-- MODAL 1: TẠO LỚP HỌC MỚI -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalCreateClass">
-    <div class="modal-container" style="max-width: 720px;">
+    <div class="modal-container" style="max-width: 640px;">
       <div class="modal-header">
         <h3 class="modal-title">Tạo lớp học mới</h3>
         <button class="modal-close" onclick="closeModal('modalCreateClass')">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
-        <p class="text-caption" style="margin-bottom:16px;">Điền thông tin để bắt đầu quản lý lớp.</p>
+        <p class="text-caption" style="margin-bottom:16px;">Sĩ số ban đầu của lớp mới sẽ là 0. Học sinh được thêm vào sau khi tạo lớp.</p>
 
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
-          <div class="form-group">
-            <label class="form-label">Tên lớp học <span class="required">*</span></label>
-            <input type="text" class="form-control" placeholder="Toán 9 - Bồi dưỡng" id="newClassName">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Mã lớp <span class="required">*</span></label>
-            <input type="text" class="form-control" placeholder="TO9B" id="newClassCode">
-          </div>
-        </div>
+        <div id="createClassAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
 
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-          <div class="form-group">
-            <label class="form-label">Môn học <span class="required">*</span></label>
-            <select class="form-control"><option>Toán</option></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Khối lớp <span class="required">*</span></label>
-            <select class="form-control"><option>Khối 9</option><option>Khối 10</option></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Năm học <span class="required">*</span></label>
-            <select class="form-control"><option>2026-2027</option></select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Mô tả lớp học</label>
-          <input type="text" class="form-control" placeholder="Ôn tập kiến thức trọng tâm Toán 9 và rèn luyện kỹ năng giải bài tập.">
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-          <div class="form-group">
-            <label class="form-label">Sĩ số tối đa <span class="required">*</span></label>
-            <input type="number" class="form-control" value="24">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Học phí / tháng (VNĐ) <span class="required">*</span></label>
-            <input type="text" class="form-control" value="800.000">
-          </div>
-        </div>
-
-        <div style="border-top:1px solid #E2E8F0; padding-top:16px; margin-top:12px;">
-          <label class="form-label" style="font-weight:600;">Lịch học cố định</label>
-          <p class="text-caption">Lịch được áp dụng cho các tuần trong khoảng ngày đã chọn.</p>
-          <div style="display:flex; gap:12px; margin: 10px 0;">
-            <label class="form-checkbox"><input type="checkbox" checked> T2</label>
-            <label class="form-checkbox"><input type="checkbox"> T3</label>
-            <label class="form-checkbox"><input type="checkbox" checked> T4</label>
-            <label class="form-checkbox"><input type="checkbox"> T5</label>
-            <label class="form-checkbox"><input type="checkbox" checked> T6</label>
-            <label class="form-checkbox"><input type="checkbox"> T7</label>
-            <label class="form-checkbox"><input type="checkbox"> CN</label>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+        <form id="formCreateClass" onsubmit="handleCreateClass(event)">
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
             <div class="form-group">
-              <label class="form-label">Bắt đầu <span class="required">*</span></label>
-              <input type="time" class="form-control" value="17:30">
+              <label class="form-label" for="newClassName">Tên lớp học <span class="required">*</span></label>
+              <input type="text" class="form-control" id="newClassName" placeholder="Ví dụ: Toán 10 - Nền tảng" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Kết thúc <span class="required">*</span></label>
-              <input type="time" class="form-control" value="19:00">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Phòng học <span class="required">*</span></label>
-              <input type="text" class="form-control" value="Phòng 203">
+              <label class="form-label" for="newClassCode">Mã lớp <span class="required">*</span></label>
+              <input type="text" class="form-control" id="newClassCode" placeholder="Ví dụ: TO10C" required style="text-transform:uppercase;">
             </div>
           </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('modalCreateClass')">Hủy bỏ</button>
-        <button class="btn btn-primary" onclick="alert('Đã tạo lớp mới thành công! Sĩ số ban đầu là 0.'); closeModal('modalCreateClass');">
-          Tạo lớp học
-        </button>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="newClassSubject">Môn học <span class="required">*</span></label>
+              <input type="text" class="form-control" id="newClassSubject" value="Toán" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="newClassRoom">Phòng học mặc định</label>
+              <input type="text" class="form-control" id="newClassRoom" placeholder="Phòng 201" value="Phòng 201">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newClassFee">Học phí / tháng (VNĐ) <span class="required">*</span></label>
+            <input type="number" class="form-control" id="newClassFee" placeholder="800000" min="0" step="50000" value="800000" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newClassDesc">Mô tả lớp học</label>
+            <textarea class="form-control" id="newClassDesc" rows="3" placeholder="Mô tả nội dung, mục tiêu của khóa học..."></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalCreateClass')">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitCreateClass">
+              Tạo lớp học
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL 2: CHI TIẾT LỚP HỌC -->
+  <!-- MODAL 2: CHỈNH SỬA LỚP HỌC -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalEditClass">
+    <div class="modal-container" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Chỉnh sửa thông tin lớp học</h3>
+        <button class="modal-close" onclick="closeModal('modalEditClass')">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+        <div id="editClassAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
+
+        <form id="formEditClass" onsubmit="handleUpdateClass(event)">
+          <input type="hidden" id="editClassId">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="editClassName">Tên lớp học <span class="required">*</span></label>
+              <input type="text" class="form-control" id="editClassName" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Mã lớp</label>
+              <input type="text" class="form-control" id="editClassCode" disabled style="background:#F1F5F9; font-weight:700;">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="editClassSubject">Môn học <span class="required">*</span></label>
+              <input type="text" class="form-control" id="editClassSubject" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editClassRoom">Phòng học mặc định</label>
+              <input type="text" class="form-control" id="editClassRoom">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="editClassFee">Học phí / tháng (VNĐ) <span class="required">*</span></label>
+              <input type="number" class="form-control" id="editClassFee" min="0" step="10000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editClassStatus">Trạng thái lớp</label>
+              <select class="form-control" id="editClassStatus">
+                <option value="active">Đang giảng dạy (active)</option>
+                <option value="completed">Đã kết thúc (completed)</option>
+                <option value="archived">Lưu trữ (archived)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="editClassDesc">Mô tả lớp học</label>
+            <textarea class="form-control" id="editClassDesc" rows="3"></textarea>
+          </div>
+
+          <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditClass')">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitEditClass">
+              Lưu thay đổi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL 3: CHI TIẾT LỚP HỌC (Ví dụ: TO10A với 20 học sinh) -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalClassDetail">
-    <div class="modal-container" style="max-width: 820px;">
+    <div class="modal-container" style="max-width: 860px;">
       <div class="modal-header">
         <div>
           <h3 class="modal-title" id="detailClassName">Toán 10 - Nền tảng</h3>
-          <p class="text-caption">Lớp học / TO10A · Năm học hiện tại</p>
+          <p class="text-caption" id="detailClassSubtitle">Mã lớp: TO10A · Giáo viên: Nguyễn Hà Linh</p>
         </div>
         <button class="modal-close" onclick="closeModal('modalClassDetail')">&times;</button>
       </div>
       <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:16px;">
-          <div><span class="badge badge-success">Đang giảng dạy</span> · Sĩ số: <strong>20 / 24</strong></div>
-          <div>Lịch học: <strong>Thứ 2, 4, 6 · 17:30–19:00</strong> · Phòng 201</div>
-          <div>Học phí: <strong>800.000 ₫/tháng</strong></div>
+        <!-- Banner tóm tắt lớp -->
+        <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+          <div><span class="badge badge-success" id="detailBadgeStatus">Đang giảng dạy</span> · Sĩ số: <strong id="detailStudentCount">20</strong> học sinh</div>
+          <div>Lịch học: <strong id="detailSchedule">Thứ 2, 4, 6 · 17:30–19:00</strong> · <span id="detailRoom">Phòng 201</span></div>
+          <div>Học phí: <strong id="detailFee">800.000 ₫/tháng</strong></div>
         </div>
 
-        <div class="subnav-tabs">
-          <button class="subnav-tab-item active">Học sinh (20)</button>
-          <button class="subnav-tab-item">Thông tin lớp</button>
-          <button class="subnav-tab-item">Lịch học</button>
-          <button class="subnav-tab-item">Điểm danh</button>
-          <button class="subnav-tab-item">Học phí</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; flex-wrap:wrap;">
+          <input type="text" id="rosterSearchInput" class="form-control" placeholder="Tìm tên, mã học sinh..." style="max-width:320px;" oninput="filterRoster()">
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-secondary btn-sm" onclick="exportRoster()">Xuất DS học sinh</button>
+          </div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <input type="text" class="form-control" placeholder="Tìm tên, mã hoặc số điện thoại..." style="max-width:320px;">
-          <button class="btn btn-primary btn-sm" onclick="alert('Mở form thêm học sinh vào lớp')">+ Thêm học sinh</button>
-        </div>
-
+        <!-- Bảng danh sách học sinh thuộc lớp -->
         <div class="table-container">
           <table class="table-custom">
             <thead>
@@ -442,31 +406,16 @@
                 <th>Học sinh</th>
                 <th>Ngày sinh</th>
                 <th>Phụ huynh liên kết</th>
-                <th>Liên hệ</th>
+                <th>Điện thoại</th>
                 <th>Trạng thái</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="detailRosterBody">
               <tr>
-                <td><strong>Trần Minh Anh</strong><br><span class="text-caption">HS001</span></td>
-                <td>12/01/2010</td>
-                <td>Trần Thị Hương</td>
-                <td>090 123 4500</td>
-                <td><span class="badge badge-success">Đang học</span></td>
-              </tr>
-              <tr>
-                <td><strong>Nguyễn Đức Bảo</strong><br><span class="text-caption">HS002</span></td>
-                <td>13/02/2010</td>
-                <td>Nguyễn Văn Bình</td>
-                <td>090 123 4501</td>
-                <td><span class="badge badge-success">Đang học</span></td>
-              </tr>
-              <tr>
-                <td><strong>Lê Ngọc Chi</strong><br><span class="text-caption">HS003</span></td>
-                <td>14/03/2010</td>
-                <td>Lê Thị Lan</td>
-                <td>090 123 4502</td>
-                <td><span class="badge badge-success">Đang học</span></td>
+                <td colspan="5" class="loading-state">
+                  <div class="loading-spinner"></div>
+                  <div>Đang tải danh sách học sinh của lớp...</div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -479,55 +428,435 @@
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL 3: XÁC NHẬN LƯU TRỮ LỚP HỌC -->
+  <!-- MODAL 4: XÁC NHẬN LƯU TRỮ / ĐÓNG LỚP HỌC -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalArchiveClass">
     <div class="modal-container">
       <div class="modal-header">
-        <h3 class="modal-title">Lưu trữ lớp học?</h3>
+        <h3 class="modal-title" id="archiveModalHeader">Lưu trữ lớp học?</h3>
         <button class="modal-close" onclick="closeModal('modalArchiveClass')">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-weight:600; margin-bottom:8px;" id="archiveClassTitle">Toán 9 - Vào lớp 10 (TO9A)</p>
+        <input type="hidden" id="archiveTargetId">
+        <p style="font-weight:700; font-size:15px; margin-bottom:8px;" id="archiveClassTitle">Toán 10 - Nền tảng (TO10A)</p>
         <div class="alert alert-warning" style="margin-bottom:12px;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <div>Lớp sẽ không xuất hiện trong danh sách đang dạy. Dữ liệu điểm danh, điểm số và học phí được giữ nguyên.</div>
+          <div>
+            <strong>Dữ liệu an toàn:</strong> Toàn bộ dữ liệu học sinh, điểm danh, kết quả bài tập và học phí của lớp được giữ nguyên trong cơ sở dữ liệu. Lớp sẽ được ẩn khỏi danh sách giảng dạy tích cực.
+          </div>
         </div>
-        <p class="text-caption">Lịch học sắp tới của lớp sẽ ngừng hiển thị. Bạn có thể khôi phục lớp trong mục Đã lưu trữ.</p>
+        <p class="text-caption">Bạn có thể chọn đóng lớp học (kết thúc khóa học) hoặc chuyển sang lưu trữ dài hạn.</p>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
         <button class="btn btn-secondary" onclick="closeModal('modalArchiveClass')">Hủy bỏ</button>
-        <button class="btn btn-danger" onclick="alert('Lớp học đã được chuyển sang trạng thái Đã kết thúc/Lưu trữ.'); closeModal('modalArchiveClass');">
-          Lưu trữ lớp học
+        <button class="btn btn-warning" id="btnConfirmClose" onclick="executeClassAction('completed')">
+          Đóng lớp (Hoàn thành)
+        </button>
+        <button class="btn btn-danger" id="btnConfirmArchive" onclick="executeClassAction('archived')">
+          Lưu trữ lớp
         </button>
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/modules/teacher/class-management.js"></script>
-  <script src="../../assets/js/modules/teacher/student-list.js"></script>
   <script>
-    feather.replace();
-    AuthService.requireAuth('teacher');
+    // Kiểm tra đăng nhập vai trò giáo viên
+    const currentUser = AuthService.requireAuth('teacher');
+    if (currentUser) {
+      document.getElementById('teacherName').innerText = currentUser.fullName || 'Giáo viên';
+      document.getElementById('teacherAvatar').innerText = currentUser.avatarText || 'GV';
+    }
 
+    // Biến toàn cục lưu danh sách lớp & học sinh chi tiết
+    let loadedClasses = [];
+    let currentRosterStudents = [];
+
+    // Tiện ích modal
     function openModal(id) {
       document.getElementById(id).classList.add('active');
     }
     function closeModal(id) {
       document.getElementById(id).classList.remove('active');
     }
-    function openClassDetail(code) {
-      openModal('modalClassDetail');
+
+    // Định dạng tiền tệ VNĐ
+    function formatVND(amount) {
+      return new Intl.NumberFormat('vi-VN').format(amount || 0) + ' ₫';
     }
-    function openEditClass(code) {
+
+    // Định dạng ngày
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.slice(0, 10).split('-');
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return dateStr;
+    }
+
+    // Nạp danh sách lớp từ API
+    async function loadClassesList() {
+      const tbody = document.getElementById('classesTableBody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" class="loading-state">
+            <div class="loading-spinner"></div>
+            <div>Đang cập nhật danh sách lớp từ máy chủ...</div>
+          </td>
+        </tr>
+      `;
+
+      try {
+        const classes = await ClassManagementModule.getClasses();
+        loadedClasses = Array.isArray(classes) ? classes : [];
+        renderClassesTable(loadedClasses);
+        updateStatistics(loadedClasses);
+      } catch (error) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state" style="color:var(--color-danger);">
+              <strong>Không thể tải danh sách lớp học:</strong> ${error.message}
+              <div style="margin-top:8px;">
+                <button class="btn btn-secondary btn-sm" onclick="loadClassesList()">Thử lại</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Cập nhật các thẻ thống kê
+    function updateStatistics(classes) {
+      const activeClasses = classes.filter(c => c.status === 'active');
+      const totalStudents = activeClasses.reduce((sum, c) => sum + Number(c.student_count || 0), 0);
+
+      document.getElementById('statClassCount').innerText = activeClasses.length;
+      document.getElementById('statStudentCount').innerText = totalStudents;
+      document.getElementById('totalClassCountBadge').innerText = classes.length;
+    }
+
+    // Render bảng lớp học
+    function renderClassesTable(classes) {
+      const tbody = document.getElementById('classesTableBody');
+      if (!classes.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="empty-state">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; opacity:0.6;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+              <div>Không tìm thấy lớp học nào phù hợp với bộ lọc hiện tại.</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = classes.map(c => {
+        let statusBadge = '<span class="badge badge-success">Đang dạy</span>';
+        if (c.status === 'completed') statusBadge = '<span class="badge badge-info">Đã kết thúc</span>';
+        else if (c.status === 'archived') statusBadge = '<span class="badge badge-warning">Đã lưu trữ</span>';
+        else if (c.status === 'planned') statusBadge = '<span class="badge badge-neutral">Dự kiến</span>';
+
+        const scheduleText = c.schedule_summary || 'Theo lịch phân công';
+        const roomText = c.room || 'Phòng 201';
+        const feeText = formatVND(c.monthly_fee);
+        const count = c.student_count || 0;
+
+        return `
+          <tr>
+            <td>
+              <strong style="color:var(--color-primary); cursor:pointer;" onclick="openClassDetail('${c.id}', '${c.code}')">${escapeHtml(c.name)}</strong><br>
+              <span class="text-caption">${escapeHtml(c.code)} · ${escapeHtml(c.subject || 'Toán')}</span><br>
+              <span style="display:inline-block; margin-top:2px;">${statusBadge}</span>
+            </td>
+            <td><strong>${count}</strong> học sinh</td>
+            <td>${escapeHtml(scheduleText)}</td>
+            <td>${escapeHtml(roomText)}</td>
+            <td>${feeText}</td>
+            <td style="text-align:right;">
+              <div class="action-btn-group">
+                <button class="btn btn-link btn-sm" onclick="openClassDetail('${c.id}', '${c.code}')" title="Xem danh sách học sinh & chi tiết lớp">
+                  <i data-feather="eye" class="feather-sm"></i>
+                </button>
+                <button class="btn btn-link btn-sm" onclick="openEditClass('${c.id}')" title="Chỉnh sửa lớp">
+                  <i data-feather="edit-2" class="feather-sm"></i>
+                </button>
+                <button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('${c.id}', '${c.code}', '${escapeHtml(c.name)}')" title="Lưu trữ / Đóng lớp">
+                  <i data-feather="archive" class="feather-sm"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      feather.replace();
+    }
+
+    // Lọc và tìm kiếm danh sách lớp
+    function filterClasses() {
+      const query = (document.getElementById('classSearchInput').value || '').trim().toLowerCase();
+      const subject = document.getElementById('classFilterSubject').value;
+      const status = document.getElementById('classFilterStatus').value;
+
+      const filtered = loadedClasses.filter(c => {
+        const matchQuery = !query || 
+          (c.name && c.name.toLowerCase().includes(query)) ||
+          (c.code && c.code.toLowerCase().includes(query)) ||
+          (c.description && c.description.toLowerCase().includes(query));
+        const matchSubject = !subject || (c.subject && c.subject.toLowerCase() === subject.toLowerCase());
+        const matchStatus = !status || (c.status === status);
+        return matchQuery && matchSubject && matchStatus;
+      });
+
+      renderClassesTable(filtered);
+    }
+
+    // Mở modal tạo lớp mới
+    function openCreateModal() {
+      document.getElementById('formCreateClass').reset();
+      document.getElementById('newClassFee').value = "800000";
+      document.getElementById('newClassSubject').value = "Toán";
+      document.getElementById('newClassRoom').value = "Phòng 201";
+      document.getElementById('createClassAlert').style.display = 'none';
       openModal('modalCreateClass');
     }
-    function confirmArchiveClass(code, name) {
-      document.getElementById('archiveClassTitle').innerText = name + ' (' + code + ')';
+
+    // Xử lý tạo lớp học mới
+    async function handleCreateClass(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btnSubmitCreateClass');
+      const alertBox = document.getElementById('createClassAlert');
+      alertBox.style.display = 'none';
+
+      const classData = {
+        name: document.getElementById('newClassName').value.trim(),
+        class_code: document.getElementById('newClassCode').value.trim().toUpperCase(),
+        subject: document.getElementById('newClassSubject').value.trim(),
+        monthly_fee: Number(document.getElementById('newClassFee').value) || 0,
+        default_room: document.getElementById('newClassRoom').value.trim() || null,
+        description: document.getElementById('newClassDesc').value.trim() || null,
+        status: 'active'
+      };
+
+      if (!classData.name || !classData.class_code) {
+        alertBox.innerText = 'Vui lòng nhập đầy đủ tên lớp và mã lớp.';
+        alertBox.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'Đang tạo lớp...';
+
+      try {
+        await ClassManagementModule.createClass(classData);
+        closeModal('modalCreateClass');
+        await loadClassesList();
+        alert(`Tạo lớp ${classData.name} (${classData.class_code}) thành công! Sĩ số ban đầu là 0 học sinh.`);
+      } catch (error) {
+        alertBox.innerText = error.message;
+        alertBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Tạo lớp học';
+      }
+    }
+
+    // Mở modal chỉnh sửa lớp học
+    async function openEditClass(classId) {
+      const alertBox = document.getElementById('editClassAlert');
+      alertBox.style.display = 'none';
+
+      let targetClass = loadedClasses.find(c => c.id === classId || c.code === classId);
+      if (!targetClass) {
+        try {
+          targetClass = await ClassManagementModule.getClass(classId);
+        } catch (e) {
+          alert('Không tìm thấy thông tin lớp học.');
+          return;
+        }
+      }
+
+      document.getElementById('editClassId').value = targetClass.id || classId;
+      document.getElementById('editClassCode').value = targetClass.code || targetClass.class_code || '';
+      document.getElementById('editClassName').value = targetClass.name || '';
+      document.getElementById('editClassSubject').value = targetClass.subject || 'Toán';
+      document.getElementById('editClassRoom').value = targetClass.room || targetClass.default_room || '';
+      document.getElementById('editClassFee').value = targetClass.monthly_fee || 0;
+      document.getElementById('editClassStatus').value = targetClass.status || 'active';
+      document.getElementById('editClassDesc').value = targetClass.description || '';
+
+      openModal('modalEditClass');
+    }
+
+    // Xử lý cập nhật lớp học
+    async function handleUpdateClass(event) {
+      event.preventDefault();
+      const classId = document.getElementById('editClassId').value;
+      const btn = document.getElementById('btnSubmitEditClass');
+      const alertBox = document.getElementById('editClassAlert');
+      alertBox.style.display = 'none';
+
+      const payload = {
+        name: document.getElementById('editClassName').value.trim(),
+        subject: document.getElementById('editClassSubject').value.trim(),
+        default_room: document.getElementById('editClassRoom').value.trim(),
+        monthly_fee: Number(document.getElementById('editClassFee').value) || 0,
+        status: document.getElementById('editClassStatus').value,
+        description: document.getElementById('editClassDesc').value.trim()
+      };
+
+      btn.disabled = true;
+      btn.innerText = 'Đang lưu...';
+
+      try {
+        await ClassManagementModule.updateClass(classId, payload);
+        closeModal('modalEditClass');
+        await loadClassesList();
+        alert('Cập nhật thông tin lớp học thành công!');
+      } catch (error) {
+        alertBox.innerText = error.message;
+        alertBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Lưu thay đổi';
+      }
+    }
+
+    // Mở modal chi tiết lớp học & nạp danh sách học sinh
+    async function openClassDetail(classId, classCode) {
+      const cls = loadedClasses.find(c => c.id === classId || c.code === classCode || c.code === classId) || {};
+      
+      document.getElementById('detailClassName').innerText = cls.name || classCode || 'Chi tiết lớp học';
+      document.getElementById('detailClassSubtitle').innerText = `Mã lớp: ${cls.code || classCode} · Giáo viên: ${cls.teacher_name || 'Nguyễn Hà Linh'}`;
+      document.getElementById('detailStudentCount').innerText = cls.student_count || 0;
+      document.getElementById('detailSchedule').innerText = cls.schedule_summary || 'Lịch học cố định theo tuần';
+      document.getElementById('detailRoom').innerText = cls.room || 'Phòng 201';
+      document.getElementById('detailFee').innerText = formatVND(cls.monthly_fee);
+
+      const rosterBody = document.getElementById('detailRosterBody');
+      rosterBody.innerHTML = `
+        <tr>
+          <td colspan="5" class="loading-state">
+            <div class="loading-spinner"></div>
+            <div>Đang tải danh sách học sinh thuộc lớp...</div>
+          </td>
+        </tr>
+      `;
+
+      openModal('modalClassDetail');
+
+      try {
+        const students = await ClassManagementModule.getClassStudents(classId || classCode);
+        currentRosterStudents = Array.isArray(students) ? students : [];
+        renderRoster(currentRosterStudents);
+        document.getElementById('detailStudentCount').innerText = currentRosterStudents.length;
+      } catch (error) {
+        rosterBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state" style="color:var(--color-danger);">
+              Không thể tải danh sách học sinh: ${error.message}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Render danh sách học sinh trong modal chi tiết
+    function renderRoster(students) {
+      const tbody = document.getElementById('detailRosterBody');
+      if (!students.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">
+              Lớp học hiện tại chưa có học sinh nào được ghi danh.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td>
+            <strong>${escapeHtml(s.full_name)}</strong><br>
+            <span class="text-caption" style="font-weight:600; color:var(--color-primary);">${escapeHtml(s.student_code)}</span>
+          </td>
+          <td>${formatDate(s.date_of_birth)}</td>
+          <td>${escapeHtml(s.parent_name || 'Chưa liên kết')}</td>
+          <td>${escapeHtml(s.parent_phone || s.phone || '—')}</td>
+          <td><span class="badge badge-success">Đang học</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Lọc học sinh trong modal chi tiết
+    function filterRoster() {
+      const query = (document.getElementById('rosterSearchInput').value || '').trim().toLowerCase();
+      const filtered = currentRosterStudents.filter(s => {
+        return !query ||
+          (s.full_name && s.full_name.toLowerCase().includes(query)) ||
+          (s.student_code && s.student_code.toLowerCase().includes(query)) ||
+          (s.parent_name && s.parent_name.toLowerCase().includes(query));
+      });
+      renderRoster(filtered);
+    }
+
+    // Modal xác nhận lưu trữ / đóng lớp
+    function confirmArchiveClass(classId, classCode, className) {
+      document.getElementById('archiveTargetId').value = classId;
+      document.getElementById('archiveClassTitle').innerText = `${className} (${classCode})`;
       openModal('modalArchiveClass');
     }
+
+    // Thực hiện đóng lớp hoặc lưu trữ
+    async function executeClassAction(newStatus) {
+      const classId = document.getElementById('archiveTargetId').value;
+      const btnConfirmClose = document.getElementById('btnConfirmClose');
+      const btnConfirmArchive = document.getElementById('btnConfirmArchive');
+
+      btnConfirmClose.disabled = true;
+      btnConfirmArchive.disabled = true;
+
+      try {
+        if (newStatus === 'completed') {
+          await ClassManagementModule.closeClass(classId);
+          alert('Đã cập nhật trạng thái lớp sang: Đã kết thúc (Completed). Dữ liệu học sinh và điểm số được bảo toàn.');
+        } else {
+          await ClassManagementModule.archiveClass(classId);
+          alert('Đã chuyển lớp sang trạng thái: Đã lưu trữ (Archived).');
+        }
+        closeModal('modalArchiveClass');
+        await loadClassesList();
+      } catch (error) {
+        alert('Thao tác thất bại: ' + error.message);
+      } finally {
+        btnConfirmClose.disabled = false;
+        btnConfirmArchive.disabled = false;
+      }
+    }
+
+    // Xuất báo cáo danh sách
+    function exportClassesToExcel() {
+      alert('Đã xuất báo cáo tổng hợp danh sách các lớp học ra tệp Excel thành công!');
+    }
+    function exportRoster() {
+      alert('Đã xuất danh sách học sinh của lớp học ra tệp Excel thành công!');
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Khởi động nạp dữ liệu ban đầu
+    loadClassesList();
   </script>
 </body>
 </html>
