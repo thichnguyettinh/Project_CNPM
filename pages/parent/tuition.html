@@ -78,7 +78,6 @@
       <header class="app-header">
         <div class="header-breadcrumbs"><span>Cổng phụ huynh</span><span class="crumb-sep">/</span><span class="crumb-active">Chi tiết học phí</span></div>
         <div class="header-actions">
-          <button type="button" class="btn btn-secondary btn-sm" data-open-parent-contact>📞 Liên hệ trung tâm</button>
           <div style="display:flex; align-items:center; gap:8px;">
             <div class="avatar-badge" data-parent-avatar style="width:32px; height:32px; font-size:12px; background:#FFFBEB; color:#A16207;">TM</div>
             <span data-parent-header-label style="font-size:13px; font-weight:600;">Nguyễn Thị Mai · Phụ huynh</span>
@@ -247,6 +246,7 @@
         <div class="tuition-kv-box">
           <h4>Thông tin đối chiếu học phí</h4>
           <div class="tuition-kv-row"><span>Giáo viên phụ trách:</span><strong id="parentContactTeacherName">Giáo viên Lớp Mình</strong></div>
+          <div class="tuition-kv-row"><span>Hotline trung tâm:</span><a data-center-phone-link href="tel:02838228888" data-center-phone>028 3822 8888</a></div>
           <div class="tuition-kv-row"><span>Điện thoại / Zalo:</span><strong id="parentContactTeacherPhone">Liên hệ tại lớp</strong></div>
           <div class="tuition-kv-row"><span>Email hỗ trợ:</span><span id="parentContactTeacherEmail">giaovien@lopminh.edu.vn</span></div>
           <div class="tuition-kv-row"><span>Nội dung chuyển khoản gợi ý:</span><code id="parentContactSyntaxHint">Mã hóa đơn + Mã học sinh</code></div>
@@ -257,7 +257,7 @@
       </div>
     </div>
   </div>
-
+  <script src="../../assets/js/modules/parent/contact-center.js"></script>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
   <script src="../../assets/js/modules/parent/tuition-invoice.js"></script>
   <script>
