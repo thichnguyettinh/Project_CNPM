@@ -90,6 +90,7 @@ class ClassCreate(StrictModel):
     monthly_fee: Decimal = Field(ge=0, max_digits=12, decimal_places=2)
     default_room: str | None = Field(default=None, max_length=100)
     description: str | None = None
+    schedule_info: str | None = None
     status: Literal["planned", "active"] = "active"
 
 
@@ -99,6 +100,7 @@ class ClassUpdate(StrictModel):
     monthly_fee: Decimal | None = Field(default=None, ge=0, max_digits=12, decimal_places=2)
     default_room: str | None = Field(default=None, max_length=100)
     description: str | None = None
+    schedule_info: str | None = None
     status: Literal["planned", "active", "completed", "archived"] | None = None
 
 

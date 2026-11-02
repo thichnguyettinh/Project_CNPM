@@ -3,7 +3,7 @@ import os
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://lopminh:change-me@localhost:5432/lopminh",
+    "postgresql://lopminh:change-me@127.0.0.1:5432/lopminh",
 )
 CORS_ORIGINS = [
     origin.strip()
