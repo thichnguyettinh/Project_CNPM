@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
     tuition: 'Học phí',
     system: 'Hệ thống'
   };
+
+  const categoryIcons = {
+    academic: '<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    assignment: '<svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>',
+    tuition: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/><circle cx="12" cy="15" r="2"/></svg>',
+    system: '<svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'
+  };
+
   let notifications = [];
   let activeFilter = 'all';
   let loading = true;
@@ -55,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
     item.dataset.read = String(!unread);
     item.dataset.notificationId = String(notification.notification_id);
 
+    const icon = document.createElement('div');
+    icon.className = 'notification-icon';
+    icon.dataset.category = notification.category || 'system';
+    icon.innerHTML = categoryIcons[notification.category] || categoryIcons.system;
+
     const copy = document.createElement('div');
     copy.className = 'notification-copy';
     const status = createTextElement(
@@ -86,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
       readButton.dataset.markRead = '';
       state.append(readButton);
     }
-    item.append(copy, state);
+    item.append(icon, copy, state);
     return item;
   }
 

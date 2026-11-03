@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  3 NOV 2026 16:39
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  3 NOV 2026 18:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1074,3 +1074,138 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 ] (main.toc [1
 
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[2])
+\tf@toc=\write5
+\openout5 = `main.toc'.
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[3] (phancong.tex [4
+
+]
+Underfull \hbox (badness 1735) in paragraph at lines 8--20
+\TU/TimesNewRoman(0)/m/n/12 – Cài đặt kiến trúc, backend dùng
+ []
+
+[5
+
+])
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[6] (main.lof [7
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[8]
+Overfull \hbox (20.39542pt too wide) in paragraph at lines 81--81
+ [][] [][]\TU/TimesNewRoman(0)/m/n/12 Sơ đồ phân rã gói tầng Persistence (11 Re
+positories) và tầng Infrastructure (Database, 
+ []
+
+)
+\tf@lof=\write6
+\openout6 = `main.lof'.
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[9] (main.lot [10
+
+])
+\tf@lot=\write7
+\openout7 = `main.lot'.
+
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[11] (chuong1.tex
+Chương 1.
+[1
+
+]
+File: picC1/diem-danh-as-is.png Graphic file (type bmp)
+<picC1/diem-danh-as-is.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[2]
+Underfull \hbox (badness 2735) in paragraph at lines 60--60
+\TU/TimesNewRoman(0)/m/n/12 soạn tin nhắn riêng; dễ gửi nhầm
+ []
+
+
+Underfull \hbox (badness 2237) in paragraph at lines 62--62
+[]|\TU/TimesNewRoman(0)/m/n/12 Phụ huynh thụ động trong
+ []
+
+File: picC1/diem-danh-to-be.png Graphic file (type bmp)
+<picC1/diem-danh-to-be.png>
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[3]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[4]
+File: picC1/nhap-tra-kq-as-is.png Graphic file (type bmp)
+<picC1/nhap-tra-kq-as-is.png>
+
+Overfull \hbox (2.1085pt too wide) in paragraph at lines 117--118
+[]\TU/TimesNewRoman(0)/b/n/12 Bước 5 – Gửi kết quả: \TU/TimesNewRoman(0)/m/n/12
+ Sử dụng Zalo/Messenger nhắn tin thủ công cho từng phụ huynh/học
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fan

@@ -97,7 +97,7 @@ SELECT
     WHEN 12 THEN 'Trịnh Minh Quân'
     WHEN 13 THEN 'Phan Thanh Sơn'
     WHEN 14 THEN 'Đinh Bảo Trâm'
-    WHEN 15 THEN 'ương Ánh Tuyết'
+    WHEN 15 THEN 'Vương Ánh Tuyết'
     WHEN 16 THEN 'Hồ Gia Huy'
     ELSE format('Học sinh %s', lpad(gs::text, 3, '0'))
   END,

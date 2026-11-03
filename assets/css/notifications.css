@@ -50,9 +50,8 @@
 }
 
 .notification-item {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) auto;
-  align-items: start;
+  display: flex;
+  align-items: flex-start;
   gap: 14px;
   min-height: 88px;
   padding: 16px;
@@ -70,13 +69,15 @@
 
 .notification-icon {
   display: flex;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   align-items: center;
   justify-content: center;
-  border-radius: 7px;
-  background: #FFFFFF;
+  border-radius: 8px;
+  background: #F1F5F9;
   color: var(--color-primary);
+  flex-shrink: 0;
 }
 
 .notification-icon svg {
@@ -84,12 +85,33 @@
   height: 16px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.7;
+  stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
+.notification-icon[data-category="tuition"] {
+  background: #FEF3C7;
+  color: #B45309;
+}
+
+.notification-icon[data-category="academic"] {
+  background: #E0F2FE;
+  color: #0369A1;
+}
+
+.notification-icon[data-category="assignment"] {
+  background: #EDE9FE;
+  color: #6D28D9;
+}
+
+.notification-icon[data-category="system"] {
+  background: #F1F5F9;
+  color: #475569;
+}
+
 .notification-copy {
+  flex: 1;
   min-width: 0;
 }
 
@@ -106,21 +128,24 @@
 .notification-title {
   margin-bottom: 4px;
   color: var(--color-text-main);
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 700;
+  line-height: 1.4;
+  word-break: break-word;
 }
 
 .notification-description {
   color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 1.5;
+  word-break: break-word;
 }
 
 .notification-time {
   display: block;
-  margin-top: 5px;
+  margin-top: 6px;
   color: var(--color-text-muted);
-  font-size: 10px;
+  font-size: 10.5px;
 }
 
 .notification-link {
@@ -138,10 +163,11 @@
 
 .notification-state {
   display: flex;
-  min-width: 66px;
+  min-width: 72px;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .notification-new {
@@ -236,16 +262,18 @@
   }
 
   .notification-item {
-    grid-template-columns: 28px minmax(0, 1fr);
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 12px;
     padding: 13px;
   }
 
   .notification-state {
-    grid-column: 2;
+    width: 100%;
     min-width: 0;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
+    padding-top: 6px;
+    border-top: 1px dashed var(--color-border);
   }
-
 }
