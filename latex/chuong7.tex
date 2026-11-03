@@ -1,8 +1,54 @@
 % ==================== CHƯƠNG 7 ====================
 \chapter{HƯỚNG DẪN CÀI ĐẶT VÀ SỬ DỤNG}
-
 \section{Hướng dẫn cài đặt}
+Quá trình cài đặt hệ thống ``Lớp Mình'' bao gồm việc thiết lập môi trường máy chủ (backend) thông qua Python, thiết lập cơ sở dữ liệu PostgreSQL và chạy một máy chủ HTTP cục bộ để phục vụ giao diện (frontend). Người dùng có thể khởi chạy hệ thống trên máy tính cá nhân (local) để kiểm thử hoặc sử dụng.
+
 \section{Đối tượng, phạm vi sử dụng}
+\begin{itemize}
+    \item \textbf{Đối tượng sử dụng:} Hệ thống được thiết kế dành cho 3 tác nhân chính bao gồm Giáo viên, Phụ huynh và Học sinh.
+    \item \textbf{Phạm vi sử dụng:} Hệ thống phục vụ việc quản lý các lớp học thêm với các chức năng nghiệp vụ đa dạng như thời khóa biểu, điểm danh, quản lý bài tập, điểm số, và đối soát công nợ học phí.
+\end{itemize}
+
 \section{Xác định các yêu cầu cài đặt}
+Để cài đặt và chạy được hệ thống, máy tính cần đáp ứng các môi trường sau:
+\begin{itemize}
+\item \textbf{Cơ sở dữ liệu:} Yêu cầu cài đặt PostgreSQL phiên bản 14 trở lên
+\item \textbf{Môi trường máy chủ (Backend):} Yêu cầu cài đặt Python phiên bản 3.11 trở lên
+\item \textbf{Giao diện (Frontend):} Cần có trình duyệt web để truy cập ứng dụng
+\end{itemize}
+
 \section{Hướng dẫn chi tiết các bước cài đặt}
+Dưới đây là các bước chi tiết để chạy hệ thống (áp dụng cho hệ điều hành Windows):
+\begin{itemize}
+    \item Bước 1: Cài đặt PostgreSQL 14+ và Python 3.11+ trên máy tính.
+    \item Bước 2: Tạo cơ sở dữ liệu PostgreSQL (mặc định tên là \texttt{lopminh} hoặc tùy chỉnh theo cấu hình local).
+    \item Bước 3: Tại thư mục gốc của dự án, mở terminal và chạy lần lượt các lệnh để tạo môi trường ảo và cài đặt thư viện: \texttt{py -m venv .venv}, kích hoạt bằng \texttt{.venv/Scripts/Activate.ps1}, rồi chạy \texttt{python -m pip install -r backend/requirements.txt}.
+    \item Bước 4: Sao chép tệp cấu hình \texttt{backend.env.example} thành \texttt{backend.env} và chỉnh sửa biến \texttt{DATABASE\_URL} cho phù hợp với tài khoản PostgreSQL của bạn.
+    \item Bước 5: Thiết lập biến môi trường cho terminal bằng lệnh:\\
+    \texttt{\$env:DATABASE\_URL = 'postgresql://postgres:password@localhost:5432/lopminh'}.
+    \item Bước 6: Khởi tạo cấu trúc cơ sở dữ liệu bằng cách chạy lệnh:\\
+    \texttt{psql '\$env:DATABASE\_URL' -v ON\_ERROR\_STOP=1 -f database/schema.sql}.
+    \item Bước 7: Để có tài khoản đăng nhập thử nghiệm, nạp dữ liệu bằng lệnh:\\
+    \texttt{psql '\$env:DATABASE\_URL' -v ON\_ERROR\_STOP=1 -f database/seed\_test\_accounts.sql}\\
+    (Giáo viên có thể khởi tạo tài khoản riêng bằng lệnh: \texttt{python -m backend.scripts.bootstrap\_teacher}).
+    \item Bước 8: Khởi chạy API máy chủ ở cổng 8001 bằng lệnh:\\
+    \texttt{python -m uvicorn backend.app.main:app --env-file backend.env --reload --port 8001}.
+    \item Bước 9: Mở một terminal mới và chạy máy chủ giao diện bằng lệnh:\\
+    \texttt{python -m http.server 7000}.
+\end{itemize}
+
 \section{Hướng dẫn sử dụng phần mềm}
+\begin{itemize}
+    \item \textbf{Truy cập hệ thống:} Mở trình duyệt và truy cập vào địa chỉ \url{http://localhost:7000} hoặc mở trực tiếp tệp \texttt{index.html} từ thư mục dự án.
+    \item \textbf{Đăng nhập bằng tài khoản thử nghiệm:} Hệ thống có sẵn 3 tài khoản thử nghiệm với mật khẩu chung là \texttt{123}:
+    \begin{itemize}
+        \item \textbf{Tài khoản giáo viên:} \texttt{giaovien@lopminh.edu.vn} hoặc \texttt{teacher}
+        \item \textbf{Tài khoản học sinh:} \texttt{hocsinh@lopminh.edu.vn} hoặc \texttt{student}
+        \item \textbf{Tài khoản phụ huynh:} \texttt{phuhuynh@lopminh.edu.vn} hoặc \texttt{parent}
+    \end{itemize}
+    \item \textbf{Chức năng dành cho Giáo viên:} Sau khi đăng nhập, giáo viên có thể quản lý danh sách lớp học, thời khóa biểu, điểm danh học sinh (sổ điểm danh điện tử 1 chạm), quản lý bài tập/điểm số, kiểm tra công nợ học phí và quản lý tài khoản của người dùng khác.
+    \item \textbf{Chức năng dành cho Học sinh:} Học sinh xem được thời khóa biểu, theo dõi tình trạng chuyên cần, xem chi tiết điểm số từng bài kiểm tra, danh sách bài tập và nộp bài (kéo thả file PDF/ảnh).
+    \item \textbf{Chức năng dành cho Phụ huynh:} Phụ huynh có thể tra cứu lịch học của con, xem chi tiết điểm danh, tiến trình điểm số và theo dõi trạng thái đóng học phí minh bạch.
+    \item \textbf{Hỗ trợ người dùng:} Mỗi tài khoản khi đăng nhập đều có mục Trung tâm hướng dẫn (Help Center) hiển thị riêng theo từng vai trò trên thanh điều hướng để hỗ trợ chi tiết các tính năng.
+    \item \textbf{Đổi mật khẩu:} Tùy chọn đổi mật khẩu được tích hợp trong trang Hồ sơ cá nhân với thanh đo độ mạnh mật khẩu.
+\end{itemize}

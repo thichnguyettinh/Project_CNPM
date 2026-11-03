@@ -166,6 +166,6 @@
 \contentsline {section}{\numberline {7.2}Đối tượng, phạm vi sử dụng}{141}{section.7.2}%
 \contentsline {section}{\numberline {7.3}Xác định các yêu cầu cài đặt}{141}{section.7.3}%
 \contentsline {section}{\numberline {7.4}Hướng dẫn chi tiết các bước cài đặt}{141}{section.7.4}%
-\contentsline {section}{\numberline {7.5}Hướng dẫn sử dụng phần mềm}{141}{section.7.5}%
-\contentsline {chapter}{Kết luận và hướng phát triển}{142}{chapter*.71}%
-\contentsline {chapter}{Phụ lục}{144}{chapter*.73}%
+\contentsline {section}{\numberline {7.5}Hướng dẫn sử dụng phần mềm}{142}{section.7.5}%
+\contentsline {chapter}{Kết luận và hướng phát triển}{144}{chapter*.71}%
+\contentsline {chapter}{Phụ lục}{146}{chapter*.73}%
