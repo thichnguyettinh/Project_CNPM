@@ -60,24 +60,70 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: min(680px, calc(100vh - 48px));
-      flex-shrink: 0;
       transition: none;
       transform: none;
       overflow-anchor: none;
+    }
+    .weekday-picker {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .weekday-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      background: var(--color-surface);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .weekday-label:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .weekday-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+    }
+    .schedule-conflict-box {
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 13.5px;
+      transition: all 0.2s ease;
+    }
+    .schedule-conflict-box.conflict-ok {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #065f46;
+    }
+    .schedule-conflict-box.conflict-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+    .schedule-conflict-box.conflict-checking {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
     }
     #modalCreateClass.active .create-class-modal-container {
       transform: none;
     }
     .create-class-modal-body {
-      flex: 1 1 0;
-      min-height: 0;
-      overflow-y: auto;
       overflow-anchor: none;
     }
     .create-class-modal-body .modal-footer {
-      position: sticky;
-      bottom: 0;
       background: var(--color-surface);
     }
     .class-form-grid {
@@ -128,9 +174,6 @@
     @media (max-width: 600px) {
       #modalCreateClass {
         padding: 16px;
-      }
-      #modalCreateClass .create-class-modal-container {
-        height: calc(100vh - 32px);
       }
       .class-form-grid,
       .class-form-grid.equal-columns {
@@ -241,7 +284,7 @@
               <span>Làm mới</span>
             </button>
             <a href="students.html" class="btn btn-secondary">Quản lý danh sách học sinh</a>
-            <button class="btn btn-primary" onclick="openModal('modalCreateClass')">
+            <button class="btn btn-primary" onclick="openCreateModal()">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               <span>Tạo lớp học</span>
             </button>
@@ -338,7 +381,7 @@
   <!-- MODAL 1: TẠO LỚP HỌC MỚI -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalCreateClass">
-    <div class="modal-container create-class-modal-container" style="max-width: 640px;">
+    <div class="modal-container create-class-modal-container" style="max-width: 720px;">
       <div class="modal-header">
         <h3 class="modal-title">Tạo lớp học mới</h3>
         <button class="modal-close" onclick="closeModal('modalCreateClass')">&times;</button>
@@ -380,6 +423,94 @@
             <label class="form-label" for="newClassDesc">Mô tả lớp học</label>
             <textarea class="form-control" id="newClassDesc" rows="3" placeholder="Mô tả nội dung, mục tiêu của khóa học..."></textarea>
           </div>
+
+          <!-- ============================================================= -->
+          <!-- KHỐI BỔ SUNG: LỊCH HỌC CỐ ĐỊNH -->
+          <!-- ============================================================= -->
+          <div class="fixed-schedule-card" style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border);">
+            <div style="margin-bottom: 14px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch học cố định</h4>
+              <p class="text-caption" style="color: var(--color-text-secondary); margin: 0; font-size: 13px;">Lịch được áp dụng cho các tuần trong khoảng ngày đã chọn.</p>
+            </div>
+
+            <!-- Ngày học trong tuần -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label class="form-label" style="font-weight: 600;">Ngày học trong tuần <span class="required">*</span></label>
+              <div class="weekday-picker">
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="1" checked onchange="onFixedScheduleParamChange()">
+                  <span>T2</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="2" onchange="onFixedScheduleParamChange()">
+                  <span>T3</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="3" checked onchange="onFixedScheduleParamChange()">
+                  <span>T4</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="4" onchange="onFixedScheduleParamChange()">
+                  <span>T5</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="5" checked onchange="onFixedScheduleParamChange()">
+                  <span>T6</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="6" onchange="onFixedScheduleParamChange()">
+                  <span>T7</span>
+                </label>
+                <label class="weekday-label">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="7" onchange="onFixedScheduleParamChange()">
+                  <span>CN</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Hàng 3 cột: Bắt đầu, Kết thúc, Phòng học -->
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="fixedScheduleStart">Bắt đầu <span class="required">*</span></label>
+                <input type="time" class="form-control" id="fixedScheduleStart" value="17:30" required onchange="onFixedScheduleParamChange()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="fixedScheduleEnd">Kết thúc <span class="required">*</span></label>
+                <input type="time" class="form-control" id="fixedScheduleEnd" value="19:00" required onchange="onFixedScheduleParamChange()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="fixedScheduleRoom">Phòng học <span class="required">*</span></label>
+                <select class="form-control" id="fixedScheduleRoom" onchange="onFixedScheduleRoomSelect()" required>
+                  <option value="">-- Đang nạp phòng --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Hàng 2 cột: Ngày bắt đầu, Ngày kết thúc -->
+            <div class="class-form-grid equal-columns" style="margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="fixedScheduleStartDate">Ngày bắt đầu <span class="required">*</span></label>
+                <input type="date" class="form-control" id="fixedScheduleStartDate" required onchange="onFixedScheduleParamChange()">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="fixedScheduleEndDate">Ngày kết thúc <span class="required">*</span></label>
+                <input type="date" class="form-control" id="fixedScheduleEndDate" required onchange="onFixedScheduleParamChange()">
+              </div>
+            </div>
+
+            <!-- Khung thông báo kiểm tra trùng lịch (Alert) -->
+            <div id="fixedScheduleConflictBox" class="schedule-conflict-box conflict-ok" style="display: flex;">
+              <div style="flex-shrink: 0; margin-top: 1px;" id="fixedScheduleConflictIcon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-weight: 600;" id="fixedScheduleConflictTitle">Không có lịch trùng trong khung giờ đã chọn.</div>
+                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 2px;" id="fixedScheduleConflictSummary">Thứ 2, 4, 6 · 17:30–19:00 · Phòng 203</div>
+              </div>
+              <button type="button" onclick="document.getElementById('fixedScheduleConflictBox').style.display='none'" style="background: none; border: none; cursor: pointer; color: inherit; opacity: 0.6; font-size: 16px; line-height: 1; padding: 0 4px;" title="Đóng">&times;</button>
+            </div>
+          </div>
+          <!-- ============================================================= -->
 
           <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('modalCreateClass')">Hủy bỏ</button>
@@ -448,6 +579,103 @@
             <label class="form-label" for="editClassDesc">Mô tả lớp học</label>
             <textarea class="form-control" id="editClassDesc" rows="3"></textarea>
           </div>
+
+          <!-- ============================================================= -->
+          <!-- KHỐI BỔ SUNG EDIT: LỊCH HỌC CỐ ĐỊNH -->
+          <!-- ============================================================= -->
+          <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border);">
+            <div style="margin-bottom: 14px;">
+              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch học cố định</h4>
+              <p class="text-caption" style="color: var(--color-text-secondary); margin: 0; font-size: 13px;">
+                Lịch hiện tại của lớp. Lưu thay đổi sẽ thay thế toàn bộ lịch cũ và tạo lại các buổi học tương lai.
+              </p>
+            </div>
+
+            <!-- Trạng thái loading lịch -->
+            <div id="editScheduleLoading" style="padding: 10px 0; color: var(--color-text-secondary); font-size: 13px;">
+              <span>Đang tải lịch học...</span>
+            </div>
+
+            <!-- Nội dung lịch (ẩn khi đang load) -->
+            <div id="editScheduleContent" style="display: none;">
+              <!-- Ngày học trong tuần -->
+              <div class="form-group" style="margin-bottom: 14px;">
+                <label class="form-label" style="font-weight: 600;">Ngày học trong tuần</label>
+                <div class="weekday-picker">
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="1" onchange="onEditScheduleChange()">
+                    <span>T2</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="2" onchange="onEditScheduleChange()">
+                    <span>T3</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="3" onchange="onEditScheduleChange()">
+                    <span>T4</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="4" onchange="onEditScheduleChange()">
+                    <span>T5</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="5" onchange="onEditScheduleChange()">
+                    <span>T6</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="6" onchange="onEditScheduleChange()">
+                    <span>T7</span>
+                  </label>
+                  <label class="weekday-label">
+                    <input type="checkbox" name="editScheduleWeekday" value="7" onchange="onEditScheduleChange()">
+                    <span>CN</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Hàng 3 cột: Bắt đầu, Kết thúc, Phòng học -->
+              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="editScheduleStart">Bắt đầu</label>
+                  <input type="time" class="form-control" id="editScheduleStart" value="17:30" onchange="onEditScheduleChange()">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="editScheduleEnd">Kết thúc</label>
+                  <input type="time" class="form-control" id="editScheduleEnd" value="19:00" onchange="onEditScheduleChange()">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="editScheduleRoom">Phòng học</label>
+                  <select class="form-control" id="editScheduleRoom" onchange="onEditScheduleChange()">
+                    <option value="">-- Chọn phòng --</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Hàng 2 cột: Ngày bắt đầu, Ngày kết thúc -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="editScheduleStartDate">Ngày bắt đầu áp dụng</label>
+                  <input type="date" class="form-control" id="editScheduleStartDate" onchange="onEditScheduleChange()">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="editScheduleEndDate">Ngày kết thúc</label>
+                  <input type="date" class="form-control" id="editScheduleEndDate" onchange="onEditScheduleChange()">
+                </div>
+              </div>
+
+              <!-- Khung kiểm tra trùng lịch -->
+              <div id="editScheduleConflictBox" class="schedule-conflict-box conflict-ok" style="display: none; margin-bottom: 14px;">
+                <div style="flex-shrink: 0; margin-top: 1px;" id="editScheduleConflictIcon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-weight: 600;" id="editScheduleConflictTitle"></div>
+                  <div style="font-size: 12.5px; opacity: 0.9; margin-top: 2px;" id="editScheduleConflictSummary"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- ============================================================= -->
 
           <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditClass')">Hủy bỏ</button>
@@ -726,10 +954,136 @@
       renderClassesTable(filtered);
     }
 
+    // Biến quản lý danh sách phòng học và debounce kiểm tra trùng lịch
+    let availableRooms = [];
+    let conflictCheckTimer = null;
+
+    // Nạp danh sách phòng học từ API
+    async function loadRoomsForCreateModal() {
+      const roomSelect = document.getElementById('fixedScheduleRoom');
+      try {
+        const res = await ClassManagementModule.getRooms();
+        availableRooms = res.rooms || [];
+        roomSelect.innerHTML = availableRooms.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+        // Ưu tiên chọn Phòng 203 nếu có
+        if (availableRooms.includes('Phòng 203')) {
+          roomSelect.value = 'Phòng 203';
+        } else if (availableRooms.length > 0) {
+          roomSelect.value = availableRooms[0];
+        }
+        // Đồng bộ sang trường phòng học mặc định
+        const defaultRoomInput = document.getElementById('newClassRoom');
+        if (defaultRoomInput && !defaultRoomInput.value) {
+          defaultRoomInput.value = roomSelect.value;
+        }
+      } catch (err) {
+        console.warn('Không tải được danh sách phòng từ API:', err);
+        roomSelect.innerHTML = `
+          <option value="Phòng 101">Phòng 101</option>
+          <option value="Phòng 102">Phòng 102</option>
+          <option value="Phòng 201">Phòng 201</option>
+          <option value="Phòng 202">Phòng 202</option>
+          <option value="Phòng 203" selected>Phòng 203</option>
+          <option value="Phòng Lab">Phòng Lab</option>
+        `;
+      }
+    }
+
+    // Khi người dùng chọn phòng ở khối lịch học cố định
+    function onFixedScheduleRoomSelect() {
+      const roomVal = document.getElementById('fixedScheduleRoom').value;
+      const defaultRoomInput = document.getElementById('newClassRoom');
+      if (defaultRoomInput) {
+        defaultRoomInput.value = roomVal;
+      }
+      onFixedScheduleParamChange();
+    }
+
+    // Kiểm tra trùng lịch cố định qua API với debounce
+    function onFixedScheduleParamChange() {
+      clearTimeout(conflictCheckTimer);
+      conflictCheckTimer = setTimeout(performScheduleConflictCheck, 250);
+    }
+
+    async function performScheduleConflictCheck() {
+      const conflictBox = document.getElementById('fixedScheduleConflictBox');
+      const conflictIcon = document.getElementById('fixedScheduleConflictIcon');
+      const conflictTitle = document.getElementById('fixedScheduleConflictTitle');
+      const conflictSummary = document.getElementById('fixedScheduleConflictSummary');
+
+      const selectedWeekdays = Array.from(document.querySelectorAll('input[name="fixedScheduleWeekday"]:checked'))
+        .map(el => Number(el.value));
+      const startsAt = document.getElementById('fixedScheduleStart').value;
+      const endsAt = document.getElementById('fixedScheduleEnd').value;
+      const room = document.getElementById('fixedScheduleRoom').value;
+      const startDate = document.getElementById('fixedScheduleStartDate').value;
+      const endDate = document.getElementById('fixedScheduleEndDate').value;
+
+      conflictBox.style.display = 'flex';
+
+      if (!selectedWeekdays.length) {
+        conflictBox.className = 'schedule-conflict-box conflict-error';
+        conflictIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+        conflictTitle.innerText = 'Chưa chọn ngày học trong tuần.';
+        conflictSummary.innerText = 'Vui lòng chọn ít nhất 1 thứ trong tuần.';
+        return;
+      }
+
+      try {
+        const payload = {
+          weekdays: selectedWeekdays,
+          starts_at: startsAt,
+          ends_at: endsAt,
+          room: room || null,
+          start_date: startDate || null,
+          end_date: endDate || null
+        };
+        const result = await ClassManagementModule.checkScheduleConflict(payload);
+
+        if (result.has_conflict) {
+          conflictBox.className = 'schedule-conflict-box conflict-error';
+          conflictIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+          conflictTitle.innerText = 'Phát hiện trùng lịch học!';
+          conflictSummary.innerText = result.message || 'Khung giờ hoặc phòng học đã bị trùng.';
+        } else {
+          conflictBox.className = 'schedule-conflict-box conflict-ok';
+          conflictIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+          conflictTitle.innerText = 'Không có lịch trùng trong khung giờ đã chọn.';
+          conflictSummary.innerText = result.summary || 'Lịch học hợp lệ và sẵn sàng.';
+        }
+      } catch (err) {
+        console.warn('Không kiểm tra được trùng lịch:', err);
+      }
+    }
+
     // Mở modal tạo lớp mới
-    function openCreateModal() {
+    async function openCreateModal() {
       document.getElementById('formCreateClass').reset();
       document.getElementById('createClassAlert').style.display = 'none';
+
+      // Thiết lập mặc định cho Khối Lịch học cố định
+      const now = new Date();
+      // Ngày bắt đầu: thứ 2 tuần này hoặc hôm nay
+      const startDateStr = now.toISOString().slice(0, 10);
+      // Ngày kết thúc: 31/05 năm tiếp theo
+      const nextYear = now.getMonth() >= 5 ? now.getFullYear() + 1 : now.getFullYear();
+      const endDateStr = `${nextYear}-05-31`;
+
+      document.getElementById('fixedScheduleStartDate').value = startDateStr;
+      document.getElementById('fixedScheduleEndDate').value = endDateStr;
+      document.getElementById('fixedScheduleStart').value = '17:30';
+      document.getElementById('fixedScheduleEnd').value = '19:00';
+
+      // Đặt mặc định chọn T2, T4, T6 (như trong ảnh thiết kế)
+      const days = document.querySelectorAll('input[name="fixedScheduleWeekday"]');
+      days.forEach(d => {
+        d.checked = (d.value === '1' || d.value === '3' || d.value === '5');
+      });
+
+      // Tải danh sách phòng từ API và kiểm tra trùng lịch
+      await loadRoomsForCreateModal();
+      await performScheduleConflictCheck();
+
       openModal('modalCreateClass');
     }
 
@@ -740,15 +1094,32 @@
       const alertBox = document.getElementById('createClassAlert');
       alertBox.style.display = 'none';
 
+      const defaultRoomVal = document.getElementById('newClassRoom').value.trim() || document.getElementById('fixedScheduleRoom').value || null;
+
       const classData = {
         name: document.getElementById('newClassName').value.trim(),
         class_code: document.getElementById('newClassCode').value.trim().toUpperCase(),
         subject: document.getElementById('newClassSubject').value.trim(),
         monthly_fee: Number(document.getElementById('newClassFee').value) || 0,
-        default_room: document.getElementById('newClassRoom').value.trim() || null,
+        default_room: defaultRoomVal,
         description: document.getElementById('newClassDesc').value.trim() || null,
         status: 'active'
       };
+
+      // Đính kèm cấu hình Khối Lịch học cố định (Fixed Schedule)
+      const selectedWeekdays = Array.from(document.querySelectorAll('input[name="fixedScheduleWeekday"]:checked'))
+        .map(el => Number(el.value));
+      
+      if (selectedWeekdays.length > 0) {
+        classData.fixed_schedule = {
+          weekdays: selectedWeekdays,
+          starts_at: document.getElementById('fixedScheduleStart').value || '17:30',
+          ends_at: document.getElementById('fixedScheduleEnd').value || '19:00',
+          room: document.getElementById('fixedScheduleRoom').value || defaultRoomVal,
+          start_date: document.getElementById('fixedScheduleStartDate').value || null,
+          end_date: document.getElementById('fixedScheduleEndDate').value || null
+        };
+      }
 
       if (!classData.name || !classData.class_code) {
         alertBox.innerText = 'Vui lòng nhập đầy đủ tên lớp và mã lớp.';
@@ -763,7 +1134,7 @@
         await ClassManagementModule.createClass(classData);
         closeModal('modalCreateClass');
         await loadClassesList();
-        alert(`Tạo lớp ${classData.name} (${classData.class_code}) thành công! Sĩ số ban đầu là 0 học sinh.`);
+        alert(`Tạo lớp ${classData.name} (${classData.class_code}) thành công! Lịch học cố định đã được thiết lập.`);
       } catch (error) {
         alertBox.innerText = error.message;
         alertBox.style.display = 'block';
@@ -774,9 +1145,86 @@
     }
 
     // Mở modal chỉnh sửa lớp học
+    // Biến debounce cho edit modal
+    let editConflictCheckTimer = null;
+
+    // Nạp phòng học vào select của modal Edit (tái dùng availableRooms)
+    async function loadRoomsForEditModal() {
+      const roomSelect = document.getElementById('editScheduleRoom');
+      let rooms = availableRooms;
+      if (!rooms || !rooms.length) {
+        try {
+          const res = await ClassManagementModule.getRooms();
+          rooms = res.rooms || [];
+          availableRooms = rooms;
+        } catch (e) {
+          rooms = ['Phòng 101', 'Phòng 102', 'Phòng 201', 'Phòng 202', 'Phòng 203', 'Phòng 204', 'Phòng Lab'];
+        }
+      }
+      roomSelect.innerHTML = rooms.map(r => `<option value="${escapeHtml(r)}">${escapeHtml(r)}</option>`).join('');
+    }
+
+    function onEditScheduleChange() {
+      clearTimeout(editConflictCheckTimer);
+      editConflictCheckTimer = setTimeout(performEditScheduleConflictCheck, 300);
+    }
+
+    async function performEditScheduleConflictCheck() {
+      const conflictBox = document.getElementById('editScheduleConflictBox');
+      const conflictIcon = document.getElementById('editScheduleConflictIcon');
+      const conflictTitle = document.getElementById('editScheduleConflictTitle');
+      const conflictSummary = document.getElementById('editScheduleConflictSummary');
+
+      const selectedWeekdays = Array.from(document.querySelectorAll('input[name="editScheduleWeekday"]:checked'))
+        .map(el => Number(el.value));
+
+      if (!selectedWeekdays.length) {
+        conflictBox.style.display = 'none';
+        return;
+      }
+
+      const startsAt = document.getElementById('editScheduleStart').value;
+      const endsAt   = document.getElementById('editScheduleEnd').value;
+      const room     = document.getElementById('editScheduleRoom').value;
+      const startDate = document.getElementById('editScheduleStartDate').value;
+      const endDate   = document.getElementById('editScheduleEndDate').value;
+      const classId   = document.getElementById('editClassId').value;
+
+      conflictBox.style.display = 'flex';
+      try {
+        const result = await ClassManagementModule.checkScheduleConflict({
+          weekdays: selectedWeekdays,
+          starts_at: startsAt,
+          ends_at: endsAt,
+          room: room || null,
+          start_date: startDate || null,
+          end_date: endDate || null,
+          class_id: classId
+        });
+        if (result.has_conflict) {
+          conflictBox.className = 'schedule-conflict-box conflict-error';
+          conflictIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+          conflictTitle.innerText = 'Phát hiện trùng lịch!';
+          conflictSummary.innerText = result.message || '';
+        } else {
+          conflictBox.className = 'schedule-conflict-box conflict-ok';
+          conflictIcon.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+          conflictTitle.innerText = 'Không có lịch trùng.';
+          conflictSummary.innerText = result.summary || '';
+        }
+      } catch (e) {
+        conflictBox.style.display = 'none';
+      }
+    }
+
     async function openEditClass(classId) {
       const alertBox = document.getElementById('editClassAlert');
       alertBox.style.display = 'none';
+
+      // Reset khối lịch
+      document.getElementById('editScheduleLoading').style.display = 'block';
+      document.getElementById('editScheduleContent').style.display = 'none';
+      document.getElementById('editScheduleConflictBox').style.display = 'none';
 
       let targetClass = loadedClasses.find(c => c.id === classId || c.code === classId);
       if (!targetClass) {
@@ -798,6 +1246,63 @@
       document.getElementById('editClassDesc').value = targetClass.description || '';
 
       openModal('modalEditClass');
+
+      // Load phòng & lịch song song
+      const resolvedId = targetClass.id || classId;
+      try {
+        const [_, rulesRes] = await Promise.all([
+          loadRoomsForEditModal(),
+          ClassManagementModule.getScheduleRules(resolvedId)
+        ]);
+
+        const rules = rulesRes.rules || [];
+
+        // Unchecked tất cả weekday
+        document.querySelectorAll('input[name="editScheduleWeekday"]').forEach(el => el.checked = false);
+
+        if (rules.length > 0) {
+          // Lấy rule đầu tiên làm đại diện giờ & phòng
+          const firstRule = rules[0];
+          document.getElementById('editScheduleStart').value = (firstRule.starts_at || '17:30').slice(0, 5);
+          document.getElementById('editScheduleEnd').value   = (firstRule.ends_at   || '19:00').slice(0, 5);
+          document.getElementById('editScheduleStartDate').value = firstRule.effective_from || '';
+          document.getElementById('editScheduleEndDate').value   = firstRule.effective_until || '';
+
+          // Chọn phòng
+          const room = firstRule.room || '';
+          if (room) {
+            const opt = document.querySelector(`#editScheduleRoom option[value="${room}"]`);
+            if (!opt) {
+              const newOpt = document.createElement('option');
+              newOpt.value = room; newOpt.textContent = room;
+              document.getElementById('editScheduleRoom').prepend(newOpt);
+            }
+            document.getElementById('editScheduleRoom').value = room;
+          }
+
+          // Check các ngày có lịch
+          const weekdays = [...new Set(rules.map(r => String(r.weekday)))];
+          weekdays.forEach(w => {
+            const cb = document.querySelector(`input[name="editScheduleWeekday"][value="${w}"]`);
+            if (cb) cb.checked = true;
+          });
+        } else {
+          // Không có lịch cũ: set mặc định
+          document.getElementById('editScheduleStart').value = '17:30';
+          document.getElementById('editScheduleEnd').value   = '19:00';
+          const today = new Date().toISOString().slice(0, 10);
+          const nextYear = new Date().getMonth() >= 5 ? new Date().getFullYear() + 1 : new Date().getFullYear();
+          document.getElementById('editScheduleStartDate').value = today;
+          document.getElementById('editScheduleEndDate').value   = `${nextYear}-05-31`;
+        }
+      } catch (e) {
+        console.warn('Không tải được lịch học:', e);
+      } finally {
+        document.getElementById('editScheduleLoading').style.display = 'none';
+        document.getElementById('editScheduleContent').style.display = 'block';
+        // Kiểm tra trùng
+        await performEditScheduleConflictCheck();
+      }
     }
 
     // Xử lý cập nhật lớp học
@@ -811,20 +1316,37 @@
       const payload = {
         name: document.getElementById('editClassName').value.trim(),
         subject: document.getElementById('editClassSubject').value.trim(),
-        default_room: document.getElementById('editClassRoom').value.trim(),
+        default_room: document.getElementById('editClassRoom').value.trim() || document.getElementById('editScheduleRoom').value || null,
         monthly_fee: Number(document.getElementById('editClassFee').value) || 0,
         status: document.getElementById('editClassStatus').value,
         description: document.getElementById('editClassDesc').value.trim()
+      };
+
+      // Thu thập cấu hình lịch học cố định
+      const selectedWeekdays = Array.from(document.querySelectorAll('input[name="editScheduleWeekday"]:checked'))
+        .map(el => Number(el.value));
+      const schedulePayload = {
+        weekdays: selectedWeekdays,
+        starts_at: document.getElementById('editScheduleStart').value || '17:30',
+        ends_at: document.getElementById('editScheduleEnd').value || '19:00',
+        room: document.getElementById('editScheduleRoom').value || null,
+        start_date: document.getElementById('editScheduleStartDate').value || null,
+        end_date: document.getElementById('editScheduleEndDate').value || null
       };
 
       btn.disabled = true;
       btn.innerText = 'Đang lưu...';
 
       try {
-        await ClassManagementModule.updateClass(classId, payload);
+        // Lưu thông tin lớp + lịch song song
+        await Promise.all([
+          ClassManagementModule.updateClass(classId, payload),
+          ClassManagementModule.replaceScheduleRules(classId, schedulePayload)
+        ]);
         closeModal('modalEditClass');
         await loadClassesList();
-        alert('Cập nhật thông tin lớp học thành công!');
+        const schedMsg = selectedWeekdays.length > 0 ? ' Lịch học cố định đã được cập nhật.' : '';
+        alert('Cập nhật thông tin lớp học thành công!' + schedMsg);
       } catch (error) {
         alertBox.innerText = error.message;
         alertBox.style.display = 'block';

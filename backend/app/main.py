@@ -4,7 +4,7 @@ import uuid
 from io import BytesIO
 from zipfile import BadZipFile, ZipFile
 from contextlib import contextmanager
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
 from typing import Annotated, Any, Callable
 
@@ -23,6 +23,8 @@ from .schemas import (
     ClassCreate,
     ClassUpdate,
     EnrollmentCreate,
+    FixedScheduleCreate,
+    ScheduleConflictCheckRequest,
     InvoiceGenerate,
     LoginRequest,
     ParentLinkCreate,
@@ -826,6 +828,97 @@ def get_class(class_id: str, connection: Connection, user: Annotated[dict, Depen
     return row
 
 
+@app.get("/api/rooms")
+def get_rooms(connection: Connection, user: Annotated[dict, Depends(current_user)]):
+    rows = fetch_all(
+        connection,
+        """
+        SELECT DISTINCT room FROM (
+            SELECT default_room AS room FROM classes WHERE default_room IS NOT NULL AND default_room != ''
+            UNION
+            SELECT room FROM class_schedule_rules WHERE room IS NOT NULL AND room != ''
+            UNION
+            SELECT room FROM class_sessions WHERE room IS NOT NULL AND room != ''
+        ) r ORDER BY room
+        """
+    )
+    existing_rooms = [r["room"] for r in rows if r.get("room")]
+    default_rooms = ["Phòng 101", "Phòng 102", "Phòng 201", "Phòng 202", "Phòng 203", "Phòng 204", "Phòng Lab", "Phòng Hội trường"]
+    merged = list(dict.fromkeys(existing_rooms + default_rooms))
+    return {"rooms": merged}
+
+
+@app.post("/api/classes/check-schedule-conflict")
+def check_schedule_conflict(payload: ScheduleConflictCheckRequest, connection: Connection, teacher: Teacher):
+    if not payload.weekdays:
+        return {
+            "has_conflict": False,
+            "message": "Chưa chọn ngày học trong tuần.",
+            "summary": "",
+            "conflicts": []
+        }
+    
+    day_map = {1: "Thứ 2", 2: "Thứ 3", 3: "Thứ 4", 4: "Thứ 5", 5: "Thứ 6", 6: "Thứ 7", 7: "Chủ nhật"}
+    selected_days = [day_map.get(w, f"T{w}") for w in sorted(payload.weekdays) if w in day_map]
+    room_suffix = f" · {payload.room}" if payload.room else ""
+    summary = f"{', '.join(selected_days)} · {payload.starts_at}–{payload.ends_at}{room_suffix}"
+
+    conflicts = []
+    
+    # 1. Trùng phòng học
+    if payload.room:
+        room_clashes = fetch_all(
+            connection,
+            """
+            SELECT c.class_code, c.name, csr.weekday,
+                   TO_CHAR(csr.starts_at, 'HH24:MI') as s_at, TO_CHAR(csr.ends_at, 'HH24:MI') as e_at
+            FROM class_schedule_rules csr
+            JOIN classes c ON c.class_id = csr.class_id
+            WHERE csr.room = %s
+              AND csr.weekday = ANY(%s)
+              AND (csr.starts_at < %s::TIME AND csr.ends_at > %s::TIME)
+              AND (%s IS NULL OR csr.class_id != %s)
+            """,
+            (payload.room, payload.weekdays, payload.ends_at, payload.starts_at, payload.class_id, payload.class_id)
+        )
+        for clash in room_clashes:
+            day_text = day_map.get(clash["weekday"], f"Thứ {clash['weekday']}")
+            conflicts.append({
+                "type": "room_conflict",
+                "message": f"{payload.room} đã có lớp {clash['name']} ({clash['class_code']}) học vào {day_text} ({clash['s_at']}–{clash['e_at']})."
+            })
+
+    # 2. Trùng giờ dạy của giáo viên
+    teacher_clashes = fetch_all(
+        connection,
+        """
+        SELECT c.class_code, c.name, csr.weekday,
+               TO_CHAR(csr.starts_at, 'HH24:MI') as s_at, TO_CHAR(csr.ends_at, 'HH24:MI') as e_at
+        FROM class_schedule_rules csr
+        JOIN classes c ON c.class_id = csr.class_id
+        WHERE c.teacher_user_id = %s
+          AND csr.weekday = ANY(%s)
+          AND (csr.starts_at < %s::TIME AND csr.ends_at > %s::TIME)
+          AND (%s IS NULL OR csr.class_id != %s)
+        """,
+        (teacher["user_id"], payload.weekdays, payload.ends_at, payload.starts_at, payload.class_id, payload.class_id)
+    )
+    for clash in teacher_clashes:
+        day_text = day_map.get(clash["weekday"], f"Thứ {clash['weekday']}")
+        msg = f"Bạn đang có lớp {clash['name']} ({clash['class_code']}) vào {day_text} ({clash['s_at']}–{clash['e_at']})."
+        if not any(c["message"] == msg for c in conflicts):
+            conflicts.append({"type": "teacher_conflict", "message": msg})
+
+    has_conflict = len(conflicts) > 0
+    message = "Không có lịch trùng trong khung giờ đã chọn." if not has_conflict else conflicts[0]["message"]
+    return {
+        "has_conflict": has_conflict,
+        "message": message,
+        "summary": summary,
+        "conflicts": conflicts
+    }
+
+
 @app.post("/api/classes", status_code=201)
 def create_class(payload: ClassCreate, connection: Connection, teacher: Teacher):
     code = payload.class_code.strip().upper()
@@ -833,13 +926,17 @@ def create_class(payload: ClassCreate, connection: Connection, teacher: Teacher)
     if existing:
         raise HTTPException(status_code=409, detail=f"Mã lớp '{code}' đã tồn tại trong hệ thống.")
     class_id = str(uuid.uuid4())
-    row = fetch_one(
+    default_room = payload.default_room
+    if payload.fixed_schedule and payload.fixed_schedule.room:
+        default_room = payload.fixed_schedule.room
+
+    fetch_one(
         connection,
         """
         INSERT INTO classes
           (class_id, class_code, name, subject, teacher_user_id, monthly_fee, default_room, description, status)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        RETURNING class_id, class_code, class_id AS id, class_code AS code, name, subject, monthly_fee, default_room AS room, status, description
+        RETURNING class_id
         """,
         (
             class_id,
@@ -848,10 +945,83 @@ def create_class(payload: ClassCreate, connection: Connection, teacher: Teacher)
             payload.subject.strip(),
             teacher["user_id"],
             payload.monthly_fee,
-            payload.default_room,
+            default_room,
             payload.description,
             payload.status,
         ),
+    )
+
+    # Nếu có cấu hình lịch học cố định
+    if payload.fixed_schedule and payload.fixed_schedule.weekdays:
+        fs = payload.fixed_schedule
+        start_date = fs.start_date or date.today()
+        end_date = fs.end_date or (start_date + timedelta(days=180))
+        if end_date < start_date:
+            end_date = start_date + timedelta(days=180)
+        room_val = fs.room or default_room
+
+        for w in fs.weekdays:
+            fetch_one(
+                connection,
+                """
+                INSERT INTO class_schedule_rules (class_id, weekday, starts_at, ends_at, room, effective_from, effective_until)
+                VALUES (%s, %s, %s::TIME, %s::TIME, %s, %s, %s)
+                RETURNING schedule_rule_id
+                """,
+                (class_id, w, fs.starts_at, fs.ends_at, room_val, start_date, end_date)
+            )
+
+        # Tự động tạo các buổi học định kỳ
+        curr = start_date
+        sessions_created = 0
+        while curr <= end_date and sessions_created < 120:
+            curr_weekday = curr.weekday() + 1
+            if curr_weekday in fs.weekdays:
+                try:
+                    s_hour, s_min = [int(p) for p in fs.starts_at[:5].split(":")]
+                    e_hour, e_min = [int(p) for p in fs.ends_at[:5].split(":")]
+                    starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
+                    ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+                    fetch_one(
+                        connection,
+                        """
+                        INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
+                        VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
+                        RETURNING session_id
+                        """,
+                        (class_id, starts_at_dt, ends_at_dt, room_val, "Buổi học theo lịch cố định", teacher["user_id"])
+                    )
+                    sessions_created += 1
+                except Exception:
+                    pass
+            curr += timedelta(days=1)
+
+    # Trả về thông tin lớp học đầy đủ kèm schedule_summary
+    row = fetch_one(
+        connection,
+        """
+        SELECT c.class_id, c.class_code, c.class_id AS id, c.class_code AS code, c.name, c.subject,
+               c.monthly_fee, c.default_room AS room, c.description, c.status,
+               u.full_name AS teacher_name,
+               0 AS student_count,
+               sched.schedule_summary
+        FROM classes c
+        JOIN users u ON u.user_id = c.teacher_user_id
+        LEFT JOIN LATERAL (
+          SELECT string_agg(
+            CASE weekday
+              WHEN 1 THEN 'Thứ 2' WHEN 2 THEN 'Thứ 3' WHEN 3 THEN 'Thứ 4' WHEN 4 THEN 'Thứ 5'
+              WHEN 5 THEN 'Thứ 6' WHEN 6 THEN 'Thứ 7' WHEN 7 THEN 'Chủ nhật'
+            END, ', ' ORDER BY weekday
+          ) || ' · ' || TO_CHAR(starts_at, 'HH24:MI') || '–' || TO_CHAR(ends_at, 'HH24:MI') AS schedule_summary
+          FROM class_schedule_rules csr
+          WHERE csr.class_id = c.class_id
+          GROUP BY starts_at, ends_at
+          LIMIT 1
+        ) sched ON TRUE
+        WHERE c.class_id = %s
+        """,
+        (class_id,)
     )
     return row
 
@@ -869,6 +1039,108 @@ def update_class(class_id: str, payload: ClassUpdate, connection: Connection, te
         f"UPDATE classes SET {columns}, updated_at = NOW() WHERE class_id = %s RETURNING *",
         (*values.values(), cls["class_id"]),
     )
+
+
+@app.get("/api/classes/{class_id}/schedule-rules")
+def get_class_schedule_rules(class_id: str, connection: Connection, teacher: Teacher):
+    """Lấy toàn bộ lịch học cố định của lớp."""
+    cls = require_class_teacher(connection, class_id, teacher["user_id"])
+    rows = fetch_all(
+        connection,
+        """
+        SELECT schedule_rule_id, class_id, weekday,
+               TO_CHAR(starts_at, 'HH24:MI') AS starts_at,
+               TO_CHAR(ends_at,   'HH24:MI') AS ends_at,
+               room,
+               TO_CHAR(effective_from,  'YYYY-MM-DD') AS effective_from,
+               TO_CHAR(effective_until, 'YYYY-MM-DD') AS effective_until
+        FROM class_schedule_rules
+        WHERE class_id = %s
+        ORDER BY weekday, starts_at
+        """,
+        (cls["class_id"],)
+    )
+    return {"rules": rows}
+
+
+@app.put("/api/classes/{class_id}/schedule-rules", status_code=200)
+def replace_class_schedule_rules(class_id: str, payload: FixedScheduleCreate, connection: Connection, teacher: Teacher):
+    """Thay thế toàn bộ lịch học cố định của lớp.
+    Nếu weekdays rỗng → xoá toàn bộ lịch cũ."""
+    cls = require_class_teacher(connection, class_id, teacher["user_id"])
+    cid = cls["class_id"]
+
+    # Xóa lịch cũ
+    fetch_one(connection, "DELETE FROM class_schedule_rules WHERE class_id = %s RETURNING class_id", (cid,))
+
+    if not payload.weekdays:
+        return {"rules": [], "sessions_created": 0}
+
+    start_date = payload.start_date or date.today()
+    end_date   = payload.end_date   or (start_date + timedelta(days=180))
+    if end_date < start_date:
+        end_date = start_date + timedelta(days=180)
+    room_val = payload.room
+
+    for w in payload.weekdays:
+        fetch_one(
+            connection,
+            """
+            INSERT INTO class_schedule_rules (class_id, weekday, starts_at, ends_at, room, effective_from, effective_until)
+            VALUES (%s, %s, %s::TIME, %s::TIME, %s, %s, %s)
+            RETURNING schedule_rule_id
+            """,
+            (cid, w, payload.starts_at, payload.ends_at, room_val, start_date, end_date)
+        )
+
+    # Tạo các buổi học tương lai (xóa scheduled cũ, tạo mới)
+    fetch_one(
+        connection,
+        """
+        DELETE FROM class_sessions
+        WHERE class_id = %s AND status = 'scheduled' AND starts_at::date >= %s
+        RETURNING session_id
+        """,
+        (cid, start_date)
+    )
+    curr = start_date
+    sessions_created = 0
+    while curr <= end_date and sessions_created < 120:
+        if (curr.weekday() + 1) in payload.weekdays:
+            try:
+                s_hour, s_min = [int(p) for p in payload.starts_at[:5].split(":")]
+                e_hour, e_min = [int(p) for p in payload.ends_at[:5].split(":")]
+                starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
+                ends_at_dt   = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+                fetch_one(
+                    connection,
+                    """
+                    INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
+                    VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
+                    RETURNING session_id
+                    """,
+                    (cid, starts_at_dt, ends_at_dt, room_val, "Buổi học theo lịch cố định", teacher["user_id"])
+                )
+                sessions_created += 1
+            except Exception:
+                pass
+        curr += timedelta(days=1)
+
+    rows = fetch_all(
+        connection,
+        """
+        SELECT schedule_rule_id, class_id, weekday,
+               TO_CHAR(starts_at, 'HH24:MI') AS starts_at,
+               TO_CHAR(ends_at,   'HH24:MI') AS ends_at,
+               room,
+               TO_CHAR(effective_from,  'YYYY-MM-DD') AS effective_from,
+               TO_CHAR(effective_until, 'YYYY-MM-DD') AS effective_until
+        FROM class_schedule_rules
+        WHERE class_id = %s ORDER BY weekday, starts_at
+        """,
+        (cid,)
+    )
+    return {"rules": rows, "sessions_created": sessions_created}
 
 
 @app.get("/api/classes/{class_id}/students")

@@ -4,6 +4,32 @@
  */
 
 const ClassManagementModule = {
+  // Lấy danh sách phòng học từ API
+  getRooms() {
+    return AuthService.api('/rooms');
+  },
+
+  // Kiểm tra trùng lịch cố định qua API
+  checkScheduleConflict(conflictData) {
+    return AuthService.api('/classes/check-schedule-conflict', {
+      method: 'POST',
+      body: JSON.stringify(conflictData)
+    });
+  },
+
+  // Lấy lịch học cố định của lớp
+  getScheduleRules(classId) {
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/schedule-rules`);
+  },
+
+  // Cập nhật (thay thế) lịch học cố định của lớp
+  replaceScheduleRules(classId, scheduleData) {
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/schedule-rules`, {
+      method: 'PUT',
+      body: JSON.stringify(scheduleData)
+    });
+  },
+
   // Lấy toàn bộ danh sách lớp của giáo viên
   getClasses() {
     return AuthService.api('/classes');
@@ -25,6 +51,9 @@ const ClassManagementModule = {
       description: classData.description || null,
       status: classData.status || 'active'
     };
+    if (classData.fixed_schedule) {
+      payload.fixed_schedule = classData.fixed_schedule;
+    }
     return AuthService.api('/classes', {
       method: 'POST',
       body: JSON.stringify(payload)

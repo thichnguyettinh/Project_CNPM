@@ -100,6 +100,25 @@ class ProfileUpdate(StrictModel):
     biography: str | None = None
 
 
+class FixedScheduleCreate(StrictModel):
+    weekdays: list[int] = Field(default_factory=list)
+    starts_at: str = Field(default="17:30", min_length=4, max_length=8)
+    ends_at: str = Field(default="19:00", min_length=4, max_length=8)
+    room: str | None = Field(default=None, max_length=100)
+    start_date: date | None = None
+    end_date: date | None = None
+
+
+class ScheduleConflictCheckRequest(StrictModel):
+    weekdays: list[int] = Field(default_factory=list)
+    starts_at: str = Field(min_length=4, max_length=8)
+    ends_at: str = Field(min_length=4, max_length=8)
+    room: str | None = Field(default=None, max_length=100)
+    start_date: date | None = None
+    end_date: date | None = None
+    class_id: str | None = None
+
+
 class ClassCreate(StrictModel):
     class_code: str = Field(min_length=2, max_length=30)
     name: str = Field(min_length=1, max_length=150)
@@ -109,6 +128,7 @@ class ClassCreate(StrictModel):
     description: str | None = None
     schedule_info: str | None = None
     status: Literal["planned", "active"] = "active"
+    fixed_schedule: FixedScheduleCreate | None = None
 
 
 class ClassUpdate(StrictModel):

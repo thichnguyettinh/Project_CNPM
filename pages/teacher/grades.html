@@ -151,9 +151,8 @@
 
           <div class="stat-card" style="padding:16px;">
             <div>
-              <div class="stat-label">Điểm TB bài đang chấm (UC-08)</div>
+              <div class="stat-label">Điểm TB bài đang chấm</div>
               <div id="uc08-summary-average" class="stat-value" style="font-size:24px; color:var(--color-primary);">—</div>
-              <div class="stat-desc">Lấy từ PostgreSQL khi mở bảng điểm</div>
             </div>
             <div class="stat-icon accent">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -191,7 +190,7 @@
             <div class="uc08-heading">
               <div>
                 <h3 class="title-card">Nhập điểm &amp; nhận xét</h3>
-                <p class="text-caption">Chọn một bài tập hoặc bài kiểm tra thuộc lớp đang chọn. Dữ liệu lấy từ PostgreSQL.</p>
+                <p class="text-caption">Chọn một bài tập hoặc bài kiểm tra thuộc lớp đang chọn.</p>
               </div>
               <button class="btn btn-secondary btn-sm" id="uc08-refresh" type="button">Tải lại bảng điểm</button>
             </div>
@@ -211,7 +210,6 @@
               </div>
             </div>
             <div id="uc08-notice" class="uc08-notice" role="status" aria-live="polite" hidden></div>
-            <p class="uc08-help">Điểm hợp lệ: 0–10, bước 0,5. Chỉ các dòng thay đổi được gửi lên server. Nếu sửa điểm đã lưu, phải ghi lý do riêng cho học sinh đó. Bỏ trống điểm nghĩa là chưa chấm (hoặc xóa điểm cũ sau khi ghi lý do).</p>
 
             <form id="uc08-form">
               <div class="table-container uc08-table-wrap">
@@ -240,7 +238,6 @@
           <section class="card uc11-panel">
             <div class="uc11-header">
               <div><h3 class="title-card">Theo dõi tiến bộ học sinh</h3>
-                <p class="text-caption">Biểu đồ và lịch sử được tải trực tiếp từ PostgreSQL theo lớp đang chọn.</p></div>
               <button type="button" class="btn btn-secondary btn-sm" id="uc11-refresh">Tải lại tiến bộ</button>
             </div>
             <div class="uc11-toolbar">
@@ -271,7 +268,7 @@
             <div class="uc11-header"><div><h3 class="title-card">Điểm chi tiết từng câu</h3><p class="text-caption" id="uc11-question-title"></p></div>
               <button type="button" id="uc11-questions-close" class="btn btn-secondary btn-sm">Đóng</button></div>
             <div id="uc11-questions-notice" class="uc11-notice" role="status" aria-live="polite"></div>
-            <p class="text-caption">Giáo viên nhập điểm từng câu sau khi đã lưu điểm tổng ở UC-08. Tổng điểm từng câu phải đúng bằng điểm tổng.</p>
+            <p class="text-caption">Giáo viên nhập điểm từng câu sau khi đã lưu điểm tổng. Tổng điểm từng câu phải đúng bằng điểm tổng.</p>
             <form id="uc11-questions-form">
               <div class="table-container"><table class="table-custom uc11-table">
                 <thead><tr><th>Số câu</th><th>Điểm tối đa</th><th>Điểm đạt</th><th>Thao tác</th></tr></thead>
@@ -315,7 +312,6 @@
                 <div id="uc07-current-attachment" class="uc07-file-current" aria-live="polite">Chưa có tệp đề.</div>
                 <p class="uc07-help">Tệp PDF, DOCX, JPG hoặc PNG, tối đa 10 MB. Có thể thay tệp đề khi chỉnh sửa bài. Học sinh sẽ được phép tải đề khi bài đã công bố.</p>
               </div>
-              <p class="uc07-help">Bài mới được công bố ngay và lưu vào PostgreSQL. Chức năng bản nháp chưa bật do API hiện tại chưa trả danh sách nháp.</p>
               <div class="uc07-actions"><button id="uc07-save" type="submit" class="btn btn-primary">Lưu bài</button><button id="uc07-cancel" type="button" class="btn btn-secondary">Hủy</button></div>
             </form>
           </div>
