@@ -716,10 +716,57 @@ const UserManagementPage = {
     }
   },
 
+
+  showFormError(msg) {
+    const box = document.getElementById('dsFormError');
+    const txt = document.getElementById('dsFormErrorText');
+    if (!box || !txt) { alert(msg); return; }
+    txt.innerText = msg;
+    box.style.display = 'flex';
+    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  },
+
+  hideFormError() {
+    const box = document.getElementById('dsFormError');
+    if (box) box.style.display = 'none';
+  },
+
+  checkPasswordStrength(inputId, containerId) {
+    const input = document.getElementById(inputId);
+    const container = document.getElementById(containerId);
+    if (!input || !container) return;
+
+    const val = input.value;
+    if (!val) { container.innerHTML = ''; return; }
+
+    const rules = [
+      { label: 'Ít nhất 8 ký tự', pass: val.length >= 8 },
+      { label: 'Có chữ hoa (A-Z)', pass: /[A-Z]/.test(val) },
+      { label: 'Có chữ thường (a-z)', pass: /[a-z]/.test(val) },
+      { label: 'Có chữ số (0-9)', pass: /[0-9]/.test(val) },
+    ];
+    const passed = rules.filter(r => r.pass).length;
+    const strength = passed <= 1 ? 'weak' : passed <= 2 ? 'fair' : passed <= 3 ? 'good' : 'strong';
+    const colors = { weak: '#dc2626', fair: '#d97706', good: '#2563eb', strong: '#059669' };
+    const labels = { weak: 'Yếu', fair: 'Trung bình', good: 'Khá', strong: 'Mạnh' };
+
+    container.innerHTML = `
+      <div style="display:flex; gap:4px; margin-bottom:5px;">
+        ${[0,1,2,3].map(i => `<div style="flex:1; height:3px; border-radius:2px; background:${i < passed ? colors[strength] : '#e5e7eb'};"></div>`).join('')}
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        ${rules.map(r => `<span style="font-size:11.5px; color:${r.pass ? '#059669' : '#9ca3af'}; display:inline-flex; align-items:center; gap:3px;">
+          ${r.pass ? '✓' : '○'} ${r.label}
+        </span>`).join('')}
+      </div>
+    `;
+  },
+
   async handleCreateStudentDesign(event) {
     event.preventDefault();
     const btn = document.getElementById('btnSubmitCreateStudentDesign');
     btn.disabled = true;
+    this.hideFormError();
 
     try {
       const payload = {
@@ -736,10 +783,20 @@ const UserManagementPage = {
       };
 
       if (!payload.class_id) {
-        alert('Vui lòng chọn lớp học cho học sinh.');
+        this.showFormError('Vui lòng chọn lớp học cho học sinh.');
         btn.disabled = false;
         return;
       }
+      // Kiểm tra độ mạnh mật khẩu học sinh
+      const pwStudent = payload.password;
+      if (!pwStudent || pwStudent.length < 8 || !/[A-Z]/.test(pwStudent) || !/[a-z]/.test(pwStudent) || !/[0-9]/.test(pwStudent)) {
+        this.showFormError('Mật khẩu học sinh phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.');
+        document.getElementById('dsStudentPassword').focus();
+        btn.disabled = false;
+        return;
+      }
+
+
 
       if (this.parentMode === 'new') {
         payload.parent_full_name = document.getElementById('dsParentFullName').value.trim();
@@ -749,12 +806,19 @@ const UserManagementPage = {
         payload.parent_password = document.getElementById('dsParentPassword').value;
 
         if (!payload.parent_full_name || !payload.parent_username || !payload.parent_password) {
-          alert('Vui lòng nhập đầy đủ thông tin tài khoản phụ huynh mới.');
+          this.showFormError('Vui lòng nhập đầy đủ thông tin tài khoản phụ huynh mới.');
+          btn.disabled = false;
+          return;
+        }
+        const pwParent = payload.parent_password;
+        if (!pwParent || pwParent.length < 8 || !/[A-Z]/.test(pwParent) || !/[a-z]/.test(pwParent) || !/[0-9]/.test(pwParent)) {
+          this.showFormError('Mật khẩu phụ huynh phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.');
+          document.getElementById('dsParentPassword').focus();
           btn.disabled = false;
           return;
         }
         if (!payload.parent_relationship) {
-          alert('Vui lòng chọn quan hệ với học sinh (Bố, Mẹ, Người giám hộ...).');
+          this.showFormError('Vui lòng chọn quan hệ với học sinh.');
           btn.disabled = false;
           return;
         }
@@ -763,24 +827,24 @@ const UserManagementPage = {
         payload.parent_relationship = document.getElementById('dsExistingParentRelationship').value;
 
         if (!payload.existing_parent_user_id) {
-          alert('Vui lòng chọn tài khoản phụ huynh có sẵn.');
+          this.showFormError('Vui lòng chọn tài khoản phụ huynh có sẵn.');
           btn.disabled = false;
           return;
         }
         if (!payload.parent_relationship) {
-          alert('Vui lòng chọn quan hệ với học sinh (Bố, Mẹ, Người giám hộ...).');
+          this.showFormError('Vui lòng chọn quan hệ với học sinh.');
           btn.disabled = false;
           return;
         }
       }
 
       const result = await UserManagementModule.createStudentWithParent(payload);
-      alert(result.message || 'Tạo tài khoản học sinh thành công!');
+      this.hideFormError();
 
       this.showListView();
       await this.loadUsers();
     } catch (err) {
-      alert('Không tạo được tài khoản: ' + err.message);
+      this.showFormError('Không tạo được tài khoản: ' + err.message);
     } finally {
       btn.disabled = false;
     }
