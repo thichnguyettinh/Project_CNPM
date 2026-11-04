@@ -68,6 +68,44 @@ class ParentLinkCreate(StrictModel):
     relationship: str | None = Field(default=None, max_length=40)
 
 
+class StudentWithParentCreate(StrictModel):
+    full_name: str = Field(min_length=1, max_length=150)
+    date_of_birth: date | None = None
+    phone: PhoneNumber = None
+    class_id: str = Field(min_length=1, max_length=36)
+    address: str | None = Field(default=None, max_length=255)
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=8, max_length=128)
+    require_password_change: bool = True
+    is_active: bool = True
+
+    parent_mode: Literal["new", "existing", "none"] = "new"
+
+    parent_full_name: str | None = Field(default=None, max_length=150)
+    parent_relationship: str | None = Field(default=None, max_length=40)
+    parent_phone: PhoneNumber = None
+    parent_username: str | None = Field(default=None, max_length=50)
+    parent_password: str | None = Field(default=None, max_length=128)
+
+    existing_parent_user_id: str | None = None
+
+    @model_validator(mode="after")
+    def validate_rules(self):
+        pwd_errors = password_policy_errors(self.password)
+        if pwd_errors:
+            raise ValueError("Mật khẩu học sinh cần đáp ứng: " + ", ".join(pwd_errors) + ".")
+        if self.parent_mode == "new":
+            if not self.parent_full_name or not self.parent_username or not self.parent_password or not self.parent_relationship:
+                raise ValueError("Vui lòng nhập đầy đủ họ tên, quan hệ với học sinh, tên đăng nhập và mật khẩu phụ huynh.")
+            parent_pwd_errors = password_policy_errors(self.parent_password)
+            if parent_pwd_errors:
+                raise ValueError("Mật khẩu phụ huynh cần đáp ứng: " + ", ".join(parent_pwd_errors) + ".")
+        elif self.parent_mode == "existing":
+            if not self.existing_parent_user_id or not self.parent_relationship:
+                raise ValueError("Vui lòng chọn tài khoản phụ huynh và mối quan hệ với học sinh.")
+        return self
+
+
 class UserPasswordReset(StrictModel):
     new_password: str = Field(min_length=8, max_length=128)
 

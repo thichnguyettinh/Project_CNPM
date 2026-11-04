@@ -38,6 +38,85 @@
       min-height: 0;
       overflow-y: auto;
     }
+    #tableAccountContainer {
+      overflow: visible;
+      width: 100%;
+    }
+    #tableAccountContainer table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: auto;
+    }
+    #tableAccountContainer th,
+    #tableAccountContainer td {
+      vertical-align: middle !important;
+      white-space: nowrap;
+    }
+    /* Nút 3 chấm dropdown thao tác */
+    .action-menu-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .action-menu-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-text-secondary);
+      transition: background 0.15s, color 0.15s;
+    }
+    .action-menu-btn:hover {
+      background: #F1F5F9;
+      color: var(--color-text-main);
+    }
+    .action-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: calc(100% + 4px);
+      min-width: 190px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 9999;
+      padding: 4px 0;
+      text-align: left;
+    }
+    .action-dropdown.open {
+      display: block;
+    }
+    .action-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px 14px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--color-text-main);
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.1s;
+    }
+    .action-dropdown-item:hover {
+      background: #F8FAFC;
+    }
+    .action-dropdown-item.danger {
+      color: var(--color-danger);
+    }
+    .action-dropdown-divider {
+      height: 1px;
+      background: var(--color-border);
+      margin: 4px 0;
+    }
   </style>
 </head>
 <body>
@@ -129,13 +208,14 @@
       </header>
 
       <div class="app-content">
+      <div id="userListView">
         <!-- Tiêu đề & Nút Tạo tài khoản -->
         <div class="page-header-row">
           <div>
             <h1 class="title-page" style="font-size:24px;">Quản lý tài khoản</h1>
             <p class="text-secondary" style="margin-top:4px;">Tạo tài khoản học sinh, phụ huynh và quản lý liên kết gia đình.</p>
           </div>
-          <button class="btn btn-primary" onclick="openModal('modalCreateAccount')">
+          <button class="btn btn-primary" onclick="UserManagementPage.showCreateStudentView()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
             <span>Tạo tài khoản</span>
           </button>
@@ -179,12 +259,12 @@
             <table class="table-custom">
               <thead>
                 <tr>
-                  <th>Tài khoản</th>
-                  <th>Vai trò</th>
-                  <th>Lớp học</th>
-                  <th>Liên kết gia đình</th>
-                  <th>Trạng thái</th>
-                  <th style="text-align:right;">Thao tác</th>
+                  <th style="white-space: nowrap;">Tài khoản</th>
+                  <th style="width: 100px; white-space: nowrap; text-align: center;">Vai trò</th>
+                  <th style="min-width: 120px; white-space: nowrap;">Lớp học</th>
+                  <th style="min-width: 140px; white-space: nowrap;">Liên kết gia đình</th>
+                  <th style="width: 110px; white-space: nowrap; text-align: center;">Trạng thái</th>
+                  <th style="width: 56px; text-align: center; white-space: nowrap;"></th>
                 </tr>
               </thead>
               <tbody id="userRows"><tr><td colspan="6">Đang tải tài khoản…</td></tr></tbody>
@@ -202,6 +282,240 @@
           </div>
 
         </div>
+      </div> <!-- Hết #userListView -->
+
+      <!-- ============================================================= -->
+      <!-- VIEW BỔ SUNG: TẠO TÀI KHOẢN HỌC SINH THEO THIẾT KẾ MỚI -->
+      <!-- ============================================================= -->
+      <div id="userCreateStudentView" style="display: none;">
+        <!-- Tiêu đề & Nút Quay lại -->
+        <div class="page-header-row" style="margin-bottom: 24px; align-items: flex-start;">
+          <div>
+            <h1 class="title-page" style="font-size: 24px; font-weight: 700; margin: 0 0 4px 0;">Tạo tài khoản học sinh</h1>
+            <p class="text-secondary" style="margin: 0; font-size: 13.5px;">Tài khoản / Tạo mới · Giáo viên chủ động cấp quyền truy cập.</p>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="UserManagementPage.showListView()" style="display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            <span>Quay lại</span>
+          </button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 24px; align-items: start;">
+          <!-- CỘT TRÁI: FORM CHÍNH -->
+          <form id="formCreateStudentDesign" onsubmit="UserManagementPage.handleCreateStudentDesign(event)">
+            <!-- KHỐI 1: THÔNG TIN CÁ NHÂN -->
+            <div class="card" style="padding: 24px; margin-bottom: 20px; border-radius: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 4px 0;">Thông tin cá nhân</h3>
+              <p class="text-caption" style="margin: 0 0 16px 0; color: var(--color-text-secondary); font-size: 13px;">Các trường có dấu * là bắt buộc.</p>
+
+              <!-- Tabs Học sinh / Phụ huynh -->
+              <div style="display: flex; gap: 20px; border-bottom: 1px solid var(--color-border); margin-bottom: 20px;">
+                <button type="button" style="padding: 8px 4px; font-weight: 600; font-size: 14px; border: none; background: none; color: var(--color-primary); border-bottom: 2px solid var(--color-primary); cursor: pointer;">Học sinh</button>
+                <button type="button" style="padding: 8px 4px; font-weight: 500; font-size: 14px; border: none; background: none; color: var(--color-text-secondary); cursor: pointer;" onclick="openModal('modalCreateAccount')">Phụ huynh</button>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentFullName">Họ và tên <span class="required">*</span></label>
+                  <input type="text" class="form-control" id="dsStudentFullName" placeholder="Nhập họ và tên học sinh" required oninput="UserManagementPage.updatePreview()">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentDob">Ngày sinh <span class="required">*</span></label>
+                  <input type="date" class="form-control" id="dsStudentDob" required>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentPhone">Số điện thoại</label>
+                  <input type="tel" class="form-control" id="dsStudentPhone" placeholder="Nhập số điện thoại (10 chữ số)" maxlength="10">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentClassId">Lớp học <span class="required">*</span></label>
+                  <select class="form-control" id="dsStudentClassId" required onchange="UserManagementPage.updatePreview()">
+                    <option value="">-- Đang nạp danh sách lớp --</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="dsStudentAddress">Địa chỉ</label>
+                <input type="text" class="form-control" id="dsStudentAddress" placeholder="Nhập địa chỉ nơi ở">
+              </div>
+            </div>
+
+            <!-- KHỐI 2: THÔNG TIN ĐĂNG NHẬP -->
+            <div class="card" style="padding: 24px; margin-bottom: 20px; border-radius: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 16px 0;">Thông tin đăng nhập</h3>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentUsername">Tên đăng nhập <span class="required">*</span></label>
+                  <input type="text" class="form-control" id="dsStudentUsername" placeholder="Nhập tên đăng nhập học sinh" required oninput="UserManagementPage.checkStudentUsername()">
+                  <div id="dsStudentUsernameHelper" style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Tên đăng nhập gồm chữ thường, số hoặc dấu chấm.</div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="dsStudentPassword">Mật khẩu tạm thời <span class="required">*</span></label>
+                  <div style="position: relative;">
+                    <input type="password" class="form-control" id="dsStudentPassword" placeholder="••••••••••••" required style="padding-right: 36px;">
+                    <button type="button" onclick="UserManagementPage.togglePasswordVisibility('dsStudentPassword', this)" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px;" title="Xem/ẩn mật khẩu">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                  <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.</div>
+                </div>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px;">
+                  <input type="checkbox" id="dsRequirePasswordChange" checked style="width: 16px; height: 16px; accent-color: var(--color-primary);">
+                  <span>Yêu cầu đổi mật khẩu trong lần đăng nhập đầu</span>
+                </label>
+              </div>
+
+              <div class="alert alert-info" style="margin-bottom: 0; display: flex; align-items: flex-start; gap: 12px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; border-radius: 8px; padding: 12px 14px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:13.5px; margin-bottom:2px;">Cung cấp tài khoản trực tiếp</strong>
+                  <span style="font-size:12.5px; opacity:0.9;">Giáo viên vui lòng tự cung cấp tên đăng nhập và mật khẩu tạm thời. Hệ thống không tự gửi SMS hoặc email.</span>
+                </div>
+                <button type="button" onclick="this.parentElement.style.display='none'" style="background:none; border:none; color:inherit; opacity:0.6; cursor:pointer; font-size:16px;">&times;</button>
+              </div>
+            </div>
+
+            <!-- KHỐI 3: LIÊN KẾT PHỤ HUYNH -->
+            <div class="card" style="padding: 24px; margin-bottom: 24px; border-radius: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 4px 0;">Liên kết phụ huynh</h3>
+              <p class="text-caption" style="margin: 0 0 16px 0; color: var(--color-text-secondary); font-size: 13px;">Chọn tài khoản có sẵn hoặc tạo mới cho phụ huynh.</p>
+
+              <!-- Switch mode: Có sẵn / Tạo mới -->
+              <div style="display: flex; gap: 10px; margin-bottom: 18px;">
+                <button type="button" id="btnParentModeExisting" class="btn btn-secondary" onclick="UserManagementPage.setParentMode('existing')" style="padding: 8px 16px; font-size: 13.5px;">Chọn tài khoản có sẵn</button>
+                <button type="button" id="btnParentModeNew" class="btn btn-primary" onclick="UserManagementPage.setParentMode('new')" style="padding: 8px 16px; font-size: 13.5px;">+ Tạo phụ huynh mới</button>
+              </div>
+
+              <!-- PHẦN: TẠO PHỤ HUYNH MỚI -->
+              <div id="parentModeNewFields">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsParentFullName">Họ và tên phụ huynh <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="dsParentFullName" placeholder="Nhập họ và tên phụ huynh" oninput="UserManagementPage.updatePreview()">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsParentRelationship">Quan hệ với học sinh <span class="required">*</span></label>
+                    <select class="form-control" id="dsParentRelationship" required onchange="UserManagementPage.updatePreview()">
+                      <option value="" selected disabled>-- Chọn quan hệ với học sinh --</option>
+                      <option value="Bố">Bố</option>
+                      <option value="Mẹ">Mẹ</option>
+                      <option value="Người giám hộ">Người giám hộ</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsParentPhone">Số điện thoại <span class="required">*</span></label>
+                    <input type="tel" class="form-control" id="dsParentPhone" placeholder="Nhập số điện thoại phụ huynh" maxlength="10">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsParentUsername">Tên đăng nhập phụ huynh <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="dsParentUsername" placeholder="Nhập tên đăng nhập phụ huynh">
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label" for="dsParentPassword">Mật khẩu tạm thời phụ huynh <span class="required">*</span></label>
+                  <div style="position: relative;">
+                    <input type="password" class="form-control" id="dsParentPassword" placeholder="••••••••••••" style="padding-right: 36px;">
+                    <button type="button" onclick="UserManagementPage.togglePasswordVisibility('dsParentPassword', this)" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--color-text-secondary); padding: 4px;" title="Xem/ẩn mật khẩu">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                  </div>
+                  <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.</div>
+                </div>
+              </div>
+
+              <!-- PHẦN: CHỌN PHỤ HUYNH CÓ SẴN (Ẩn mặc định) -->
+              <div id="parentModeExistingFields" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; margin-bottom: 16px;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsExistingParentSelect">Chọn tài khoản phụ huynh <span class="required">*</span></label>
+                    <select class="form-control" id="dsExistingParentSelect" onchange="UserManagementPage.updatePreview()">
+                      <option value="">-- Đang nạp danh sách phụ huynh --</option>
+                    </select>
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="dsExistingParentRelationship">Quan hệ với học sinh <span class="required">*</span></label>
+                    <select class="form-control" id="dsExistingParentRelationship" required onchange="UserManagementPage.updatePreview()">
+                      <option value="" selected disabled>-- Chọn quan hệ với học sinh --</option>
+                      <option value="Bố">Bố</option>
+                      <option value="Mẹ">Mẹ</option>
+                      <option value="Người giám hộ">Người giám hộ</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Banner quyền xem theo liên kết -->
+              <div class="alert alert-success" style="margin-bottom: 0; display: flex; align-items: flex-start; gap: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; border-radius: 8px; padding: 12px 14px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div style="flex:1;">
+                  <strong style="display:block; font-size:13.5px; margin-bottom:2px;">Quyền xem theo liên kết</strong>
+                  <span style="font-size:12.5px; opacity:0.9;" id="dsLinkPermissionText">Phụ huynh chỉ xem được thông tin của học sinh sau khi tài khoản được tạo.</span>
+                </div>
+                <button type="button" onclick="this.parentElement.style.display='none'" style="background:none; border:none; color:inherit; opacity:0.6; cursor:pointer; font-size:16px;">&times;</button>
+              </div>
+            </div>
+
+            <!-- FOOTER FORM -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px;">
+              <button type="button" class="btn btn-secondary" onclick="UserManagementPage.showListView()">Hủy bỏ</button>
+              <button type="submit" class="btn btn-primary" id="btnSubmitCreateStudentDesign" style="display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span id="btnSubmitText">Tạo 2 tài khoản &amp; liên kết</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- CỘT PHẢI: TÓM TẮT TÀI KHOẢN & PHÂN QUYỀN MẶC ĐỊNH -->
+          <div>
+            <!-- Card: Tóm tắt tài khoản -->
+            <div class="card" style="padding: 24px; margin-bottom: 20px; border-radius: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 16px 0;">Tóm tắt tài khoản</h3>
+
+              <div style="margin-bottom: 16px;">
+                <span class="badge badge-info" style="font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: #eff6ff; color: #1d4ed8;">Học sinh mới</span>
+                <h4 id="previewStudentName" style="font-size: 17px; font-weight: 700; color: var(--color-text-main); margin: 8px 0 2px 0; opacity: 0.6;">Chưa nhập họ tên</h4>
+                <p id="previewClassName" style="font-size: 13.5px; color: var(--color-text-secondary); margin: 0;">Chưa chọn lớp học</p>
+              </div>
+
+              <p id="previewClassCapacity" style="font-size: 12.5px; color: var(--color-text-secondary); line-height: 1.5; margin: 0 0 16px 0; padding-bottom: 16px; border-bottom: 1px solid var(--color-border);">
+                Sĩ số dự kiến sau khi lưu: <strong id="previewCapacityNum">—</strong>. Thay đổi chưa được áp dụng.
+              </p>
+
+              <div>
+                <div style="font-size: 12px; font-weight: 600; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Phụ huynh liên kết</div>
+                <h5 id="previewParentName" style="font-size: 15px; font-weight: 700; color: var(--color-text-main); margin: 0 0 2px 0; opacity: 0.6;">Chưa nhập thông tin phụ huynh</h5>
+                <p id="previewParentRelation" style="font-size: 13px; color: var(--color-text-secondary); margin: 0;">—</p>
+              </div>
+            </div>
+
+            <!-- Card: Phân quyền mặc định -->
+            <div class="card" style="padding: 24px; border-radius: 10px;">
+              <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 10px 0;">Phân quyền mặc định</h3>
+              <p style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; margin: 0 0 16px 0;">
+                Học sinh và phụ huynh chỉ có quyền xem. Chỉ giáo viên chỉnh sửa điểm danh, điểm số và học phí.
+              </p>
+              <div>
+                <label style="display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px;">
+                  <input type="checkbox" id="dsIsActive" checked style="width: 16px; height: 16px; accent-color: var(--color-primary);">
+                  <span style="font-weight: 500;">Tài khoản đang hoạt động</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- Hết #userCreateStudentView -->
 
       </div>
     </main>

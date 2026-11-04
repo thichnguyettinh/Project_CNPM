@@ -35,6 +35,7 @@ from .schemas import (
     QuestionScoresSave,
     SessionCreate,
     SessionUpdate,
+    StudentWithParentCreate,
     UserCreate,
     UserPasswordReset,
     UserUpdate,
@@ -644,6 +645,157 @@ def create_user(payload: UserCreate, connection: Connection, teacher: Teacher):
                 (student["student_id"], parent["parent_id"], payload.relationship),
             )
     return {"id": user_id, "username": payload.username, "role": payload.role}
+
+
+@app.get("/api/users/check-username")
+def check_username(username: str, connection: Connection, teacher: Teacher):
+    u = username.strip().lower()
+    existing = fetch_one(connection, "SELECT 1 FROM users WHERE LOWER(username) = %s", (u,))
+    return {"username": username, "available": not bool(existing)}
+
+
+@app.post("/api/users/student-with-parent", status_code=201)
+def create_student_with_parent(
+    payload: StudentWithParentCreate,
+    connection: Connection,
+    teacher: Teacher,
+):
+    s_username = payload.username.strip()
+    if fetch_one(connection, "SELECT 1 FROM users WHERE LOWER(username) = LOWER(%s)", (s_username,)):
+        raise HTTPException(status_code=409, detail=f"Tên đăng nhập học sinh '{s_username}' đã được sử dụng.")
+
+    cls = fetch_one(connection, "SELECT class_id, class_code, name FROM classes WHERE class_id = %s", (payload.class_id,))
+    if not cls:
+        raise HTTPException(status_code=404, detail="Không tìm thấy lớp học đã chọn.")
+
+    p_username = None
+    if payload.parent_mode == "new":
+        p_username = payload.parent_username.strip()
+        if fetch_one(connection, "SELECT 1 FROM users WHERE LOWER(username) = LOWER(%s)", (p_username,)):
+            raise HTTPException(status_code=409, detail=f"Tên đăng nhập phụ huynh '{p_username}' đã được sử dụng.")
+
+    with transaction(connection):
+        max_code_row = fetch_one(
+            connection,
+            """
+            SELECT student_code FROM students
+            WHERE student_code ~ '^HS[0-9]+$'
+            ORDER BY SUBSTRING(student_code FROM 3)::int DESC LIMIT 1
+            """
+        )
+        if max_code_row and max_code_row.get("student_code"):
+            next_num = int(max_code_row["student_code"][2:]) + 1
+        else:
+            next_num = 1
+        student_code = f"HS{next_num:03d}"
+
+        student_user_id = str(uuid.uuid4())
+        connection.execute(
+            """
+            INSERT INTO users (user_id, username, password_hash, role, full_name, phone, status, avatar_text)
+            VALUES (%s, %s, %s, 'student', %s, %s, %s, %s)
+            """,
+            (
+                student_user_id,
+                s_username,
+                hash_password(payload.password),
+                payload.full_name.strip(),
+                payload.phone,
+                "active" if payload.is_active else "inactive",
+                "".join(part[0] for part in payload.full_name.split()[:2]).upper(),
+            ),
+        )
+
+        s_row = fetch_one(
+            connection,
+            """
+            INSERT INTO students (student_code, user_id, status)
+            VALUES (%s, %s, 'active')
+            RETURNING student_id
+            """,
+            (student_code, student_user_id),
+        )
+        student_id = s_row["student_id"]
+
+        if payload.date_of_birth or payload.address:
+            connection.execute(
+                """
+                INSERT INTO user_profiles (user_id, date_of_birth, address)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (user_id) DO UPDATE SET date_of_birth = EXCLUDED.date_of_birth, address = EXCLUDED.address
+                """,
+                (student_user_id, payload.date_of_birth, payload.address),
+            )
+
+        connection.execute(
+            """
+            INSERT INTO class_enrollments (class_id, student_id, enrolled_on, status)
+            VALUES (%s, %s, CURRENT_DATE, 'active')
+            ON CONFLICT (class_id, student_id, enrolled_on) DO UPDATE SET status = 'active'
+            """,
+            (payload.class_id, student_id),
+        )
+
+        if payload.parent_mode == "new":
+            parent_user_id = str(uuid.uuid4())
+            connection.execute(
+                """
+                INSERT INTO users (user_id, username, password_hash, role, full_name, phone, status, avatar_text)
+                VALUES (%s, %s, %s, 'parent', %s, %s, 'active', %s)
+                """,
+                (
+                    parent_user_id,
+                    p_username,
+                    hash_password(payload.parent_password),
+                    payload.parent_full_name.strip(),
+                    payload.parent_phone,
+                    "".join(part[0] for part in payload.parent_full_name.split()[:2]).upper(),
+                ),
+            )
+            p_row = fetch_one(
+                connection,
+                """
+                INSERT INTO parents (user_id, full_name, phone)
+                VALUES (%s, %s, %s)
+                RETURNING parent_id
+                """,
+                (parent_user_id, payload.parent_full_name.strip(), payload.parent_phone),
+            )
+            parent_id = p_row["parent_id"]
+            connection.execute(
+                """
+                INSERT INTO student_parents (student_id, parent_id, relationship, is_primary)
+                VALUES (%s, %s, %s, TRUE)
+                """,
+                (student_id, parent_id, payload.parent_relationship or "Bố"),
+            )
+        elif payload.parent_mode == "existing" and payload.existing_parent_user_id:
+            p_existing = fetch_one(
+                connection,
+                "SELECT parent_id FROM parents WHERE user_id = %s",
+                (payload.existing_parent_user_id,),
+            )
+            if p_existing:
+                connection.execute(
+                    """
+                    INSERT INTO student_parents (student_id, parent_id, relationship, is_primary)
+                    VALUES (%s, %s, %s, TRUE)
+                    ON CONFLICT DO NOTHING
+                    """,
+                    (student_id, p_existing["parent_id"], payload.parent_relationship or "Bố"),
+                )
+
+    return {
+        "student_user_id": student_user_id,
+        "student_id": student_id,
+        "student_code": student_code,
+        "full_name": payload.full_name,
+        "username": s_username,
+        "class_name": cls["name"],
+        "class_code": cls["class_code"],
+        "parent_created": payload.parent_mode == "new",
+        "message": f"Tạo tài khoản học sinh {payload.full_name} ({student_code}) thành công!",
+    }
 
 
 @app.post("/api/users/{user_id}/parent-link", status_code=201)
