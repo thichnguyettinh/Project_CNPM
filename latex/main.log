@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  3 NOV 2026 18:00
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  4 NOV 2026 22:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -926,7 +926,60 @@ File: l3backend-xetex.def 2026-09-09 L3 backend support: XeTeX
 ) (main.aux
 Package babel Info: 'vietnamese' activates 'vietnamese' shorthands.
 (babel)             Reported on input line 8.
+
+main.aux:44: You can't use `\spacefactor' in vertical mode.
+\@ ->\spacefactor 
+                  \@m {}
+l.44 \@
+       
+Sorry, but I'm not programmed to handle this case;
+I'll just pretend that you didn't ask for it.
+If you're in the wrong mode, you might be able to
+return to the right one by typing `I}' or `I$' or `I\par'.
+
+main.aux:44: Missing $ inserted.
+<inserted text> 
+                $
+l.44 \@
+       
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+main.aux:44: LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.44 \@
+       
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 44.
+
+(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
+LaTeX Font Info:    Trying to load font information for U+msb on input line 44.
+
+
+(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+))
+d:/project_cnpm/latex/main.tex:74: Missing $ inserted.
+<inserted text> 
+                $
+l.74 \begin{document}
+                     
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+Missing character: There is no è in font cmex10!
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 74.
@@ -1013,7 +1066,6 @@ LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
 (Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 74.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 74.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1054,54 +1106,35 @@ Package hyperref Info: Link coloring OFF on input line 74.
 \openout4 = `main.out'.
 
 Package babel Info: Main language set to 'vietnamese'.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[1
+
+]
 File: khung.jpg Graphic file (type bmp)
 <khung.jpg>
 File: picC1/Logo_HCMUE.png Graphic file (type bmp)
 <picC1/Logo_HCMUE.png>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 107
-.
-
-(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 107
-.
-
-(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-[1
-
-] (main.toc [1
-
-]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[2])
+ [1] (main.toc)
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
+ [1
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[3] (phancong.tex [4
+] (phancong.tex [2
 
 ]
 Underfull \hbox (badness 1735) in paragraph at lines 8--20
 \TU/TimesNewRoman(0)/m/n/12 – Cài đặt kiến trúc, backend dùng
  []
 
-[5
+[3
 
 ])
 
@@ -1111,49 +1144,19 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
-[6] (main.lof [7
-
-]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[8]
-Overfull \hbox (20.39542pt too wide) in paragraph at lines 81--81
- [][] [][]\TU/TimesNewRoman(0)/m/n/12 Sơ đồ phân rã gói tầng Persistence (11 Re
-positories) và tầng Infrastructure (Database, 
- []
-
-)
+[4] (main.lof)
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
+ [5
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[9] (main.lot [10
-
-])
+] (main.lot)
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
+ [6
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[11] (chuong1.tex
+] (chuong1.tex
 Chương 1.
 [1
 
@@ -1208,4 +1211,11 @@ Overfull \hbox (2.1085pt too wide) in paragraph at lines 117--118
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
 (fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fan
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[5
+
+]
+File: picC1/nhap-tra-kq-to-be.png Graphic file (type bmp)
+<p
