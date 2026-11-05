@@ -172,10 +172,34 @@ Thông qua quá trình thực hiện, nhóm đã vận dụng kiến thức đã
 % ==================== KẾT LUẬN & TÀI LIỆU ====================
 \chapter*{KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN}
 \addcontentsline{toc}{chapter}{Kết luận và hướng phát triển}
+\section*{Kết luận}
 
-\begin{thebibliography}{99}
+Đề tài ``Hệ thống quản lý lớp học thêm'' được thực hiện nhằm tin học hóa quy trình quản lý lớp học, điểm danh, kết quả học tập và học phí. Từ những bất cập của phương pháp quản lý thủ công, nhóm đã xây dựng hệ thống Web ``Lớp Mình'' với ba nhóm người dùng chính: Giáo viên, Học sinh và Phụ huynh.
 
-\end{thebibliography}
+Trong quá trình thực hiện, nhóm đã hoàn thành khảo sát nghiệp vụ, phân tích yêu cầu và thiết kế hệ thống thông qua Use Case, Activity Diagram, Sequence Diagram, DFD và ERD. Hệ thống được xây dựng theo kiến trúc Client--Server, kết hợp MVC và cơ sở dữ liệu PostgreSQL gồm 13 bảng. Backend sử dụng Python với Uvicorn, giao diện được phát triển trên nền tảng Web.
+
+Các chức năng chính đã được triển khai gồm quản lý lớp học, học sinh, thời khóa biểu, điểm danh, bài tập, điểm số và học phí. Giáo viên có thể quản lý các hoạt động giảng dạy, trong khi học sinh và phụ huynh có thể theo dõi lịch học, kết quả học tập, chuyên cần và tình hình học phí. Hệ thống cũng hỗ trợ lưu lịch sử dữ liệu và ghi nhận các thao tác chỉnh sửa quan trọng.
+
+Mặc dù đã hoàn thành các nghiệp vụ chính, hệ thống vẫn còn một số hạn chế như chưa tích hợp thanh toán trực tuyến, chưa hỗ trợ thông báo tự động qua Email hoặc SMS và việc tạo tài khoản vẫn do giáo viên thực hiện thủ công.
+
+Thông qua đề tài, nhóm đã vận dụng kiến thức về phân tích, thiết kế và phát triển phần mềm vào thực tế, đồng thời nâng cao kỹ năng lập trình, thiết kế cơ sở dữ liệu, làm việc nhóm và xây dựng tài liệu kỹ thuật.
+
+\section*{Hướng phát triển}
+
+Trong tương lai, hệ thống ``Lớp Mình'' có thể được phát triển theo các hướng sau:
+
+\begin{itemize}
+
+    \item \textbf{Tích hợp thanh toán trực tuyến:} Kết nối cổng thanh toán hoặc VietQR để tự động ghi nhận giao dịch, cập nhật học phí và đối soát thanh toán.
+
+    \item \textbf{Mở rộng thông báo:} Tích hợp Email, SMS hoặc Zalo OA để thông báo lịch học, kết quả kiểm tra và nhắc hạn học phí.
+
+    \item \textbf{Phát triển đăng ký trực tuyến:} Cho phép học sinh và phụ huynh đăng ký lớp học, gửi yêu cầu nghỉ học và tương tác trực tiếp với giáo viên.
+
+    \item \textbf{Bổ sung thống kê và xuất dữ liệu:} Hỗ trợ nhập danh sách học sinh, bảng điểm từ Excel; xuất báo cáo PDF và bổ sung biểu đồ thống kê học phí, chuyên cần và kết quả học tập.
+
+    \item \textbf{Triển khai thực tế:} Đưa hệ thống lên máy chủ đám mây, sử dụng tên miền chính thức, bổ sung sao lưu dữ liệu định kỳ và hoàn thiện các cơ chế bảo mật, khôi phục tài khoản.
+\end{itemize}
 
 \chapter*{PHỤ LỤC}
 \addcontentsline{toc}{chapter}{Phụ lục}
