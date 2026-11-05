@@ -68,6 +68,22 @@ class UserUpdate(StrictModel):
     relationship: str | None = Field(default=None, max_length=40)
 
 
+class AbsenceRequestCreate(StrictModel):
+    reason: str = Field(min_length=1, max_length=500)
+    student_code: str | None = Field(default=None, min_length=1, max_length=30)
+
+    @model_validator(mode="after")
+    def strip_and_validate_reason(self):
+        self.reason = self.reason.strip()
+        if not self.reason:
+            raise ValueError("Vui lòng nhập lý do xin vắng.")
+        if self.student_code is not None:
+            self.student_code = self.student_code.strip()
+            if not self.student_code:
+                raise ValueError("Vui lòng chọn học sinh cần xin vắng.")
+        return self
+
+
 class ParentLinkCreate(StrictModel):
     student_code: str = Field(min_length=1, max_length=30)
     relationship: str | None = Field(default=None, max_length=40)

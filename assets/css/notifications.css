@@ -277,3 +277,28 @@
     border-top: 1px dashed var(--color-border);
   }
 }
+
+/* UC-06: mở lý do đơn xin vắng trực tiếp từ thông báo của Giáo viên. */
+.notification-view-absence {
+  display: inline-flex;
+  padding: 6px 10px;
+  border: 1px solid var(--color-primary);
+  border-radius: 6px;
+  background: #FFFFFF;
+  color: var(--color-primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.notification-view-absence:hover { background: #EFF6FF; }
+.notification-view-absence:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.notification-view-absence:disabled { opacity: .6; cursor: wait; }
+
+/* UC-06: hộp thư đơn xin vắng tại Thông báo Giáo viên. */
+.absence-teacher-inbox { padding: 18px 20px; margin: 0 0 20px; }
+.absence-teacher-inbox-header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 14px; }
+.absence-teacher-inbox-header .title-card { margin-bottom: 4px; }
+.absence-teacher-inbox td { vertical-align: top; }
+.absence-teacher-inbox .absence-reason { overflow-wrap: anywhere; white-space: pre-wrap; }

@@ -1,0 +1,25 @@
+/* UC-06: yêu cầu xin vắng */
+.absence-form { border-top: 1px solid #e2e8f0; margin-top: 16px; padding-top: 16px; }
+.absence-form .form-label { display: block; font-weight: 600; margin-bottom: 7px; }
+.absence-form textarea { width: 100%; min-height: 76px; resize: vertical; box-sizing: border-box; }
+.absence-form button { margin-top: 10px; }
+.absence-info { font-size: 13px; line-height: 1.55; margin-top: 12px; white-space: pre-line; }
+.absence-info:empty { display: none; }
+.absence-reason { white-space: pre-wrap; overflow-wrap: anywhere; }
+.absence-table td { vertical-align: top; }
+
+/* UC-06: lối vào xin vắng rõ ràng trong lịch Học sinh. */
+.absence-student-guide { margin: 6px 0 14px; font-size: 13px; line-height: 1.55; color: #334155; }
+.student-schedule-page .student-calendar-absence-link { padding: 5px 9px; border: 1px solid #2563eb; border-radius: 6px; background: #eff6ff; color: #1d4ed8; }
+.student-schedule-page .student-calendar-absence-link:hover,
+.student-schedule-page .student-calendar-absence-link:focus-visible { background: #dbeafe; outline-offset: 2px; }
+
+/* UC-06: lối vào xin vắng luôn hiển thị trên trang Lịch học của học sinh. */
+.absence-quick-card { padding: 16px 20px; margin: 8px 0 16px; }
+.absence-quick-card .title-card { margin-bottom: 6px; }
+.absence-quick-card .text-secondary { margin-bottom: 12px; }
+.absence-quick-actions { display: flex; align-items: end; gap: 10px; flex-wrap: wrap; }
+.absence-quick-actions label { flex-basis: 100%; margin: 0; }
+.absence-quick-actions select { flex: 1 1 300px; min-width: 180px; }
+.absence-quick-actions button { flex: 0 0 auto; }
+.absence-quick-card .text-caption { margin-top: 10px; }

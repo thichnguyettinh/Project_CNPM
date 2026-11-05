@@ -16,12 +16,20 @@ const StudentScheduleModule = {
   // Lấy chi tiết buổi học
   getSessionDetail(sessionId) {
     return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}`);
+  },
+  getAbsenceRequests(sessionId) {
+    return AuthService.api(`/absence-requests?session_id=${encodeURIComponent(sessionId)}`);
+  },
+  submitAbsenceRequest(sessionId, reason) {
+    return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}/absence-requests`, {
+      method: 'POST', body: JSON.stringify({ reason })
+    });
   }
 };
 window.StudentScheduleModule = StudentScheduleModule;
 
 const StudentSchedulePage = {
-  state: { weekStart: null, classes: [], classId: '', sessions: [], busy: false },
+  state: { weekStart: null, classes: [], classId: '', sessions: [], busy: false, absenceBusy: false, selectedSession: null, detailSerial: 0 },
   el(id) { return document.getElementById(id); },
   localDate(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; },
   weekMonday(date) {
@@ -101,7 +109,19 @@ const StudentSchedulePage = {
       this.state.classId=event.target.value;
       this.loadWeek();
     });
-    this.el('studentSessionClose').addEventListener('click', () => {this.el('studentSessionDetail').hidden=true;});
+    this.el('studentSessionClose').addEventListener('click', () => {
+      this.state.detailSerial++;
+      this.state.selectedSession = null;
+      this.el('studentSessionDetail').hidden = true;
+    });
+    this.el('studentAbsenceForm').addEventListener('submit', event => {
+      event.preventDefault();
+      this.submitAbsence();
+    });
+    this.el('studentAbsenceOpen').addEventListener('click', () => {
+      const sessionId = this.el('studentAbsenceSessionSelect').value;
+      if (sessionId) this.showDetail(sessionId, { focusAbsence: true });
+    });
     this.message('Đang tải danh sách lớp học của em…');
     try {
       const classes = await StudentScheduleModule.getMyClasses();
@@ -125,6 +145,8 @@ const StudentSchedulePage = {
     const end=this.addDays(start,6);
     this.el('scheduleWeekLabel').textContent = this.formatWeekRange(start, end);
     this.el('studentSessionDetail').hidden=true;
+    this.state.selectedSession = null;
+    this.state.detailSerial++;
     this.message('Đang tải buổi học trong tuần…');
     const classId=this.state.classId;
     const weekKey=this.localDate(start);
@@ -185,6 +207,12 @@ const StudentSchedulePage = {
           detail.type='button';
           detail.addEventListener('click',()=>this.showDetail(session.session_id));
           card.append(detail);
+          if (session.status === 'scheduled' && Date.parse(session.starts_at) > Date.now()) {
+            const request = this.textElement('button','Xin vắng','student-calendar-session-link student-calendar-absence-link');
+            request.type = 'button';
+            request.addEventListener('click', () => this.showDetail(session.session_id, { focusAbsence: true }));
+            card.append(request);
+          }
           cell.append(card);
         });
         grid.append(cell);
@@ -194,6 +222,30 @@ const StudentSchedulePage = {
     this.el('studentScheduleCount').textContent =
       `${sessions.length} buổi học · ${classes.length} lớp${this.state.classId?' · Đang lọc theo lớp':''}. Chọn buổi học để xem nội dung và tài liệu.`;
     this.renderFixedSchedules(classes);
+    this.renderAbsenceShortcut();
+  },
+  renderAbsenceShortcut() {
+    const select = this.el('studentAbsenceSessionSelect');
+    const button = this.el('studentAbsenceOpen');
+    const hint = this.el('studentAbsenceQuickHint');
+    const selected = select.value;
+    const upcoming = this.state.sessions
+      .filter(session => session.status === 'scheduled' &&
+        Number.isFinite(Date.parse(session.starts_at)) &&
+        Date.parse(session.starts_at) > Date.now())
+      .sort((a, b) => Date.parse(a.starts_at) - Date.parse(b.starts_at));
+    select.replaceChildren(new Option('— Chọn buổi học sắp tới —', ''));
+    upcoming.forEach(session => {
+      const localDay = this.dayForSession(session.starts_at).split('-').reverse().join('/');
+      const label = `${localDay} · ${this.formatTime(session.starts_at)} · ${session.class_name || session.class_code || 'Lớp học'}`;
+      select.add(new Option(label, String(session.session_id)));
+    });
+    select.value = upcoming.some(session => String(session.session_id) === selected)
+      ? selected : (upcoming[0] ? String(upcoming[0].session_id) : '');
+    button.disabled = !select.value;
+    hint.textContent = upcoming.length
+      ? `${upcoming.length} buổi sắp diễn ra trong tuần đang xem. Chọn một buổi và nhấn “Mở đơn xin vắng”.`
+      : 'Tuần đang xem chưa có buổi học sắp diễn ra. Hãy chọn “Tuần sau” để tìm buổi học mới.';
   },
   renderFixedSchedules(classes) {
     const list=this.el('studentFixedSchedules');
@@ -217,31 +269,100 @@ const StudentSchedulePage = {
       list.append(card);
     });
   },
-  async showDetail(sessionId){
-    this.el('studentSessionDetail').hidden=false;
-    const body=this.el('studentSessionDetailBody');
-    body.replaceChildren(this.textElement('p','Đang tải chi tiết buổi học…'));
-    try{
-      const session=await StudentScheduleModule.getSessionDetail(sessionId);
+  async showDetail(sessionId, { focusAbsence = false } = {}){
+    const serial = ++this.state.detailSerial;
+    this.state.selectedSession = null;
+    const panel = this.el('studentSessionDetail');
+    panel.hidden = false;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.el('studentAbsenceForm').hidden = true;
+    this.el('studentAbsenceInfo').textContent = '';
+    const body = this.el('studentSessionDetailBody');
+    body.replaceChildren(this.textElement('p', 'Đang tải chi tiết buổi học…'));
+    try {
+      const session = await StudentScheduleModule.getSessionDetail(sessionId);
+      if (serial !== this.state.detailSerial) return;
+      this.state.selectedSession = session;
       body.replaceChildren();
-      const detail=this.textElement('div','','schedule-detail-grid');
-      const lines=[
-        ['Lớp học',session.class_name||session.class_code||'—'],
-        ['Mã lớp',session.class_code||'—'],
-        ['Ngày học',this.dayForSession(session.starts_at).split('-').reverse().join('/')],
-        ['Giờ học',`${this.formatTime(session.starts_at)}–${this.formatTime(session.ends_at)}`],
-        ['Phòng',session.room||'Chưa có phòng'],
-        ['Giáo viên',session.teacher_name||'—'],
-        ['Nội dung',session.topic||'Chưa cập nhật'],
-        ['Trạng thái',session.status==='completed'?'Đã học':session.status==='scheduled'?'Đã lên lịch':session.status]
+      const detail = this.textElement('div', '', 'schedule-detail-grid');
+      const lines = [
+        ['Lớp học', session.class_name || session.class_code || '—'],
+        ['Mã lớp', session.class_code || '—'],
+        ['Ngày học', this.dayForSession(session.starts_at).split('-').reverse().join('/')],
+        ['Giờ học', `${this.formatTime(session.starts_at)}–${this.formatTime(session.ends_at)}`],
+        ['Phòng', session.room || 'Chưa có phòng'],
+        ['Giáo viên', session.teacher_name || '—'],
+        ['Nội dung', session.topic || 'Chưa cập nhật'],
+        ['Trạng thái', session.status === 'completed' ? 'Đã học' : session.status === 'scheduled' ? 'Đã lên lịch' : session.status]
       ];
-      lines.forEach(([label,value])=>{
-        const cell=this.textElement('div','');
-        cell.append(this.textElement('strong',`${label}: `),this.textElement('p',String(value)));
+      lines.forEach(([label, value]) => {
+        const cell = this.textElement('div', '');
+        cell.append(this.textElement('strong', `${label}: `), this.textElement('p', String(value)));
         detail.append(cell);
       });
       body.append(detail);
-    }catch(error){body.replaceChildren(this.textElement('p',`Không tải được chi tiết: ${error.message}`));}
+      await this.loadAbsenceState(session, serial);
+      if (serial === this.state.detailSerial && focusAbsence) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (!this.el('studentAbsenceForm').hidden) {
+          this.el('studentAbsenceReason').focus({ preventScroll: true });
+        }
+      }
+    } catch (error) {
+      if (serial === this.state.detailSerial) {
+        body.replaceChildren(this.textElement('p', `Không tải được chi tiết: ${error.message}`));
+        this.el('studentAbsenceForm').hidden = true;
+      }
+    }
+  },
+  async loadAbsenceState(session, serial) {
+    const info = this.el('studentAbsenceInfo');
+    info.textContent = 'Đang kiểm tra yêu cầu xin vắng…';
+    this.el('studentAbsenceForm').hidden = true;
+    try {
+      const requests = await StudentScheduleModule.getAbsenceRequests(session.session_id);
+      if (serial !== this.state.detailSerial) return;
+      if (!Array.isArray(requests)) throw new Error('Dữ liệu yêu cầu không hợp lệ.');
+      const existing = requests[0];
+      if (existing) {
+        info.textContent = `Đã gửi yêu cầu xin vắng. Lý do: ${existing.reason}. Giáo viên đã được thông báo.`;
+      } else if (session.status === 'scheduled' && new Date(session.starts_at).getTime() > Date.now()) {
+        info.textContent = 'Nếu không thể tham gia buổi học, em có thể gửi lý do xin vắng trước giờ học.';
+        this.el('studentAbsenceForm').hidden = false;
+      } else {
+        info.textContent = 'Chỉ có thể gửi yêu cầu xin vắng trước khi buổi học đã lên lịch bắt đầu.';
+      }
+    } catch (error) {
+      if (serial === this.state.detailSerial) {
+        info.textContent = `Chưa kiểm tra được yêu cầu xin vắng: ${error.message}`;
+      }
+    }
+  },
+  async submitAbsence() {
+    const session = this.state.selectedSession;
+    const reason = this.el('studentAbsenceReason').value.trim();
+    if (!session || this.state.absenceBusy) return;
+    if (!reason) {
+      this.el('studentAbsenceInfo').textContent = 'Vui lòng nhập lý do xin vắng.';
+      return;
+    }
+    this.state.absenceBusy = true;
+    this.el('studentAbsenceSubmit').disabled = true;
+    const serial = this.state.detailSerial;
+    try {
+      await StudentScheduleModule.submitAbsenceRequest(session.session_id, reason);
+      if (serial !== this.state.detailSerial) return;
+      this.el('studentAbsenceForm').hidden = true;
+      this.el('studentAbsenceForm').reset();
+      this.el('studentAbsenceInfo').textContent = 'Đã gửi yêu cầu xin vắng. Giáo viên có thể xem trong mục Điểm danh.';
+    } catch (error) {
+      if (serial === this.state.detailSerial) {
+        this.el('studentAbsenceInfo').textContent = `Không gửi được yêu cầu: ${error.message}`;
+      }
+    } finally {
+      this.state.absenceBusy = false;
+      this.el('studentAbsenceSubmit').disabled = false;
+    }
   }
 };
 window.StudentSchedulePage = StudentSchedulePage;

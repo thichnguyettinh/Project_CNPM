@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/uc06-absence.css">
 </head>
 <body>
 
@@ -119,6 +120,16 @@
             <a class="btn btn-primary btn-sm" href="classes.html">Tạo lớp học</a>
           </div>
         </div>
+        <section id="teacher-absence-requests" class="card" style="padding:20px; margin-bottom:20px; scroll-margin-top: 20px;">
+          <h3 class="title-card">Yêu cầu xin vắng từ Học sinh/Phụ huynh</h3>
+          <p id="teacherAbsenceSummary" class="text-caption" role="status" aria-live="polite">Chọn buổi học để xem yêu cầu xin vắng.</p>
+          <div class="table-container">
+            <table class="table-custom absence-table">
+              <thead><tr><th>Học sinh</th><th>Người gửi</th><th>Lý do xin vắng</th><th>Thời điểm gửi</th></tr></thead>
+              <tbody id="teacherAbsenceRows"><tr><td colspan="4">Chọn buổi học để xem yêu cầu.</td></tr></tbody>
+            </table>
+          </div>
+        </section>
         <div class="attendance-stats-grid">
           <div class="stat-card attendance-stat-card attendance-stat-present"><div id="countPresent" class="stat-value">0</div><div>Có mặt</div></div>
           <div class="stat-card attendance-stat-card attendance-stat-absent"><div id="countAbsent" class="stat-value">0</div><div>Vắng</div></div>
@@ -146,7 +157,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/modules/teacher/attendance.js"></script>
+  <script src="../../assets/js/modules/teacher/attendance.js?v=20261105-uc06"></script>
   <script>
     if (window.feather) feather.replace();
     document.addEventListener('DOMContentLoaded', () => TeacherAttendancePage.init());

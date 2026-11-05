@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lịch học của con - Lớp Mình</title>
+  <link rel="stylesheet" href="../../assets/css/uc06-absence.css?v=uc06">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -137,6 +138,12 @@
             <div class="alert alert-info" style="margin-top:12px; margin-bottom:0; font-size:12px;" id="detailSessionTopicAlert">
               Nội dung buổi học sẽ hiển thị khi chọn một lịch có dữ liệu.
             </div>
+            <div id="parentAbsenceInfo" class="absence-info" role="status" aria-live="polite"></div>
+            <form id="parentAbsenceForm" class="absence-form" hidden>
+              <label class="form-label" for="parentAbsenceReason">Lý do xin vắng cho con (tối đa 500 ký tự)</label>
+              <textarea id="parentAbsenceReason" class="form-control" maxlength="500" required placeholder="Ví dụ: Con bị ốm, xin phép nghỉ buổi học này."></textarea>
+              <button id="parentAbsenceSubmit" type="submit" class="btn btn-primary btn-sm">Gửi yêu cầu xin vắng</button>
+            </form>
           </div>
 
           <!-- Buổi học tiếp theo -->
@@ -166,6 +173,6 @@
   <script src="../../assets/js/modules/parent/contact-center.js"></script>
   <script src="../../assets/js/auth.js"></script>
   <script src="../../assets/js/modules/parent/schedule-view.js"></script>
-  <script src="../../assets/js/modules/parent/schedule-page.js"></script>
+  <script src="../../assets/js/modules/parent/schedule-page.js?v=uc06-patch"></script>
 </body>
 </html>

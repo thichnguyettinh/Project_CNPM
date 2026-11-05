@@ -35,6 +35,15 @@ const ParentScheduleModule = {
 
   getLinkedChildren() {
     return AuthService.api('/children');
+  },
+  getAbsenceRequests(sessionId, studentCode) {
+    const query = new URLSearchParams({ session_id: String(sessionId), student_code: studentCode });
+    return AuthService.api(`/absence-requests?${query}`);
+  },
+  submitAbsenceRequest(sessionId, studentCode, reason) {
+    return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}/absence-requests`, {
+      method: 'POST', body: JSON.stringify({ student_code: studentCode, reason })
+    });
   }
 };
 

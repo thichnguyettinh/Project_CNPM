@@ -10,7 +10,10 @@
     classId: '',
     sessions: [],
     weekStart: getMonday(new Date()),
-    request: 0
+    request: 0,
+    selectedSession: null,
+    absenceSerial: 0,
+    absenceBusy: false
   };
 
   function getMonday(value) {
@@ -179,6 +182,10 @@
   }
 
   function clearSessionPanels(message) {
+    state.selectedSession = null;
+    state.absenceSerial++;
+    $('parentAbsenceForm').hidden = true;
+    $('parentAbsenceInfo').textContent = '';
     if ($('detailSessionDate')) $('detailSessionDate').textContent = message;
     if ($('detailSessionTitle')) $('detailSessionTitle').textContent = 'Chưa có buổi học được chọn';
     if ($('detailSessionTime')) $('detailSessionTime').textContent = '—';
@@ -288,6 +295,10 @@
   }
 
   function selectSession(session) {
+    state.selectedSession = session;
+    const serial = ++state.absenceSerial;
+    $('parentAbsenceForm').hidden = true;
+    $('parentAbsenceInfo').textContent = '';
     const startText = timePart(session.starts_at);
     const endText = timePart(session.ends_at);
     const durationMs = Date.parse(session.ends_at) - Date.parse(session.starts_at);
@@ -305,6 +316,58 @@
     if ($('detailSessionTopicAlert')) $('detailSessionTopicAlert').textContent = session.topic
       ? `Nội dung buổi học: ${session.topic}`
       : 'Buổi học chưa có nội dung được cập nhật.';
+    void loadAbsenceState(session, serial);
+  }
+
+  async function loadAbsenceState(session, serial) {
+    const childCode = state.child?.student_code;
+    const info = $('parentAbsenceInfo');
+    info.textContent = 'Đang kiểm tra yêu cầu xin vắng…';
+    $('parentAbsenceForm').hidden = true;
+    if (!childCode) return;
+    try {
+      const requests = await ParentScheduleModule.getAbsenceRequests(session.session_id, childCode);
+      if (serial !== state.absenceSerial || state.child?.student_code !== childCode) return;
+      if (!Array.isArray(requests)) throw new Error('Dữ liệu yêu cầu không hợp lệ.');
+      const existing = requests[0];
+      if (existing) {
+        info.textContent = `Đã gửi yêu cầu xin vắng cho ${childCode}. Lý do: ${existing.reason}. Giáo viên đã được thông báo.`;
+      } else if (session.status === 'scheduled' && Date.parse(session.starts_at) > Date.now()) {
+        info.textContent = `Gửi yêu cầu xin vắng cho ${childCode} trước giờ bắt đầu buổi học.`;
+        $('parentAbsenceForm').hidden = false;
+      } else {
+        info.textContent = 'Chỉ có thể xin vắng trước khi buổi học đã lên lịch bắt đầu.';
+      }
+    } catch (error) {
+      if (serial === state.absenceSerial) info.textContent = `Chưa kiểm tra được yêu cầu: ${error.message}`;
+    }
+  }
+
+  async function submitAbsenceRequest(event) {
+    event.preventDefault();
+    const session = state.selectedSession;
+    const studentCode = state.child?.student_code;
+    const reason = $('parentAbsenceReason').value.trim();
+    if (!session || !studentCode || state.absenceBusy) return;
+    if (!reason) {
+      $('parentAbsenceInfo').textContent = 'Vui lòng nhập lý do xin vắng.';
+      return;
+    }
+    state.absenceBusy = true;
+    $('parentAbsenceSubmit').disabled = true;
+    const serial = state.absenceSerial;
+    try {
+      await ParentScheduleModule.submitAbsenceRequest(session.session_id, studentCode, reason);
+      if (serial !== state.absenceSerial) return;
+      $('parentAbsenceForm').hidden = true;
+      $('parentAbsenceForm').reset();
+      $('parentAbsenceInfo').textContent = 'Đã gửi yêu cầu xin vắng. Giáo viên có thể xem trong mục Điểm danh.';
+    } catch (error) {
+      if (serial === state.absenceSerial) $('parentAbsenceInfo').textContent = `Không gửi được yêu cầu: ${error.message}`;
+    } finally {
+      state.absenceBusy = false;
+      $('parentAbsenceSubmit').disabled = false;
+    }
   }
 
   function renderNextSession(sessions) {
@@ -327,6 +390,10 @@
 
   async function loadParentSchedule() {
     const request = ++state.request;
+    state.absenceSerial++;
+    state.selectedSession = null;
+    $('parentAbsenceForm').hidden = true;
+    $('parentAbsenceInfo').textContent = '';
     const start = new Date(state.weekStart);
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
@@ -400,6 +467,7 @@
     const user = AuthService.requireAuth('parent');
     if (!user) return;
     renderParent(user);
+    $('parentAbsenceForm').addEventListener('submit', submitAbsenceRequest);
     try {
       const children = await ParentScheduleModule.getLinkedChildren();
       if (!Array.isArray(children)) throw new Error('Danh sách học sinh liên kết không hợp lệ.');

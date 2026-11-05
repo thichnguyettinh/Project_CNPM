@@ -23,6 +23,9 @@ const AttendanceModule = {
       method: 'PUT', body: JSON.stringify({ records })
     });
   },
+  getAbsenceRequests(sessionId) {
+    return AuthService.api(`/absence-requests?session_id=${encodeURIComponent(sessionId)}`);
+  },
   getHistory(filters = {}) {
     const query = new URLSearchParams(filters).toString();
     return AuthService.api(`/attendance${query ? `?${query}` : ''}`);
@@ -31,7 +34,7 @@ const AttendanceModule = {
 window.AttendanceModule = AttendanceModule;
 
 const TeacherAttendancePage = {
-  state: { classes: [], sessions: [], classId: '', sessionId: '', rows: [], saved: [], busy: false },
+  state: { classes: [], sessions: [], classId: '', sessionId: '', rows: [], saved: [], busy: false, absenceRequests: [] },
   el(id) { return document.getElementById(id); },
   statuses: [
     { key: 'present', title: 'Có mặt' },
@@ -112,6 +115,8 @@ const TeacherAttendancePage = {
     this.state.classId = classId;
     this.state.sessionId = '';
     this.state.rows = []; this.state.saved = []; this.state.sessions = [];
+    this.state.absenceRequests = [];
+    this.renderAbsenceRequests();
     const select = this.el('attendanceSession');
     select.replaceChildren(new Option('— Chọn buổi học —', ''));
     this.render();
@@ -142,8 +147,11 @@ const TeacherAttendancePage = {
   async selectSession(sessionId) {
     this.state.sessionId = String(sessionId || '');
     this.state.rows = []; this.state.saved = [];
+    this.state.absenceRequests = [];
+    this.renderAbsenceRequests();
     this.render();
     if (!sessionId) return;
+    void this.loadAbsenceRequests(sessionId);
     this.message('Đang tải sổ điểm danh…');
     try {
       const records = await AttendanceModule.getSessionAttendance(sessionId);
@@ -157,6 +165,49 @@ const TeacherAttendancePage = {
       this.message(records.some(r => r.status) ? 'Đã tải điểm danh đã lưu. Bạn có thể chỉnh sửa và lưu lại.' :
         'Chưa có kết quả điểm danh cho buổi này. Chọn trạng thái từng học sinh hoặc bấm Tất cả có mặt.');
     } catch (error) { this.message(`Không tải được sổ điểm danh: ${error.message}`, 'danger'); }
+  },
+  async loadAbsenceRequests(sessionId) {
+    this.el('teacherAbsenceSummary').textContent = 'Đang tải yêu cầu xin vắng…';
+    try {
+      const rows = await AttendanceModule.getAbsenceRequests(sessionId);
+      if (String(sessionId) !== this.state.sessionId) return;
+      if (!Array.isArray(rows)) throw new Error('Dữ liệu yêu cầu không hợp lệ.');
+      this.state.absenceRequests = rows;
+      this.renderAbsenceRequests();
+    } catch (error) {
+      if (String(sessionId) === this.state.sessionId) {
+        this.el('teacherAbsenceSummary').textContent = `Không tải được yêu cầu xin vắng: ${error.message}`;
+      }
+    }
+  },
+  renderAbsenceRequests() {
+    const tbody = this.el('teacherAbsenceRows');
+    const summary = this.el('teacherAbsenceSummary');
+    tbody.replaceChildren();
+    const rows = this.state.absenceRequests;
+    summary.textContent = this.state.sessionId
+      ? `${rows.length} yêu cầu xin vắng cho buổi học đang chọn. Đây là đơn xin vắng, không tự động thay đổi điểm danh.`
+      : 'Chọn buổi học để xem yêu cầu xin vắng.';
+    if (!rows.length) {
+      const row = tbody.insertRow();
+      const td = row.insertCell(); td.colSpan = 4;
+      td.textContent = this.state.sessionId ? 'Chưa có yêu cầu xin vắng.' : 'Chọn buổi học.';
+      return;
+    }
+    rows.forEach(request => {
+      const tr = tbody.insertRow();
+      const fields = [
+        `${request.student_name} (${request.student_code})`,
+        `${request.requested_by_name} (${request.requested_by_role === 'parent' ? 'Phụ huynh' : 'Học sinh'})`,
+        request.reason,
+        new Date(request.created_at).toLocaleString('vi-VN')
+      ];
+      fields.forEach((field, index) => {
+        const cell = tr.insertCell();
+        cell.textContent = field;
+        if (index === 2) cell.className = 'absence-reason';
+      });
+    });
   },
   formatDate(iso) { return new Date(iso).toLocaleDateString('vi-VN'); },
   formatTime(iso) { return new Date(iso).toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' }); },

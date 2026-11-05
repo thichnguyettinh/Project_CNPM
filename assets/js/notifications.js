@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let notifications = [];
+  // API trả về đơn thực tế. Không cố định lý do hay mã học sinh trong giao diện.
+  let teacherAbsenceRequests = null;
   let activeFilter = 'all';
   let loading = true;
 
@@ -52,6 +54,28 @@ document.addEventListener('DOMContentLoaded', () => {
     element.className = className;
     element.textContent = text;
     return element;
+  }
+
+  // UC-06: Xác định buổi học tương ứng qua dữ liệu API, không cố định mã học sinh/buổi học.
+  // Thông báo cũ chưa lưu mã buổi học, nên đối chiếu mã học sinh và thời điểm tạo đơn.
+  function findAbsenceRequestForNotification(notification, requests) {
+    const found = String(notification.body || '').match(/Học sinh\s+([A-Za-z0-9_-]+)\s+xin vắng/);
+    const notifiedAt = Date.parse(notification.created_at);
+    if (!found || !Number.isFinite(notifiedAt) || !Array.isArray(requests)) return null;
+
+    const candidates = requests
+      .filter(request => request.student_code === found[1] &&
+        request.class_id != null && request.session_id != null)
+      .map(request => ({
+        request,
+        distance: Math.abs(Date.parse(request.created_at) - notifiedAt)
+      }))
+      .filter(item => Number.isFinite(item.distance) && item.distance <= 5 * 60 * 1000)
+      .sort((a, b) => a.distance - b.distance);
+
+    // Tránh mở nhầm buổi học khi có nhiều đơn cùng thời điểm.
+    if (candidates.length > 1 && candidates[0].distance === candidates[1].distance) return null;
+    return candidates[0]?.request || null;
   }
 
   function createNotificationItem(notification) {
@@ -80,9 +104,23 @@ document.addEventListener('DOMContentLoaded', () => {
     copy.append(
       meta,
       createTextElement('h2', 'notification-title', notification.title),
-      createTextElement('p', 'notification-description', notification.body),
-      createTextElement('time', 'notification-time', formatDate(notification.created_at))
+      createTextElement('p', 'notification-description', notification.body)
     );
+
+    // Giáo viên thấy rõ lý do ngay trong thông báo, nếu xác định được chính xác
+    // đơn tương ứng từ API. Không đoán lý do nếu thông báo quá cũ hoặc mơ hồ.
+    if (location.pathname.includes('/teacher/') &&
+        notification.title === 'Có yêu cầu xin vắng mới' &&
+        Array.isArray(teacherAbsenceRequests)) {
+      const match = findAbsenceRequestForNotification(notification, teacherAbsenceRequests);
+      if (match && match.reason) {
+        const detail = createTextElement(
+          'p', 'notification-absence-detail', `Lý do xin vắng: ${match.reason}`
+        );
+        copy.append(detail);
+      }
+    }
+    copy.append(createTextElement('time', 'notification-time', formatDate(notification.created_at)));
 
     const state = document.createElement('div');
     state.className = 'notification-state';
@@ -98,6 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
       readButton.type = 'button';
       readButton.dataset.markRead = '';
       state.append(readButton);
+    }
+    // Chỉ hiển thị cho thông báo xin vắng thuộc không gian Giáo viên.
+    if (location.pathname.includes('/teacher/') &&
+        notification.title === 'Có yêu cầu xin vắng mới') {
+      const viewButton = createTextElement('button', 'notification-view-absence', 'Xem lý do');
+      viewButton.type = 'button';
+      viewButton.dataset.viewAbsence = '';
+      state.append(viewButton);
     }
     item.append(icon, copy, state);
     return item;
@@ -194,6 +240,29 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     if (!notification) return;
 
+    if (button.hasAttribute('data-view-absence')) {
+      button.disabled = true;
+      try {
+        const requests = await AuthService.api('/absence-requests');
+        if (!Array.isArray(requests)) throw new Error('Dữ liệu đơn xin vắng không hợp lệ.');
+        const match = findAbsenceRequestForNotification(notification, requests);
+        if (!match) {
+          setError('Chưa xác định được buổi học từ thông báo này. Hãy mở Điểm danh và chọn buổi học để xem đơn.');
+          button.disabled = false;
+          return;
+        }
+        const params = new URLSearchParams({
+          class_id: String(match.class_id),
+          session_id: String(match.session_id)
+        });
+        location.assign(`attendance.html?${params}#teacher-absence-requests`);
+      } catch (error) {
+        setError(`Không tải được chi tiết đơn xin vắng: ${error.message}`);
+        button.disabled = false;
+      }
+      return;
+    }
+
     if (!button.hasAttribute('data-mark-read')) return;
     button.disabled = true;
     try {
@@ -229,6 +298,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // UC-06: Lấy lý do qua API để hiển thị ngay trong từng thông báo,
+  // không cần thêm bảng tổng hợp riêng ở phía trên trang.
+  async function loadTeacherAbsenceDetails() {
+    if (!location.pathname.includes('/teacher/')) return;
+    try {
+      const requests = await AuthService.api('/absence-requests');
+      if (!Array.isArray(requests)) throw new Error('API không trả về danh sách đơn hợp lệ.');
+      teacherAbsenceRequests = requests;
+      update();
+    } catch (error) {
+      teacherAbsenceRequests = null;
+      // Thông báo gốc vẫn hiển thị bình thường nếu API đơn xin vắng gặp lỗi.
+      console.warn('Không tải được lý do xin vắng:', error);
+    }
+  }
+  void loadTeacherAbsenceDetails();
 
   const systemNote = document.querySelector('[data-system-note]');
   const dismissedNoteKey = 'lopminh_notification_system_note_dismissed';

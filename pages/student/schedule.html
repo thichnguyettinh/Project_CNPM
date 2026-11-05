@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
   <link rel="stylesheet" href="../../assets/css/student-schedule-live.css">
   <link rel="stylesheet" href="../../assets/css/schedule.css">
+  <link rel="stylesheet" href="../../assets/css/uc06-absence.css?v=uc06">
 </head>
 <body class="schedule-page student-schedule-page">
 
@@ -101,6 +102,16 @@
             <select id="scheduleStudentClass" class="form-control" aria-label="Chọn lớp học"><option value="">Đang tải…</option></select>
           </div>
         </div>
+        <section id="studentAbsenceQuick" class="card absence-quick-card" aria-labelledby="studentAbsenceQuickTitle">
+          <h2 id="studentAbsenceQuickTitle" class="title-card">Xin vắng buổi học</h2>
+          <p class="text-secondary">Chọn buổi học sắp diễn ra để nhập lý do gửi cho giáo viên.</p>
+          <div class="absence-quick-actions">
+            <label class="form-label" for="studentAbsenceSessionSelect">Buổi học trong tuần đang xem</label>
+            <select id="studentAbsenceSessionSelect" class="form-control" aria-label="Buổi học muốn xin vắng"><option value="">Đang tải lịch học…</option></select>
+            <button id="studentAbsenceOpen" class="btn btn-primary btn-sm" type="button" disabled>Mở đơn xin vắng</button>
+          </div>
+          <p id="studentAbsenceQuickHint" class="text-caption" role="status" aria-live="polite">Đang tải lịch học…</p>
+        </section>
         <div class="student-calendar-scroll">
           <div id="studentScheduleGrid" class="student-calendar-grid" aria-live="polite"></div>
         </div>
@@ -112,13 +123,19 @@
         <section id="studentSessionDetail" class="card" style="padding:20px; margin-top:20px;" hidden>
           <h2 class="title-card" style="margin-bottom:14px;">Chi tiết buổi học</h2>
           <div id="studentSessionDetailBody"></div>
+          <div id="studentAbsenceInfo" class="absence-info" role="status" aria-live="polite"></div>
+          <form id="studentAbsenceForm" class="absence-form" hidden>
+            <label class="form-label" for="studentAbsenceReason">Lý do xin vắng (tối đa 500 ký tự)</label>
+            <textarea id="studentAbsenceReason" class="form-control" maxlength="500" required placeholder="Ví dụ: Em bị ốm, xin phép nghỉ buổi học này."></textarea>
+            <button id="studentAbsenceSubmit" class="btn btn-primary btn-sm" type="submit">Gửi yêu cầu xin vắng</button>
+          </form>
           <button id="studentSessionClose" class="btn btn-secondary btn-sm" type="button" style="margin-top:16px;">Đóng chi tiết</button>
         </section>
       </div>
     </main>
   </div>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/modules/student/schedule-view.js?v=20261102-3"></script>
+  <script src="../../assets/js/modules/student/schedule-view.js?v=uc06-patch"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => StudentSchedulePage.init());
   </script>

@@ -20,6 +20,7 @@ from .schemas import (
     AssignmentCreate,
     AssignmentUpdate,
     AttendanceSave,
+    AbsenceRequestCreate,
     ClassCreate,
     ClassUpdate,
     EnrollmentCreate,
@@ -1903,6 +1904,131 @@ def save_attendance(
                 )
             )
     return {"records": saved}
+
+
+# UC-06 / TC_UC06_009: gửi yêu cầu xin vắng, không tự ghi điểm danh.
+@app.post("/api/sessions/{session_id}/absence-requests", status_code=201)
+def submit_absence_request(
+    session_id: int,
+    payload: AbsenceRequestCreate,
+    connection: Connection,
+    user: StudentOrParent,
+):
+    with transaction(connection):
+        session = fetch_one(
+            connection,
+            """
+            SELECT cs.session_id, cs.class_id, cs.starts_at, cs.status,
+                   c.name AS class_name, c.teacher_user_id
+            FROM class_sessions cs
+            JOIN classes c ON c.class_id = cs.class_id
+            WHERE cs.session_id = %s
+            FOR SHARE OF cs
+            """,
+            (session_id,),
+        )
+        if not session:
+            raise HTTPException(status_code=404, detail="Không tìm thấy buổi học.")
+        if session["status"] != "scheduled" or session["starts_at"] <= datetime.now(timezone.utc):
+            raise HTTPException(status_code=400, detail="Chỉ có thể xin vắng trước giờ bắt đầu buổi học đã lên lịch.")
+
+        if user["role"] == "student":
+            student = require_student_id(connection, user["user_id"])
+            if payload.student_code and payload.student_code != student["student_code"]:
+                raise HTTPException(status_code=403, detail="Bạn chỉ có thể xin vắng cho bản thân.")
+        else:
+            if not payload.student_code:
+                raise HTTPException(status_code=422, detail="Phụ huynh cần chọn học sinh được liên kết.")
+            student = can_view_student(connection, user, payload.student_code)
+
+        enrollment = fetch_one(
+            connection,
+            """
+            SELECT 1 FROM class_enrollments
+            WHERE class_id = %s AND student_id = %s AND status = 'active'
+            LIMIT 1
+            """,
+            (session["class_id"], student["student_id"]),
+        )
+        if not enrollment:
+            raise HTTPException(status_code=403, detail="Học sinh không thuộc lớp của buổi học.")
+
+        result = fetch_one(
+            connection,
+            """
+            INSERT INTO absence_requests (session_id, student_id, requested_by, reason)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (session_id, student_id) DO NOTHING
+            RETURNING request_id, session_id, student_id, requested_by,
+                      reason, status, created_at
+            """,
+            (session_id, student["student_id"], user["user_id"], payload.reason),
+        )
+        if not result:
+            raise HTTPException(status_code=409, detail="Học sinh đã gửi yêu cầu xin vắng cho buổi học này.")
+
+        create_notification(
+            connection,
+            session["teacher_user_id"],
+            "Có yêu cầu xin vắng mới",
+            f"Học sinh {student['student_code']} xin vắng buổi học lớp "
+            f"{session['class_name']}. Vào Điểm danh để xem lý do.",
+            "system",
+        )
+    return {**result, "student_code": student["student_code"]}
+
+
+@app.get("/api/absence-requests")
+def list_absence_requests(
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+    session_id: int | None = None,
+    student_code: str | None = None,
+):
+    where: list[str] = []
+    params: list[Any] = []
+    if user["role"] == "teacher":
+        where.append("c.teacher_user_id = %s")
+        params.append(user["user_id"])
+        if student_code:
+            where.append("s.student_code = %s")
+            params.append(student_code)
+    elif user["role"] == "student":
+        student = require_student_id(connection, user["user_id"])
+        if student_code and student_code != student["student_code"]:
+            raise HTTPException(status_code=403, detail="Bạn chỉ được xem đơn của mình.")
+        where.append("s.student_id = %s")
+        params.append(student["student_id"])
+    else:
+        if student_code:
+            student = can_view_student(connection, user, student_code)
+            where.append("s.student_id = %s")
+            params.append(student["student_id"])
+        else:
+            where.append("s.student_id = ANY(%s)")
+            params.append(linked_student_ids(connection, user["user_id"]))
+    if session_id is not None:
+        where.append("ar.session_id = %s")
+        params.append(session_id)
+    return fetch_all(
+        connection,
+        f"""
+        SELECT ar.request_id, ar.session_id, s.student_code,
+               student_user.full_name AS student_name, ar.reason, ar.status,
+               ar.created_at, requester.full_name AS requested_by_name,
+               requester.role AS requested_by_role,
+               cs.starts_at, c.class_id, c.class_code, c.name AS class_name
+        FROM absence_requests ar
+        JOIN class_sessions cs ON cs.session_id = ar.session_id
+        JOIN classes c ON c.class_id = cs.class_id
+        JOIN students s ON s.student_id = ar.student_id
+        JOIN users student_user ON student_user.user_id = s.user_id
+        JOIN users requester ON requester.user_id = ar.requested_by
+        WHERE {' AND '.join(where)}
+        ORDER BY ar.created_at DESC, ar.request_id DESC
+        """,
+        tuple(params),
+    )
 
 
 @app.get("/api/attendance")
