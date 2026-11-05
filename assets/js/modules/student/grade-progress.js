@@ -41,7 +41,7 @@
      if(req!==state.req)return;
      if(!Array.isArray(rows))throw new Error('API tiến bộ trả về dữ liệu không hợp lệ.');
      state.rows=rows;
-     $('uc11-student-identity').textContent=`${me.full_name} · ${me.student_code} · Kết quả lấy từ PostgreSQL`;
+     $('uc11-student-identity').textContent=`${me.full_name} · ${me.student_code}`;
      const prev=$('uc11-student-class').value;
      const classes=[...new Map(rows.map(r=>[r.class_code,{code:r.class_code,name:r.class_name}])).values()].filter(c=>c.code);
      $('uc11-student-class').innerHTML='<option value="">Tất cả các lớp</option>'+classes.map(c=>`<option value="${C.safe(c.code)}">${C.safe(c.name||c.code)} (${C.safe(c.code)})</option>`).join('');
