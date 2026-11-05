@@ -65,6 +65,38 @@ Trong quá trình phát triển ứng dụng quản lý lớp học thêm (hệ 
 \end{longtable}
 
 \section{Kết quả chương trình minh họa}
+Sau quá trình phân tích, thiết kế và hiện thực, nhóm đã xây dựng được phiên bản chương trình minh họa dưới dạng ứng dụng web mang tên \textit{Lớp Mình}, phục vụ công tác quản lý lớp học thêm. Hệ thống được tổ chức theo ba nhóm người dùng là giáo viên/gia sư, học sinh và phụ huynh. Người dùng đăng nhập bằng tài khoản được cấp và được chuyển đến không gian làm việc tương ứng với vai trò. Việc phân chia quyền truy cập giúp các nhóm người dùng tiếp cận những thông tin và thao tác phù hợp với trách nhiệm của mình.
+
+Đối với giáo viên, chương trình đã xây dựng các nhóm chức năng quản lý tài khoản, lớp học, danh sách học sinh, thời khóa biểu và buổi học; thực hiện điểm danh; quản lý bài tập, bài kiểm tra, kết quả học tập và khoản thu học phí. Giao diện hỗ trợ lựa chọn lớp và buổi học, ghi nhận trạng thái chuyên cần, theo dõi kết quả đánh giá, lập khoản thu và cập nhật thông tin thanh toán. Đối với học sinh, chương trình cung cấp các màn hình tổng quan, lịch học, lịch sử điểm danh, kết quả học tập, bài tập, thông báo và hồ sơ cá nhân. Đối với phụ huynh, hệ thống bố trí các chức năng tra cứu lịch học, chuyên cần, kết quả học tập và tình trạng học phí của học sinh đã liên kết. Thông tin học phí được theo dõi trên hệ thống, còn giao dịch tiền mặt hoặc chuyển khoản được thực hiện bên ngoài ứng dụng và do giáo viên ghi nhận.
+
+Về mặt kỹ thuật, phần giao diện được xây dựng bằng HTML, CSS và JavaScript, với các tệp xử lý được tổ chức thành những mô-đun dành cho từng vai trò. Phần máy chủ sử dụng ngôn ngữ Python và framework FastAPI để tiếp nhận, xử lý yêu cầu và cung cấp dịch vụ thông qua các API. Dữ liệu nghiệp vụ được tổ chức trong hệ quản trị cơ sở dữ liệu PostgreSQL. Trong bản mã nguồn khảo sát, tệp định nghĩa dịch vụ máy chủ có \textbf{64 khai báo API endpoint}, còn tệp thiết kế cơ sở dữ liệu có \textbf{22 bảng}. Bên cạnh đó, dự án có \textbf{27 trang HTML} theo ba vai trò (11 trang giáo viên, 8 trang học sinh và 8 trang phụ huynh), cùng một trang điều khoản dùng chung trong thư mục \texttt{pages}. Đây là kết quả thống kê cấu trúc mã nguồn, không đồng nghĩa mọi luồng nghiệp vụ đều đã được xác nhận hoạt động đầy đủ trên dữ liệu thực tế.
+
+Mã nguồn chương trình được tổ chức thành các nhóm thư mục chính gồm \texttt{assets} (giao diện và mã JavaScript), \texttt{pages} (các trang theo vai trò), \texttt{backend} (dịch vụ và API), \texttt{database} (lược đồ và dữ liệu khởi tạo) và \texttt{tests} (các kịch bản kiểm tra). Nhóm lưu trữ và quản lý phiên bản mã nguồn trên GitHub tại địa chỉ \url{https://github.com/thichnguyettinh/Project_CNPM}. Cách phân chia này tạo điều kiện cho các thành viên phát triển, kiểm tra và tích hợp những phần chức năng được phân công.
+
+Để đánh giá quy mô hiện thực, nhóm thống kê trực tiếp các tệp mã nguồn và kịch bản triển khai trong phiên bản dự án được khảo sát. Phạm vi thống kê bao gồm các tệp Python, JavaScript, HTML, CSS, SQL và PowerShell; không tính thư mục kiểm thử, tài liệu LaTeX, hình ảnh và các tệp nhị phân. Kết quả được trình bày tại Bảng~\ref{tab:c5-thong-ke-ma-nguon}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Thống kê quy mô mã nguồn chương trình minh họa}
+    \label{tab:c5-thong-ke-ma-nguon}
+    \renewcommand{\arraystretch}{1.15}
+    \begin{tabular}{|l|r|r|}
+        \hline
+        \textbf{Loại tệp} & \textbf{Số tệp} & \textbf{Số dòng} \\ \hline
+        JavaScript (\texttt{.js}) & 30 & 7.395 \\ \hline
+        HTML (\texttt{.html}) & 32 & 7.339 \\ \hline
+        Python (\texttt{.py}) & 10 & 4.085 \\ \hline
+        CSS (\texttt{.css}) & 19 & 3.928 \\ \hline
+        SQL (\texttt{.sql}) & 7 & 861 \\ \hline
+        PowerShell (\texttt{.ps1}) & 1 & 53 \\ \hline
+        \textbf{Tổng cộng} & \textbf{99} & \textbf{23.661} \\ \hline
+    \end{tabular}
+\end{table}
+
+Theo Bảng~\ref{tab:c5-thong-ke-ma-nguon}, dự án có tổng cộng \textbf{99 tệp} thuộc phạm vi thống kê, tương ứng \textbf{23.661 dòng mã nguồn vật lý}. Trong đó, JavaScript chiếm 7.395 dòng, HTML có 7.339 dòng, Python có 4.085 dòng và CSS có 3.928 dòng. Các tệp SQL và PowerShell lần lượt có 861 và 53 dòng. Số dòng được tính theo dòng vật lý của tệp văn bản, \textit{bao gồm cả dòng trống và dòng chú thích}; do đó đây là số liệu về quy mô tệp, không phải số dòng lệnh thực thi hay kết quả đo theo tiêu chí của công cụ \texttt{cloc}. Thống kê cho thấy phần giao diện và xử lý phía trình duyệt chiếm tỷ trọng đáng kể trong mã nguồn, phù hợp với đặc điểm một ứng dụng web hỗ trợ nhiều vai trò và nhiều màn hình nghiệp vụ.
+
+Ngoài các chức năng nghiệp vụ, mã nguồn còn thể hiện việc tổ chức xác thực và quản lý phiên đăng nhập, phân quyền truy cập và lưu trữ thông tin mật khẩu theo dạng băm. Hệ thống có các giao diện thông báo trên website, hồ sơ cá nhân, đổi mật khẩu và trang hướng dẫn sử dụng. Các tệp trong thư mục \texttt{tests} hỗ trợ kiểm tra một số thành phần và hợp đồng API. Tuy nhiên, theo trạng thái được ghi nhận trong tài liệu mã nguồn, một số màn hình vẫn sử dụng dữ liệu minh họa hoặc chưa kết nối hoàn chỉnh với dịch vụ phía máy chủ; đồng thời các quy trình chưa được xác minh đầu cuối trên PostgreSQL cho mọi vai trò. Vì vậy, kết quả của giai đoạn này được xác định là \textbf{phiên bản chương trình minh họa đã có cấu trúc và các thành phần chức năng chính}, làm cơ sở cho việc tiếp tục kiểm thử, hoàn thiện tích hợp và triển khai ở các giai đoạn tiếp theo.
+
 \setcounter{secnumdepth}{3}
 \section{Giao diện minh hoạ các chức năng của chương trình}
 \subsection{Giao diện Đăng nhập}
