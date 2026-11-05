@@ -62,63 +62,6 @@ Chức năng quản lý danh sách học sinh cho phép giáo viên thực hiệ
 \end{longtable}
 \subsection{Kiểm thử cho chức năng 6 - Chức năng điểm danh}
 Chức năng điểm danh cho phép giáo viên quản lý và ghi nhận trạng thái tham gia lớp học của học sinh, đảm bảo tính toàn vẹn dữ liệu, lịch sử lưu vết và kiểm soát phân quyền chặt chẽ giữa các vai trò, được kiểm tra qua các trường hợp chính để bao quát các tình huống hợp lệ và ngoại lệ.
-\begin{longtable}{|p{0.8cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|p{1.4cm}|}
-\hline
-\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
-\hline
-\endhead
-
-1 & \textbf{Thêm học sinh chưa thuộc lớp vào lớp} \newline\newline \textit{Mã:} TC\_UC05\_001 \newline\newline \textbf{ĐK:} Lớp đang hoạt động; có tài khoản học sinh chưa ghi danh. \newline \textbf{HĐ:} Chọn hs02 từ danh sách và nhấn Xác nhận. 
-& Học sinh được thêm vào lớp; sĩ số hiện tại tăng tương ứng. 
-& Không có 
-& \textbf{PASS} \\
-\hline
-
-2 & \textbf{Đồng bộ lịch học vào TKB học sinh mới} \newline\newline \textit{Mã:} TC\_UC05\_002 \newline\newline \textbf{ĐK:} Lớp có lịch học; học sinh chưa thuộc lớp. \newline \textbf{HĐ:} Thêm hs02 vào lớp Toán 10A có 2 buổi học sắp tới, sau đó hs02 mở Lịch học tuần. 
-& Các buổi học của lớp được thêm vào thời khóa biểu của hs02, không thiếu hoặc nhân đôi. 
-& Không có 
-& \textbf{PASS} \\
-\hline
-
-3 & \textbf{Không thêm trùng học sinh đã có trong lớp} \newline\newline \textit{Mã:} TC\_UC05\_003 \newline\newline \textbf{ĐK:} hs01 đã thuộc lớp Toán 10A. \newline \textbf{HĐ:} Thử chọn lại hs01 hoặc gửi thẳng yêu cầu thêm trùng. 
-& Hệ thống không tạo quan hệ ghi danh trùng; sĩ số không đổi. 
-& Hệ thống từ chối và báo: "Học sinh đã có trong lớp." 
-& \textbf{PASS} \\
-\hline
-
-4 & \textbf{Cho học sinh nghỉ khỏi lớp} \newline\newline \textit{Mã:} TC\_UC05\_005 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp hoạt động. \newline \textbf{HĐ:} Chọn hs01 $\rightarrow$ Xóa khỏi lớp/Cho nghỉ học $\rightarrow$ Xác nhận. 
-& Trạng thái ghi danh chuyển thành Đã nghỉ; sĩ số hiện tại giảm 1; tài khoản học sinh giữ nguyên. 
-& Không có 
-& \textbf{PASS} \\
-\hline
-
-5 & \textbf{Gỡ lịch tương lai nhưng giữ lịch sử khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_006 \newline\newline \textbf{ĐK:} hs01 có lịch tương lai và dữ liệu lịch sử điểm danh, điểm số, học phí. \newline \textbf{HĐ:} Cho hs01 nghỉ và kiểm tra lại TKB cùng dữ liệu cũ. 
-& Các buổi học tương lai bị gỡ khỏi TKB học sinh; lịch sử điểm danh, điểm số và học phí trước đó vẫn được giữ. 
-& Không có 
-& \textbf{PASS} \\
-\hline
-
-6 & \textbf{Cảnh báo học phí còn nợ khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_007 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp và còn hóa đơn học phí chưa đóng. \newline \textbf{HĐ:} Chọn hs01 và thực hiện Cho nghỉ học. 
-& Hệ thống thông báo các khoản phí chưa thanh toán của học sinh tại lớp trước khi hoàn tất thao tác. 
-& Hệ thống chỉ hiện hộp thoại xác nhận chung, không nhắc gì đến khoản học phí còn nợ. (Cần chỉnh sửa) 
-& \textbf{FAIL} \\
-\hline
-
-7 & \textbf{Ngăn Học sinh/Phụ huynh thay đổi danh sách lớp} \newline\newline \textit{Mã:} TC\_UC05\_008 \newline\newline \textbf{ĐK:} Đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh. \newline \textbf{HĐ:} Truy cập trực tiếp URL hoặc gửi yêu cầu thêm/cho nghỉ học sinh. 
-& Yêu cầu bị từ chối; quan hệ ghi danh và sĩ số không thay đổi. 
-& Hệ thống chặn quyền, báo không có quyền và chuyển về trang tổng quan. 
-& \textbf{PASS} \\
-\hline
-
-\end{longtable}
-
-\vspace{1em}
-
-\section*{6.1.Y. Kiểm thử chức năng điểm danh}
-
-Chức năng điểm danh cho phép giáo viên theo dõi, cập nhật trạng thái học tập của học sinh, đồng thời hỗ trợ phân quyền xem và quản lý yêu cầu vắng học.
-
-\vspace{0.5em}
 
 \begin{longtable}{|p{0.8cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|p{1.4cm}|}
 \hline
@@ -181,8 +124,6 @@ Chức năng điểm danh cho phép giáo viên theo dõi, cập nhật trạng 
 \hline
 
 \end{longtable}
-
-này thì sao, có hợp lệ k
 
 \subsection{Kiểm thử cho chức năng 7}
 \subsection{Kiểm thử cho chức năng 8}
