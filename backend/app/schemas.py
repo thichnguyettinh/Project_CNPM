@@ -61,6 +61,11 @@ class UserUpdate(StrictModel):
     email: str | None = Field(default=None, max_length=254)
     phone: PhoneNumber = None
     status: Literal["active", "inactive", "locked"] | None = None
+    date_of_birth: date | None = None
+    address: str | None = Field(default=None, max_length=255)
+    class_id: str | None = Field(default=None, max_length=36)
+    student_code: str | None = Field(default=None, max_length=30)
+    relationship: str | None = Field(default=None, max_length=40)
 
 
 class ParentLinkCreate(StrictModel):

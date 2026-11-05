@@ -320,7 +320,7 @@
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
                 <div class="form-group" style="margin-bottom: 0;">
                   <label class="form-label" for="dsStudentPhone">Số điện thoại</label>
-                  <input type="tel" class="form-control" id="dsStudentPhone" placeholder="Nhập số điện thoại (10 chữ số)" maxlength="10">
+                  <input type="tel" class="form-control" id="dsStudentPhone" placeholder="Nhập số điện thoại (10 chữ số)" maxlength="12">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label class="form-label" for="dsStudentClassId">Lớp học <span class="required">*</span></label>
@@ -408,7 +408,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
                   <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="dsParentPhone">Số điện thoại <span class="required">*</span></label>
-                    <input type="tel" class="form-control" id="dsParentPhone" placeholder="Nhập số điện thoại phụ huynh" maxlength="10">
+                    <input type="tel" class="form-control" id="dsParentPhone" placeholder="Nhập số điện thoại phụ huynh" maxlength="12">
                   </div>
                   <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="dsParentUsername">Tên đăng nhập phụ huynh <span class="required">*</span></label>
@@ -580,32 +580,117 @@
   </div>
 
   <div class="modal-overlay" id="modalEditAccount">
-    <div class="modal-container" style="max-width:520px;">
+    <div class="modal-container" style="max-width:620px;">
       <div class="modal-header">
-        <h3 class="modal-title">Chỉnh sửa tài khoản</h3>
+        <div>
+          <h3 class="modal-title" id="editModalTitle">Chỉnh sửa tài khoản</h3>
+          <p class="text-caption" id="editModalSubtitle" style="margin-top:2px;">Cập nhật thông tin chi tiết học sinh hoặc phụ huynh.</p>
+        </div>
         <button type="button" class="modal-close" onclick="closeModal('modalEditAccount')">&times;</button>
       </div>
-      <form id="editAccountForm">
-        <div class="modal-body">
+      <form id="editAccountForm" novalidate onsubmit="event.preventDefault(); UserManagementPage.saveAccountEdit();">
+        <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
           <input type="hidden" id="editUserId">
+          <input type="hidden" id="editUserRole">
           <div id="editAccountMessage" class="alert user-management-message" role="alert" hidden></div>
-          <div class="form-group">
-            <label class="form-label" for="editFullName">Họ và tên</label>
-            <input class="form-control" id="editFullName" maxlength="150" required>
+
+          <!-- Nhóm 1: Thông tin cơ bản -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="editFullName">Họ và tên <span class="required">*</span></label>
+              <input class="form-control" id="editFullName" maxlength="150" required placeholder="Nhập họ và tên">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="editUsername">Tên đăng nhập</label>
+              <input class="form-control" id="editUsername" readonly style="background-color: #f8fafc; cursor: not-allowed; color: var(--color-text-secondary);" title="Tên đăng nhập không thể thay đổi">
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="editEmail">Email</label>
-            <input class="form-control" id="editEmail" type="email" maxlength="254">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="editPhone">Số điện thoại</label>
+              <input class="form-control" id="editPhone" type="tel" inputmode="numeric"
+                pattern="[0-9]{10}" maxlength="10" placeholder="10 chữ số" title="Số điện thoại phải gồm đúng 10 chữ số.">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="editEmail">Email</label>
+              <input class="form-control" id="editEmail" type="email" maxlength="254" placeholder="email@vi-du.com">
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="editPhone">Số điện thoại</label>
-            <input class="form-control" id="editPhone" type="tel" inputmode="numeric"
-              pattern="[0-9]{10}" maxlength="10" title="Số điện thoại phải gồm đúng 10 chữ số.">
+
+          <!-- Nhóm 2: Trường riêng cho Học sinh -->
+          <div id="editStudentSpecificFields" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editDob">Ngày sinh <span class="required">*</span></label>
+                <input class="form-control" id="editDob" type="date">
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editStudentCode">Mã học sinh</label>
+                <input class="form-control" id="editStudentCode" maxlength="30" placeholder="Ví dụ: HS001">
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 14px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editClassId">Lớp học hiện tại</label>
+                <select class="form-control" id="editClassId">
+                  <option value="">-- Chưa xếp lớp --</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editStudentStatus">Trạng thái tài khoản</label>
+                <select class="form-control" id="editStudentStatus">
+                  <option value="active">Hoạt động</option>
+                  <option value="inactive">Vô hiệu hóa</option>
+                  <option value="locked">Đang khóa</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label class="form-label">Phụ huynh liên kết</label>
+              <div style="padding: 10px 14px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-input); font-size: 13.5px; color: var(--color-text-main);" id="editLinkedParentsText">—</div>
+            </div>
+          </div>
+
+          <!-- Nhóm 3: Trường riêng cho Phụ huynh -->
+          <div id="editParentSpecificFields" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editRelationship">Quan hệ với học sinh</label>
+                <select class="form-control" id="editRelationship">
+                  <option value="">-- Chọn quan hệ --</option>
+                  <option value="Bố">Bố</option>
+                  <option value="Mẹ">Mẹ</option>
+                  <option value="Người giám hộ">Người giám hộ</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="editParentStatus">Trạng thái tài khoản</label>
+                <select class="form-control" id="editParentStatus">
+                  <option value="active">Hoạt động</option>
+                  <option value="inactive">Vô hiệu hóa</option>
+                  <option value="locked">Đang khóa</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label class="form-label">Học sinh liên kết</label>
+              <div style="padding: 10px 14px; background: #f8fafc; border: 1px solid var(--color-border); border-radius: var(--radius-input); font-size: 13.5px; color: var(--color-text-main);" id="editLinkedStudentsText">—</div>
+            </div>
+          </div>
+
+          <!-- Nhóm 4: Địa chỉ nơi ở -->
+          <div class="form-group" style="margin-bottom: 4px;">
+            <label class="form-label" for="editAddress">Địa chỉ nơi ở</label>
+            <input class="form-control" id="editAddress" maxlength="255" placeholder="Nhập số nhà, tên đường, khu vực...">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditAccount')">Hủy bỏ</button>
-          <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+          <button type="submit" class="btn btn-primary" id="btnSaveEditAccount">Lưu thay đổi</button>
         </div>
       </form>
     </div>

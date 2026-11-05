@@ -559,6 +559,20 @@ def list_users(connection: Connection, teacher: Teacher, role: str | None = None
         """
         SELECT u.user_id AS id, u.username, u.email, u.role, u.full_name, u.phone,
                u.avatar_text, u.status, s.student_code,
+               up.date_of_birth, up.address,
+               (SELECT ce.class_id
+                FROM students enrolled_student
+                JOIN class_enrollments ce ON ce.student_id = enrolled_student.student_id
+                  AND ce.status = 'active'
+                WHERE enrolled_student.user_id = u.user_id
+                LIMIT 1
+               ) AS class_id,
+               (SELECT sp.relationship
+                FROM parents pr
+                JOIN student_parents sp ON sp.parent_id = pr.parent_id
+                WHERE pr.user_id = u.user_id
+                LIMIT 1
+               ) AS relationship,
                (SELECT string_agg(DISTINCT CASE WHEN u.role = 'student'
                                                   THEN linked_parent_user.full_name
                                                   ELSE linked_student_user.full_name END, ', ')
@@ -585,7 +599,9 @@ def list_users(connection: Connection, teacher: Teacher, role: str | None = None
                 WHERE enrolled_student.user_id = u.user_id
                ) AS class_names,
                (SELECT string_agg(alias, ',') FROM user_aliases a WHERE a.user_id = u.user_id) AS aliases
-        FROM users u LEFT JOIN students s ON s.user_id = u.user_id
+        FROM users u
+        LEFT JOIN students s ON s.user_id = u.user_id
+        LEFT JOIN user_profiles up ON up.user_id = u.user_id
         WHERE (%s::text IS NULL OR u.role = %s)
         ORDER BY u.created_at DESC
         """,
@@ -877,15 +893,111 @@ def update_user(user_id: str, payload: UserUpdate, connection: Connection, teach
         values.pop("status")
     if not values:
         raise HTTPException(status_code=400, detail="Không thể thay đổi trạng thái tài khoản đang đăng nhập.")
-    columns = ", ".join(f"{key} = %s" for key in values)
-    row = fetch_one(
-        connection,
-        f"UPDATE users SET {columns}, updated_at = NOW() WHERE user_id = %s RETURNING user_id, username, role, full_name, email, phone, status",
-        (*values.values(), user_id),
-    )
-    if not row:
-        raise HTTPException(status_code=404, detail="Không tìm thấy tài khoản.")
-    return row
+
+    with transaction(connection):
+        user_row = fetch_one(connection, "SELECT user_id, role, full_name FROM users WHERE user_id = %s", (user_id,))
+        if not user_row:
+            raise HTTPException(status_code=404, detail="Không tìm thấy tài khoản.")
+
+        user_role = user_row["role"]
+
+        # 1. Cập nhật bảng users
+        user_table_fields = {}
+        for k in ("full_name", "email", "phone", "status"):
+            if k in values:
+                user_table_fields[k] = values[k]
+
+        if "full_name" in values and values["full_name"]:
+            user_table_fields["avatar_text"] = "".join(part[0] for part in values["full_name"].strip().split()[:2]).upper()
+
+        if user_table_fields:
+            columns = ", ".join(f"{key} = %s" for key in user_table_fields)
+            connection.execute(
+                f"UPDATE users SET {columns}, updated_at = NOW() WHERE user_id = %s",
+                (*user_table_fields.values(), user_id),
+            )
+
+        # 2. Cập nhật bảng user_profiles (ngày sinh, địa chỉ)
+        if "date_of_birth" in values or "address" in values:
+            dob = values.get("date_of_birth")
+            addr = values.get("address")
+            connection.execute(
+                """
+                INSERT INTO user_profiles (user_id, date_of_birth, address)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (user_id) DO UPDATE SET
+                    date_of_birth = CASE WHEN %s::boolean THEN EXCLUDED.date_of_birth ELSE user_profiles.date_of_birth END,
+                    address = CASE WHEN %s::boolean THEN EXCLUDED.address ELSE user_profiles.address END
+                """,
+                (user_id, dob, addr, "date_of_birth" in values, "address" in values),
+            )
+
+        # 3. Nếu là học sinh: cập nhật mã học sinh & lớp học
+        if user_role == "student":
+            s_row = fetch_one(connection, "SELECT student_id, student_code FROM students WHERE user_id = %s", (user_id,))
+            if s_row:
+                if "student_code" in values and values["student_code"]:
+                    s_code = values["student_code"].strip()
+                    if s_code != s_row["student_code"]:
+                        existing_code = fetch_one(
+                            connection,
+                            "SELECT 1 FROM students WHERE student_code = %s AND user_id != %s",
+                            (s_code, user_id),
+                        )
+                        if existing_code:
+                            raise HTTPException(status_code=409, detail=f"Mã học sinh '{s_code}' đã được sử dụng.")
+                        connection.execute(
+                            "UPDATE students SET student_code = %s WHERE user_id = %s",
+                            (s_code, user_id),
+                        )
+
+                if "class_id" in values:
+                    target_class_id = values["class_id"]
+                    if target_class_id:
+                        cls = fetch_one(connection, "SELECT 1 FROM classes WHERE class_id = %s", (target_class_id,))
+                        if not cls:
+                            raise HTTPException(status_code=404, detail="Không tìm thấy lớp học đã chọn.")
+                        connection.execute(
+                            "UPDATE class_enrollments SET status = 'dropped' WHERE student_id = %s AND class_id != %s AND status = 'active'",
+                            (s_row["student_id"], target_class_id),
+                        )
+                        connection.execute(
+                            """
+                            INSERT INTO class_enrollments (class_id, student_id, enrolled_on, status)
+                            VALUES (%s, %s, CURRENT_DATE, 'active')
+                            ON CONFLICT (class_id, student_id, enrolled_on) DO UPDATE SET status = 'active'
+                            """,
+                            (target_class_id, s_row["student_id"]),
+                        )
+
+        # 4. Nếu là phụ huynh: đồng bộ bảng parents & mối quan hệ
+        if user_role == "parent":
+            p_row = fetch_one(connection, "SELECT parent_id FROM parents WHERE user_id = %s", (user_id,))
+            if p_row:
+                p_id = p_row["parent_id"]
+                connection.execute(
+                    "UPDATE parents SET full_name = COALESCE(%s, full_name), phone = %s, email = %s WHERE parent_id = %s",
+                    (values.get("full_name"), values.get("phone"), values.get("email"), p_id),
+                )
+                if "relationship" in values and values["relationship"]:
+                    connection.execute(
+                        "UPDATE student_parents SET relationship = %s WHERE parent_id = %s",
+                        (values["relationship"].strip(), p_id),
+                    )
+
+        updated_row = fetch_one(
+            connection,
+            """
+            SELECT u.user_id, u.username, u.role, u.full_name, u.email, u.phone, u.status,
+                   s.student_code, up.date_of_birth, up.address
+            FROM users u
+            LEFT JOIN students s ON s.user_id = u.user_id
+            LEFT JOIN user_profiles up ON up.user_id = u.user_id
+            WHERE u.user_id = %s
+            """,
+            (user_id,),
+        )
+        return updated_row
 
 
 @app.delete("/api/users/{user_id}", status_code=204)

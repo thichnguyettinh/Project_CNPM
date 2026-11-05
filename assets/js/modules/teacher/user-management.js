@@ -434,36 +434,122 @@ const UserManagementPage = {
       this.state.busy = false;
     }
   },
-  openAccountEdit(user) {
+  async openAccountEdit(user) {
     this.el('editUserId').value = user.id;
+    this.el('editUserRole').value = user.role;
     this.el('editFullName').value = user.full_name || '';
+    this.el('editUsername').value = user.username || '';
     this.el('editEmail').value = user.email || '';
     this.el('editPhone').value = user.phone || '';
+    this.el('editAddress').value = user.address || '';
     this.el('editAccountMessage').hidden = true;
+
+    const titleEl = document.getElementById('editModalTitle');
+    const subtitleEl = document.getElementById('editModalSubtitle');
+    if (titleEl) {
+      titleEl.innerText = user.role === 'student' ? 'Chỉnh sửa tài khoản Học sinh' : 'Chỉnh sửa tài khoản Phụ huynh';
+    }
+    if (subtitleEl) {
+      subtitleEl.innerText = `${user.full_name} (${user.student_code ? `${user.student_code} · ` : ''}${user.username})`;
+    }
+
+    // Tải danh sách lớp nếu chưa có trong bộ nhớ tạm
+    if (!this.cachedClasses.length) {
+      try {
+        const classes = await UserManagementModule.getClasses();
+        this.cachedClasses = Array.isArray(classes) ? classes : [];
+      } catch (e) {
+        console.warn('Lỗi nạp lớp:', e);
+      }
+    }
+
+    const studentBlock = this.el('editStudentSpecificFields');
+    const parentBlock = this.el('editParentSpecificFields');
+
+    if (user.role === 'student') {
+      studentBlock.style.display = 'block';
+      parentBlock.style.display = 'none';
+
+      this.el('editStudentCode').value = user.student_code || '';
+      let dobVal = '';
+      if (user.date_of_birth) {
+        dobVal = String(user.date_of_birth).split('T')[0];
+      }
+      this.el('editDob').value = dobVal;
+      this.el('editStudentStatus').value = user.status || 'active';
+
+      // Nạp danh sách lớp vào dropdown
+      const classSelect = this.el('editClassId');
+      classSelect.innerHTML = '<option value="">-- Chưa xếp lớp --</option>' +
+        this.cachedClasses.map(c => {
+          const cId = c.id || c.class_id;
+          const cName = c.name || '';
+          const cCode = c.code || c.class_code || '';
+          const isSelected = (cId === user.class_id) || (user.class_names && user.class_names.includes(cName));
+          return `<option value="${escapeHtml(cId)}"${isSelected ? ' selected' : ''}>${escapeHtml(cName)} (${escapeHtml(cCode)})</option>`;
+        }).join('');
+
+      this.el('editLinkedParentsText').innerText = user.linked_names || 'Chưa có phụ huynh liên kết';
+    } else {
+      studentBlock.style.display = 'none';
+      parentBlock.style.display = 'block';
+
+      this.el('editRelationship').value = user.relationship || '';
+      this.el('editParentStatus').value = user.status || 'active';
+      this.el('editLinkedStudentsText').innerText = user.linked_names || 'Chưa có học sinh liên kết';
+    }
+
     openModal('modalEditAccount');
   },
+
   async saveAccountEdit() {
     const form = this.el('editAccountForm');
     if (!form.reportValidity() || this.state.busy) return;
+
+    const fullName = this.el('editFullName').value.trim();
+    if (!fullName) {
+      const box = this.el('editAccountMessage');
+      box.textContent = 'Họ và tên không được để trống.';
+      box.className = 'alert alert-danger';
+      box.hidden = false;
+      return;
+    }
+
     this.state.busy = true;
+    const role = this.el('editUserRole').value;
+    const statusVal = role === 'student' ? this.el('editStudentStatus').value : this.el('editParentStatus').value;
+
     const payload = {
-      full_name: this.el('editFullName').value.trim(),
+      full_name: fullName,
       email: this.el('editEmail').value.trim() || null,
       phone: this.el('editPhone').value.trim() || null,
+      address: this.el('editAddress').value.trim() || null,
+      status: statusVal,
     };
+
+    if (role === 'student') {
+      payload.date_of_birth = this.el('editDob').value || null;
+      payload.student_code = this.el('editStudentCode').value.trim() || null;
+      payload.class_id = this.el('editClassId').value || null;
+    } else if (role === 'parent') {
+      payload.relationship = this.el('editRelationship').value || null;
+    }
+
     try {
       await UserManagementModule.updateUser(this.el('editUserId').value, payload);
       closeModal('modalEditAccount');
       const refreshed = await this.loadUsers();
       this.message(
-        refreshed ? 'Đã cập nhật tài khoản.' : 'Đã cập nhật nhưng không tải lại được danh sách.',
+        refreshed ? 'Đã cập nhật thông tin tài khoản thành công.' : 'Đã cập nhật nhưng không tải lại được danh sách.',
         refreshed ? 'success' : 'warning'
       );
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       const box = this.el('editAccountMessage');
       box.textContent = `Không cập nhật được tài khoản: ${error.message}`;
       box.className = 'alert alert-danger';
       box.hidden = false;
+      box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } finally {
       this.state.busy = false;
     }
