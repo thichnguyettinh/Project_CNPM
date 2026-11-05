@@ -1855,6 +1855,226 @@ Cơ sở dữ liệu được thiết kế thuần quan hệ; không bắt buộ
 \section{Thiết kế giao diện}
 \setcounter{secnumdepth}{3} % Hiển thị 4.6.3.1, 4.6.3.2, ...
 \subsection{Giao diện dành cho giáo viên}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46101_DangNhap_GiaoVien.png}
+    \caption{Giao diện đăng nhập dành cho giáo viên}
+    \label{fig:c4-461-01}
+\end{figure}
+
+Tại biểu mẫu xác thực, giáo viên có thể sử dụng biểu tượng con mắt để ẩn hoặc hiện ký tự mật khẩu, tích chọn “Ghi nhớ đăng nhập” để duy trì phiên làm việc hoặc chọn liên kết “Quên mật khẩu?” khi cần hỗ trợ khôi phục thông tin truy cập. Sau khi nhấn nút “Đăng nhập”, hệ thống kiểm tra thông tin định danh và phân quyền để điều hướng trực tiếp đến giao diện Tổng quan của không gian giáo viên. Bên dưới nút thao tác, hệ thống hiển thị ghi chú rõ ràng: “Không có đăng ký công khai. Tài khoản học sinh và phụ huynh do giáo viên tạo và cung cấp”, kèm liên kết “Liên hệ giáo viên hoặc quản trị viên”. Thiết kế này tuân thủ chặt chẽ đặc tả Use Case UC-01 (Đăng nhập) và quy tắc kiểm soát phạm vi cấp phát tài khoản đã xác định ở Chương 1 và Chương 2.
+
+\subsubsection{Giao diện tổng quan}
+
+Giao diện Tổng quan dành cho giáo viên là màn hình trung tâm được hiển thị ngay sau khi giáo viên đăng nhập thành công vào hệ thống. Giao diện mở đầu bằng lời chào cá nhân hóa theo thời gian thực (ví dụ: “Chào buổi sáng, cô Hà Linh!” vào Thứ Sáu, 23/10/2026), nút hành động nhanh “Điểm danh ngay” ở góc phải và bốn thẻ thống kê tổng hợp các chỉ số vận hành quan trọng nhất: số lớp đang giảng dạy (6 lớp trong năm học 2026–2027), tổng số học sinh đang theo học (96 học sinh), số buổi học diễn ra trong ngày (2 buổi học từ 17:30–20:45 với 36 học sinh) và tổng số tiền học phí còn phải thu trong kỳ (8.000.000 đ của 15 học sinh trong tháng 10/2026). Thanh điều hướng cố định ở cạnh trái cung cấp đường dẫn trực tiếp đến toàn bộ các phân hệ nghiệp vụ gồm: Tổng quan, Lớp học, Tài khoản, Lịch học, Điểm danh, Điểm số, Học phí, Thông báo, Hồ sơ cá nhân, Đổi mật khẩu và Trung tâm hướng dẫn.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46102_TongQuan_GiaoVien.png}
+    \caption{Giao diện tổng quan dành cho giáo viên}
+    \label{fig:c4-461-02}
+\end{figure}
+
+Bên dưới hàng thẻ chỉ số, khu vực nội dung được chia thành các khối thông tin điều phối công việc hằng ngày. Ở cột bên trái, khối “Lịch dạy hôm nay” liệt kê các ca dạy sắp diễn ra trong ngày (như lớp Toán 10 $\cdot$ Nền tảng mã TO10A lúc 17:30–19:00 tại Phòng 201 và lớp Toán 12 $\cdot$ Luyện thi mã TO12A lúc 19:15–20:45 tại Phòng 202) kèm nút “Chi tiết” và liên kết “Xem lịch tuần”. Ngay phía dưới là bảng “Điểm danh gần đây”, tổng hợp sĩ số có mặt và trạng thái “Đã lưu” của các buổi học vừa hoàn tất trong tuần. Ở cột bên phải, khối “Thao tác nhanh” cung cấp các lối tắt trực tiếp đến bốn tác vụ thường xuyên gồm tạo lớp học, tạo tài khoản học sinh, nhập điểm và nhận xét, cùng ghi nhận học phí; kết hợp với khối “Thông báo mới” hiển thị các nhắc nhở về lịch dạy, đối chiếu công nợ và kết quả lưu điểm. Phần cuối trang là bảng “Học phí cần theo dõi” liệt kê các học sinh còn số dư chưa thanh toán trong tháng 10/2026 với các cột Học sinh, Lớp học, Phải thu, Đã thu, Còn lại và Trạng thái (“Còn thiếu”, “Chưa thu”), giúp giáo viên bao quát toàn diện hoạt động giảng dạy và tài chính trên cùng một màn hình.
+
+\subsubsection{Giao diện quản lý lớp học}
+
+Chức năng Quản lý lớp học hỗ trợ giáo viên tổ chức các lớp học thêm, thiết lập lịch giảng dạy cố định và quản lý danh sách học sinh theo từng lớp. Khi truy cập mục “Lớp học” từ thanh điều hướng, hệ thống hiển thị màn hình danh sách lớp học với nút “Tạo lớp học” ở góc trên bên phải và ba thẻ thống kê nhanh gồm số lớp đang dạy (6 lớp), tổng số học sinh đang học (96 học sinh) và tổng số buổi học mỗi tuần (12 buổi). Khu vực “Danh sách lớp học” trang bị ô tìm kiếm theo tên lớp hoặc mã lớp, các bộ lọc theo môn học (Môn học: Toán), trạng thái hoạt động (Đang hoạt động) và khối lớp, cùng nút “Xuất danh sách”. Bảng dữ liệu liệt kê chi tiết từng lớp học với các cột: Lớp học (kèm mã lớp, năm học và nhãn trạng thái “Đang dạy”), Sĩ số hiện tại trên sĩ số tối đa (ví dụ: 20 / 24), Lịch học cố định, Phòng học, Học phí / tháng và cột Thao tác gồm ba biểu tượng xem chi tiết, chỉnh sửa và lưu trữ lớp học.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46103_DanhSach_LopHoc.png}
+    \caption{Giao diện quản lý danh sách lớp học}
+    \label{fig:c4-461-03}
+\end{figure}
+
+Khi giáo viên chọn xem một lớp học cụ thể từ danh sách (ví dụ: lớp “Toán 10 $\cdot$ Nền tảng”, mã TO10A), hệ thống chuyển sang giao diện chi tiết lớp học và danh sách học sinh. Phần đầu trang hiển thị thẻ tóm tắt thông tin vận hành của lớp gồm trạng thái “Đang giảng dạy”, môn học và khối lớp, giáo viên phụ trách (Nguyễn Hà Linh), sĩ số hiện tại (20 / 24 học sinh), lịch học cố định (Thứ 2, 4, 6 $\cdot$ 17:30–19:00), phòng học (Phòng 201) và mức học phí tháng (800.000 đ), đi kèm hai nút chức năng “Chỉnh sửa lớp” và “Thêm học sinh”. Bên dưới là thanh chuyển đổi giữa các thẻ nội dung của lớp gồm: Học sinh (20), Thông tin lớp, Lịch học, Điểm danh, Điểm số và Học phí. Tại thẻ “Học sinh (20)”, hệ thống cung cấp ô tìm kiếm theo tên, mã hoặc số điện thoại, nút “Xuất danh sách” và bảng danh sách học sinh đang theo học với đầy đủ các cột: Học sinh (họ tên và mã định danh như HS001), Ngày sinh, Phụ huynh liên kết, Liên hệ phụ huynh, Trạng thái (“Đang học”) và menu thao tác từng dòng.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46103_ChiTiet_LopHoc.png}
+    \caption{Giao diện chi tiết lớp học và danh sách học sinh}
+    \label{fig:c4-461-04}
+\end{figure}
+
+Để mở một lớp học thêm mới, giáo viên nhấn nút “Tạo lớp học” trên màn hình danh sách lớp để mở biểu mẫu “Tạo lớp học mới”. Giao diện được chia thành hai cột rõ ràng: cột chính bên trái gồm khối “Thông tin chung” (nhập Tên lớp học như “Toán 9 $\cdot$ Bồi dưỡng”, Mã lớp duy nhất “TO9B”, chọn Môn học, Khối lớp, Năm học, nhập Mô tả lớp học, Sĩ số tối đa và Học phí / tháng) và khối “Lịch học cố định” (chọn các ngày học trong tuần từ Thứ Hai đến Chủ nhật, giờ bắt đầu, giờ kết thúc, phòng học, ngày bắt đầu và ngày kết thúc khóa học). Ngay khi giáo viên chọn khung giờ và phòng học, hệ thống tự động đối chiếu dữ liệu thời khóa biểu và hiển thị thông báo kiểm tra trực tiếp trên biểu mẫu (ví dụ: “Không có lịch trùng trong khung giờ đã chọn. Thứ 2, 4, 6 $\cdot$ 17:30–19:00 $\cdot$ Phòng 203”). Cột bên phải hiển thị thông tin giáo viên phụ trách, hướng dẫn quy trình ba bước sau khi tạo lớp và lưu ý về nguyên tắc lập khoản thu học phí theo kỳ.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46103_Tao_LopHoc.png}
+    \caption{Giao diện tạo lớp học mới}
+    \label{fig:c4-461-05}
+\end{figure}
+
+Trong quá trình lớp đang vận hành, giáo viên có thể chọn biểu tượng chỉnh sửa hoặc nút “Chỉnh sửa lớp” để mở giao diện “Chỉnh sửa lớp học”. Tại đây, hệ thống nạp sẵn các thông tin hiện hành của lớp (như lớp Toán 10 $\cdot$ Nền tảng) để giáo viên điều chỉnh tên lớp, mô tả, sĩ số tối đa, mức học phí hoặc lịch học cố định, trong khi trường “Mã lớp” (TO10A) được khóa cố định nhằm bảo đảm toàn vẹn tham chiếu dữ liệu. Giao diện cung cấp các hộp cảnh báo nghiệp vụ rõ ràng ở cả hai cột, nhấn mạnh rằng việc thay đổi mức học phí cơ bản không làm thay đổi các khoản thu đã lập trước đó và việc thay đổi lịch học chỉ áp dụng cho các buổi học sắp tới (các buổi đã điểm danh được giữ nguyên), đồng thời hiển thị vết cập nhật gần nhất kèm người sửa và thời gian trước khi giáo viên nhấn “Lưu thay đổi”.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46103_ChinhSua_LopHoc.png}
+    \caption{Giao diện chỉnh sửa thông tin lớp học}
+    \label{fig:c4-461-06}
+\end{figure}
+
+Khi một lớp học kết thúc khóa giảng dạy, giáo viên chọn biểu tượng lưu trữ tại dòng lớp tương ứng trên bảng danh sách để mở hộp thoại xác nhận “Lưu trữ lớp học?” (ví dụ: áp dụng cho lớp Toán 9 $\cdot$ Vào lớp 10 mã TO9A). Hộp thoại hiển thị khung cảnh báo màu vàng nêu rõ quy tắc bảo toàn dữ liệu: “Lớp sẽ không xuất hiện trong danh sách đang dạy. Dữ liệu điểm danh, điểm số và học phí được giữ nguyên. Không xóa tài khoản của 12 học sinh trong lớp”, đồng thời thông báo lịch học sắp tới của lớp sẽ ngừng hiển thị và ghi nhận người thực hiện cùng thời điểm thao tác trước khi giáo viên nhấn nút “Lưu trữ lớp học”. Tổ hợp năm màn hình trong nhóm chức năng này thể hiện trọn vẹn quy trình nghiệp vụ của Use Case UC-03 (Quản lý lớp học) và UC-05 (Quản lý danh sách học sinh).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46103_XacNhan_LuuTru.png}
+    \caption{Giao diện hộp thoại xác nhận lưu trữ lớp học}
+    \label{fig:c4-461-07}
+\end{figure}
+
+\subsubsection{Giao diện quản lý tài khoản}
+
+Giao diện Quản lý tài khoản hỗ trợ giáo viên thực hiện quyền khởi tạo, cấp phát tài khoản cho học sinh và phụ huynh cũng như quản lý mối liên kết gia đình giữa các tài khoản trong hệ thống. Ngay đầu trang, hệ thống hiển thị hộp thông tin xác định rõ quy tắc phân quyền: “Tài khoản được tạo bởi giáo viên. Học sinh và phụ huynh chỉ xem thông tin được cấp quyền. Không tự đăng ký và không được chỉnh sửa điểm số hoặc học phí”. Phía dưới là các thẻ phân loại nhanh theo nhóm đối tượng gồm: Tất cả (180), Học sinh (96) và Phụ huynh (84). Khu vực “Danh sách tài khoản” cung cấp thanh tìm kiếm theo tên, mã hoặc tên đăng nhập, kết hợp các bộ lọc theo vai trò, trạng thái hoạt động, lớp học và nút “Xuất danh sách”. Bảng dữ liệu hiển thị tường minh các cột: Tài khoản (họ tên, mã định danh như HS001/PH001 và tên đăng nhập), Vai trò (nhãn “Học sinh” hoặc “Phụ huynh”), Lớp học đang tham gia, Liên kết gia đình (hiển thị tên phụ huynh hoặc học sinh được gắn kết), Trạng thái (“Hoạt động”) và menu thao tác.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46104_QuanLy_TaiKhoan.png}
+    \caption{Giao diện quản lý danh sách tài khoản người dùng}
+    \label{fig:c4-461-08}
+\end{figure}
+
+Khi giáo viên nhấn nút “Tạo tài khoản” ở góc trên bên phải, hệ thống mở giao diện “Tạo tài khoản học sinh” để thực hiện cấp phát tài khoản mới và thiết lập liên kết phụ huynh trong cùng một luồng thao tác. Cột bên trái được chia thành ba khối biểu mẫu tuần tự: khối “Thông tin cá nhân” (chọn vai trò Học sinh/Phụ huynh, nhập họ tên, ngày sinh, số điện thoại, chọn lớp học ghi danh như Toán 10 $\cdot$ Nền tảng và địa chỉ); khối “Thông tin đăng nhập” (nhập tên đăng nhập duy nhất như \texttt{hoangson.hs}, mật khẩu tạm thời đáp ứng tối thiểu 8 ký tự gồm chữ hoa, chữ thường và số, cùng tùy chọn bắt buộc “Yêu cầu đổi mật khẩu trong lần đăng nhập đầu”); và khối “Liên kết phụ huynh” cho phép chọn tài khoản phụ huynh có sẵn hoặc nhấn “Tạo phụ huynh mới” để nhập ngay họ tên phụ huynh (Nguyễn Văn Hoàng), quan hệ với học sinh (Bố), số điện thoại, tên đăng nhập (\texttt{vanhoang.ph}) và mật khẩu tạm thời. Cột bên phải hiển thị thẻ “Tóm tắt tài khoản” cập nhật trực tiếp sĩ số lớp dự kiến sau khi lưu (21 / 24) cùng thông tin phụ huynh liên kết, thẻ “Phân quyền mặc định” và các ghi chú khẳng định giáo viên tự cung cấp thông tin đăng nhập trực tiếp (hệ thống không tự gửi SMS/email) và phụ huynh chỉ xem được dữ liệu của học sinh đã liên kết. Khi nhấn “Tạo 2 tài khoản \& liên kết”, hệ thống đồng thời hoàn tất việc khởi tạo tài khoản, ghi danh lớp và xác lập quan hệ giám hộ theo đúng đặc tả Use Case UC-02 (Quản lý người dùng và phân quyền).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46104_Tao_TaiKhoan.png}
+    \caption{Giao diện tạo tài khoản học sinh và liên kết phụ huynh}
+    \label{fig:c4-461-09}
+\end{figure}
+
+\subsubsection{Giao diện lịch học}
+
+Giao diện Lịch học dành cho giáo viên giúp giáo viên theo dõi toàn bộ thời khóa biểu giảng dạy của các lớp trong tuần và điều phối các buổi học cụ thể. Phần đầu trang bố trí nút “Thêm buổi học” ở góc phải, thanh điều hướng thời gian cho phép chuyển nhanh về ngày “Hôm nay”, lùi hoặc tiến giữa các tuần (ví dụ: tuần 19–25 tháng 10, 2026), cùng bộ lọc theo lớp học (“Tất cả lớp học”) và chế độ hiển thị (“Xem theo tuần”). Khu vực trung tâm là lưới lịch 7 ngày từ Thứ Hai (19/10) đến Chủ nhật (25/10) theo các khung giờ giảng dạy trong ngày (08:00, 17:30, 19:15). Mỗi ca dạy được hiển thị dưới dạng một thẻ thông tin trực quan gồm khung giờ, tên lớp học, mã lớp, phòng học và tên giáo viên phụ trách, đồng thời được phân biệt màu sắc theo loại hình lớp (xanh lam cho lớp học nền tảng/nâng cao và xanh ngọc cho lớp luyện thi/củng cố). Dòng chú thích cuối bảng lịch tổng hợp tổng số buổi dạy trong tuần (12 buổi học $\cdot$ 6 lớp) và hướng dẫn giáo viên nhấn vào từng buổi học để xem chi tiết.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46105_LichHoc_Tuan.png}
+    \caption{Giao diện lịch giảng dạy theo tuần của giáo viên}
+    \label{fig:c4-461-10}
+\end{figure}
+
+Khi giáo viên nhấp chọn một buổi học trên bảng lịch tuần (ví dụ: ca học 17:30–19:00 ngày Thứ Sáu, 23/10/2026 của lớp Toán 10 $\cdot$ Nền tảng), hệ thống hiển thị hộp thoại “Chi tiết buổi học” ngay trên màn hình. Hộp thoại cung cấp đầy đủ thông tin của buổi học (Buổi 21, trạng thái “Sắp diễn ra”, thời lượng 90 phút, Phòng 201 với 20 học sinh), tóm tắt “Nội dung buổi học” (Hàm số bậc hai: đồ thị và ứng dụng; ôn tập dạng bài tìm giá trị lớn nhất, nhỏ nhất) và trạng thái điểm danh hiện tại (“Chưa điểm danh – Danh sách 20 học sinh đã sẵn sàng”). Từ hộp thoại này, giáo viên có thể nhấn trực tiếp vào nút “Điểm danh buổi học” để chuyển thẳng sang giao diện ghi nhận chuyên cần của ca dạy đó. Thiết kế liên kết chặt chẽ giữa lịch tuần và chi tiết buổi học đáp ứng hiệu quả Use Case UC-04 (Lập thời khóa biểu) và tạo luồng chuyển tiếp liền mạch sang nghiệp vụ điểm danh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46105_ChiTiet_BuoiHoc.png}
+    \caption{Giao diện xem chi tiết buổi học trên lịch giảng dạy}
+    \label{fig:c4-461-11}
+\end{figure}
+
+\subsubsection{Giao diện điểm danh}
+
+Giao diện Điểm danh lớp học được thiết kế để giáo viên ghi nhận và cập nhật tình trạng chuyên cần của từng học sinh theo từng buổi học một cách nhanh chóng, chính xác. Tại thanh công cụ phía trên, giáo viên lựa chọn Lớp học (ví dụ: Toán 10 $\cdot$ Nền tảng mã TO10A) và Buổi học tương ứng (23/10/2026 $\cdot$ 17:30–19:00 $\cdot$ Buổi 21), đồng thời có thể tra cứu lại dữ liệu cũ qua nút “Lịch sử điểm danh”. Ngay bên dưới dải thông báo xác nhận trạng thái lưu (“Đã lưu điểm danh cho 20 học sinh” kèm tên người lưu Nguyễn Hà Linh và thời điểm 23/10/2026, 19:02), hệ thống bố trí bốn thẻ thống kê tổng hợp trực tiếp số lượng học sinh theo từng trạng thái trong buổi học: 17 “Có mặt” (nhãn xanh lá), 1 “Vắng” (nhãn đỏ), 1 “Trễ” (nhãn vàng cam) và 1 “Có phép” (nhãn xanh lam).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46106_DiemDanh_GiaoVien.png}
+    \caption{Giao diện điểm danh buổi học dành cho giáo viên}
+    \label{fig:c4-461-12}
+\end{figure}
+
+Khu vực trung tâm là bảng “Danh sách điểm danh” của toàn bộ học sinh trong lớp, tích hợp ô tìm kiếm nhanh học sinh và nút thao tác nhanh “Tất cả có mặt” giúp tiết kiệm thời gian nhập liệu đầu giờ. Trên mỗi dòng học sinh, giáo viên thực hiện điểm danh một chạm bằng cách nhấp chọn một trong bốn nút trạng thái (“Có mặt”, “Vắng”, “Trễ”, “Có phép”) tại cột Trạng thái và nhập lý do hoặc nhận xét cụ thể vào ô “Ghi chú” bên cạnh (ví dụ: ghi chú “Chưa có lý do” đối với học sinh vắng mặt). Cuối trang hiển thị dòng khẳng định phân quyền “Chỉ giáo viên được thay đổi kết quả điểm danh” cùng hai nút “Hủy thay đổi” và “Lưu điểm danh”. Giao diện này hiện thực hóa đầy đủ quy trình To-Be của Use Case UC-06 (Điểm danh) và yêu cầu lưu vết người cập nhật chuyên cần đã đặc tả trong thiết kế cơ sở dữ liệu.
+
+\subsubsection{Giao diện quản lý điểm số}
+
+Nhóm giao diện Quản lý điểm số hỗ trợ giáo viên thực hiện trọn vẹn quy trình đánh giá học tập từ khâu tạo bài tập, bài kiểm tra, nhập và chỉnh sửa điểm số kèm nhận xét, đến việc theo dõi biểu đồ tiến bộ và lịch sử thay đổi điểm của từng học sinh. Khi truy cập mục “Điểm số” trên thanh điều hướng, màn hình chính hiển thị hai nút chức năng “Tạo bài tập” và “Tạo bài kiểm tra” ở góc trên bên phải, thanh bộ lọc theo lớp học (Toán 10 $\cdot$ Nền tảng), học kỳ (Học kỳ I $\cdot$ 2026–2027) và tháng (Tháng 10/2026), cùng ba thẻ thống kê tổng quan: số bài tập đã giao (6 bài), số bài kiểm tra (4 bài) và điểm trung bình bài kiểm tra gần nhất (7,9 / 10 của 20/20 học sinh đã có điểm). Bên dưới thanh chuyển đổi giữa bốn thẻ chức năng (`Bài kiểm tra (4)`, `Bài tập (6)`, `Tiến bộ học sinh`, `Lịch sử thay đổi`), hệ thống trình bày bảng danh sách “Bài kiểm tra” (với các cột Tên bài kiểm tra, Ngày kiểm tra, Thang điểm, Đã nhập, Trạng thái “Hoàn tất”, nút “Xuất bảng điểm” và liên kết thao tác “Nhập / sửa điểm” hoặc “Xem bảng điểm”) cùng bảng “Bài tập gần đây” theo dõi hạn nộp, số lượng học sinh đã nộp và tiến độ nhận xét của giáo viên.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46107_QuanLy_DiemSo.png}
+    \caption{Giao diện quản lý bài tập, bài kiểm tra và điểm số}
+    \label{fig:c4-461-13}
+\end{figure}
+
+Khi giáo viên chọn liên kết “Nhập / sửa điểm” tại một bài đánh giá cụ thể (ví dụ: bài “Kiểm tra chương I $\cdot$ Hàm số” ngày 21/10/2026), hệ thống mở giao diện “Nhập điểm \& nhận xét”. Phần đầu trang tóm tắt thông tin cấu hình của bài kiểm tra gồm ngày kiểm tra, thang điểm (0–10 $\cdot$ Bước 0,5), hình thức (Tự luận $\cdot$ 45 phút), tiến độ nhập (20 / 20 học sinh) và nút “Lịch sử thay đổi”. Khu vực “Bảng điểm học sinh” cung cấp ô tìm kiếm học sinh và danh sách nhập liệu trực tiếp, cho phép giáo viên điền điểm số vào cột “Điểm / 10” (để trống nếu chưa đánh giá, hệ thống không tự quy đổi thành 0) và gõ lời phê chi tiết vào cột “Nhận xét của giáo viên” cho từng học sinh. Đặc biệt, nhằm đáp ứng quy tắc kiểm soát dữ liệu chặt chẽ, giao diện bố trí khối “Lý do chỉnh sửa” ở phía dưới, bắt buộc giáo viên nhập nội dung giải trình khi thay đổi điểm số đã lưu (ví dụ: “Điều chỉnh điểm Trần Minh Anh từ 8,0 lên 8,5 sau khi rà soát lại câu 3”) và tự động ghi nhận tên người sửa cùng thời điểm lưu trước khi nhấn “Lưu bảng điểm”.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46107_NhapDiem_NhanXet.png}
+    \caption{Giao diện nhập điểm và nhận xét chi tiết cho học sinh}
+    \label{fig:c4-461-14}
+\end{figure}
+
+Bên cạnh việc chấm điểm theo lớp, giáo viên có thể chuyển sang thẻ “Tiến bộ học sinh” để phân tích chuyên sâu kết quả học tập và lịch sử chỉnh sửa điểm của từng cá nhân (ví dụ: học sinh Trần Minh Anh – HS001). Giao diện tổng hợp ba thẻ chỉ số cá nhân gồm điểm trung bình 4 bài kiểm tra (7,4 / 10), điểm bài kiểm tra gần nhất (8,5 / 10) và mức độ tiến bộ so với đầu năm (+2,0 điểm, tăng từ 6,5 lên 8,5 qua 4 lần đánh giá). Phần trung tâm hiển thị biểu đồ đường “Điểm kiểm tra theo thời gian” trực quan hóa xu hướng tiến bộ qua các mốc ngày 09/09, 02/10, 14/10 và 21/10, đặt cạnh khung “Nhận xét gần nhất” và định hướng bài tập tiếp theo của giáo viên. Phía dưới là bảng “Kết quả bài kiểm tra” cùng bảng “Lịch sử thay đổi điểm” (chỉ đọc) lưu vết đầy đủ thời gian, người sửa, tên bài kiểm tra, giá trị điểm cũ $\rightarrow$ điểm mới (như Chưa có $\rightarrow$ 8,0 và 8,0 $\rightarrow$ 8,5) kèm lý do rà soát. Ba màn hình liên hoàn này đáp ứng trọn vẹn đặc tả Use Case UC-07 (Quản lý bài tập và bài kiểm tra), UC-08 (Cập nhật điểm số) và yêu cầu lưu vết kiểm toán (\texttt{audit\_logs}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46107_TienBo_HocSinh.png}
+    \caption{Giao diện theo dõi tiến bộ học sinh và lịch sử thay đổi điểm}
+    \label{fig:c4-461-15}
+\end{figure}
+
+\subsubsection{Giao diện quản lý học phí}
+
+Nhóm giao diện Quản lý học phí hỗ trợ giáo viên lập khoản thu theo kỳ, theo dõi tình trạng đóng học phí của toàn bộ học sinh và ghi nhận thủ công các giao dịch thanh toán ngoài hệ thống. Tại màn hình tổng quan “Quản lý học phí”, hệ thống bố trí nút “Xuất báo cáo” và “Lập khoản thu” ở góc trên bên phải, tiếp theo là hộp thông báo màu xanh lá làm rõ giới hạn phạm vi nghiệp vụ: “Thanh toán ngoài hệ thống. Giáo viên ghi nhận thủ công. Không có cổng thanh toán trực tuyến. Chỉ ghi nhận sau khi đã nhận tiền mặt hoặc xác nhận chuyển khoản bên ngoài”. Ba thẻ thống kê tài chính phía dưới cung cấp bức tranh tổng hợp của kỳ hiện tại (Tháng 10/2026): Tổng phải thu (76.400.000 đ của 96 học sinh thuộc 6 lớp học), Đã ghi nhận thu (68.400.000 đ với 81 học sinh đã hoàn tất) và Số dư còn phải thu (8.000.000 đ tương ứng 15 học sinh còn công nợ). Khu vực bảng “Học phí tháng 10/2026” hỗ trợ tìm kiếm theo tên/mã học sinh, lọc theo kỳ thu, lớp học, trạng thái (“Còn thiếu”, “Chưa thu”, “Đã đủ”) và hiển thị chi tiết số tiền Phải thu, Đã nhận, Còn lại cùng liên kết “Chi tiết $\rightarrow$” cho từng học sinh.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46108_QuanLy_HocPhi.png}
+    \caption{Giao diện quản lý học phí và theo dõi công nợ theo kỳ}
+    \label{fig:c4-461-16}
+\end{figure}
+
+Khi giáo viên nhấp vào liên kết “Chi tiết $\rightarrow$” tại dòng của một học sinh (ví dụ: học sinh Trần Minh Anh – HS001), hệ thống mở giao diện chi tiết “Học phí $\cdot$ Trần Minh Anh”. Đầu trang hiển thị khung thông tin định danh học sinh, lớp học (Toán 10 $\cdot$ Nền tảng), phụ huynh liên kết (Trần Thị Hương $\cdot$ 090 123 4500), nhãn trạng thái “Còn thiếu” cùng hai nút chức năng “Sửa khoản phải thu” và “Ghi nhận đã nhận tiền”. Ba thẻ chỉ số tóm tắt rõ khoản Phải thu tháng 10/2026 (800.000 đ, hạn thu 25/10/2026), số tiền Đã nhận (500.000 đ qua 2 lần ghi nhận thủ công) và số tiền Còn phải thu (300.000 đ). Phần dưới trang gồm bảng “Lịch sử nhận tiền” liệt kê từng phiếu thu đã ghi nhận (mã phiếu như PT-202610-024 và PT-202610-003, số tiền, phương thức “Chuyển khoản” hoặc “Tiền mặt”, ghi chú đối chiếu, người ghi nhận và thời gian chính xác đến từng phút), kết hợp cùng hai khối “Chi tiết khoản phải thu” và “Nhật ký khoản thu” ở cuối trang để minh bạch hóa lịch sử tạo lập báo phí.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46108_ChiTiet_HocPhi.png}
+    \caption{Giao diện chi tiết học phí và lịch sử nhận tiền của học sinh}
+    \label{fig:c4-461-17}
+\end{figure}
+
+Khi phụ huynh hoặc học sinh đóng tiền mặt hoặc chuyển khoản, giáo viên nhấn nút “Ghi nhận đã nhận tiền” để mở hộp thoại “Ghi nhận đã nhận tiền”. Hộp thoại hiển thị rõ số dư hiện tại cần thu (300.000 đ) và cung cấp biểu mẫu nhập liệu gồm: Số tiền đã nhận (VND) có kiểm tra ràng buộc không vượt quá số dư hiện tại, Ngày nhận tiền (23/10/2026), Phương thức nhận ngoài hệ thống (chọn “Chuyển khoản ngân hàng (bên ngoài)” hoặc “Tiền mặt”) và ô Ghi chú / Tham chiếu đối soát (ví dụ: “PH Trần Thị Hương chuyển khoản phần học phí còn lại. Tham chiếu: CK2310MA.”). Hệ thống tự động tính toán và hiển thị dòng xem trước kết quả “Sau khi ghi nhận: Còn lại 0 đ $\cdot$ Đã đủ”, đồng thời yêu cầu giáo viên tích chọn ô cam kết “Tôi xác nhận đã nhận đủ số tiền trên” trước khi nhấn “Xác nhận ghi nhận”. Thiết kế chuỗi ba màn hình này phản ánh chính xác luồng xử lý của Use Case UC-09 (Quản lý học phí) và quy tắc đối soát tài chính trong báo cáo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46108_GhiNhan_ThanhToan.png}
+    \caption{Giao diện hộp thoại ghi nhận thanh toán học phí thủ công}
+    \label{fig:c4-461-18}
+\end{figure}
+
+\subsubsection{Giao diện thông báo}
+
+Giao diện Thông báo (Trung tâm thông báo) trong không gian giáo viên giúp giáo viên theo dõi tập trung mọi sự kiện cập nhật của lớp học và các hoạt động nghiệp vụ phát sinh trên hệ thống. Phía trên danh sách, hệ thống cung cấp các thẻ lọc theo trạng thái đọc gồm `Tất cả (6)`, `Chưa đọc (3)` và `Đã đọc (3)`, bộ lọc thả xuống theo danh mục (“Tất cả danh mục”) cùng nút thao tác nhanh “Đánh dấu tất cả đã đọc” ở góc trên bên phải. Các thông báo chưa đọc được làm nổi bật bằng nền màu xanh nhạt và nhãn “Mới” giúp giáo viên nhận diện ngay những thông tin cần ưu tiên xử lý.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46109_ThongBao_GiaoVien.png}
+    \caption{Giao diện trung tâm thông báo dành cho giáo viên}
+    \label{fig:c4-461-19}
+\end{figure}
+
+Mỗi mục thông báo trong danh sách hiển thị biểu tượng nhận diện loại sự kiện, tiêu đề thông báo, nhãn phân loại danh mục (`Lịch học`, `Học phí`, `Điểm số`, `Tài khoản`, `Điểm danh`, `Hệ thống`), nội dung tóm tắt chi tiết kèm mốc thời gian và liên kết điều hướng trực tiếp đến màn hình nghiệp vụ tương ứng (như “Xem lịch học $\rightarrow$”, “Xem công nợ $\rightarrow$”, “Xem bảng điểm $\rightarrow$”, “Xem tài khoản $\rightarrow$”, “Xem điểm danh $\rightarrow$” và “Cài đặt bảo mật $\rightarrow$”). Ở cuối trang, hộp ghi chú thông tin khẳng định rõ: “Thông báo trong hệ thống. Các cập nhật chỉ hiển thị trong Lớp Mình. Hệ thống không tự động gửi SMS hoặc email cho học sinh, phụ huynh”, bảo đảm tính thống nhất tuyệt đối với phạm vi hệ thống đã xác định ở Chương 1 và kiến trúc `NotificationInfrastructure` ở Mục 4.3.
+
+\subsubsection{Giao diện hồ sơ cá nhân}
+
+Giao diện Hồ sơ cá nhân cho phép giáo viên xem và cập nhật thông tin định danh, thông tin liên hệ cũng như kiểm tra phạm vi quyền hạn tài khoản của mình trên hệ thống. Ngay dưới thanh chuyển đổi giữa hai thẻ `Thông tin cá nhân` và `Bảo mật \& mật khẩu`, hệ thống hiển thị dải thông báo màu xanh lá phản hồi kết quả thao tác (ví dụ: “Đã cập nhật hồ sơ thành công. Thông tin của Nguyễn Hà Linh được lưu lúc 09:10, ngày 23/10/2026”). Khu vực nội dung chính bên trái gồm khối “Thông tin giáo viên” hiển thị ảnh đại diện viết tắt (`HL`), nút “Đổi ảnh”, nhãn vai trò “Giáo viên”, ngày tham gia hệ thống và các trường cho phép chỉnh sửa gồm: Họ và tên (Nguyễn Hà Linh), Ngày sinh (18/05/1992), Email liên hệ (\texttt{halinh@giaovien.vn}), Số điện thoại (090 888 2026), Địa chỉ và đoạn Giới thiệu chuyên môn.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46110_HoSo_GiaoVien.png}
+    \caption{Giao diện hồ sơ cá nhân dành cho giáo viên}
+    \label{fig:c4-461-20}
+\end{figure}
+
+Phía dưới khối thông tin cá nhân là khối “Thông tin tài khoản” hiển thị hai trường chỉ đọc gồm Tên đăng nhập (\texttt{halinh.gv}) và Vai trò (Giáo viên) kèm chú thích rằng các thông tin định danh hệ thống này do quản trị viên cấp và không thể tự thay đổi tại đây. Ở cột bên phải, giao diện bố trí khối “Quyền của giáo viên” tóm tắt ba nhóm quyền hạn cốt lõi (quản lý lớp và tài khoản học sinh; điểm danh, nhập điểm, nhận xét; lập khoản thu và ghi nhận học phí) và khối “Bảo vệ tài khoản” tích hợp nút chuyển nhanh sang màn hình “Đổi mật khẩu”. Khi hoàn tất chỉnh sửa thông tin liên hệ, giáo viên nhấn nút “Lưu thông tin” để lưu vào cơ sở dữ liệu hoặc “Hủy thay đổi” để hoàn tác.
+
+\subsubsection{Giao diện đổi mật khẩu}
+
+Giao diện Đổi mật khẩu hỗ trợ giáo viên chủ động thay đổi mật khẩu đăng nhập nhằm bảo vệ an toàn cho tài khoản quản trị lớp học. Giáo viên truy cập màn hình này từ mục “Đổi mật khẩu” trên thanh điều hướng bên trái hoặc thông qua thẻ `Bảo mật \& mật khẩu` trong trang Hồ sơ cá nhân. Giao diện minh họa rõ cơ chế kiểm tra dữ liệu đầu vào và phản hồi lỗi trực quan tại tầng hiển thị: khi thông tin nhập chưa hợp lệ, một dải cảnh báo màu đỏ xuất hiện ngay đầu trang với nội dung “Chưa thể cập nhật mật khẩu. Vui lòng kiểm tra 3 trường bên dưới”, đồng thời nút “Cập nhật mật khẩu” được tự động khóa (vô hiệu hóa) kèm ghi chú “Nút cập nhật sẽ khả dụng khi tất cả yêu cầu được đáp ứng”.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth,height=0.48\textheight,keepaspectratio]{picC4/C4_46111_DoiMatKhau_GiaoVien.png}
+    \caption{Giao diện đổi mật khẩu dành cho giáo viên}
+    \label{fig:c4-461-21}
+\end{figure}
+
+Tại biểu mẫu “Thông tin mật khẩu” ở cột bên trái, hệ thống kiểm tra và hiển thị thông báo lỗi cụ thể ngay bên dưới từng trường: báo lỗi “Mật khẩu hiện tại không chính xác. Vui lòng nhập lại” dưới ô Mật khẩu hiện tại; báo lỗi “Mật khẩu mới cần ít nhất 8 ký tự. Hiện bạn đã nhập 6 ký tự” dưới ô Mật khẩu mới kèm khung kiểm tra tự động 4 tiêu chí bắt buộc (hiển thị biểu tượng chấm than đỏ tại tiêu chí “Ít nhất 8 ký tự” chưa đạt và dấu tích xanh tại 3 tiêu chí đã đạt gồm “Có chữ hoa và chữ thường”, “Có ít nhất một chữ số”, “Khác mật khẩu hiện tại”); và báo lỗi “Mật khẩu xác nhận chưa trùng khớp” dưới ô Xác nhận mật khẩu mới. Cột bên phải cung cấp khối “Mẹo bảo mật” và hướng dẫn liên hệ quản trị viên khi quên mật khẩu hiện tại, trong khi hộp thông tin cuối trang lưu ý rằng sau khi đổi mật khẩu thành công, các phiên đăng nhập cũ sẽ tự động kết thúc để bảo vệ dữ liệu hệ thống.
+
 \subsection{Giao diện dành cho phụ huynh}
 \subsubsection{Giao diện tổng quan}
 Giao diện Tổng quan dành cho Phụ huynh là màn hình được hiển thị sau khi phụ huynh đăng nhập thành công vào hệ thống Quản lý lớp học thêm. Giao diện cung cấp cái nhìn khái quát về tình hình học tập của con em thông qua lời chào cá nhân hóa và các thẻ thống kê nhanh, gồm điểm trung bình hiện tại, điểm bài mới nhất, số buổi có mặt trong tháng và học phí còn thiếu. Những thông tin này giúp phụ huynh nắm bắt kết quả học tập và các khoản nợ phí cần quan tâm mà không phải truy cập từng chức năng riêng lẻ.
