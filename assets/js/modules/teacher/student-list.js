@@ -16,6 +16,13 @@ const StudentListModule = {
       method: 'POST', body: JSON.stringify({ student_code: studentCode })
     });
   },
+  
+  getStudentTuitionInvoices(classId, studentCode) {
+    return AuthService.api(
+      `/tuition/invoices?class_id=${encodeURIComponent(classId)}&student_code=${encodeURIComponent(studentCode)}`
+    );
+  },
+
   removeStudentFromClass(classId, studentCode) {
     return AuthService.api(`/classes/${encodeURIComponent(classId)}/students/${encodeURIComponent(studentCode)}`, {
       method: 'DELETE'
@@ -228,23 +235,153 @@ const StudentListPage = {
       this.message(`Đã ghi danh ${studentCode}, nhưng chưa tải lại được danh sách: ${error.message}. Hãy tải lại trang để kiểm tra.`, 'warning');
     } finally { this.state.busy = false; this.render(); }
   },
+  
+  // Định dạng số tiền học phí
+  formatCurrency(value) {
+    return `${Math.round(Number(value)).toLocaleString('vi-VN')} ₫`;
+  },
+
+  // Tạo cảnh báo học phí trước khi cho học sinh nghỉ
+  buildUnenrollConfirmation(student, invoices) {
+    if (!Array.isArray(invoices)) {
+      throw new Error('Phản hồi học phí không hợp lệ.');
+    }
+
+    // Lọc các hóa đơn còn nợ
+    const outstanding = invoices.filter(invoice => {
+      const remaining = Number(invoice.amount_remaining);
+
+      if (!Number.isFinite(remaining) || remaining < 0) {
+        throw new Error('Số tiền còn nợ không hợp lệ.');
+      }
+
+      return remaining > 0 &&
+             invoice.payment_status !== 'void';
+    });
+
+    const studentLabel =
+      `${student.full_name} (${student.student_code})`;
+
+    // Không còn nợ: hiện xác nhận thông thường
+    if (outstanding.length === 0) {
+      return `Bớt ${studentLabel} khỏi lớp? Tài khoản học sinh sẽ không bị xóa.`;
+    }
+
+    // Tính tổng học phí còn nợ
+    const total = outstanding.reduce(
+      (sum, invoice) =>
+        sum + Number(invoice.amount_remaining),
+      0
+    );
+
+    // Danh sách khoản học phí chưa đóng đủ
+    const details = outstanding.map(invoice => {
+      const month =
+        String(invoice.billing_month).padStart(2, '0');
+
+      return `• Học phí tháng ${month}/${invoice.billing_year}: còn ${this.formatCurrency(invoice.amount_remaining)}`;
+    });
+
+    return [
+      'CẢNH BÁO: HỌC SINH CÒN NỢ HỌC PHÍ!',
+      '',
+      `Học sinh: ${studentLabel}`,
+      `Số hóa đơn còn nợ: ${outstanding.length}`,
+      '',
+      ...details,
+      '',
+      `TỔNG CÒN NỢ: ${this.formatCurrency(total)}`,
+      '',
+      'Bạn vẫn muốn bớt học sinh khỏi lớp?',
+      'Tài khoản và các hóa đơn học phí sẽ không bị xóa.'
+    ].join('\n');
+  },
+
+  // Xử lý bớt học sinh khỏi lớp
   async unenroll(student) {
-    if (this.state.busy || !confirm(`Bớt ${student.full_name} (${student.student_code}) khỏi lớp? Tài khoản học sinh sẽ không bị xóa.`)) return;
     const classId = this.state.classId;
-    this.state.busy = true; this.render();
+
+    if (this.state.busy || !classId) return;
+
+    this.state.busy = true;
+    this.render();
+
+    let confirmation;
+
+    // Kiểm tra học phí trước khi xác nhận
     try {
-      await StudentListModule.removeStudentFromClass(classId, student.student_code);
+      const invoices =
+        await StudentListModule.getStudentTuitionInvoices(
+          classId,
+          student.student_code
+        );
+
+      if (this.state.classId !== classId) return;
+
+      confirmation = this.buildUnenrollConfirmation(
+        student,
+        invoices
+      );
+
     } catch (error) {
-      this.message(`Không thể bớt học sinh: ${error.message}`, 'danger');
-      this.state.busy = false; this.render();
+      this.message(
+        `Không kiểm tra được học phí của ${student.student_code}: ${error.message}. Chưa bớt học sinh khỏi lớp.`,
+        'danger'
+      );
+      return;
+
+    } finally {
+      this.state.busy = false;
+      this.render();
+    }
+
+    // Giáo viên chọn Cancel thì không bớt học sinh
+    if (
+      this.state.classId !== classId ||
+      !confirm(confirmation)
+    ) {
       return;
     }
+
+    // Chỉ thực hiện xóa liên kết lớp khi chọn OK
+    this.state.busy = true;
+    this.render();
+
+    try {
+      await StudentListModule.removeStudentFromClass(
+        classId,
+        student.student_code
+      );
+
+    } catch (error) {
+      this.message(
+        `Không thể bớt học sinh: ${error.message}`,
+        'danger'
+      );
+      this.state.busy = false;
+      this.render();
+      return;
+    }
+
+    // Cập nhật danh sách sau khi bớt học sinh
     try {
       await this.refresh(classId);
-      this.message(`Đã bớt ${student.full_name}. Sĩ số giảm; lịch học hiện hành của học sinh không còn các buổi thuộc lớp.`, 'success');
+
+      this.message(
+        `Đã bớt ${student.full_name}. Sĩ số giảm; lịch học hiện hành của học sinh không còn các buổi thuộc lớp.`,
+        'success'
+      );
+
     } catch (error) {
-      this.message(`Đã bớt học sinh nhưng chưa tải lại được danh sách: ${error.message}. Hãy tải lại trang để kiểm tra.`, 'warning');
-    } finally { this.state.busy = false; this.render(); }
+      this.message(
+        `Đã bớt học sinh nhưng chưa tải lại được danh sách: ${error.message}. Hãy tải lại trang để kiểm tra.`,
+        'warning'
+      );
+
+    } finally {
+      this.state.busy = false;
+      this.render();
+    }
   },
   async refresh(classId) {
     const [roster, classes] = await Promise.all([
@@ -286,3 +423,4 @@ const StudentListPage = {
   }
 };
 window.StudentListPage = StudentListPage;
+
