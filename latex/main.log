@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  4 NOV 2026 22:20
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  6 NOV 2026 00:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1072,36 +1072,20 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 [1
 
-] (main.toc [1
-
-]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[2])
+] (main.toc)
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
+ [1
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[3] (phancong.tex [4
+] (phancong.tex [2
 
 ]
 Underfull \hbox (badness 1735) in paragraph at lines 8--20
 \TU/TimesNewRoman(0)/m/n/12 – Cài đặt kiến trúc, backend dùng
  []
 
-[5
+[3
 
 ])
 
@@ -1111,56 +1095,19 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
-[6] (main.lof [7
-
-]
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[8]
-Overfull \hbox (20.39542pt too wide) in paragraph at lines 81--81
- [][] [][]\TU/TimesNewRoman(0)/m/n/12 Sơ đồ phân rã gói tầng Persistence (11 Re
-positories) và tầng Infrastructure (Database, 
- []
-
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[9])
+[4] (main.lof)
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
+ [5
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[10] (main.lot [11
-
-])
+] (main.lot)
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
+ [6
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 15.0434pt, for example:
-(fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
-
-[12] (chuong1.tex
+] (chuong1.tex
 Chương 1.
 [1
 
@@ -2956,645 +2903,33 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [138]
 Chương 5.
 
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 16.
-
-chuong5.tex:16: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.16 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
+Overfull \hbox (8.21857pt too wide) in alignment at lines 10--14
+ [] [] [] 
+ []
 
 
-chuong5.tex:16: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.16 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
+Overfull \hbox (8.21857pt too wide) in alignment at lines 14--19
+ [] [] [] 
+ []
 
 
-chuong5.tex:16: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.16 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 1>
-chuong5.tex:16: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.16 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
+Overfull \hbox (8.21857pt too wide) in alignment at lines 19--23
+ [] [] [] 
+ []
 
 
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 27.
-
-chuong5.tex:27: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.27 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
+Overfull \hbox (8.21857pt too wide) in alignment at lines 23--26
+ [] [] [] 
+ []
 
 
-chuong5.tex:27: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.27 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:27: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.27 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 2>
-chuong5.tex:27: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.27 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 36.
-
-chuong5.tex:36: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.36 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:36: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.36 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:36: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.36 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 3>
-chuong5.tex:36: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.36 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 45.
-
-chuong5.tex:45: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.45 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:45: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.45 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:45: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.45 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 4>
-chuong5.tex:45: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.45 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 54.
-
-chuong5.tex:54: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.54 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:54: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.54 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:54: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.54 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 5>
-chuong5.tex:54: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.54 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
+Overfull \hbox (8.21857pt too wide) in alignment at lines 26--65
+ [] [] [] 
+ []
 
 [139
 
 ]
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 63.
-
-chuong5.tex:63: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.63 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:63: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.63 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:63: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.63 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 6>
-chuong5.tex:63: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.63 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 74.
-
-chuong5.tex:74: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.74 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:74: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.74 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:74: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.74 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 7>
-chuong5.tex:74: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.74 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 83.
-
-chuong5.tex:83: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.83 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:83: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.83 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:83: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.83 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 8>
-chuong5.tex:83: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.83 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 92.
-
-chuong5.tex:92: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   }
-l.92 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:92: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.92 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:92: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.92 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 9>
-chuong5.tex:92: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf'
-.
-<to be read again> 
-                   \GPT@clipend 
-l.92 ...epaspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 103.
-
-chuong5.tex:103: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.103 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:103: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.103 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:103: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.103 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 10>
-chuong5.tex:103: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.103 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 112.
-
-chuong5.tex:112: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.112 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:112: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.112 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:112: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.112 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 11>
-chuong5.tex:112: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.112 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 121.
-
-chuong5.tex:121: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.121 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:121: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.121 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:121: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.121 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 12>
-chuong5.tex:121: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.121 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 132.
-
-chuong5.tex:132: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.132 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:132: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.132 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:132: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.132 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 13>
-chuong5.tex:132: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.132 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
@@ -3604,398 +2939,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [140]
 
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 141.
-
-chuong5.tex:141: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.141 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:141: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.141 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:141: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.141 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 14>
-chuong5.tex:141: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.141 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 148.
-
-chuong5.tex:148: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.148 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:148: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.148 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:148: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.148 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 15>
-chuong5.tex:148: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.148 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 157.
-
-chuong5.tex:157: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.157 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:157: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.157 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:157: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.157 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 16>
-chuong5.tex:157: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.157 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 168.
-
-chuong5.tex:168: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.168 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:168: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.168 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:168: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.168 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 17>
-chuong5.tex:168: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.168 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 177.
-
-chuong5.tex:177: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.177 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:177: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.177 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:177: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.177 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 18>
-chuong5.tex:177: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.177 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 188.
-
-chuong5.tex:188: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.188 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:188: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.188 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:188: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.188 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 19>
-chuong5.tex:188: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.188 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 197.
-
-chuong5.tex:197: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.197 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:197: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.197 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:197: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.197 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 20>
-chuong5.tex:197: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.197 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 206.
-
-chuong5.tex:206: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.206 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:206: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.206 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:206: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.206 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 21>
-chuong5.tex:206: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.206 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
 (fancyhdr)                \setlength{\headheight}{15.0434pt}.
@@ -4004,350 +2947,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 [141]
 
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 217.
-
-chuong5.tex:217: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.217 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:217: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.217 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:217: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.217 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 22>
-chuong5.tex:217: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.217 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 226.
-
-chuong5.tex:226: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.226 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:226: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.226 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:226: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.226 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 23>
-chuong5.tex:226: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.226 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 235.
-
-chuong5.tex:235: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.235 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:235: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.235 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:235: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.235 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 24>
-chuong5.tex:235: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.235 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 244.
-
-chuong5.tex:244: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.244 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:244: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.244 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:244: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.244 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 25>
-chuong5.tex:244: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.244 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 255.
-
-chuong5.tex:255: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.255 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:255: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.255 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:255: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.255 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 26>
-chuong5.tex:255: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.255 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 264.
-
-chuong5.tex:264: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.264 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:264: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.264 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:264: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.264 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 27>
-chuong5.tex:264: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.264 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-LaTeX Warning: File `C5_AnhGiaoDien_28Trang.pdf' not found on input line 273.
-
-chuong5.tex:273: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   }
-l.273 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-
-chuong5.tex:273: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.273 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-
-chuong5.tex:273: Package graphics Error: Division by 0.
-
-See the graphics package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.273 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-Your command was ignored.
-Type  I <command> <return>  to replace it with another command,
-or  <return>  to continue without it.
-
-File: C5_AnhGiaoDien_28Trang.pdf Graphic file (type pdf)
-<use C5_AnhGiaoDien_28Trang.pdf, page 28>
-chuong5.tex:273: Unable to load picture or PDF file 'C5_AnhGiaoDien_28Trang.pdf
-'.
-<to be read again> 
-                   \GPT@clipend 
-l.273 ...paspectratio]{C5_AnhGiaoDien_28Trang.pdf}
-                                                  
-The requested image couldn't be read because
-it was not a recognized image format.
-
-) (chuong6.tex
-
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
 (fancyhdr)                \setlength{\headheight}{15.0434pt}.
@@ -4355,44 +2954,18 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
 [142]
-Chương 6.
-) (chuong7.tex [143
 
-]
-Chương 7.
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
-Overfull \hbox (50.2769pt too wide) in paragraph at lines 25--26
-\TU/TimesNewRoman(0)/m/n/12 trường ảo và cài đặt thư viện: \TU/lmtt/m/n/12 py -
-m venv .venv\TU/TimesNewRoman(0)/m/n/12 , kích hoạt bằng \TU/lmtt/m/n/12 .venv/
-Scripts/Activate.ps1\TU/TimesNewRoman(0)/m/n/12 ,
- []
-
-[144
-
-]
-Overfull \hbox (41.25586pt too wide) in paragraph at lines 27--29
-\TU/lmtt/m/n/12 $env:DATABASE_URL = 'postgresql://postgres:password@localhost:5
-432/lopminh'\TU/TimesNewRoman(0)/m/n/12 . 
- []
-
-
-Overfull \hbox (56.79585pt too wide) in paragraph at lines 31--34
-\TU/lmtt/m/n/12 psql '$env:DATABASE_URL' -v ON_ERROR_STOP=1 -f database/seed_te
-st_accounts.sql 
- []
-
-
-Overfull \hbox (93.10045pt too wide) in paragraph at lines 31--34
-\TU/TimesNewRoman(0)/m/n/12 (Giáo viên có thể khởi tạo tài khoản riêng bằng lện
-h: \TU/lmtt/m/n/12 python -m backend.scripts.bootstrap_teacher\TU/TimesNewRoman
-(0)/m/n/12 ). 
- []
-
-
-Overfull \hbox (7.35587pt too wide) in paragraph at lines 34--36
-\TU/lmtt/m/n/12 python -m uvicorn backend.app.main:app --env-file backend.env -
--reload
- []
+[143]
+File: picC5/C5_01_DangNhap.png Graphic file (type bmp)
+<picC5/C5_01_DangNhap.png>
+File: picC5/C5_02_TongQuan_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_02_TongQuan_GiaoVien.png>
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -4401,7 +2974,12 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
-[145])
+[144]
+File: picC5/C5_03_TongQuan_HocSinh.png Graphic file (type bmp)
+<picC5/C5_03_TongQuan_HocSinh.png>
+File: picC5/C5_04_TongQuan_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_04_TongQuan_PhuHuynh.png>
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
@@ -4409,36 +2987,122 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller:
 (fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
 
-[146] [147
+[145]
 
-]
+LaTeX Warning: File `latex/picC5/C5_05_QuanLyLopHoc.png' not found on input lin
+e 148.
 
-LaTeX Warning: Empty `thebibliography' environment on input line 178.
-
-[148
-
-] [149
-
-] (main.aux)
- ***********
-LaTeX2e <2026-06-01>
-L3 programming layer <2026-09-09>
- ***********
+chuong5.tex:148: Unable to load picture or PDF file 'latex/picC5/C5_05_QuanLyLo
+pHoc.png'.
+<to be read again> 
+                   }
+l.148 ...atio]{latex/picC5/C5_05_QuanLyLopHoc.png}
+                                                  
+The requested image couldn't be read because
+it was not a recognized image format.
 
 
-LaTeX Font Warning: Size substitutions with differences
-(Font)              up to 1.1pt have occurred.
+chuong5.tex:148: Package graphics Error: Division by 0.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E994F78D3D5F05F9BB933287730FF793;23823.
- ) 
-Here is how much of TeX's memory you used:
- 28017 strings out of 402511
- 581840 string characters out of 5435150
- 1222431 words of memory out of 5000000
- 56612 multiletter control sequences out of 15000+600000
- 642061 words of font info for 163 fonts, out of 8000000 for 9000
- 1348 hyphenation exceptions out of 8191
- 92i,13n,104p,907b,832s stack positions out of 10000i,1000n,20000p,200000b,200000s
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.148 ...atio]{latex/picC5/C5_05_QuanLyLopHoc.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
 
-Output written on main.pdf (162 pages).
+
+chuong5.tex:148: Package graphics Error: Division by 0.
+
+See the graphics package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.148 ...atio]{latex/picC5/C5_05_QuanLyLopHoc.png}
+                                                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+File: latex/picC5/C5_05_QuanLyLopHoc.png Graphic file (type bmp)
+<latex/picC5/C5_05_QuanLyLopHoc.png>
+File: picC5/C5_06_QuanLyTaiKhoan.png Graphic file (type bmp)
+<picC5/C5_06_QuanLyTaiKhoan.png>
+File: picC5/C5_07_LichHoc_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_07_LichHoc_GiaoVien.png>
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[146]
+File: picC5/C5_08_LichHoc_HocSinh.png Graphic file (type bmp)
+<picC5/C5_08_LichHoc_HocSinh.png>
+File: picC5/C5_09_LichHoc_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_09_LichHoc_PhuHuynh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[147]
+File: picC5/C5_10_DiemDanh_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_10_DiemDanh_GiaoVien.png>
+File: picC5/C5_11_DiemDanh_HocSinh.png Graphic file (type bmp)
+<picC5/C5_11_DiemDanh_HocSinh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[148]
+File: picC5/C5_12_DiemDanh_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_12_DiemDanh_PhuHuynh.png>
+File: picC5/C5_13_DiemSo_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_13_DiemSo_GiaoVien.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[149]
+File: picC5/C5_14_KetQuaHocTap_HocSinh.png Graphic file (type bmp)
+<picC5/C5_14_KetQuaHocTap_HocSinh.png>
+File: picC5/C5_15_BaiTap_HocSinh.png Graphic file (type bmp)
+<picC5/C5_15_BaiTap_HocSinh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[150]
+File: picC5/C5_16_KetQuaHocTap_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_16_KetQuaHocTap_PhuHuynh.png>
+File: picC5/C5_17_HocPhi_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_17_HocPhi_GiaoVien.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[151

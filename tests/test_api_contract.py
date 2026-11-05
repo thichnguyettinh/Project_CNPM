@@ -12,6 +12,7 @@ from backend.app.main import (
     can_view_student,
     dashboard,
     get_linked_children,
+    list_classes,
     list_sessions,
     link_parent_to_student,
     login,
@@ -214,6 +215,57 @@ class ApiContractTests(unittest.TestCase):
         self.assertIn("selected_ce.student_id = %s", query)
         self.assertIn("p.user_id = %s", query)
         self.assertEqual(fetch.call_args.args[2], ("parent-user", 17))
+
+    def test_parent_schedule_can_filter_by_class_and_student(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user", "role": "parent"}
+        sessions = [{"session_id": 41, "class_code": "TO10A", "class_id": "cls-1"}]
+
+        with (
+            patch(
+                "backend.app.main.can_view_student",
+                return_value={"student_id": 17, "student_code": "HS017"},
+            ) as guard,
+            patch("backend.app.main.fetch_all", return_value=sessions) as fetch,
+        ):
+            result = list_sessions(
+                connection,
+                parent,
+                class_id="cls-1",
+                student_code="HS017",
+            )
+
+        self.assertEqual(result, sessions)
+        guard.assert_called_once_with(connection, parent, "HS017")
+        query = fetch.call_args.args[1]
+        self.assertIn("(c.class_id = %s OR c.class_code = %s)", query)
+        self.assertIn("selected_ce.student_id = %s", query)
+        self.assertIn("p.user_id = %s", query)
+        self.assertEqual(fetch.call_args.args[2], ("parent-user", 17, "cls-1", "cls-1"))
+
+    def test_parent_classes_can_filter_by_student_code(self):
+        connection = unittest.mock.Mock()
+        parent = {"user_id": "parent-user", "role": "parent"}
+        classes = [{"class_id": "cls-1", "class_code": "TO10A", "name": "Toán 10A"}]
+
+        with (
+            patch(
+                "backend.app.main.can_view_student",
+                return_value={"student_id": 17, "student_code": "HS017"},
+            ) as guard,
+            patch("backend.app.main.fetch_all", return_value=classes) as fetch,
+        ):
+            result = list_classes(
+                connection,
+                parent,
+                student_code="HS017",
+            )
+
+        self.assertEqual(result, classes)
+        guard.assert_called_once_with(connection, parent, "HS017")
+        query = fetch.call_args.args[1]
+        self.assertIn("e.student_id = %s", query)
+        self.assertEqual(fetch.call_args.args[2], (17,))
 
     def test_non_parent_cannot_filter_schedule_by_student_code(self):
         connection = unittest.mock.Mock()
@@ -515,10 +567,11 @@ class ApiContractTests(unittest.TestCase):
         class_stats = {"class_count": 8, "active_classes": 5}
         student_stats = {"student_count": 12}
         today_stats = {"session_count": 2}
+        weekly_stats = {"count": 12}
         with (
             patch(
                 "backend.app.main.fetch_one",
-                side_effect=[class_stats, student_stats, today_stats],
+                side_effect=[class_stats, student_stats, today_stats, weekly_stats],
             ),
             patch("backend.app.main.fetch_all", return_value=[]),
         ):

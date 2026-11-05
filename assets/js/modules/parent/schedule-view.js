@@ -4,7 +4,19 @@
  */
 
 const ParentScheduleModule = {
-  // Lấy danh sách lịch học của con đang liên kết
+  // Lấy danh sách lớp học của con
+  getChildClasses(studentCode = '') {
+    const params = new URLSearchParams();
+    if (studentCode) params.append('student_code', studentCode);
+    const query = params.toString();
+    return AuthService.api(`/classes${query ? `?${query}` : ''}`);
+  },
+
+  getMyClasses(studentCode = '') {
+    return this.getChildClasses(studentCode);
+  },
+
+  // Lấy danh sách lịch học của con đang liên kết (hỗ trợ lọc theo tuần, mã học sinh, lớp học)
   getChildSchedule(filter = {}) {
     const params = new URLSearchParams();
     if (filter.date_from) params.append('date_from', filter.date_from);
@@ -14,6 +26,11 @@ const ParentScheduleModule = {
 
     const query = params.toString();
     return AuthService.api(`/sessions${query ? `?${query}` : ''}`);
+  },
+
+  // Lấy chi tiết một buổi học
+  getSessionDetail(sessionId) {
+    return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}`);
   },
 
   getLinkedChildren() {

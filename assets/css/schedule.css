@@ -1,9 +1,11 @@
 .student-schedule-page .schedule-page-header,
+.parent-schedule-page .schedule-page-header,
 .teacher-schedule-page .schedule-page-header {
   margin-bottom: 20px;
 }
 
-.student-schedule-page .schedule-week-toolbar {
+.student-schedule-page .schedule-week-toolbar,
+.parent-schedule-page .schedule-week-toolbar {
   display: grid;
   grid-template-columns: auto minmax(180px, 1fr) minmax(180px, 240px);
   align-items: center;
@@ -16,13 +18,15 @@
   box-shadow: var(--shadow-sm);
 }
 
-.student-schedule-page .schedule-week-toolbar-actions {
+.student-schedule-page .schedule-week-toolbar-actions,
+.parent-schedule-page .schedule-week-toolbar-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.student-schedule-page .schedule-week-label {
+.student-schedule-page .schedule-week-label,
+.parent-schedule-page .schedule-week-label {
   margin: 0;
   color: var(--color-text-main);
   font-size: 15px;
@@ -30,7 +34,8 @@
   text-align: center;
 }
 
-.student-schedule-page .schedule-week-class-filter .form-control {
+.student-schedule-page .schedule-week-class-filter .form-control,
+.parent-schedule-page .schedule-week-class-filter .form-control {
   width: 100%;
 }
 
@@ -167,7 +172,8 @@
   font-size: 13px;
 }
 
-.student-schedule-page .schedule-fixed-card {
+.student-schedule-page .schedule-fixed-card,
+.parent-schedule-page .schedule-fixed-card {
   padding: 18px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -175,20 +181,23 @@
   box-shadow: var(--shadow-sm);
 }
 
-.student-schedule-page .schedule-fixed-list {
+.student-schedule-page .schedule-fixed-list,
+.parent-schedule-page .schedule-fixed-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
 }
 
-.student-schedule-page .schedule-fixed-item {
+.student-schedule-page .schedule-fixed-item,
+.parent-schedule-page .schedule-fixed-item {
   padding: 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-input);
   background: #F8FAFC;
 }
 
-.student-schedule-page .schedule-fixed-title {
+.student-schedule-page .schedule-fixed-title,
+.parent-schedule-page .schedule-fixed-title {
   margin: 0 0 8px;
   color: var(--color-text-main);
   font-size: 14px;
@@ -196,23 +205,29 @@
 
 .student-schedule-page .schedule-fixed-time,
 .student-schedule-page .schedule-fixed-meta,
-.student-schedule-page .schedule-fixed-empty {
+.student-schedule-page .schedule-fixed-empty,
+.parent-schedule-page .schedule-fixed-time,
+.parent-schedule-page .schedule-fixed-meta,
+.parent-schedule-page .schedule-fixed-empty {
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 1.6;
 }
 
-.student-schedule-page .schedule-fixed-time {
+.student-schedule-page .schedule-fixed-time,
+.parent-schedule-page .schedule-fixed-time {
   color: var(--color-primary);
   font-weight: 600;
 }
 
-.student-schedule-page .schedule-fixed-meta {
+.student-schedule-page .schedule-fixed-meta,
+.parent-schedule-page .schedule-fixed-meta {
   margin-top: 5px;
 }
 
-.student-schedule-page .sr-only {
+.student-schedule-page .sr-only,
+.parent-schedule-page .sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -457,20 +472,24 @@
 }
 
 @media (max-width: 900px) {
-  .student-schedule-page .schedule-week-toolbar {
+  .student-schedule-page .schedule-week-toolbar,
+.parent-schedule-page .schedule-week-toolbar {
     grid-template-columns: 1fr 1fr;
   }
 
-  .student-schedule-page .schedule-week-label {
+  .student-schedule-page .schedule-week-label,
+.parent-schedule-page .schedule-week-label {
     grid-column: 1 / -1;
     grid-row: 1;
   }
 
-  .student-schedule-page .schedule-week-toolbar-actions {
+  .student-schedule-page .schedule-week-toolbar-actions,
+.parent-schedule-page .schedule-week-toolbar-actions {
     grid-column: 1;
   }
 
-  .student-schedule-page .schedule-week-class-filter {
+  .student-schedule-page .schedule-week-class-filter,
+  .parent-schedule-page .schedule-week-class-filter {
     grid-column: 2;
   }
 
@@ -480,7 +499,8 @@
 }
 
 @media (max-width: 650px) {
-  .student-schedule-page .schedule-week-toolbar {
+  .student-schedule-page .schedule-week-toolbar,
+.parent-schedule-page .schedule-week-toolbar {
     grid-template-columns: 1fr;
     gap: 10px;
     padding: 12px;
@@ -488,15 +508,20 @@
 
   .student-schedule-page .schedule-week-label,
   .student-schedule-page .schedule-week-toolbar-actions,
-  .student-schedule-page .schedule-week-class-filter {
+  .student-schedule-page .schedule-week-class-filter,
+  .parent-schedule-page .schedule-week-label,
+  .parent-schedule-page .schedule-week-toolbar-actions,
+  .parent-schedule-page .schedule-week-class-filter {
     grid-column: 1;
   }
 
-  .student-schedule-page .schedule-week-toolbar-actions {
+  .student-schedule-page .schedule-week-toolbar-actions,
+.parent-schedule-page .schedule-week-toolbar-actions {
     justify-content: center;
   }
 
-  .student-schedule-page .schedule-fixed-card {
+  .student-schedule-page .schedule-fixed-card,
+.parent-schedule-page .schedule-fixed-card {
     padding: 14px;
   }
 

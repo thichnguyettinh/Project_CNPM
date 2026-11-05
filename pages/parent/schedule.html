@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <link rel="stylesheet" href="../../assets/css/schedule.css">
 </head>
-<body>
+<body class="schedule-page parent-schedule-page">
 
   <div class="app-layout">
     <!-- SIDEBAR -->
@@ -96,25 +97,30 @@
           </div>
         </div>
 
-        <!-- Week Navigator -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <button class="btn btn-secondary btn-sm" onclick="prevWeek()" title="Tuần trước">◀ Tuần trước</button>
-            <div style="font-weight:700; font-size:16px; min-width:200px; text-align:center;" id="parentWeekLabel"></div>
-            <button class="btn btn-secondary btn-sm" onclick="nextWeek()" title="Tuần sau">Tuần sau ▶</button>
+        <!-- Week Navigator & Class Filter Toolbar -->
+        <div class="schedule-week-toolbar">
+          <div class="schedule-week-toolbar-actions">
+            <button class="btn btn-secondary btn-sm" type="button" onclick="goToCurrentWeek()">Hôm nay</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="prevWeek()" title="Tuần trước" aria-label="Tuần trước">‹</button>
+            <button class="btn btn-secondary btn-sm" type="button" onclick="nextWeek()" title="Tuần sau" aria-label="Tuần sau">›</button>
           </div>
-          <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" onclick="goToCurrentWeek()">Tuần hiện tại</button>
+          <p class="schedule-week-label" id="parentWeekLabel">Đang tải tuần học…</p>
+          <div class="schedule-week-class-filter">
+            <label class="sr-only" for="scheduleParentClass">Lớp học</label>
+            <select id="scheduleParentClass" class="form-control" aria-label="Chọn lớp học" onchange="onClassChange(this.value)">
+              <option value="">Đang tải…</option>
+            </select>
           </div>
         </div>
 
         <!-- Lưới lịch tuần của con -->
-        <div class="calendar-week-grid" id="parentWeekGrid" style="margin-bottom:20px; overflow-x:auto;">
+        <div class="calendar-week-grid" id="parentWeekGrid" style="margin-bottom:12px; overflow-x:auto;">
           <!-- Dynamically generated via renderParentGrid -->
           <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--color-text-secondary);">
             Đang nạp thời khóa biểu của con từ hệ thống...
           </div>
         </div>
+        <p id="parentScheduleCount" class="schedule-week-count" aria-live="polite" style="margin-top:8px; margin-bottom:20px; font-size:13px; color:var(--color-text-secondary);"></p>
 
         <!-- Khối chi tiết buổi học & ca tiếp theo -->
         <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:20px; margin-bottom:20px;">
@@ -146,6 +152,12 @@
             </div>
           </div>
         </div>
+
+        <!-- Lịch học cố định -->
+        <section class="schedule-fixed-card card" style="padding:20px; margin-top:20px;">
+          <h2 class="title-card" style="font-size:16px; margin-bottom:12px;">Lịch học cố định</h2>
+          <div id="parentFixedSchedules" class="schedule-fixed-list"></div>
+        </section>
 
       </div>
     </main>

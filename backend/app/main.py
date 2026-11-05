@@ -1017,7 +1017,11 @@ def deactivate_user(user_id: str, connection: Connection, teacher: Teacher):
 
 
 @app.get("/api/classes")
-def list_classes(connection: Connection, user: Annotated[dict, Depends(current_user)]):
+def list_classes(
+    connection: Connection,
+    user: Annotated[dict, Depends(current_user)],
+    student_code: str | None = None,
+):
     base = """
       SELECT c.class_id, c.class_code, c.class_id AS id, c.class_code AS code, c.name, c.subject,
              c.monthly_fee, c.default_room AS room, c.description, c.status,
@@ -1042,14 +1046,24 @@ def list_classes(connection: Connection, user: Annotated[dict, Depends(current_u
     """
     params: tuple = ()
     if user["role"] == "teacher":
-        condition = "WHERE c.teacher_user_id = %s"
-        params = (user["user_id"],)
+        if student_code:
+            student = can_view_student(connection, user, student_code)
+            condition = "WHERE c.teacher_user_id = %s AND EXISTS (SELECT 1 FROM class_enrollments e WHERE e.class_id = c.class_id AND e.status = 'active' AND e.student_id = %s)"
+            params = (user["user_id"], student["student_id"])
+        else:
+            condition = "WHERE c.teacher_user_id = %s"
+            params = (user["user_id"],)
     elif user["role"] == "student":
         condition = "WHERE EXISTS (SELECT 1 FROM class_enrollments e JOIN students s ON s.student_id = e.student_id WHERE e.class_id = c.class_id AND e.status = 'active' AND s.user_id = %s)"
         params = (user["user_id"],)
     else:
-        condition = "WHERE EXISTS (SELECT 1 FROM class_enrollments e JOIN student_parents sp ON sp.student_id = e.student_id JOIN parents p ON p.parent_id = sp.parent_id WHERE e.class_id = c.class_id AND e.status = 'active' AND p.user_id = %s)"
-        params = (user["user_id"],)
+        if student_code:
+            student = can_view_student(connection, user, student_code)
+            condition = "WHERE EXISTS (SELECT 1 FROM class_enrollments e WHERE e.class_id = c.class_id AND e.status = 'active' AND e.student_id = %s)"
+            params = (student["student_id"],)
+        else:
+            condition = "WHERE EXISTS (SELECT 1 FROM class_enrollments e JOIN student_parents sp ON sp.student_id = e.student_id JOIN parents p ON p.parent_id = sp.parent_id WHERE e.class_id = c.class_id AND e.status = 'active' AND p.user_id = %s)"
+            params = (user["user_id"],)
     return fetch_all(
         connection,
         f"{base} {condition} GROUP BY c.class_id, u.full_name, sched.schedule_summary ORDER BY c.class_code",
