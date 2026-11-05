@@ -2395,12 +2395,48 @@ def grade_history(student_code: str, connection: Connection, teacher: Teacher):
         """
         SELECT l.*, a.title, u.full_name AS changed_by_name
         FROM grade_change_logs l
-        JOIN assignments a ON a.assignment_id = l.assignment_id
+        JOIN assignments a ON a.assignment_id = l.assignment_id AND a.status <> 'draft'
+        JOIN classes c ON c.class_id = a.class_id
         JOIN users u ON u.user_id = l.changed_by
-        WHERE l.student_id = %s
+        WHERE l.student_id = %s AND c.teacher_user_id = %s
         ORDER BY l.changed_at DESC
         """,
-        (student["student_id"],),
+        (student["student_id"], teacher["user_id"]),
+    )
+
+
+@app.get("/api/students/{student_code}/grade-changes")
+def uc11_grade_changes(
+    student_code: str,
+    connection: Connection,
+    user: Annotated[dict, Depends(require_roles("student", "parent", "teacher"))],
+):
+    """Chỉ học sinh, phụ huynh liên kết và giáo viên phụ trách được xem lịch sử.
+
+    Không trả về các bài nháp hoặc bài ngoài các lớp học sinh đã theo học.
+    Giáo viên chỉ xem được các thay đổi thuộc lớp mình phụ trách.
+    """
+    student = can_view_student(connection, user, student_code)
+    return fetch_all(
+        connection,
+        """
+        SELECT l.grade_change_id, l.assignment_id, a.title, a.assignment_type,
+               c.class_code, c.name AS class_name,
+               l.old_score, l.new_score, l.reason, l.changed_at,
+               changer.full_name AS changed_by_name
+        FROM grade_change_logs l
+        JOIN assignments a ON a.assignment_id = l.assignment_id AND a.status <> 'draft'
+        JOIN classes c ON c.class_id = a.class_id
+        JOIN users changer ON changer.user_id = l.changed_by
+        WHERE l.student_id = %s
+          AND EXISTS (
+            SELECT 1 FROM class_enrollments ce
+            WHERE ce.student_id = l.student_id AND ce.class_id = a.class_id
+          )
+          AND (%s <> 'teacher' OR c.teacher_user_id = %s)
+        ORDER BY l.changed_at DESC, l.grade_change_id DESC
+        """,
+        (student["student_id"], user["role"], user["user_id"]),
     )
 
 
@@ -2857,9 +2893,10 @@ def student_progress(
         LEFT JOIN assignment_results r ON r.assignment_id = a.assignment_id AND r.student_id = s.student_id
         LEFT JOIN users grader ON grader.user_id = r.graded_by
         WHERE s.student_code = %s
+          AND (%s <> 'teacher' OR c.teacher_user_id = %s)
         ORDER BY a.assigned_at DESC
         """,
-        (student_code,),
+        (student_code, user["role"], user["user_id"]),
     )
 
 
