@@ -127,7 +127,7 @@ Chức năng điểm danh cho phép giáo viên quản lý và ghi nhận trạn
 
 \subsection{Kiểm thử cho chức năng 7}
 \subsection{Kiểm thử cho chức năng 8}
-\subsection{Kiểm thử chức năng quản lý học phí (UC-09)}
+\subsection{Kiểm thử cho chức năng 9 - Quản lý học phí}
 \label{subsec:test-uc09}
 
 Chức năng quản lý học phí cho phép giáo viên lập khoản thu theo lớp và kỳ thanh toán, tính số tiền phải thu theo mức phí cố định hoặc theo số buổi đủ điều kiện, ghi nhận tiền đã nhận và theo dõi công nợ. Kiểm thử tập trung vào tính đúng đắn của phép tính, việc phát hành thông báo, chuyển đổi trạng thái thanh toán và kiểm soát quyền thao tác của người dùng.
@@ -165,7 +165,7 @@ Dữ liệu quan sát thực tế từ các ảnh kiểm thử: lớp \textbf{TH
 \noindent\textbf{Nhận xét.} Các chức năng tạo khoản thu, lưu trạng thái công nợ và giới hạn quyền truy cập đã có cơ chế xử lý trong mã nguồn. Kiểm tra mô hình dữ liệu thanh toán đã xác nhận việc từ chối số âm, số 0 và chuỗi ký tự. Điểm cần tiếp tục kiểm tra là khả năng đồng bộ dữ liệu giữa Điểm danh và Học phí: hệ thống chỉ đếm những buổi học có trạng thái đã hoàn thành và phù hợp điều kiện điểm danh; đồng thời câu lệnh tạo hóa đơn hiện bỏ qua kỳ đã tồn tại, không tự cập nhật số tiền của hóa đơn trước đó. Vì vậy, \textbf{TC\_UC09\_001 được ghi nhận là hiện tượng nghi vấn}, cần đối chiếu lại điều kiện đầu vào trước khi xác định PASS hoặc FAIL chính thức.
 \subsection{Kiểm thử cho chức năng 10}
 \subsection{Kiểm thử cho chức năng 11}
-\subsection{Kiểm thử chức năng tra cứu học phí (UC-12)}
+\subsection{Kiểm thử cho chức năng 12 - Tra cứu học phí}
 \label{subsec:test-uc12}
 
 Chức năng tra cứu học phí cho phép phụ huynh xem các khoản thu, lịch sử thanh toán, trạng thái công nợ và lọc dữ liệu theo kỳ/tháng của học sinh đã liên kết. Nội dung kiểm thử chú trọng độ chính xác thông tin, tính nhất quán giữa dữ liệu trả về và giao diện, và yêu cầu giới hạn quyền truy cập theo vai trò.
@@ -196,21 +196,20 @@ Nhóm sử dụng \textit{kiểm thử phân quyền} cho các tài khoản ph�
 \end{longtable}
 
 \noindent\textbf{Nhận xét.} Kết quả kiểm thử ở mức mô phỏng cho thấy việc lấy chi tiết, lịch sử thanh toán, lọc theo kỳ và giới hạn dữ liệu theo quan hệ phụ huynh -- học sinh phù hợp với logic đã xây dựng. Đối với \textbf{TC\_UC12\_007}, ảnh thao tác cho thấy tài khoản học sinh không vào được trang tra cứu dành riêng cho phụ huynh, do đó được đánh giá đạt ở mức giao diện. Tuy nhiên, học sinh vẫn có thể truy cập API chung để xem thông tin học phí của chính mình; đây là phạm vi quyền riêng cần đối chiếu với đặc tả. Các kiểm thử dùng mô phỏng cần được thực hiện lại trên cơ sở dữ liệu thực trước khi công bố kết quả tích hợp.
-\endgroup
 
-\subsection{Tổng hợp và đánh giá kết quả kiểm thử UC-09, UC-12}
+% \subsection{Tổng hợp và đánh giá kết quả kiểm thử UC-09, UC-12}
 
-Đối với hai chức năng, nhóm ghi nhận ba mức bằng chứng: (i) quan sát trực tiếp trên website do người kiểm thử cung cấp; (ii) chạy kiểm thử tự động/mô phỏng thành phần; và (iii) kiểm tra cấu trúc mã nguồn. Kết quả \textbf{đạt ở mức mô phỏng hoặc logic} không được hiểu là đã đạt toàn bộ quy trình nghiệp vụ trên website có kết nối cơ sở dữ liệu.
+% Đối với hai chức năng, nhóm ghi nhận ba mức bằng chứng: (i) quan sát trực tiếp trên website do người kiểm thử cung cấp; (ii) chạy kiểm thử tự động/mô phỏng thành phần; và (iii) kiểm tra cấu trúc mã nguồn. Kết quả \textbf{đạt ở mức mô phỏng hoặc logic} không được hiểu là đã đạt toàn bộ quy trình nghiệp vụ trên website có kết nối cơ sở dữ liệu.
 
-Bộ kiểm thử tự động có sẵn \texttt{test\_tuition\_uc09\_uc12.py} được chạy lại với kết quả \textbf{9/9 bài PASS}; ngoài ra, các kiểm thử bổ sung về giao diện JavaScript và backend mô phỏng cho UC-12 cũng hoàn tất, lần lượt \textbf{7/7} và \textbf{6/6} kiểm tra PASS. Những bộ test này không tương ứng một--một với toàn bộ test case trong bảng và chưa thay thế kiểm thử tích hợp.
+% Bộ kiểm thử tự động có sẵn \texttt{test\_tuition\_uc09\_uc12.py} được chạy lại với kết quả \textbf{9/9 bài PASS}; ngoài ra, các kiểm thử bổ sung về giao diện JavaScript và backend mô phỏng cho UC-12 cũng hoàn tất, lần lượt \textbf{7/7} và \textbf{6/6} kiểm tra PASS. Những bộ test này không tương ứng một--một với toàn bộ test case trong bảng và chưa thay thế kiểm thử tích hợp.
 
-\noindent\textbf{Các vấn đề cần hoàn thiện:}
-\begin{enumerate}
-  \item Bổ sung phương án tính lại khoản thu chưa thanh toán khi lịch học, điểm danh hoặc đơn giá thay đổi; cần lưu lịch sử điều chỉnh khi khoản thu đã có giao dịch.
-  \item Làm rõ quy tắc xử lý hóa đơn 0 đồng và trường hợp buổi học chưa hoàn thành, tránh đánh giá sai công nợ.
-  \item Kiểm tra việc phát hành thông báo tới đúng tài khoản phụ huynh liên kết bằng ít nhất hai tài khoản độc lập.
-  \item Thực hiện kiểm thử quyền truy cập và ghi nhận thanh toán qua API trong phiên đăng nhập thật, đồng thời đối chiếu dữ liệu PostgreSQL.
-\end{enumerate}
+% \noindent\textbf{Các vấn đề cần hoàn thiện:}
+% \begin{enumerate}
+%   \item Bổ sung phương án tính lại khoản thu chưa thanh toán khi lịch học, điểm danh hoặc đơn giá thay đổi; cần lưu lịch sử điều chỉnh khi khoản thu đã có giao dịch.
+%   \item Làm rõ quy tắc xử lý hóa đơn 0 đồng và trường hợp buổi học chưa hoàn thành, tránh đánh giá sai công nợ.
+%   \item Kiểm tra việc phát hành thông báo tới đúng tài khoản phụ huynh liên kết bằng ít nhất hai tài khoản độc lập.
+%   \item Thực hiện kiểm thử quyền truy cập và ghi nhận thanh toán qua API trong phiên đăng nhập thật, đồng thời đối chiếu dữ liệu PostgreSQL.
+% \end{enumerate}
 
-\noindent\textbf{Kết luận.} UC-09 và UC-12 đã triển khai các nghiệp vụ cốt lõi và vượt qua các kiểm tra thành phần được thực hiện. Tuy nhiên, số liệu học phí 0 đồng trong các kỳ có dữ liệu buổi học là một điểm bất thường cần làm rõ. Báo cáo giữ nguyên phạm vi bằng chứng thực tế, tránh tự suy diễn kết quả PASS/FAIL cho các thao tác chưa có minh chứng đầy đủ.
-\subsection{Kiểm thử yêu cầu phi chức năng}
+% \noindent\textbf{Kết luận.} UC-09 và UC-12 đã triển khai các nghiệp vụ cốt lõi và vượt qua các kiểm tra thành phần được thực hiện. Tuy nhiên, số liệu học phí 0 đồng trong các kỳ có dữ liệu buổi học là một điểm bất thường cần làm rõ. Báo cáo giữ nguyên phạm vi bằng chứng thực tế, tránh tự suy diễn kết quả PASS/FAIL cho các thao tác chưa có minh chứng đầy đủ.
+\section{Kiểm thử yêu cầu phi chức năng}

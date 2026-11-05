@@ -20,7 +20,7 @@
 \usepackage{pdflscape}
 \usepackage{colortbl}
 \usepackage{array}
-\usepackage{longtable}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta, positioning, shapes.geometric, calc}
 
@@ -52,10 +52,7 @@
     lanedivider/.style={dashed, line width=1pt, DividerColor}
 }
 
-\geometry{left=3cm,right=2cm,top=2cm,bottom=2cm}
-\usepackage{setspace}
-\onehalfspacing
-
+\geometry{left=3cm,right=2cm,top=2cm,bottom=2cm,headheight=16pt}
 % Thiết lập khoảng cách dòng và đoạn
 \usepackage{setspace}
 \onehalfspacing
