@@ -4,7 +4,7 @@
 
   const Core = window.UC11Core;
   const $ = id => document.getElementById(id);
-  const state = { children: [], child: '', rows: [], request: 0 };
+  const state = { children: [], child: '', rows: [], history: [], historyError: false, request: 0 };
   const dateValue = row => row.graded_at || row.assigned_at;
   const timestamp = value => {
     const parsed = new Date(value || 0).getTime();
@@ -62,18 +62,14 @@
     if (classes.some(item => item.code === previousClass)) classSelect.value = previousClass;
     if (types.includes(previousType)) typeSelect.value = previousType;
     if (months.includes(previousMonth)) monthSelect.value = previousMonth;
-    else if (!preserveMonth && months.length) monthSelect.value = months[0];
+    // Mặc định 'Tất cả tháng' để không ẩn dữ liệu cũ khi vừa mở trang.
   }
 
   function filteredRows() {
     const month = $('parentGradesMonth').value;
     const classCode = $('parentGradesClass').value;
     const type = $('parentGradesType').value;
-    return state.rows.filter(row =>
-      (!month || monthKey(dateValue(row)) === month) &&
-      (!classCode || row.class_code === classCode) &&
-      (!type || row.assignment_type === type)
-    );
+    return Core.filterRows(state.rows, { month, classCode, type });
   }
 
   function renderStats(rows) {
@@ -148,12 +144,16 @@
     $('parentGradesChart').innerHTML = chartHtml(rows);
     renderComment(rows);
     renderResults(rows);
+    $('parentGradesHistory').innerHTML = state.historyError
+      ? '<p class="uc11-empty">Không tải được lịch sử sửa điểm. Vui lòng tải lại kết quả.</p>'
+      : Core.historyHtml(Core.historyFor(state.history, rows));
   }
 
   async function loadProgress(studentCode) {
     const request = ++state.request;
     state.child = studentCode;
-    state.rows = [];
+    state.rows = [];state.history = [];state.historyError = false;
+    $('parentGradesHistory').textContent = 'Đang tải lịch sử…';
     $('parentGradesIdentity').textContent = `${childName(studentCode)} · ${studentCode}`;
     status('Đang tải kết quả học tập…');
     $('parentGradesResults').innerHTML = '<tr><td colspan="6">Đang tải kết quả…</td></tr>';
@@ -162,9 +162,19 @@
       if (request !== state.request) return;
       if (!Array.isArray(rows)) throw new Error('API kết quả học tập trả về dữ liệu không hợp lệ.');
       state.rows = rows;
+      try {
+        const changes = await AuthService.api(`/students/${encodeURIComponent(studentCode)}/grade-changes`);
+        if (request !== state.request) return;
+        if (!Array.isArray(changes)) throw new Error('Lịch sử sửa điểm không hợp lệ.');
+        state.history = changes;
+      } catch(error) {
+        if (request !== state.request) return;
+        state.historyError = true;
+        console.error('Không thể tải lịch sử sửa điểm của học sinh liên kết:', error);
+      }
       renderFilters(rows);
       render();
-      status(`Đã tải ${rows.length} bài đánh giá; ${Core.graded(rows).length} bài đã có điểm.`);
+      status(`Đã tải ${rows.length} bài đánh giá; ${Core.graded(rows).length} bài đã có điểm.${state.historyError ? ' Không tải được lịch sử sửa điểm.' : ''}`, state.historyError);
     } catch (error) {
       if (request !== state.request) return;
       console.error('Không thể tải kết quả học tập của học sinh liên kết:', error);
@@ -173,6 +183,7 @@
       $('parentGradesStats').replaceChildren();
       $('parentGradesChart').textContent = 'Không thể tải dữ liệu biểu đồ.';
       $('parentGradesComment').textContent = 'Không thể tải nhận xét giáo viên.';
+      $('parentGradesHistory').textContent = 'Không thể tải lịch sử sửa điểm.';
       $('parentGradesResults').innerHTML = '<tr><td class="parent-grades-no-data" colspan="6">Không thể tải kết quả. Vui lòng thử lại.</td></tr>';
     }
   }
@@ -180,7 +191,8 @@
   async function loadChildren() {
     const request = ++state.request;
     state.children = [];
-    state.rows = [];
+    state.rows = [];state.history = [];state.historyError = false;
+    $('parentGradesHistory').textContent = 'Đang tải lịch sử…';
     status('Đang tải danh sách học sinh đã liên kết…');
     $('parentGradesStats').replaceChildren();
     $('parentGradesChart').textContent = 'Đang tải dữ liệu biểu đồ…';
@@ -202,6 +214,7 @@
         $('parentGradesStats').replaceChildren();
         $('parentGradesChart').innerHTML = '<p class="uc11-empty">Liên kết học sinh với tài khoản phụ huynh để xem kết quả.</p>';
         $('parentGradesComment').textContent = 'Chưa có học sinh liên kết.';
+        $('parentGradesHistory').textContent = 'Chưa có học sinh liên kết.';
         $('parentGradesResults').innerHTML = '<tr><td class="parent-grades-no-data" colspan="6">Chưa có học sinh liên kết với tài khoản phụ huynh.</td></tr>';
         status('Không tìm thấy học sinh liên kết.');
         return;
@@ -217,6 +230,7 @@
       $('parentGradesStats').replaceChildren();
       $('parentGradesChart').textContent = 'Không thể tải dữ liệu biểu đồ.';
       $('parentGradesComment').textContent = 'Không thể tải nhận xét giáo viên.';
+      $('parentGradesHistory').textContent = 'Không thể tải lịch sử sửa điểm.';
       $('parentGradesChild').innerHTML = '<option value="">Không tải được học sinh</option>';
       $('parentGradesResults').innerHTML = '<tr><td class="parent-grades-no-data" colspan="6">Không thể tải dữ liệu. Vui lòng thử lại.</td></tr>';
     }

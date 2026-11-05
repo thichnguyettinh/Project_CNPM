@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
-  <link rel="stylesheet" href="../../assets/css/uc11.css">
+  <link rel="stylesheet" href="../../assets/css/uc11.css?v=20261106-tc002-tc006">
 </head>
 <body>
 
@@ -87,15 +87,23 @@
           <button class="btn btn-secondary" type="button" id="uc11-student-refresh">Tải lại kết quả</button>
         </div>
         <div id="uc11-student-notice" class="uc11-notice" role="status" aria-live="polite"></div>
-        <div class="uc11-toolbar">
-          <label for="uc11-student-class">Lớp học</label>
-          <select class="form-control" id="uc11-student-class"><option value="">Tất cả các lớp</option></select>
+        <div class="uc11-toolbar uc11-filters" data-build="20261106-tc002-tc006">
+          <label for="uc11-student-month">Tháng
+            <select class="form-control" id="uc11-student-month" aria-label="Lọc theo tháng"><option value="">Tất cả tháng</option></select>
+          </label>
+          <label for="uc11-student-class">Lớp học
+            <select class="form-control" id="uc11-student-class" aria-label="Lọc theo lớp"><option value="">Tất cả các lớp</option></select>
+          </label>
+          <label for="uc11-student-type">Loại đánh giá
+            <select class="form-control" id="uc11-student-type" aria-label="Lọc theo loại đánh giá"><option value="">Tất cả bài đánh giá</option></select>
+          </label>
         </div>
+        <p class="text-caption">Lọc tháng theo ngày chấm/cập nhật điểm; bài chưa chấm theo ngày giao. Tất cả kết quả, thống kê và biểu đồ dùng chung bộ lọc.</p>
         <div class="uc11-stats" id="uc11-student-stats"></div>
         <section class="card uc11-panel">
-          <h3 class="title-card">Điểm bài kiểm tra theo thời gian</h3>
+          <h3 class="title-card">Tiến độ điểm bài tập và bài kiểm tra</h3>
           <div id="uc11-student-chart" class="uc11-chart"></div>
-          <p class="text-caption">Chỉ các bài kiểm tra đã chấm được đưa vào biểu đồ; trung bình cộng không nhân hệ số.</p>
+          <p class="text-caption">Thống kê và biểu đồ bao gồm cả bài tập về nhà và bài kiểm tra đã chấm; tính trung bình cộng không nhân hệ số, không tính bài chưa chấm.</p>
           <h4 class="uc11-subtitle">Nhận xét giáo viên gần nhất</h4>
           <div id="uc11-student-comment" class="uc11-comment"></div>
         </section>
@@ -106,6 +114,10 @@
             <tbody id="uc11-student-results"><tr><td colspan="6">Đang tải kết quả...</td></tr></tbody>
           </table></div>
         </section>
+        <section class="card uc11-panel">
+          <h3 class="title-card">Lịch sử chỉnh sửa điểm</h3>
+          <div id="uc11-student-history" aria-live="polite">Đang tải lịch sử...</div>
+        </section>
         <section class="card uc11-panel" id="uc11-student-detail" hidden>
           <div class="uc11-header"><h3 class="title-card">Chi tiết kết quả bài kiểm tra</h3>
             <button type="button" id="uc11-student-detail-close" class="btn btn-secondary btn-sm">Đóng</button></div>
@@ -115,7 +127,7 @@
     </main>
   </div>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/modules/uc11-core.js"></script>
-  <script src="../../assets/js/modules/student/grade-progress.js"></script>
+  <script src="../../assets/js/modules/uc11-core.js?v=20261106-tc002-tc006"></script>
+  <script src="../../assets/js/modules/student/grade-progress.js?v=20261106-tc002-tc006"></script>
 </body>
 </html>

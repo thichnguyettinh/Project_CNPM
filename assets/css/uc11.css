@@ -3,6 +3,11 @@
 .uc11-header {display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px;}
 .uc11-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:15px 0;}
 .uc11-toolbar label{font-weight:600;font-size:13px;}
+.uc11-filters{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));align-items:end;gap:14px;}
+.uc11-filters label{display:flex;flex-direction:column;gap:7px;}
+.uc11-filters select{width:100%;}
+.uc11-history-table{min-width:700px;}
+.uc11-history-table td{overflow-wrap:anywhere;}
 .uc11-toolbar select{width:min(100%,420px);}
 .uc11-notice{min-height:18px;margin:10px 0;color:#475569;font-size:13px;}
 .uc11-notice.uc11-error{color:#b91c1c;}
@@ -27,4 +32,10 @@
 .uc11-number{width:90px;min-width:65px;}
 #uc11-questions-panel[hidden],#uc11-student-detail[hidden]{display:none !important;}
 @media(max-width:900px){.uc11-grid{grid-template-columns:1fr;}.uc11-stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
-@media(max-width:520px){.uc11-stats{grid-template-columns:1fr;}.uc11-toolbar select{width:100%;}}
+@media(max-width:520px){.uc11-stats{grid-template-columns:1fr;}.uc11-toolbar select{width:100%;}.uc11-filters{grid-template-columns:1fr;}}
+
+/* TC002 + TC006: nhãn và hành động lịch sử trên cả trang HTML cũ */
+.uc11-history-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;font-size:13px;color:#475569;}
+.uc11-build-marker{font-weight:500;}
+.uc11-toolbar label select.form-control{width:100%;min-width:0;}
+@media(max-width:650px){.uc11-history-actions{align-items:stretch;flex-direction:column;}}
