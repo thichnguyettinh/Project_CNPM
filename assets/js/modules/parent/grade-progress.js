@@ -154,7 +154,7 @@
     const request = ++state.request;
     state.child = studentCode;
     state.rows = [];
-    $('parentGradesIdentity').textContent = `${childName(studentCode)} · ${studentCode} · Dữ liệu từ kết quả đã ghi nhận.`;
+    $('parentGradesIdentity').textContent = `${childName(studentCode)} · ${studentCode}`;
     status('Đang tải kết quả học tập…');
     $('parentGradesResults').innerHTML = '<tr><td colspan="6">Đang tải kết quả…</td></tr>';
     try {
