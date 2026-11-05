@@ -1,3 +1,19 @@
+\documentclass[12pt,a4paper]{report} % Dùng report hoặc book để hỗ trợ lệnh \chapter
+
+% Khai báo font và tiếng Việt (nếu dùng pdfLaTeX)
+\usepackage[utf8]{inputenc}
+\usepackage[vietnamese]{babel}
+
+% Các gói cần thiết cho bảng, màu sắc, ảnh và liên kết
+\usepackage[table]{xcolor}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+
+\begin{document}
+
 % ==================== CHƯƠNG 5 ====================
 \chapter{XÂY DỰNG CHƯƠNG TRÌNH MINH HỌA}
 
@@ -65,12 +81,6 @@ Trong quá trình phát triển ứng dụng quản lý lớp học thêm (hệ 
 \end{longtable}
 
 \section{Kết quả chương trình minh họa}
-
-Ứng dụng quản lý lớp học thêm (``Lớp Mình'') đã được phát triển thành một hệ thống web hoàn chỉnh, mang lại giải pháp toàn diện cho việc tổ chức, điều hành và theo dõi các hoạt động dạy và học tại các lớp học tư thục từ đầu đến cuối, với khả năng hỗ trợ đa người dùng qua ba vai trò chuyên biệt: Giáo viên/Gia sư, Học sinh và Phụ huynh.
-
-Kết quả đạt được là một sản phẩm phần mềm có cấu trúc module hóa rõ ràng, đóng gói hoàn chỉnh và sẵn sàng vận hành. Toàn bộ mã nguồn frontend được xây dựng trên nền tảng web hiện đại với HTML5, CSS3 có hệ thống biến màu sắc và bố cục nhất quán, kết hợp JavaScript ES6+ và Feather Icons nhằm mang lại trải nghiệm tương tác mượt mà, tối ưu hiệu năng tải trang và dễ dàng bảo trì mà không phụ thuộc vào framework cồng kềnh. Backend được phát triển trên nền Python với FastAPI và máy chủ Uvicorn, triển khai đầy đủ các endpoint RESTful an toàn, có tài liệu trực quan tự động qua Swagger UI. Cơ sở dữ liệu quan hệ PostgreSQL (v14+) được chuẩn hóa với các ràng buộc toàn vẹn, chỉ mục tối ưu, view tự động đối soát công nợ học phí (\texttt{v\_tuition\_invoice\_balances}), cùng các cơ chế bảo mật nghiêm ngặt như băm mật khẩu bằng thuật toán scrypt với salt ngẫu nhiên 16 byte, cơ chế tự động khóa đăng nhập 15 phút sau 3 lần thất bại liên tiếp, và quản lý phiên bằng Bearer session token băm SHA-256 lưu trong cơ sở dữ liệu. Toàn bộ hệ thống được bảo đảm chất lượng bởi kịch bản tự động hóa PowerShell và bộ kiểm thử tự động toàn diện kết hợp giữa Python \texttt{unittest} và Node.js test runner.
-
-Ý nghĩa của sản phẩm nằm ở việc số hóa và chuẩn hóa toàn diện quy trình quản lý lớp học thêm truyền thống, xóa bỏ hoàn toàn các sai sót thủ công trong ghi chép sổ sách và tính toán học phí, đồng thời tăng cường sự kết nối mật thiết giữa giáo viên, phụ huynh và học sinh thông qua cơ chế thông báo và tra cứu tức thời. Vai trò cốt lõi của ứng dụng là cung cấp một nền tảng vận hành tập trung, minh bạch: hỗ trợ giáo viên tinh gọn tối đa các tác vụ hành chính (điểm danh một chạm, quản lý ngân hàng bài tập, sổ điểm điện tử, lập hóa đơn tự động); mang lại cho phụ huynh cổng thông tin đáng tin cậy để giám sát sát sao chuyên cần, tiến độ học tập và tình trạng học phí của con em; đồng thời trao quyền cho học sinh chủ động nắm bắt lịch học, nộp bài tập và theo dõi biểu đồ tiến bộ học tập của chính mình.
 \setcounter{secnumdepth}{3}
 \section{Giao diện minh hoạ các chức năng của chương trình}
 \subsection{Giao diện Đăng nhập}
@@ -343,3 +353,4 @@ Hệ thống không hỗ trợ đăng ký tài khoản công khai. Tài khoản 
   \label{fig:c5-28}
 \end{figure}
 
+\end{document}
