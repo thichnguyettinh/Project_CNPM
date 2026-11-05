@@ -1,0 +1,102 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+
+\usepackage[vietnamese]{babel}
+\shorthandoff{"}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{geometry}
+\geometry{left=3cm,right=2cm,top=2cm,bottom=2cm}
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+\usepackage{url}
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\Large}{\chaptertitlename\ \thechapter}{10pt}{\Large}
+\titlespacing*{\chapter}{0pt}{0pt}{20pt}
+
+\begin{document}
+\setcounter{chapter}{4}
+\chapter{XÂY DỰNG CHƯƠNG TRÌNH MINH HỌA}
+
+\section{Thư viện và công cụ sử dụng}
+
+Trong quá trình phát triển ứng dụng quản lý lớp học thêm (hệ thống ``Lớp Mình''), nhóm chúng em đã sử dụng các ngôn ngữ lập trình, framework, thư viện, công cụ phát triển và cơ sở dữ liệu phù hợp để đảm bảo tính hiệu quả, bảo mật và dễ bảo trì. Các công cụ được chọn dựa trên yêu cầu dự án, bao gồm frontend xây dựng trên nền tảng Web hiện đại (HTML5, CSS3, JavaScript ES6+, Feather Icons), backend dựa trên Python với framework FastAPI và máy chủ Uvicorn, cùng hệ quản trị cơ sở dữ liệu quan hệ mạnh mẽ PostgreSQL (v14+). Dưới đây là danh sách chi tiết các thư viện và công cụ được sử dụng, được trình bày dưới dạng bảng.
+
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{|>{\raggedright\arraybackslash}p{3.8cm}|>{\raggedright\arraybackslash}p{5.4cm}|>{\raggedright\arraybackslash}p{6.4cm}|}
+    \caption{Thư viện và công cụ sử dụng}\label{tab:c5-thu-vien-cong-cu}\\
+    \hline\rowcolor{blue!11}
+    \multicolumn{1}{|c|}{\textbf{Mục đích}} & \multicolumn{1}{c|}{\textbf{Công cụ}} & \multicolumn{1}{c|}{\textbf{Địa chỉ URL}} \\ \hline
+    \endfirsthead
+
+    \multicolumn{3}{r}{\textit{Tiếp bảng 5.1: Thư viện và công cụ sử dụng}}\\
+    \hline\rowcolor{blue!11}
+    \multicolumn{1}{|c|}{\textbf{Mục đích}} & \multicolumn{1}{c|}{\textbf{Công cụ}} & \multicolumn{1}{c|}{\textbf{Địa chỉ URL}} \\ \hline
+    \endhead
+
+    \hline
+    \multicolumn{3}{r}{\footnotesize\textit{Còn tiếp trang sau}}\\
+    \endfoot
+
+    \hline
+    \endlastfoot
+
+    Môi trường & Python (v3.11+) \newline Node.js (v20+) & \url{https://www.python.org/} \newline \url{https://nodejs.org/} \\ \hline
+    Ngôn ngữ lập trình & Python (v3.11.6) \newline JavaScript (ES6+ / CommonJS) \newline HTML5 / CSS3 \newline SQL (PostgreSQL Dialect) & \url{https://www.python.org/} \newline \url{https://developer.mozilla.org/en-US/docs/Web/JavaScript} \newline \url{https://developer.mozilla.org/} \newline \url{https://www.postgresql.org/docs/} \\ \hline
+    Framework frontend & HTML5 Semantic \& Vanilla CSS3 \newline Hệ thống CSS Variables, Flexbox, Grid & \url{https://developer.mozilla.org/} \newline \url{https://developer.mozilla.org/en-US/docs/Web/CSS} \\ \hline
+    Build tool \& Server frontend & Python HTTP Server (http.server v3.11+) & \url{https://docs.python.org/3/library/http.server.html} \\ \hline
+    CSS framework & Custom Modular CSS Architecture (variables, base, components, dashboard) & \url{https://developer.mozilla.org/en-US/docs/Web/CSS} \\ \hline
+    UI icons library & Feather Icons (v4.29.0) & \url{https://feathericons.com/} \\ \hline
+    Charts \& Visualization & HTML5 Canvas \& Dynamic SVG & \url{https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API} \\ \hline
+    Routing \& Access control & Client-side Router \& Auth Guard (auth.js) & \url{https://developer.mozilla.org/en-US/docs/Web/API/History_API} \\ \hline
+    Notification library & Custom Modal \& Toast Notifications (notifications.js) & \url{https://developer.mozilla.org/en-US/docs/Web/API/Notifications_API} \\ \hline
+    HTTP client & Fetch API (Native Browser Web API) & \url{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API} \\ \hline
+    Typography / Phông chữ & Google Fonts (Inter font family) & \url{https://fonts.google.com/specimen/Inter} \\ \hline
+    Image upload \& File handling & FormData API \& File API (Native Web API) & \url{https://developer.mozilla.org/en-US/docs/Web/API/FormData} \\ \hline
+    Client-side storage & Web Storage API (LocalStorage) & \url{https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage} \\ \hline
+    Environment variables & Python os \& Dotenv configuration (.env) & \url{https://fastapi.tiangolo.com/advanced/settings/} \\ \hline
+    Framework backend & FastAPI (v0.115.0+) & \url{https://fastapi.tiangolo.com/} \\ \hline
+    Web server backend & Uvicorn [standard] (v0.30.0+) & \url{https://www.uvicorn.org/} \\ \hline
+    Trình kết nối CSDL & Psycopg 3 (psycopg[binary] v3.2.0+) & \url{https://www.psycopg.org/} \\ \hline
+    ORM \& Data Validation & Pydantic (v2.x) & \url{https://docs.pydantic.dev/} \\ \hline
+    Authentication \& Security & Hashlib \& Secrets (scrypt KDF, Salt 16-byte, SHA-256) & \url{https://docs.python.org/3/library/hashlib.html} \\ \hline
+    Session management & Bearer Session Token (SHA-256 token hash) & \url{https://datatracker.ietf.org/doc/html/rfc6750} \\ \hline
+    File upload backend & Python-multipart (v0.0.12+) & \url{https://github.com/Kludex/python-multipart} \\ \hline
+    Hỗ trợ \& Liên hệ trung tâm & Hotline 028 3822 8888 \& Trung tâm hỗ trợ 3 vai trò & \url{https://lopminh.edu.vn/} \\ \hline
+    Caching \& Session & PostgreSQL Sessions (auth\_sessions) \& LocalStorage & \url{https://www.postgresql.org/} \\ \hline
+    Unique ID generator & UUID v4 (Python uuid module) & \url{https://docs.python.org/3/library/uuid.html} \\ \hline
+    CORS handling & FastAPI CORSMiddleware & \url{https://fastapi.tiangolo.com/tutorial/cors/} \\ \hline
+    Rate limiting \& Brute-force & Lockout sau 3 lần sai / 15 phút (FastAPI \& Database) & \url{https://fastapi.tiangolo.com/} \\ \hline
+    API documentation & Swagger UI / OpenAPI 3.0 \newline ReDoc & \url{https://swagger.io/} \newline \url{https://redocly.com/} \\ \hline
+    Development server & Uvicorn Auto-reload (Backend) \newline Python HTTP Server (Frontend) & \url{https://www.uvicorn.org/} \newline \url{https://docs.python.org/3/library/http.server.html} \\ \hline
+    Kiểm thử tự động & Python Unittest (API contract, DB schema, security) \newline Node.js Test Runner (node --test) & \url{https://docs.python.org/3/library/unittest.html} \newline \url{https://nodejs.org/api/test.html} \\ \hline
+    Cơ sở dữ liệu chính & PostgreSQL (v14+) & \url{https://www.postgresql.org/} \\ \hline
+    CSDL cấu trúc linh hoạt & PostgreSQL JSONB & \url{https://www.postgresql.org/docs/current/datatype-json.html} \\ \hline
+    Kịch bản điều phối & PowerShell (run\_project.ps1) & \url{https://learn.microsoft.com/powershell/} \\ \hline
+    IDE lập trình & Visual Studio Code (v1.90+) & \url{https://code.visualstudio.com/} \\ \hline
+    Version control & Git (v2.56.0.windows.4) & \url{https://git-scm.com/} \\ \hline
+    Remote repository & GitHub & \url{https://github.com/} \\ \hline
+    Package manager & PIP (Python Package Installer v23.2+) & \url{https://pip.pypa.io/} \\ \hline
+    Công cụ soạn thảo báo cáo & XeLaTeX / LaTeX (TeX Live) \newline Microsoft Word & \url{https://www.latex-project.org/} \newline \url{https://www.microsoft.com/microsoft-365/word} \\ \hline
+\end{longtable}
+
+\section{Kết quả chương trình minh họa}
+
+Ứng dụng quản lý lớp học thêm (``Lớp Mình'') đã được phát triển thành một hệ thống web hoàn chỉnh, mang lại giải pháp toàn diện cho việc tổ chức, điều hành và theo dõi các hoạt động dạy và học tại các lớp học tư thục từ đầu đến cuối, với khả năng hỗ trợ đa người dùng qua ba vai trò chuyên biệt: Giáo viên/Gia sư, Học sinh và Phụ huynh.
+
+Kết quả đạt được là một sản phẩm phần mềm có cấu trúc module hóa rõ ràng, đóng gói hoàn chỉnh và sẵn sàng vận hành. Toàn bộ mã nguồn frontend được xây dựng trên nền tảng web hiện đại với HTML5, CSS3 có hệ thống biến màu sắc và bố cục nhất quán, kết hợp JavaScript ES6+ và Feather Icons nhằm mang lại trải nghiệm tương tác mượt mà, tối ưu hiệu năng tải trang và dễ dàng bảo trì mà không phụ thuộc vào framework cồng kềnh. Backend được phát triển trên nền Python với FastAPI và máy chủ Uvicorn, triển khai đầy đủ các endpoint RESTful an toàn, có tài liệu trực quan tự động qua Swagger UI. Cơ sở dữ liệu quan hệ PostgreSQL (v14+) được chuẩn hóa với các ràng buộc toàn vẹn, chỉ mục tối ưu, view tự động đối soát công nợ học phí (\texttt{v\_tuition\_invoice\_balances}), cùng các cơ chế bảo mật nghiêm ngặt như băm mật khẩu bằng thuật toán scrypt với salt ngẫu nhiên 16 byte, cơ chế tự động khóa đăng nhập 15 phút sau 3 lần thất bại liên tiếp, và quản lý phiên bằng Bearer session token băm SHA-256 lưu trong cơ sở dữ liệu. Toàn bộ hệ thống được bảo đảm chất lượng bởi kịch bản tự động hóa PowerShell và bộ kiểm thử tự động toàn diện kết hợp giữa Python \texttt{unittest} và Node.js test runner.
+
+Ý nghĩa của sản phẩm nằm ở việc số hóa và chuẩn hóa toàn diện quy trình quản lý lớp học thêm truyền thống, xóa bỏ hoàn toàn các sai sót thủ công trong ghi chép sổ sách và tính toán học phí, đồng thời tăng cường sự kết nối mật thiết giữa giáo viên, phụ huynh và học sinh thông qua cơ chế thông báo và tra cứu tức thời. Vai trò cốt lõi của ứng dụng là cung cấp một nền tảng vận hành tập trung, minh bạch: hỗ trợ giáo viên tinh gọn tối đa các tác vụ hành chính (điểm danh một chạm, quản lý ngân hàng bài tập, sổ điểm điện tử, lập hóa đơn tự động); mang lại cho phụ huynh cổng thông tin đáng tin cậy để giám sát sát sao chuyên cần, tiến độ học tập và tình trạng học phí của con em; đồng thời trao quyền cho học sinh chủ động nắm bắt lịch học, nộp bài tập và theo dõi biểu đồ tiến bộ học tập của chính mình.
+
+\end{document}
