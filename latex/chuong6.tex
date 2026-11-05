@@ -127,8 +127,90 @@ Chức năng điểm danh cho phép giáo viên quản lý và ghi nhận trạn
 
 \subsection{Kiểm thử cho chức năng 7}
 \subsection{Kiểm thử cho chức năng 8}
-\subsection{Kiểm thử cho chức năng 9}
+\subsection{Kiểm thử chức năng quản lý học phí (UC-09)}
+\label{subsec:test-uc09}
+
+Chức năng quản lý học phí cho phép giáo viên lập khoản thu theo lớp và kỳ thanh toán, tính số tiền phải thu theo mức phí cố định hoặc theo số buổi đủ điều kiện, ghi nhận tiền đã nhận và theo dõi công nợ. Kiểm thử tập trung vào tính đúng đắn của phép tính, việc phát hành thông báo, chuyển đổi trạng thái thanh toán và kiểm soát quyền thao tác của người dùng.
+
+Các trường hợp kiểm thử được xây dựng chủ yếu theo kỹ thuật \textit{phân vùng tương đương} và \textit{phân tích giá trị biên} đối với số tiền thanh toán, kết hợp \textit{kiểm thử chuyển trạng thái} giữa Chưa đóng, Đóng một phần và Đã đóng. Ngoài ra, nhóm đối chiếu dữ liệu tại các màn hình Lịch học, Điểm danh và Học phí nhằm phát hiện các bất nhất khi lập hoặc cập nhật khoản thu.
+
+Dữ liệu quan sát thực tế từ các ảnh kiểm thử: lớp \textbf{THAO-TEST01}, học sinh \textbf{Nguyễn Minh Anh (HS001)}, các kỳ thu tháng 07/2026 và 11/2026. Học phí hiển thị 0 đồng, trạng thái Chưa thu, trong khi lớp đã có lịch học và có dữ liệu điểm danh. Hiện tượng này \textbf{chưa đủ để kết luận lỗi tính tiền} nếu chưa xác định trạng thái hoàn thành của buổi học, đơn giá và thời điểm lập hóa đơn.
+
+\begin{longtable}{|>{\centering\arraybackslash}p{0.85cm}|P{3.90cm}|P{5.05cm}|P{3.46cm}|>{\centering\arraybackslash}p{1.65cm}|}
+\hline
+\rowcolor{gray!13}\textbf{STT} & \centering\textbf{Input} & \centering\textbf{Output} & \centering\textbf{Exception} & \textbf{Kết quả} \\ \hline
+\endfirsthead
+\multicolumn{5}{l}{\footnotesize\itshape Bảng tiếp theo -- Kết quả kiểm thử chức năng quản lý học phí (UC-09)} \\
+\hline
+\rowcolor{gray!13}\textbf{STT} & \centering\textbf{Input} & \centering\textbf{Output} & \centering\textbf{Exception} & \textbf{Kết quả} \\ \hline
+\endhead
+\hline \multicolumn{5}{r}{\scriptsize\itshape Xem tiếp ở trang sau} \\
+\endfoot
+\hline
+\caption{Kết quả kiểm thử chức năng quản lý học phí (UC-09)}\label{tab:uc09}\\
+\endlastfoot
+1 & \textbf{TC\_UC09\_001}\par Giáo viên; lớp THAO-TEST01; HS001. Tạo các buổi học tháng 07/2026 và 11/2026, lưu điểm danh; chọn tính học phí theo buổi, kiểm tra khoản thu theo tháng. & Mong đợi: số tiền = số buổi đủ điều kiện nhân đơn giá. Thực tế trên ảnh: khoản thu tháng 07 và 11 vẫn 0 đồng dù đã có buổi học và dữ liệu điểm danh. & Chưa xác minh trạng thái hoàn thành của buổi học, đơn giá và thời điểm lập hóa đơn; có nguy cơ hóa đơn cũ không tự tính lại. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries NGHI VẤN} \\ \hline
+2 & \textbf{TC\_UC09\_002}\par Giáo viên lập khoản thu mới cho HS001 tại lớp THAO-TEST01 và chọn kỳ 07/2026. & Mong đợi: hóa đơn mới xuất hiện ở trạng thái Chưa đóng. Thực tế: danh sách có hóa đơn kỳ 07/2026, phải thu 0 đồng, trạng thái Chưa thu. & Chức năng tạo khoản thu thể hiện được; chưa chứng minh phép tính tiền đúng khi có đơn giá dương. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT MỘT PHẦN} \\ \hline
+3 & \textbf{TC\_UC09\_003}\par Giáo viên phát hành khoản thu cho học sinh có liên kết phụ huynh; kiểm tra tài khoản học sinh và tài khoản phụ huynh. & Mong đợi: đúng phụ huynh liên kết nhận thông báo kỳ thu. Thực tế: ảnh cho thấy học sinh có thông báo hóa đơn tháng 07, 10, 11/2026; chưa có ảnh từ tài khoản phụ huynh. & Chưa đủ bằng chứng xác nhận người nhận là phụ huynh liên kết. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries CẦN XÁC MINH} \\ \hline
+4 & \textbf{TC\_UC09\_004}\par Hóa đơn còn nợ 800.000 đồng; giáo viên ghi nhận đã thu 800.000 đồng. & Mong đợi: đã thu 800.000 đồng, còn nợ 0 đồng, trạng thái Đã đóng. Kiểm tra logic: trạng thái được tính theo tổng giao dịch và tổng phải thu. & Chưa có ảnh/lịch sử giao dịch thực tế sau thao tác này trong dữ liệu người dùng gửi. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT LOGIC} \\ \hline
+5 & \textbf{TC\_UC09\_005}\par Hóa đơn phải thu 800.000 đồng; giáo viên ghi nhận 300.000 đồng. & Mong đợi: đã thu 300.000 đồng, còn nợ 500.000 đồng, trạng thái Đóng một phần/Còn nợ. Kiểm tra logic phân loại theo số dư. & Chưa có minh chứng giao diện hoặc bản ghi cơ sở dữ liệu sau khi thanh toán một phần. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT LOGIC} \\ \hline
+6 & \textbf{TC\_UC09\_006}\par Gửi dữ liệu amount = -100000, abc, 0 và 100000 cho mô hình PaymentCreate; payment\_method = cash. & Thực tế: số âm, chữ và số 0 bị từ chối; 100000 được chấp nhận. Trùng với đầu ra mong đợi. & Đã chạy kiểm thử dữ liệu tại backend; chưa xác nhận thông báo lỗi trực tiếp trên trình duyệt. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (BE)} \\ \hline
+7 & \textbf{TC\_UC09\_008}\par Giáo viên thực hiện ghi nhận khoản thu; truy vấn lịch sử thanh toán để kiểm tra người thực hiện và mốc thời gian. & Mong đợi: lưu người ghi nhận, thời điểm thực nhận và thời điểm tạo bản ghi. Mã nguồn có recorded\_by, paid\_at và created\_at. & Chưa có bằng chứng bản ghi phát sinh thực tế để so với thời gian của phiên kiểm thử. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT THIẾT KẾ} \\ \hline
+8 & \textbf{TC\_UC09\_009}\par Dùng phụ huynh liên kết HS001 và phụ huynh không liên kết; mở hóa đơn và lịch sử của HS001. & Mong đợi: người liên kết xem được, người không liên kết bị từ chối. Backend mô phỏng trả về HTTP 403 cho phụ huynh không liên kết. & Kết quả từ mô phỏng backend, không phải phiên truy cập PostgreSQL thật. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (MP)} \\ \hline
+9 & \textbf{TC\_UC09\_010}\par Đăng nhập phụ huynh; kiểm tra nút ghi nhận thu tiền và quyền gọi API POST thanh toán. & Mong đợi: phụ huynh chỉ xem, không được tạo giao dịch thanh toán. Đường API POST yêu cầu vai trò Teacher. & Cần thử gọi API bằng phiên phụ huynh thực tế để xác nhận mã phản hồi. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT LOGIC} \\ \hline
+\end{longtable}
+
+\noindent\textit{Quy ước: BE -- kiểm thử backend; MP -- kiểm thử mô phỏng; UI -- kiểm thử giao diện; JS -- kiểm thử JavaScript. Các trạng thái ``Đạt logic'' và ``Đạt thiết kế'' không tương đương với PASS tích hợp.}\par\medskip
+
+\noindent\textbf{Nhận xét.} Các chức năng tạo khoản thu, lưu trạng thái công nợ và giới hạn quyền truy cập đã có cơ chế xử lý trong mã nguồn. Kiểm tra mô hình dữ liệu thanh toán đã xác nhận việc từ chối số âm, số 0 và chuỗi ký tự. Điểm cần tiếp tục kiểm tra là khả năng đồng bộ dữ liệu giữa Điểm danh và Học phí: hệ thống chỉ đếm những buổi học có trạng thái đã hoàn thành và phù hợp điều kiện điểm danh; đồng thời câu lệnh tạo hóa đơn hiện bỏ qua kỳ đã tồn tại, không tự cập nhật số tiền của hóa đơn trước đó. Vì vậy, \textbf{TC\_UC09\_001 được ghi nhận là hiện tượng nghi vấn}, cần đối chiếu lại điều kiện đầu vào trước khi xác định PASS hoặc FAIL chính thức.
 \subsection{Kiểm thử cho chức năng 10}
 \subsection{Kiểm thử cho chức năng 11}
-\subsection{Kiểm thử cho chức năng 12}
+\subsection{Kiểm thử chức năng tra cứu học phí (UC-12)}
+\label{subsec:test-uc12}
+
+Chức năng tra cứu học phí cho phép phụ huynh xem các khoản thu, lịch sử thanh toán, trạng thái công nợ và lọc dữ liệu theo kỳ/tháng của học sinh đã liên kết. Nội dung kiểm thử chú trọng độ chính xác thông tin, tính nhất quán giữa dữ liệu trả về và giao diện, và yêu cầu giới hạn quyền truy cập theo vai trò.
+
+Nhóm sử dụng \textit{kiểm thử phân quyền} cho các tài khoản phụ huynh liên kết và không liên kết với học sinh, \textit{kiểm thử chuyển trạng thái} đối với hóa đơn chưa thanh toán, thanh toán một phần và thanh toán đủ, cùng \textit{kiểm thử phân vùng dữ liệu} đối với bộ lọc tháng/năm. Một số trường hợp đã được kiểm tra bằng mô phỏng hàm JavaScript và backend; trường hợp TC\_UC12\_007 còn được đối chiếu qua ảnh thao tác trên giao diện.
+
+\begin{longtable}{|>{\centering\arraybackslash}p{0.85cm}|P{3.90cm}|P{5.05cm}|P{3.46cm}|>{\centering\arraybackslash}p{1.65cm}|}
+\hline
+\rowcolor{gray!13}\textbf{STT} & \centering\textbf{Input} & \centering\textbf{Output} & \centering\textbf{Exception} & \textbf{Kết quả} \\ \hline
+\endfirsthead
+\multicolumn{5}{l}{\footnotesize\itshape Bảng tiếp theo -- Kết quả kiểm thử chức năng tra cứu học phí (UC-12)} \\
+\hline
+\rowcolor{gray!13}\textbf{STT} & \centering\textbf{Input} & \centering\textbf{Output} & \centering\textbf{Exception} & \textbf{Kết quả} \\ \hline
+\endhead
+\hline \multicolumn{5}{r}{\scriptsize\itshape Xem tiếp ở trang sau} \\
+\endfoot
+\hline
+\caption{Kết quả kiểm thử chức năng tra cứu học phí (UC-12)}\label{tab:uc12}\\
+\endlastfoot
+1 & \textbf{TC\_UC12\_001}\par Phụ huynh liên kết HS001; mở chi tiết hóa đơn giả lập: phải thu 800.000 đồng, đã thu 300.000 đồng. & Mong đợi: xem đúng tổng phải thu, đã thu và 500.000 đồng còn nợ. Hàm backend và liên kết giao diện trả dữ liệu đúng trong mô phỏng. & Chưa chạy truy vấn với PostgreSQL chứa dữ liệu thật của phụ huynh. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (MP)} \\ \hline
+2 & \textbf{TC\_UC12\_002}\par Phụ huynh xem lịch sử của hóa đơn INV01, có khoản thanh toán giả lập 300.000 đồng. & Mong đợi: hiện lần thanh toán 300.000 đồng. Hàm API lịch sử trả về bản ghi và lọc theo con trong mô phỏng. & Chưa xác nhận thời điểm và phương thức thanh toán trên trình duyệt thực tế. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (MP)} \\ \hline
+3 & \textbf{TC\_UC12\_003}\par Hóa đơn 1.000.000 đồng; thử đã đóng 0 đồng và 400.000 đồng. & JavaScript hiển thị đúng Chưa đóng khi chưa thanh toán và Còn thiếu khi mới thanh toán một phần. & Trường hợp hóa đơn 0 đồng vẫn có thể hiển thị Chưa đóng, cần thống nhất quy tắc nghiệp vụ. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (JS)} \\ \hline
+4 & \textbf{TC\_UC12\_004}\par Hóa đơn 1.000.000 đồng; tổng tiền đã thu 1.000.000 đồng. & JavaScript trả về trạng thái Đã đóng khi thanh toán đủ và số dư công nợ bằng 0. & Đã kiểm thử bằng dữ liệu mô phỏng, chưa có đối chiếu hóa đơn thật. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (JS)} \\ \hline
+5 & \textbf{TC\_UC12\_005}\par Phụ huynh chọn kỳ 11/2026; truyền billing\_year = 2026 và billing\_month = 11. & Giao diện có bộ chọn kỳ; JavaScript truyền đúng tham số năm và tháng trong yêu cầu tra cứu. & Chưa xác nhận danh sách trả về chỉ chứa đúng kỳ khi chạy với dữ liệu thật. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (JS)} \\ \hline
+6 & \textbf{TC\_UC12\_006}\par Phụ huynh B không liên kết HS001 thử truy cập hóa đơn và lịch sử của HS001. & Backend mô phỏng trả HTTP 403 khi truy cập chi tiết/lịch sử; danh sách chỉ giới hạn học sinh được liên kết. & Cần kiểm thử tích hợp với 2 tài khoản phụ huynh thật để xác nhận đầy đủ. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (MP)} \\ \hline
+7 & \textbf{TC\_UC12\_007}\par Đăng nhập học sinh Nguyễn Minh Anh; thử truy cập trực tiếp trang học phí của phụ huynh. & Ảnh kiểm thử cho thấy trang đăng nhập và sau đó giao diện Tổng quan học sinh thay vì trang học phí phụ huynh; phù hợp hành vi chặn ở mức giao diện. & Backend cho học sinh xem học phí của chính mình qua API dùng chung; không đồng nghĩa được truy cập cổng phụ huynh. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS (UI)} \\ \hline
+8 & \textbf{TC\_UC12\_008}\par Đăng nhập phụ huynh, kiểm tra nút sửa hóa đơn/thanh toán; kiểm tra các tuyến API ghi nhận thu. & Giao diện không có chức năng chỉnh sửa; các API thay đổi khoản thu sử dụng cơ chế yêu cầu vai trò giáo viên. & Cần gửi yêu cầu POST thực tế bằng phiên phụ huynh để xác nhận lớp bảo vệ phía máy chủ. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries ĐẠT LOGIC} \\ \hline
+\end{longtable}
+
+\noindent\textbf{Nhận xét.} Kết quả kiểm thử ở mức mô phỏng cho thấy việc lấy chi tiết, lịch sử thanh toán, lọc theo kỳ và giới hạn dữ liệu theo quan hệ phụ huynh -- học sinh phù hợp với logic đã xây dựng. Đối với \textbf{TC\_UC12\_007}, ảnh thao tác cho thấy tài khoản học sinh không vào được trang tra cứu dành riêng cho phụ huynh, do đó được đánh giá đạt ở mức giao diện. Tuy nhiên, học sinh vẫn có thể truy cập API chung để xem thông tin học phí của chính mình; đây là phạm vi quyền riêng cần đối chiếu với đặc tả. Các kiểm thử dùng mô phỏng cần được thực hiện lại trên cơ sở dữ liệu thực trước khi công bố kết quả tích hợp.
+\endgroup
+
+\subsection{Tổng hợp và đánh giá kết quả kiểm thử UC-09, UC-12}
+
+Đối với hai chức năng, nhóm ghi nhận ba mức bằng chứng: (i) quan sát trực tiếp trên website do người kiểm thử cung cấp; (ii) chạy kiểm thử tự động/mô phỏng thành phần; và (iii) kiểm tra cấu trúc mã nguồn. Kết quả \textbf{đạt ở mức mô phỏng hoặc logic} không được hiểu là đã đạt toàn bộ quy trình nghiệp vụ trên website có kết nối cơ sở dữ liệu.
+
+Bộ kiểm thử tự động có sẵn \texttt{test\_tuition\_uc09\_uc12.py} được chạy lại với kết quả \textbf{9/9 bài PASS}; ngoài ra, các kiểm thử bổ sung về giao diện JavaScript và backend mô phỏng cho UC-12 cũng hoàn tất, lần lượt \textbf{7/7} và \textbf{6/6} kiểm tra PASS. Những bộ test này không tương ứng một--một với toàn bộ test case trong bảng và chưa thay thế kiểm thử tích hợp.
+
+\noindent\textbf{Các vấn đề cần hoàn thiện:}
+\begin{enumerate}
+  \item Bổ sung phương án tính lại khoản thu chưa thanh toán khi lịch học, điểm danh hoặc đơn giá thay đổi; cần lưu lịch sử điều chỉnh khi khoản thu đã có giao dịch.
+  \item Làm rõ quy tắc xử lý hóa đơn 0 đồng và trường hợp buổi học chưa hoàn thành, tránh đánh giá sai công nợ.
+  \item Kiểm tra việc phát hành thông báo tới đúng tài khoản phụ huynh liên kết bằng ít nhất hai tài khoản độc lập.
+  \item Thực hiện kiểm thử quyền truy cập và ghi nhận thanh toán qua API trong phiên đăng nhập thật, đồng thời đối chiếu dữ liệu PostgreSQL.
+\end{enumerate}
+
+\noindent\textbf{Kết luận.} UC-09 và UC-12 đã triển khai các nghiệp vụ cốt lõi và vượt qua các kiểm tra thành phần được thực hiện. Tuy nhiên, số liệu học phí 0 đồng trong các kỳ có dữ liệu buổi học là một điểm bất thường cần làm rõ. Báo cáo giữ nguyên phạm vi bằng chứng thực tế, tránh tự suy diễn kết quả PASS/FAIL cho các thao tác chưa có minh chứng đầy đủ.
 \subsection{Kiểm thử yêu cầu phi chức năng}
