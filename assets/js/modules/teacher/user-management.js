@@ -525,6 +525,11 @@ const UserManagementPage = {
       this.loadParentsForStudentForm()
     ]);
 
+    this.hideFormError();
+    // Hiển thị thanh đo độ mạnh mật khẩu ban đầu cho cả 2 tài khoản
+    this.checkPasswordStrength('dsStudentPassword', 'dsStudentPasswordStrength');
+    this.checkPasswordStrength('dsParentPassword', 'dsParentPasswordStrength');
+
     this.updatePreview();
   },
 
@@ -715,15 +720,16 @@ const UserManagementPage = {
       btn.style.color = 'var(--color-text-secondary)';
     }
   },
-
-
-  showFormError(msg) {
+    showFormError(msg) {
     const box = document.getElementById('dsFormError');
     const txt = document.getElementById('dsFormErrorText');
-    if (!box || !txt) { alert(msg); return; }
-    txt.innerText = msg;
-    box.style.display = 'flex';
-    box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (box && txt) {
+      txt.innerText = msg;
+      box.style.display = 'flex';
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      alert(msg);
+    }
   },
 
   hideFormError() {
@@ -736,117 +742,215 @@ const UserManagementPage = {
     const container = document.getElementById(containerId);
     if (!input || !container) return;
 
-    const val = input.value;
-    if (!val) { container.innerHTML = ''; return; }
-
+    const val = input.value || '';
     const rules = [
       { label: 'Ít nhất 8 ký tự', pass: val.length >= 8 },
       { label: 'Có chữ hoa (A-Z)', pass: /[A-Z]/.test(val) },
-      { label: 'Có chữ thường (a-z)', pass: /[a-z]/.test(val) },
       { label: 'Có chữ số (0-9)', pass: /[0-9]/.test(val) },
+      { label: 'Có ký tự đặc biệt (!@#...)', pass: /[^A-Za-z0-9\s]/.test(val) },
     ];
     const passed = rules.filter(r => r.pass).length;
-    const strength = passed <= 1 ? 'weak' : passed <= 2 ? 'fair' : passed <= 3 ? 'good' : 'strong';
-    const colors = { weak: '#dc2626', fair: '#d97706', good: '#2563eb', strong: '#059669' };
-    const labels = { weak: 'Yếu', fair: 'Trung bình', good: 'Khá', strong: 'Mạnh' };
+    let strength = 'none';
+    if (val.length > 0) {
+      if (passed <= 1) strength = 'weak';
+      else if (passed === 2) strength = 'fair';
+      else if (passed === 3) strength = 'good';
+      else strength = 'strong';
+    }
+    const colors = { none: '#e2e8f0', weak: '#dc2626', fair: '#d97706', good: '#2563eb', strong: '#059669' };
+    const labels = { none: 'Chưa nhập', weak: 'Yếu', fair: 'Trung bình', good: 'Khá', strong: 'Mạnh (Hợp lệ)' };
+    const barColor = colors[strength];
 
     container.innerHTML = `
-      <div style="display:flex; gap:4px; margin-bottom:5px;">
-        ${[0,1,2,3].map(i => `<div style="flex:1; height:3px; border-radius:2px; background:${i < passed ? colors[strength] : '#e5e7eb'};"></div>`).join('')}
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:12px;">
+        <span style="color:var(--color-text-secondary);">Độ mạnh: <strong style="color:${strength === 'none' ? 'var(--color-text-secondary)' : barColor};">${labels[strength]}</strong></span>
+        <span style="color:var(--color-text-secondary);">${val ? `${passed}/4 yêu cầu` : ''}</span>
       </div>
-      <div style="display:flex; flex-wrap:wrap; gap:6px;">
-        ${rules.map(r => `<span style="font-size:11.5px; color:${r.pass ? '#059669' : '#9ca3af'}; display:inline-flex; align-items:center; gap:3px;">
-          ${r.pass ? '✓' : '○'} ${r.label}
-        </span>`).join('')}
+      <div style="display:flex; gap:4px; margin-bottom:8px;">
+        ${[0, 1, 2, 3].map(i => `<div style="flex:1; height:4px; border-radius:2px; background:${val && i < passed ? barColor : '#e2e8f0'}; transition:background 0.2s;"></div>`).join('')}
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px 10px;">
+        ${rules.map(r => `
+          <div style="font-size:12px; color:${r.pass ? '#059669' : 'var(--color-text-secondary)'}; display:flex; align-items:center; gap:5px; font-weight:${r.pass ? '600' : '400'};">
+            <span style="font-size:13px; line-height:1;">${r.pass ? '✓' : '○'}</span>
+            <span>${r.label}</span>
+          </div>
+        `).join('')}
       </div>
     `;
   },
 
   async handleCreateStudentDesign(event) {
-    event.preventDefault();
+    if (event) event.preventDefault();
     const btn = document.getElementById('btnSubmitCreateStudentDesign');
-    btn.disabled = true;
+    if (btn) btn.disabled = true;
     this.hideFormError();
 
     try {
+      const fullName = (document.getElementById('dsStudentFullName')?.value || '').trim();
+      const dob = document.getElementById('dsStudentDob')?.value || null;
+      const phone = (document.getElementById('dsStudentPhone')?.value || '').trim() || null;
+      const classId = document.getElementById('dsStudentClassId')?.value || '';
+      const address = (document.getElementById('dsStudentAddress')?.value || '').trim() || null;
+      const username = (document.getElementById('dsStudentUsername')?.value || '').trim();
+      const password = document.getElementById('dsStudentPassword')?.value || '';
+      const requirePasswordChange = !!document.getElementById('dsRequirePasswordChange')?.checked;
+      const isActive = !!document.getElementById('dsIsActive')?.checked;
+
+      if (!fullName) {
+        this.showFormError('Vui lòng nhập họ và tên học sinh.');
+        document.getElementById('dsStudentFullName')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (!dob) {
+        this.showFormError('Vui lòng chọn ngày sinh của học sinh.');
+        document.getElementById('dsStudentDob')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (!classId) {
+        this.showFormError('Vui lòng chọn lớp học cho học sinh.');
+        document.getElementById('dsStudentClassId')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (!username) {
+        this.showFormError('Vui lòng nhập tên đăng nhập cho học sinh.');
+        document.getElementById('dsStudentUsername')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (username.length < 3) {
+        this.showFormError('Tên đăng nhập học sinh phải có ít nhất 3 ký tự.');
+        document.getElementById('dsStudentUsername')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      if (!password) {
+        this.showFormError('Vui lòng nhập mật khẩu tạm thời cho học sinh.');
+        document.getElementById('dsStudentPassword')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
+      // Kiểm tra đầy đủ 4 tiêu chí mật khẩu học sinh theo quy tắc hệ thống
+      const studentReqs = AuthService.getPasswordRequirements(password);
+      const studentMissing = studentReqs.filter(r => !r.passed).map(r => r.label);
+      if (studentMissing.length > 0) {
+        this.showFormError(`Mật khẩu học sinh chưa đạt yêu cầu: ${studentMissing.join(', ')}.`);
+        document.getElementById('dsStudentPassword')?.focus();
+        if (btn) btn.disabled = false;
+        return;
+      }
+
       const payload = {
-        full_name: document.getElementById('dsStudentFullName').value.trim(),
-        date_of_birth: document.getElementById('dsStudentDob').value || null,
-        phone: document.getElementById('dsStudentPhone').value.trim() || null,
-        class_id: document.getElementById('dsStudentClassId').value,
-        address: document.getElementById('dsStudentAddress').value.trim() || null,
-        username: document.getElementById('dsStudentUsername').value.trim(),
-        password: document.getElementById('dsStudentPassword').value,
-        require_password_change: document.getElementById('dsRequirePasswordChange').checked,
-        is_active: document.getElementById('dsIsActive').checked,
+        full_name: fullName,
+        date_of_birth: dob,
+        phone: phone,
+        class_id: classId,
+        address: address,
+        username: username,
+        password: password,
+        require_password_change: requirePasswordChange,
+        is_active: isActive,
         parent_mode: this.parentMode
       };
 
-      if (!payload.class_id) {
-        this.showFormError('Vui lòng chọn lớp học cho học sinh.');
-        btn.disabled = false;
-        return;
-      }
-      // Kiểm tra độ mạnh mật khẩu học sinh
-      const pwStudent = payload.password;
-      if (!pwStudent || pwStudent.length < 8 || !/[A-Z]/.test(pwStudent) || !/[a-z]/.test(pwStudent) || !/[0-9]/.test(pwStudent)) {
-        this.showFormError('Mật khẩu học sinh phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.');
-        document.getElementById('dsStudentPassword').focus();
-        btn.disabled = false;
-        return;
-      }
-
-
-
       if (this.parentMode === 'new') {
-        payload.parent_full_name = document.getElementById('dsParentFullName').value.trim();
-        payload.parent_relationship = document.getElementById('dsParentRelationship').value;
-        payload.parent_phone = document.getElementById('dsParentPhone').value.trim() || null;
-        payload.parent_username = document.getElementById('dsParentUsername').value.trim();
-        payload.parent_password = document.getElementById('dsParentPassword').value;
+        const pFullName = (document.getElementById('dsParentFullName')?.value || '').trim();
+        const pRelationship = document.getElementById('dsParentRelationship')?.value || '';
+        const pPhone = (document.getElementById('dsParentPhone')?.value || '').trim() || null;
+        const pUsername = (document.getElementById('dsParentUsername')?.value || '').trim();
+        const pPassword = document.getElementById('dsParentPassword')?.value || '';
 
-        if (!payload.parent_full_name || !payload.parent_username || !payload.parent_password) {
-          this.showFormError('Vui lòng nhập đầy đủ thông tin tài khoản phụ huynh mới.');
-          btn.disabled = false;
+        if (!pFullName) {
+          this.showFormError('Vui lòng nhập họ và tên phụ huynh mới.');
+          document.getElementById('dsParentFullName')?.focus();
+          if (btn) btn.disabled = false;
           return;
         }
-        const pwParent = payload.parent_password;
-        if (!pwParent || pwParent.length < 8 || !/[A-Z]/.test(pwParent) || !/[a-z]/.test(pwParent) || !/[0-9]/.test(pwParent)) {
-          this.showFormError('Mật khẩu phụ huynh phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.');
-          document.getElementById('dsParentPassword').focus();
-          btn.disabled = false;
+
+        if (!pRelationship) {
+          this.showFormError('Vui lòng chọn mối quan hệ với học sinh (Bố, Mẹ, Người giám hộ...).');
+          document.getElementById('dsParentRelationship')?.focus();
+          if (btn) btn.disabled = false;
           return;
         }
-        if (!payload.parent_relationship) {
-          this.showFormError('Vui lòng chọn quan hệ với học sinh.');
-          btn.disabled = false;
+
+        if (!pUsername) {
+          this.showFormError('Vui lòng nhập tên đăng nhập cho phụ huynh mới.');
+          document.getElementById('dsParentUsername')?.focus();
+          if (btn) btn.disabled = false;
           return;
         }
+
+        if (pUsername.length < 3) {
+          this.showFormError('Tên đăng nhập phụ huynh phải có ít nhất 3 ký tự.');
+          document.getElementById('dsParentUsername')?.focus();
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        if (!pPassword) {
+          this.showFormError('Vui lòng nhập mật khẩu tạm thời cho phụ huynh mới.');
+          document.getElementById('dsParentPassword')?.focus();
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        // Kiểm tra đầy đủ 4 tiêu chí mật khẩu phụ huynh theo quy tắc hệ thống
+        const parentReqs = AuthService.getPasswordRequirements(pPassword);
+        const parentMissing = parentReqs.filter(r => !r.passed).map(r => r.label);
+        if (parentMissing.length > 0) {
+          this.showFormError(`Mật khẩu phụ huynh chưa đạt yêu cầu: ${parentMissing.join(', ')}.`);
+          document.getElementById('dsParentPassword')?.focus();
+          if (btn) btn.disabled = false;
+          return;
+        }
+
+        payload.parent_full_name = pFullName;
+        payload.parent_relationship = pRelationship;
+        payload.parent_phone = pPhone;
+        payload.parent_username = pUsername;
+        payload.parent_password = pPassword;
       } else {
-        payload.existing_parent_user_id = document.getElementById('dsExistingParentSelect').value;
-        payload.parent_relationship = document.getElementById('dsExistingParentRelationship').value;
+        const existingParentId = document.getElementById('dsExistingParentSelect')?.value || '';
+        const existingRelationship = document.getElementById('dsExistingParentRelationship')?.value || '';
 
-        if (!payload.existing_parent_user_id) {
-          this.showFormError('Vui lòng chọn tài khoản phụ huynh có sẵn.');
-          btn.disabled = false;
+        if (!existingParentId) {
+          this.showFormError('Vui lòng chọn tài khoản phụ huynh có sẵn trong danh sách.');
+          document.getElementById('dsExistingParentSelect')?.focus();
+          if (btn) btn.disabled = false;
           return;
         }
-        if (!payload.parent_relationship) {
-          this.showFormError('Vui lòng chọn quan hệ với học sinh.');
-          btn.disabled = false;
+
+        if (!existingRelationship) {
+          this.showFormError('Vui lòng chọn mối quan hệ với học sinh (Bố, Mẹ, Người giám hộ...).');
+          document.getElementById('dsExistingParentRelationship')?.focus();
+          if (btn) btn.disabled = false;
           return;
         }
+
+        payload.existing_parent_user_id = existingParentId;
+        payload.parent_relationship = existingRelationship;
       }
 
       const result = await UserManagementModule.createStudentWithParent(payload);
       this.hideFormError();
-
       this.showListView();
       await this.loadUsers();
+      this.message('Đã tạo tài khoản học sinh và liên kết phụ huynh thành công!', 'success');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
-      this.showFormError('Không tạo được tài khoản: ' + err.message);
+      this.showFormError('Không tạo được tài khoản: ' + (err.message || 'Lỗi không xác định'));
     } finally {
-      btn.disabled = false;
+      if (btn) btn.disabled = false;
     }
   }
 };
