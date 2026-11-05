@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  6 NOV 2026 01:19
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  6 NOV 2026 01:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1215,4 +1215,1243 @@ File: picC1/thu-hoc-phi-to-be.png Graphic file (type bmp)
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 15.0434pt, for example:
 (fancyhdr)                \setlength{\headheight}{15.0434pt}.
-(fancyhdr)         
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[9]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[10]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[11]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[12]
+Overfull \hbox (3.45673pt too wide) in alignment at lines 312--316
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 316--320
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 320--323
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 323--326
+ [] [] [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 329--329
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin người dùng,
+ []
+
+
+Underfull \hbox (badness 2418) in paragraph at lines 329--329
+\TU/TimesNewRoman(0)/m/n/12 sinh, Phụ huynh), thông
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 331--331
+[]|\TU/TimesNewRoman(0)/m/n/12 Tài khoản người dùng
+ []
+
+
+Underfull \hbox (badness 1859) in paragraph at lines 335--335
+[]|\TU/TimesNewRoman(0)/m/n/12 Xác thực thông tin đăng nhập,
+ []
+
+
+Underfull \hbox (badness 2277) in paragraph at lines 344--344
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, thông tin thời
+ []
+
+
+Underfull \hbox (badness 2158) in paragraph at lines 354--354
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, buổi học hiện
+ []
+
+
+Underfull \hbox (badness 1325) in paragraph at lines 356--356
+[]|\TU/TimesNewRoman(0)/m/n/12 Dữ liệu điểm danh buổi
+ []
+
+
+Underfull \hbox (badness 1286) in paragraph at lines 356--356
+\TU/TimesNewRoman(0)/m/n/12 số liệu thống kê chuyên
+ []
+
+
+Underfull \hbox (badness 1902) in paragraph at lines 359--359
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin học sinh, lớp
+ []
+
+
+Underfull \hbox (badness 1377) in paragraph at lines 369--369
+\TU/TimesNewRoman(0)/m/n/12 điểm (Bài tập, Kiểm tra
+ []
+
+
+Underfull \hbox (badness 1320) in paragraph at lines 371--371
+[]|\TU/TimesNewRoman(0)/m/n/12 Đầu điểm mới được tạo
+ []
+
+
+Underfull \hbox (badness 4108) in paragraph at lines 374--374
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, cột điểm cần
+ []
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 381--381
+[]|\TU/TimesNewRoman(0)/m/n/12 Hiển thị bảng điểm trực
+ []
+
+
+Underfull \hbox (badness 3449) in paragraph at lines 381--381
+\TU/TimesNewRoman(0)/m/n/12 tuyến, lịch sử điểm số,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 384--384
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin học sinh,
+ []
+
+
+Underfull \hbox (badness 8170) in paragraph at lines 384--384
+\TU/TimesNewRoman(0)/m/n/12 kỳ/tháng, dữ liệu điểm
+ []
+
+
+Underfull \hbox (badness 1107) in paragraph at lines 384--384
+\TU/TimesNewRoman(0)/m/n/12 danh, số tiền phải đóng,
+ []
+
+
+Underfull \hbox (badness 2285) in paragraph at lines 386--386
+[]|\TU/TimesNewRoman(0)/m/n/12 Khoản thu học phí mới
+ []
+
+
+Underfull \hbox (badness 4205) in paragraph at lines 386--386
+\TU/TimesNewRoman(0)/m/n/12 được tạo thành công ở
+ []
+
+
+Underfull \hbox (badness 2351) in paragraph at lines 386--386
+\TU/TimesNewRoman(0)/m/n/12 trạng thái “Chưa đóng”,
+ []
+
+
+Underfull \hbox (badness 1189) in paragraph at lines 389--389
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin khoản thu, số
+ []
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 389--389
+\TU/TimesNewRoman(0)/m/n/12 tiền thực nhận (tiền mặt
+ []
+
+
+Underfull \hbox (badness 1199) in paragraph at lines 389--389
+\TU/TimesNewRoman(0)/m/n/12 hệ thống), xác nhận của
+ []
+
+
+Underfull \hbox (badness 2435) in paragraph at lines 396--396
+\TU/TimesNewRoman(0)/m/n/12 khoản thu và trạng thái
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 326--397
+ [] [] [] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[13]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[14]
+File: picC1/QuanLyLopHocThem.jpg Graphic file (type bmp)
+<picC1/QuanLyLopHocThem.jpg>
+File: picC1/TheoDoiLichHoc.jpg Graphic file (type bmp)
+<picC1/TheoDoiLichHoc.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[15]
+File: picC1/DiemDanh.jpg Graphic file (type bmp)
+<picC1/DiemDanh.jpg>
+File: picC1/NhapTraKQHT.jpg Graphic file (type bmp)
+<picC1/NhapTraKQHT.jpg>
+File: picC1/ThuHocPhi.jpg Graphic file (type bmp)
+<picC1/ThuHocPhi.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[16]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[17]
+File: picC1/Bieu-do-phan-cap-chuc-nang.png Graphic file (type bmp)
+<picC1/Bieu-do-phan-cap-chuc-nang.png>
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 444--472
+ [][] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[18
+
+]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (chuong2.tex
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[19]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[20]
+Chương 2.
+
+Underfull \hbox (badness 2205) in paragraph at lines 39--39
+\TU/TimesNewRoman(0)/m/n/12 cấp quyền tài khoản cho
+ []
+
+
+Underfull \hbox (badness 2005) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Thêm, sửa, xóa học sinh
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Ghi nhận trạng thái có
+ []
+
+
+Underfull \hbox (badness 3803) in paragraph at lines 39--39
+\TU/TimesNewRoman(0)/m/n/12 mặt/vắng mặt trong buổi
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Nhập, chỉnh sửa điểm số
+ []
+
+
+Underfull \hbox (badness 2617) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Lập khoản thu, cập nhật
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Xem lịch học theo
+ []
+
+
+Underfull \hbox (badness 4181) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Xem các khoản phí cần
+ []
+
+[21
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[22]
+File: picC2/UC_Tongquan.png Graphic file (type bmp)
+<picC2/UC_Tongquan.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[23]
+File: picC2/UC1.png Graphic file (type bmp)
+<picC2/UC1.png>
+File: picC2/UC2.png Graphic file (type bmp)
+<picC2/UC2.png>
+File: picC2/UC3.png Graphic file (type bmp)
+<picC2/UC3.png>
+File: picC2/UC4.png Graphic file (type bmp)
+<picC2/UC4.png>
+File: picC2/UC5.png Graphic file (type bmp)
+<picC2/UC5.png>
+File: picC2/UC6.png Graphic file (type bmp)
+<picC2/UC6.png>
+File: picC2/UC7.png Graphic file (type bmp)
+<picC2/UC7.png>
+File: picC2/UC8.png Graphic file (type bmp)
+<picC2/UC8.png>
+File: picC2/UC9.png Graphic file (type bmp)
+<picC2/UC9.png>
+File: picC2/UC10,11,12.png Graphic file (type bmp)
+<picC2/UC10,11,12.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[24
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[25]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[26]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[27]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[28]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[29]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[30]
+File: picC2/AD1.jpg Graphic file (type bmp)
+<picC2/AD1.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[31
+
+]
+File: picC2/AD2.jpg Graphic file (type bmp)
+<picC2/AD2.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[32
+
+]
+File: picC2/AD3.jpg Graphic file (type bmp)
+<picC2/AD3.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[33
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[34]
+File: picC2/AD4.jpg Graphic file (type bmp)
+<picC2/AD4.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[35
+
+]
+File: picC2/AD5.jpg Graphic file (type bmp)
+<picC2/AD5.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[36
+
+]
+File: picC2/AD6.jpg Graphic file (type bmp)
+<picC2/AD6.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[37
+
+]
+File: picC2/AD7.jpg Graphic file (type bmp)
+<picC2/AD7.jpg>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[38
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[39
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[40
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[41
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[42
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[43
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[44
+
+]) (chuong3.tex
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[45
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[46]
+Chương 3.
+File: picC3/C3_3_1_UC01_Lop_DangNhap.png Graphic file (type bmp)
+<picC3/C3_3_1_UC01_Lop_DangNhap.png>
+File: picC3/C3_3_1_UC02_Lop_QuanLyNguoiDung.png Graphic file (type bmp)
+<picC3/C3_3_1_UC02_Lop_QuanLyNguoiDung.png>
+[47
+
+]
+File: picC3/C3_3_1_UC03_Lop_QuanLyLopHoc.png Graphic file (type bmp)
+<picC3/C3_3_1_UC03_Lop_QuanLyLopHoc.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[48]
+Overfull \hbox (4.98552pt too wide) in paragraph at lines 37--38
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienQuanLyLop cho phép giáo viên khai báo, đi
+ều chỉnh và kết thúc lớp học. DieuKhien-
+ []
+
+File: picC3/C3_3_1_UC04_Lop_LapThoiKhoaBieu.png Graphic file (type bmp)
+<picC3/C3_3_1_UC04_Lop_LapThoiKhoaBieu.png>
+
+Overfull \hbox (6.3556pt too wide) in paragraph at lines 47--48
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienThoiKhoaBieu tiếp nhận thông tin thời gia
+n và hỗ trợ xem lịch theo tuần. DieuKhien-
+ []
+
+File: picC3/C3_3_1_UC05_Lop_DanhSachHocSinh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC05_Lop_DanhSachHocSinh.png>
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[49]
+File: picC3/C3_3_1_UC06_Lop_DiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC06_Lop_DiemDanh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[50]
+File: picC3/C3_3_1_UC07_Lop_BaiTapKiemTra.png Graphic file (type bmp)
+<picC3/C3_3_1_UC07_Lop_BaiTapKiemTra.png>
+File: picC3/C3_3_1_UC08_Lop_CapNhatDiemSo.png Graphic file (type bmp)
+<picC3/C3_3_1_UC08_Lop_CapNhatDiemSo.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[51]
+Overfull \hbox (43.48647pt too wide) in paragraph at lines 87--88
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienNhapDiem cho phép giáo viên nhập điểm và 
+nhận xét theo từng học sinh. DieuKhienDiemSo
+ []
+
+File: picC3/C3_3_1_UC09_Lop_QuanLyHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_1_UC09_Lop_QuanLyHocPhi.png>
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[52]
+File: picC3/C3_3_1_UC10_Lop_TraCuuLichHoc.png Graphic file (type bmp)
+<picC3/C3_3_1_UC10_Lop_TraCuuLichHoc.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[53]
+File: picC3/C3_3_1_UC11_Lop_TraCuuKetQuaDiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC11_Lop_TraCuuKetQuaDiemDanh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[54]
+File: picC3/C3_3_1_UC12_Lop_TraCuuHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_1_UC12_Lop_TraCuuHocPhi.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[55]
+File: picC3/C3_3_2_UC01_TrinhTu_DangNhap.png Graphic file (type bmp)
+<picC3/C3_3_2_UC01_TrinhTu_DangNhap.png>
+File: picC3/C3_3_2_UC02_TrinhTu_QuanLyNguoiDung.png Graphic file (type bmp)
+<picC3/C3_3_2_UC02_TrinhTu_QuanLyNguoiDung.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[56]
+File: picC3/C3_3_2_UC03_TrinhTu_TaoLop.png Graphic file (type bmp)
+<picC3/C3_3_2_UC03_TrinhTu_TaoLop.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[57]
+File: picC3/C3_3_2_UC03_TrinhTu_SuaKetThucLop.png Graphic file (type bmp)
+<picC3/C3_3_2_UC03_TrinhTu_SuaKetThucLop.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[58]
+File: picC3/C3_3_2_UC04_TrinhTu_LapThoiKhoaBieu.png Graphic file (type bmp)
+<picC3/C3_3_2_UC04_TrinhTu_LapThoiKhoaBieu.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[59]
+File: picC3/C3_3_2_UC05_TrinhTu_ThemHocSinh.png Graphic file (type bmp)
+<picC3/C3_3_2_UC05_TrinhTu_ThemHocSinh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[60]
+File: picC3/C3_3_2_UC05_TrinhTu_ChoHocSinhNghi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC05_TrinhTu_ChoHocSinhNghi.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[61]
+File: picC3/C3_3_2_UC06_TrinhTu_DiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_2_UC06_TrinhTu_DiemDanh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[62]
+File: picC3/C3_3_2_UC07_TrinhTu_BaiTapKiemTra.png Graphic file (type bmp)
+<picC3/C3_3_2_UC07_TrinhTu_BaiTapKiemTra.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[63]
+File: picC3/C3_3_2_UC08_TrinhTu_CapNhatDiemSo.png Graphic file (type bmp)
+<picC3/C3_3_2_UC08_TrinhTu_CapNhatDiemSo.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[64]
+File: picC3/C3_3_2_UC09_TrinhTu_LapBaoPhi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC09_TrinhTu_LapBaoPhi.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[65]
+File: picC3/C3_3_2_UC09_TrinhTu_GhiNhanThanhToan.png Graphic file (type bmp)
+<picC3/C3_3_2_UC09_TrinhTu_GhiNhanThanhToan.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[66]
+File: picC3/C3_3_2_UC10_TrinhTu_TraCuuLichHoc.png Graphic file (type bmp)
+<picC3/C3_3_2_UC10_TrinhTu_TraCuuLichHoc.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[67]
+File: picC3/C3_3_2_UC11_TrinhTu_TraCuuKetQuaDiemDanh.png Graphic file (type bmp
+)
+<picC3/C3_3_2_UC11_TrinhTu_TraCuuKetQuaDiemDanh.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[68]
+File: picC3/C3_3_2_UC12_TrinhTu_TraCuuHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC12_TrinhTu_TraCuuHocPhi.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[69]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[70]
+Overfull \hbox (11.6559pt too wide) in paragraph at lines 285--286
+[]\TU/TimesNewRoman(0)/m/n/12 Từ các lớp biên (\TU/lmtt/m/n/12 <<boundary>>\TU/
+TimesNewRoman(0)/m/n/12 ), lớp điều khiển (\TU/lmtt/m/n/12 <<control>>\TU/Times
+NewRoman(0)/m/n/12 ) và lớp thực thể (\TU/lmtt/m/n/12 <<entity>>\TU/TimesNewRom
+an(0)/m/n/12 )
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[71
+
+]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 349.
+File: picC3/DFD_Muc0.png Graphic file (type bmp)
+<picC3/DFD_Muc0.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[72]
+File: picC3/DFD_Muc1.png Graphic file (type bmp)
+<picC3/DFD_Muc1.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[73]
+File: picC3/DFD_Muc2_DiemDanh.png Graphic file (type bmp)
+<picC3/DFD_Muc2_DiemDanh.png>
+File: picC3/DFD_Muc2_QLHocPhi.png Graphic file (type bmp)
+<picC3/DFD_Muc2_QLHocPhi.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[74]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[75]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[76]
+Overfull \hbox (11.85672pt too wide) in paragraph at lines 393--394
+\TU/TimesNewRoman(0)/m/n/12 (\TU/lmtt/m/n/12 HoTen\TU/TimesNewRoman(0)/m/n/12 )
+, số điện thoại (\TU/lmtt/m/n/12 SoDienThoai\TU/TimesNewRoman(0)/m/n/12 ), emai
+l (\TU/lmtt/m/n/12 Email\TU/TimesNewRoman(0)/m/n/12 ), trạng thái hoạt động (\T
+U/lmtt/m/n/12 TrangThaiHoatDong\TU/TimesNewRoman(0)/m/n/12 )
+ []
+
+
+Overfull \hbox (14.37291pt too wide) in paragraph at lines 398--399
+\TU/TimesNewRoman(0)/m/n/12 học (\TU/lmtt/m/n/12 TruongDangHoc\TU/TimesNewRoman
+(0)/m/n/12 ), ghi chú học lực (\TU/lmtt/m/n/12 GhiChuHocLuc\TU/TimesNewRoman(0)
+/m/n/12 ) và trạng thái học tập (\TU/lmtt/m/n/12 TrangThaiHocTap\TU/TimesNewRom
+an(0)/m/n/12 ). 
+ []
+
+
+Overfull \hbox (31.24179pt too wide) in paragraph at lines 408--409
+\TU/TimesNewRoman(0)/m/n/12 thị (\TU/lmtt/m/n/12 MaCodeLop\TU/TimesNewRoman(0)/
+m/n/12 ), tên lớp học (\TU/lmtt/m/n/12 TenLopHoc\TU/TimesNewRoman(0)/m/n/12 ), 
+môn học (\TU/lmtt/m/n/12 MonHoc\TU/TimesNewRoman(0)/m/n/12 ), hình thức tính ph
+í (\TU/lmtt/m/n/12 HinhThucTinhPhi\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[77]
+Overfull \hbox (9.71371pt too wide) in paragraph at lines 418--419
+[]\TU/TimesNewRoman(0)/b/n/12 Các thông tin chính: \TU/TimesNewRoman(0)/m/n/12 
+mã buổi học (\TU/lmtt/m/n/12 MaBuoiHoc\TU/TimesNewRoman(0)/m/n/12 ), mã lớp học
+ (\TU/lmtt/m/n/12 MaLopHoc\TU/TimesNewRoman(0)/m/n/12 ), ngày học (\TU/lmtt/m/n
+/12 NgayHoc\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[78]
+Overfull \hbox (48.45758pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 (\TU/lmtt/m/n/12 MaHocSinh\TU/TimesNewRoman(0)/m/n/
+12 ), người cập nhật (\TU/lmtt/m/n/12 NguoiCapNhat\TU/TimesNewRoman(0)/m/n/12 )
+, kỳ thu phí (\TU/lmtt/m/n/12 KyThuPhi\TU/TimesNewRoman(0)/m/n/12 ), số buổi tí
+nh phí (\TU/lmtt/m/n/12 SoBuoiTinhPhi\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Overfull \hbox (60.2333pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 số tiền phải đóng (\TU/lmtt/m/n/12 SoTienPhaiDong\T
+U/TimesNewRoman(0)/m/n/12 ), số tiền đã đóng (\TU/lmtt/m/n/12 SoTienDaDong\TU/T
+imesNewRoman(0)/m/n/12 ), số tiền còn thiếu (\TU/lmtt/m/n/12 SoTienConThieu\TU/
+TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Overfull \hbox (26.88658pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 toán (\TU/lmtt/m/n/12 HanThanhToan\TU/TimesNewRoman
+(0)/m/n/12 ), ngày thanh toán (\TU/lmtt/m/n/12 NgayThanhToan\TU/TimesNewRoman(0
+)/m/n/12 ) và thời điểm cập nhật (\TU/lmtt/m/n/12 ThoiDiemCapNhat\TU/TimesNewRo
+man(0)/m/n/12 ). 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[79]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[80]
+Overfull \hbox (18.26369pt too wide) in paragraph at lines 513--514
+[]\TU/lmtt/m/n/12 TrangThaiGhiDanh\TU/TimesNewRoman(0)/m/n/12 : phản ánh học si
+nh đang theo học (\TU/lmtt/m/n/12 DANG_HOC\TU/TimesNewRoman(0)/m/n/12 ) hay đã 
+nghỉ học (\TU/lmtt/m/n/12 DA_NGHI\TU/TimesNewRoman(0)/m/n/12 )
+ []
+
+
+Overfull \hbox (21.2925pt too wide) in paragraph at lines 523--524
+[]\TU/lmtt/m/n/12 GioKetThuc\TU/TimesNewRoman(0)/m/n/12 : thời điểm kết thúc bu
+ổi học (bắt buộc thỏa mãn ràng buộc nghiệp vụ \TU/lmtt/m/n/12 GioKetThuc
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[81]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[82]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[83]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[84]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[85]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[86]
+File: picC3/ERD.jpg Graphic file (type bmp)
+<picC3/ERD.jpg>
+
+Overfull \hbox (8.93994pt too wide) in paragraph at lines 720--720
+[]|\TU/lmtt/m/n/10 MaBaiKiemTra|  
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[87]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[88]
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 744--744
+[]|\TU/lmtt/m/n/10 LienKetPHHS|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 745--745
+[]|\TU/lmtt/m/n/10 LienKetPHHS|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 755--755
+[]|\TU/lmtt/m/n/10 KhoanHocPhi|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 756--756
+[]|\TU/lmtt/m/n/10 KhoanHocPhi|  
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[89]) (chuong4.tex
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[90]
+Chương 4.
+[91
+
+]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[92]
+File: picC4/Hinh_4_1_Kien_truc_tong_quan.png Graphic file (type bmp)
+<picC4/Hinh_4_1_Kien_truc_tong_quan.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[93]
+File: picC4/Hinh_4_2_Presentation_View.png Graphic file (type bmp)
+<picC4/Hinh_4_2_Presentation_View.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[94]
+File: picC4/Hinh_4_3_Service_Business_Controller.png Graphic file (type bmp)
+<picC4/Hinh_4_3_Service_Business_Controller.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[95]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[96]
+File: picC4/Hinh_4_4_Data_Model.png Graphic file (type bmp)
+<picC4/Hinh_4_4_Data_Model.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[97]
+Overfull \hbox (4.1436pt too wide) in paragraph at lines 177--178
+\TU/lmtt/m/n/12 UUID\TU/TimesNewRoman(0)/m/n/12 ; dữ liệu tiền tệ sử dụng \TU/l
+mtt/m/n/12 NUMERIC(12,2)\TU/TimesNewRoman(0)/m/n/12 ; dữ liệu ngày giờ có múi g
+iờ sử dụng \TU/lmtt/m/n/12 TIMESTAMPTZ\TU/TimesNewRoman(0)/m/n/12 .
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[98]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[99]
+File: picC4/Hinh_4_5_So_do_quan_he_tong_quan.png Graphic file (type bmp)
+<picC4/Hinh_4_5_So_do_quan_he_tong_quan.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}{15.0434pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-3.0434pt}.
+
+[100]
+File: picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png Graphic file (type bmp)
+<picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png>
+File: picC4/Hinh_4_7_Ket_qua_hoc_tap.png Graphic file (type bmp)
+<picC4/Hinh_4_7_Ket_qua_hoc_tap.png>
+File: picC4/Hinh_4_8_Hoc_phi_Thong_bao.png Graphic file (type bmp)
+<picC4/Hinh_4_8_Hoc_phi_Thong_bao.png>
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 15.0434pt, for example:
+(fancyhdr)                \setlength{\headheight}

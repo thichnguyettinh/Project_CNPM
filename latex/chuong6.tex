@@ -8,8 +8,182 @@
 \subsection{Kiểm thử cho chức năng 2}
 \subsection{Kiểm thử cho chức năng 3}
 \subsection{Kiểm thử cho chức năng 4}
-\subsection{Kiểm thử cho chức năng 5}
-\subsection{Kiểm thử cho chức năng 6}
+\subsection{Kiểm thử cho chức năng 5 - Quản lý danh sách học sinh}
+Chức năng quản lý danh sách học sinh cho phép giáo viên thực hiện các nghiệp vụ như thêm học sinh vào lớp, đồng bộ thời khóa biểu, xử lý cho học sinh nghỉ học và kiểm soát phân quyền truy cập, được kiểm tra qua các trường hợp chính để bao quát các tình huống hợp lệ và ngoại lệ.
+
+\begin{longtable}{|p{0.8cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|p{1.4cm}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+
+1 & \textbf{Thêm học sinh chưa thuộc lớp vào lớp} \newline\newline \textit{Mã:} TC\_UC05\_001 \newline\newline \textbf{ĐK:} Lớp đang hoạt động; có tài khoản học sinh chưa ghi danh. \newline \textbf{HĐ:} Chọn hs02 từ danh sách và nhấn Xác nhận. 
+& Học sinh được thêm vào lớp; sĩ số hiện tại tăng tương ứng. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+2 & \textbf{Đồng bộ lịch học vào TKB học sinh mới} \newline\newline \textit{Mã:} TC\_UC05\_002 \newline\newline \textbf{ĐK:} Lớp có lịch học; học sinh chưa thuộc lớp. \newline \textbf{HĐ:} Thêm hs02 vào lớp Toán 10A có 2 buổi học sắp tới, sau đó hs02 mở Lịch học tuần. 
+& Các buổi học của lớp được thêm vào thời khóa biểu của hs02, không thiếu hoặc nhân đôi. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+3 & \textbf{Không thêm trùng học sinh đã có trong lớp} \newline\newline \textit{Mã:} TC\_UC05\_003 \newline\newline \textbf{ĐK:} hs01 đã thuộc lớp Toán 10A. \newline \textbf{HĐ:} Thử chọn lại hs01 hoặc gửi thẳng yêu cầu thêm trùng. 
+& Hệ thống không tạo quan hệ ghi danh trùng; sĩ số không đổi. 
+& Hệ thống từ chối và báo: "Học sinh đã có trong lớp." 
+& \textbf{PASS} \\
+\hline
+
+4 & \textbf{Cho học sinh nghỉ khỏi lớp} \newline\newline \textit{Mã:} TC\_UC05\_005 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp hoạt động. \newline \textbf{HĐ:} Chọn hs01 $\rightarrow$ Xóa khỏi lớp/Cho nghỉ học $\rightarrow$ Xác nhận. 
+& Trạng thái ghi danh chuyển thành Đã nghỉ; sĩ số hiện tại giảm 1; tài khoản học sinh giữ nguyên. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+5 & \textbf{Gỡ lịch tương lai nhưng giữ lịch sử khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_006 \newline\newline \textbf{ĐK:} hs01 có lịch tương lai và dữ liệu lịch sử điểm danh, điểm số, học phí. \newline \textbf{HĐ:} Cho hs01 nghỉ và kiểm tra lại TKB cùng dữ liệu cũ. 
+& Các buổi học tương lai bị gỡ khỏi TKB học sinh; lịch sử điểm danh, điểm số và học phí trước đó vẫn được giữ. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+6 & \textbf{Cảnh báo học phí còn nợ khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_007 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp và còn hóa đơn học phí chưa đóng. \newline \textbf{HĐ:} Chọn hs01 và thực hiện Cho nghỉ học. 
+& Hệ thống thông báo các khoản phí chưa thanh toán của học sinh tại lớp trước khi hoàn tất thao tác. 
+& Hệ thống chỉ hiện hộp thoại xác nhận chung, không nhắc gì đến khoản học phí còn nợ. (Cần chỉnh sửa) 
+& \textbf{FAIL} \\
+\hline
+
+7 & \textbf{Ngăn Học sinh/Phụ huynh thay đổi danh sách lớp} \newline\newline \textit{Mã:} TC\_UC05\_008 \newline\newline \textbf{ĐK:} Đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh. \newline \textbf{HĐ:} Truy cập trực tiếp URL hoặc gửi yêu cầu thêm/cho nghỉ học sinh. 
+& Yêu cầu bị từ chối; quan hệ ghi danh và sĩ số không thay đổi. 
+& Hệ thống chặn quyền, báo không có quyền và chuyển về trang tổng quan. 
+& \textbf{PASS} \\
+\hline
+
+\end{longtable}
+\subsection{Kiểm thử cho chức năng 6 - Chức năng điểm danh}
+Chức năng điểm danh cho phép giáo viên quản lý và ghi nhận trạng thái tham gia lớp học của học sinh, đảm bảo tính toàn vẹn dữ liệu, lịch sử lưu vết và kiểm soát phân quyền chặt chẽ giữa các vai trò, được kiểm tra qua các trường hợp chính để bao quát các tình huống hợp lệ và ngoại lệ.
+\begin{longtable}{|p{0.8cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|p{1.4cm}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+
+1 & \textbf{Thêm học sinh chưa thuộc lớp vào lớp} \newline\newline \textit{Mã:} TC\_UC05\_001 \newline\newline \textbf{ĐK:} Lớp đang hoạt động; có tài khoản học sinh chưa ghi danh. \newline \textbf{HĐ:} Chọn hs02 từ danh sách và nhấn Xác nhận. 
+& Học sinh được thêm vào lớp; sĩ số hiện tại tăng tương ứng. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+2 & \textbf{Đồng bộ lịch học vào TKB học sinh mới} \newline\newline \textit{Mã:} TC\_UC05\_002 \newline\newline \textbf{ĐK:} Lớp có lịch học; học sinh chưa thuộc lớp. \newline \textbf{HĐ:} Thêm hs02 vào lớp Toán 10A có 2 buổi học sắp tới, sau đó hs02 mở Lịch học tuần. 
+& Các buổi học của lớp được thêm vào thời khóa biểu của hs02, không thiếu hoặc nhân đôi. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+3 & \textbf{Không thêm trùng học sinh đã có trong lớp} \newline\newline \textit{Mã:} TC\_UC05\_003 \newline\newline \textbf{ĐK:} hs01 đã thuộc lớp Toán 10A. \newline \textbf{HĐ:} Thử chọn lại hs01 hoặc gửi thẳng yêu cầu thêm trùng. 
+& Hệ thống không tạo quan hệ ghi danh trùng; sĩ số không đổi. 
+& Hệ thống từ chối và báo: "Học sinh đã có trong lớp." 
+& \textbf{PASS} \\
+\hline
+
+4 & \textbf{Cho học sinh nghỉ khỏi lớp} \newline\newline \textit{Mã:} TC\_UC05\_005 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp hoạt động. \newline \textbf{HĐ:} Chọn hs01 $\rightarrow$ Xóa khỏi lớp/Cho nghỉ học $\rightarrow$ Xác nhận. 
+& Trạng thái ghi danh chuyển thành Đã nghỉ; sĩ số hiện tại giảm 1; tài khoản học sinh giữ nguyên. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+5 & \textbf{Gỡ lịch tương lai nhưng giữ lịch sử khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_006 \newline\newline \textbf{ĐK:} hs01 có lịch tương lai và dữ liệu lịch sử điểm danh, điểm số, học phí. \newline \textbf{HĐ:} Cho hs01 nghỉ và kiểm tra lại TKB cùng dữ liệu cũ. 
+& Các buổi học tương lai bị gỡ khỏi TKB học sinh; lịch sử điểm danh, điểm số và học phí trước đó vẫn được giữ. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+6 & \textbf{Cảnh báo học phí còn nợ khi cho nghỉ} \newline\newline \textit{Mã:} TC\_UC05\_007 \newline\newline \textbf{ĐK:} hs01 đang thuộc lớp và còn hóa đơn học phí chưa đóng. \newline \textbf{HĐ:} Chọn hs01 và thực hiện Cho nghỉ học. 
+& Hệ thống thông báo các khoản phí chưa thanh toán của học sinh tại lớp trước khi hoàn tất thao tác. 
+& Hệ thống chỉ hiện hộp thoại xác nhận chung, không nhắc gì đến khoản học phí còn nợ. (Cần chỉnh sửa) 
+& \textbf{FAIL} \\
+\hline
+
+7 & \textbf{Ngăn Học sinh/Phụ huynh thay đổi danh sách lớp} \newline\newline \textit{Mã:} TC\_UC05\_008 \newline\newline \textbf{ĐK:} Đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh. \newline \textbf{HĐ:} Truy cập trực tiếp URL hoặc gửi yêu cầu thêm/cho nghỉ học sinh. 
+& Yêu cầu bị từ chối; quan hệ ghi danh và sĩ số không thay đổi. 
+& Hệ thống chặn quyền, báo không có quyền và chuyển về trang tổng quan. 
+& \textbf{PASS} \\
+\hline
+
+\end{longtable}
+
+\vspace{1em}
+
+\section*{6.1.Y. Kiểm thử chức năng điểm danh}
+
+Chức năng điểm danh cho phép giáo viên theo dõi, cập nhật trạng thái học tập của học sinh, đồng thời hỗ trợ phân quyền xem và quản lý yêu cầu vắng học.
+
+\vspace{0.5em}
+
+\begin{longtable}{|p{0.8cm}|p{4.2cm}|p{4.2cm}|p{4.2cm}|p{1.4cm}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+
+1 & \textbf{Hiển thị đúng danh sách học sinh của buổi học} \newline\newline \textit{Mã:} TC\_UC06\_001 \newline\newline \textbf{ĐK:} Buổi học có trong lịch; lớp có học sinh. \newline \textbf{HĐ:} Mở chức năng Điểm danh $\rightarrow$ Chọn lớp Toán 10A và buổi học 05/11/2026. 
+& Hệ thống hiển thị đầy đủ học sinh thuộc lớp tại buổi học; không hiển thị học sinh lớp khác hoặc đã nghỉ. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+2 & \textbf{Ghi nhận trạng thái Có mặt, Vắng và Trễ} \newline\newline \textit{Mã:} TC\_UC06\_002 \newline\newline \textbf{ĐK:} Buổi học có trong lịch và danh sách học sinh đã được tải. \newline \textbf{HĐ:} Đánh dấu hs01: Có mặt, hs02: Vắng, hs03: Trễ $\rightarrow$ Nhấn Lưu $\rightarrow$ Mở lại buổi học. 
+& Từng trạng thái được lưu đúng với học sinh tương ứng và được hiển thị lại chính xác. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+3 & \textbf{Ghi nhận trạng thái Có phép theo phạm vi nghiệp vụ} \newline\newline \textit{Mã:} TC\_UC06\_003 \newline\newline \textbf{ĐK:} Buổi học có trong lịch; học sinh có yêu cầu xin phép. \newline \textbf{HĐ:} Chọn hs04: Có phép kèm ghi chú "Gia đình xin phép." $\rightarrow$ Lưu. 
+& Nếu hệ thống triển khai trạng thái Có phép theo phạm vi cập nhật, trạng thái và ghi chú được lưu đúng. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+4 & \textbf{Lưu ghi chú điểm danh cho học sinh} \newline\newline \textit{Mã:} TC\_UC06\_004 \newline\newline \textbf{ĐK:} Buổi học đã chọn; danh sách học sinh hiển thị. \newline \textbf{HĐ:} Chọn trạng thái Trễ cho hs03, nhập ghi chú "Đến trễ 10 phút." $\rightarrow$ Lưu $\rightarrow$ Mở lại bản ghi. 
+& Ghi chú được lưu gắn đúng học sinh và buổi học; nội dung không bị mất. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+5 & \textbf{Kiểm tra trạng thái điểm danh được lưu bền vững và có lưu vết} \newline\newline \textit{Mã:} TC\_UC06\_005 \newline\newline \textbf{ĐK:} Giáo viên có quyền điểm danh; buổi học tồn tại. \newline \textbf{HĐ:} Đổi hs01 từ Có mặt sang Vắng $\rightarrow$ Lưu $\rightarrow$ Tải lại trang/mở lại buổi học. 
+& Trạng thái mới được giữ sau khi tải lại; người cập nhật và thời điểm được ghi nhận theo yêu cầu phạm vi. 
+& Không có 
+& \textbf{PASS} \\
+\hline
+
+6 & \textbf{Không cho điểm danh khi buổi học chưa tồn tại} \newline\newline \textit{Mã:} TC\_UC06\_006 \newline\newline \textbf{ĐK:} Lớp tồn tại nhưng chưa có buổi học trong lịch ở ngày chọn. \newline \textbf{HĐ:} Chọn ngày/lớp không có buổi học $\rightarrow$ Thử lưu điểm danh. 
+& Hệ thống không tạo bản ghi điểm danh cho buổi học không tồn tại; yêu cầu chọn buổi hợp lệ. 
+& Hệ thống từ chối, báo "Không tìm thấy buổi học." và nút Lưu bị khóa. 
+& \textbf{PASS} \\
+\hline
+
+7 & \textbf{Học sinh chỉ xem lịch sử điểm danh của bản thân} \newline\newline \textit{Mã:} TC\_UC06\_007 \newline\newline \textbf{ĐK:} Học sinh đã đăng nhập và có lịch sử điểm danh. \newline \textbf{HĐ:} Đăng nhập hs01 $\rightarrow$ Mở Lịch sử điểm danh $\rightarrow$ Thử truy cập dữ liệu/URL của hs02. 
+& Chỉ dữ liệu điểm danh của hs01 được hiển thị; không cho sửa trạng thái. 
+& Yêu cầu xem hồ sơ hoặc sửa điểm danh của hs02 bị từ chối. 
+& \textbf{PASS} \\
+\hline
+
+8 & \textbf{Phụ huynh chỉ xem lịch sử điểm danh của con đã liên kết} \newline\newline \textit{Mã:} TC\_UC06\_008 \newline\newline \textbf{ĐK:} ph01 liên kết hs01; hs02 không liên kết với ph01. \newline \textbf{HĐ:} Đăng nhập ph01 $\rightarrow$ Mở lịch sử điểm danh $\rightarrow$ Thử truy cập hồ sơ hs02. 
+& Chỉ hiển thị lịch sử của học sinh được liên kết; không thể sửa điểm danh hoặc xem hồ sơ không được cấp quyền. 
+& Yêu cầu truy cập hồ sơ hs02 hoặc sửa dữ liệu bị từ chối. 
+& \textbf{PASS} \\
+\hline
+
+9 & \textbf{Gửi yêu cầu xin vắng từ Học sinh/Phụ huynh} \newline\newline \textit{Mã:} TC\_UC06\_009 \newline\newline \textbf{ĐK:} Học sinh có buổi học sắp diễn ra; Phụ huynh đã liên kết với học sinh. \newline \textbf{HĐ:} Đăng nhập Học sinh/Phụ huynh $\rightarrow$ Chọn buổi học $\rightarrow$ Gửi yêu cầu xin vắng kèm lý do. 
+& Yêu cầu xin vắng được ghi nhận, liên kết đúng học sinh và buổi học để Giáo viên theo dõi. 
+& Chưa đạt: Hệ thống chưa có chức năng xin vắng, học sinh/phụ huynh không có giao diện gửi yêu cầu. (Cần chỉnh sửa) 
+& \textbf{FAIL} \\
+\hline
+
+\end{longtable}
+
+này thì sao, có hợp lệ k
+
 \subsection{Kiểm thử cho chức năng 7}
 \subsection{Kiểm thử cho chức năng 8}
 \subsection{Kiểm thử cho chức năng 9}
