@@ -20,9 +20,17 @@ const ScheduleModule = {
     return AuthService.api(`/sessions/${encodeURIComponent(sessionId)}`);
   },
 
-  // Thêm buổi học mới
+  // Thêm buổi học mới (chỉ một buổi)
   addSchedule(scheduleData) {
     return AuthService.api('/sessions', {
+      method: 'POST',
+      body: JSON.stringify(scheduleData)
+    });
+  },
+
+  // Thêm chuỗi buổi học lặp lại hàng tuần
+  addRecurringSchedule(scheduleData) {
+    return AuthService.api('/sessions/recurring', {
       method: 'POST',
       body: JSON.stringify(scheduleData)
     });

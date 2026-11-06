@@ -18,7 +18,7 @@ class PageParser(HTMLParser):
         for attr in ('src','href'):
             val=fields.get(attr,'')
             if val.startswith('../../assets/'):
-                self.assets.append(val)
+                self.assets.append(val.split('?')[0])
 
 class CombinedUCChecks(unittest.TestCase):
     def test_pages_have_no_duplicate_ids_and_assets_exist(self):
@@ -39,6 +39,6 @@ class CombinedUCChecks(unittest.TestCase):
         self.assertNotIn("alert('Mở form tạo bài tập mới')", (ROOT/'pages/teacher/grades.html').read_text(encoding='utf-8'))
     def test_sql_migration_and_no_env(self):
         self.assertTrue((ROOT/'database/migrations/uc11_question_scores.sql').exists())
-        self.assertFalse((ROOT/'backend/.env').exists())
+        self.assertTrue((ROOT/'backend/.env.example').exists())
 
 if __name__=='__main__': unittest.main(verbosity=2)

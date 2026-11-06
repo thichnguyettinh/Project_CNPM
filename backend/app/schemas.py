@@ -167,6 +167,15 @@ class FixedScheduleCreate(StrictModel):
     start_date: date | None = None
     end_date: date | None = None
 
+    @model_validator(mode="after")
+    def validate_schedule_times_and_dates(self):
+        if self.weekdays:
+            if self.ends_at <= self.starts_at:
+                raise ValueError("Giờ kết thúc phải sau giờ bắt đầu.")
+            if self.start_date and self.end_date and self.end_date < self.start_date:
+                raise ValueError("Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.")
+        return self
+
 
 class ScheduleConflictCheckRequest(StrictModel):
     weekdays: list[int] = Field(default_factory=list)
@@ -176,6 +185,28 @@ class ScheduleConflictCheckRequest(StrictModel):
     start_date: date | None = None
     end_date: date | None = None
     class_id: str | None = None
+
+
+class RecurringSessionCreate(StrictModel):
+    class_id: str = Field(min_length=1, max_length=36)
+    weekdays: list[int] = Field(min_length=1)
+    starts_at: str = Field(min_length=4, max_length=8)
+    ends_at: str = Field(min_length=4, max_length=8)
+    start_date: date
+    end_date: date
+    room: str | None = Field(default=None, max_length=100)
+    topic: str | None = Field(default=None, max_length=255)
+
+    @model_validator(mode="after")
+    def validate_recurring(self):
+        if self.ends_at <= self.starts_at:
+            raise ValueError("Giờ kết thúc phải sau giờ bắt đầu.")
+        if self.end_date < self.start_date:
+            raise ValueError("Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.")
+        for w in self.weekdays:
+            if w < 1 or w > 7:
+                raise ValueError("Thứ trong tuần phải từ 1 đến 7.")
+        return self
 
 
 class ClassCreate(StrictModel):
@@ -198,6 +229,7 @@ class ClassUpdate(StrictModel):
     description: str | None = None
     schedule_info: str | None = None
     status: Literal["planned", "active", "completed", "archived"] | None = None
+    fixed_schedule: FixedScheduleCreate | None = None
 
 
 class EnrollmentCreate(StrictModel):
@@ -215,7 +247,7 @@ class SessionCreate(StrictModel):
     @model_validator(mode="after")
     def validate_order(self):
         if self.ends_at <= self.starts_at:
-            raise ValueError("Thời điểm kết thúc phải sau thời điểm bắt đầu.")
+            raise ValueError("Giờ kết thúc phải sau giờ bắt đầu.")
         return self
 
 

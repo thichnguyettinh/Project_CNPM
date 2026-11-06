@@ -214,6 +214,9 @@
         }
         alertText.innerText = result.message;
         alertBox.style.display = 'flex';
+      } catch (err) {
+        alertText.innerText = err.message || 'Lỗi đăng nhập. Vui lòng thử lại sau.';
+        alertBox.style.display = 'flex';
       } finally {
         submitButton.disabled = false;
       }

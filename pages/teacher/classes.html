@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,18 +8,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="../../assets/css/variables.css">
   <link rel="stylesheet" href="../../assets/css/base.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
   <style>
-    .loading-state, .empty-state {
+    .loading-state,
+    .empty-state {
       text-align: center;
       padding: 40px 20px;
       color: var(--color-text-secondary);
     }
+
     .loading-spinner {
       display: inline-block;
       width: 28px;
@@ -29,25 +32,35 @@
       animation: spin 0.8s linear infinite;
       margin-bottom: 8px;
     }
+
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
+
     .modal-overlay {
       display: none;
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(15, 23, 42, 0.6);
       z-index: 1000;
       align-items: center;
       justify-content: center;
     }
+
     .modal-overlay.active {
       display: flex;
     }
+
     html.modal-open {
       overflow: hidden;
       scrollbar-gutter: stable;
     }
+
     #modalCreateClass {
       align-items: flex-start;
       justify-content: center;
@@ -56,6 +69,7 @@
       overflow-anchor: none;
       padding: 24px 16px;
     }
+
     #modalCreateClass .create-class-modal-container {
       display: flex;
       flex-direction: column;
@@ -64,11 +78,13 @@
       transform: none;
       overflow-anchor: none;
     }
+
     .weekday-picker {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .weekday-label {
       display: inline-flex;
       align-items: center;
@@ -83,16 +99,19 @@
       user-select: none;
       transition: all 0.15s ease;
     }
+
     .weekday-label:hover {
       background: #f8fafc;
       border-color: #cbd5e1;
     }
+
     .weekday-label input[type="checkbox"] {
       width: 16px;
       height: 16px;
       cursor: pointer;
       accent-color: var(--color-primary);
     }
+
     .schedule-conflict-box {
       border-radius: 8px;
       padding: 12px 14px;
@@ -102,49 +121,61 @@
       font-size: 13.5px;
       transition: all 0.2s ease;
     }
+
     .schedule-conflict-box.conflict-ok {
       background: #ecfdf5;
       border: 1px solid #a7f3d0;
       color: #065f46;
     }
+
     .schedule-conflict-box.conflict-error {
       background: #fef2f2;
       border: 1px solid #fecaca;
       color: #991b1b;
     }
+
     .schedule-conflict-box.conflict-checking {
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       color: #475569;
     }
+
     #modalCreateClass.active .create-class-modal-container {
       transform: none;
     }
+
     .create-class-modal-body {
       overflow-anchor: none;
     }
+
     .create-class-modal-body .modal-footer {
       background: var(--color-surface);
     }
+
     .class-form-grid {
       display: grid;
       grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
       gap: 16px;
     }
+
     .class-form-grid.equal-columns {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .class-form-grid > .form-group {
+
+    .class-form-grid>.form-group {
       min-width: 0;
     }
+
     .classes-page-header {
       flex-wrap: wrap;
       gap: 16px;
     }
+
     .classes-page-header-title {
       flex: 1 1 320px;
       min-width: 0;
     }
+
     .classes-page-actions {
       display: flex;
       align-items: center;
@@ -154,7 +185,8 @@
       max-width: 100%;
       flex-wrap: nowrap;
     }
-    .classes-page-actions > .btn {
+
+    .classes-page-actions>.btn {
       flex: 0 0 auto;
       align-self: center;
       height: 40px;
@@ -163,18 +195,22 @@
       line-height: 1;
       transform: none;
     }
-    .classes-page-actions > .btn svg {
+
+    .classes-page-actions>.btn svg {
       flex: 0 0 auto;
     }
+
     .action-btn-group {
       display: inline-flex;
       gap: 4px;
       justify-content: flex-end;
     }
+
     @media (max-width: 600px) {
       #modalCreateClass {
         padding: 16px;
       }
+
       .class-form-grid,
       .class-form-grid.equal-columns {
         grid-template-columns: minmax(0, 1fr);
@@ -183,6 +219,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <div class="app-layout">
@@ -191,8 +228,8 @@
       <div class="sidebar-brand">
         <div class="logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c3 3 9 3 12 0v-5" />
           </svg>
         </div>
         <div class="sidebar-brand-text">
@@ -248,7 +285,11 @@
           </div>
         </div>
         <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Đăng xuất">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
         </button>
       </div>
     </aside>
@@ -263,9 +304,11 @@
         </div>
 
         <div class="header-actions">
-          <span id="teacherClassCurrentDate" style="font-size: 13px; color: var(--color-text-secondary);">Đang cập nhật ngày</span>
+          <span id="teacherClassCurrentDate" style="font-size: 13px; color: var(--color-text-secondary);">Đang cập nhật
+            ngày</span>
           <div style="display:flex; align-items:center; gap:8px;">
-            <div class="avatar-badge" id="teacherClassHeaderAvatar" style="width:32px; height:32px; font-size:12px;">GV</div>
+            <div class="avatar-badge" id="teacherClassHeaderAvatar" style="width:32px; height:32px; font-size:12px;">GV
+            </div>
             <span id="teacherClassHeaderName" style="font-size:13px; font-weight:600;">Giáo viên</span>
           </div>
         </div>
@@ -276,16 +319,23 @@
         <div class="page-header-row classes-page-header">
           <div class="classes-page-header-title">
             <h1 class="title-page" style="font-size:24px;">Quản lý lớp học</h1>
-            <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh theo thời gian thực.</p>
+            <p class="text-secondary" style="margin-top:4px;">Tổ chức lớp học, lịch giảng dạy và danh sách học sinh theo
+              thời gian thực.</p>
           </div>
           <div class="classes-page-actions">
             <button class="btn btn-secondary" onclick="loadClassesList()" title="Tải lại danh sách lớp">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6M1 20v-6h6" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
               <span>Làm mới</span>
             </button>
             <a href="students.html" class="btn btn-secondary">Quản lý danh sách học sinh</a>
             <button class="btn btn-primary" onclick="openCreateModal()">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
               <span>Tạo lớp học</span>
             </button>
           </div>
@@ -318,15 +368,23 @@
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
             <h3 class="title-card">Danh sách lớp học (<span id="totalClassCountBadge">0</span>)</h3>
             <button class="btn btn-secondary btn-sm" onclick="exportClassesToExcel()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
               <span>Tải danh sách CSV</span>
             </button>
           </div>
 
           <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom: 16px;">
             <div class="search-box-wrap" style="flex:1; min-width:260px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="classSearchInput" class="form-control" placeholder="Tìm theo tên lớp, mã lớp..." oninput="filterClasses()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input type="text" id="classSearchInput" class="form-control" placeholder="Tìm theo tên lớp, mã lớp..."
+                oninput="filterClasses()">
             </div>
             <select class="form-control" id="classFilterSubject" style="width: 150px;" onchange="filterClasses()">
               <option value="">Tất cả môn học</option>
@@ -367,9 +425,15 @@
 
         <!-- Banner lưu ý nghiệp vụ -->
         <div class="alert alert-info">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="16" x2="12" y2="12" />
+            <line x1="12" y1="8" x2="12.01" y2="8" />
+          </svg>
           <div>
-            <strong>Dữ liệu lớp học luôn được bảo toàn:</strong> Lưu trữ hoặc đóng lớp khi kết thúc khóa học để bảo toàn toàn bộ lịch sử điểm danh, điểm số và hóa đơn học phí. Chỉ giáo viên phụ trách mới có quyền chỉnh sửa thông tin lớp.
+            <strong>Dữ liệu lớp học luôn được bảo toàn:</strong> Lưu trữ hoặc đóng lớp khi kết thúc khóa học để bảo toàn
+            toàn bộ lịch sử điểm danh, điểm số và hóa đơn học phí. Chỉ giáo viên phụ trách mới có quyền chỉnh sửa thông
+            tin lớp.
           </div>
         </div>
 
@@ -387,7 +451,8 @@
         <button class="modal-close" onclick="closeModal('modalCreateClass')">&times;</button>
       </div>
       <div class="modal-body create-class-modal-body">
-        <p class="text-caption" style="margin-bottom:16px;">Sĩ số ban đầu của lớp mới sẽ là 0. Học sinh được thêm vào sau khi tạo lớp.</p>
+        <p class="text-caption" style="margin-bottom:16px;">Sĩ số ban đầu của lớp mới sẽ là 0. Học sinh được thêm vào
+          sau khi tạo lớp.</p>
 
         <div id="createClassAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
 
@@ -395,11 +460,13 @@
           <div class="class-form-grid">
             <div class="form-group">
               <label class="form-label" for="newClassName">Tên lớp học <span class="required">*</span></label>
-              <input type="text" class="form-control" id="newClassName" placeholder="Ví dụ: Toán 10 - Nền tảng" required>
+              <input type="text" class="form-control" id="newClassName" placeholder="Ví dụ: Toán 10 - Nền tảng"
+                required>
             </div>
             <div class="form-group">
               <label class="form-label" for="newClassCode">Mã lớp <span class="required">*</span></label>
-              <input type="text" class="form-control" id="newClassCode" placeholder="Ví dụ: TO10C" required style="text-transform:uppercase;">
+              <input type="text" class="form-control" id="newClassCode" placeholder="Ví dụ: TO10C" required
+                style="text-transform:uppercase;">
             </div>
           </div>
 
@@ -416,29 +483,36 @@
 
           <div class="form-group">
             <label class="form-label" for="newClassFee">Học phí / tháng (VNĐ) <span class="required">*</span></label>
-            <input type="number" class="form-control" id="newClassFee" placeholder="Nhập số tiền" min="0" step="50000" required>
+            <input type="number" class="form-control" id="newClassFee" placeholder="Nhập số tiền" min="0" step="50000"
+              required>
           </div>
 
           <div class="form-group">
             <label class="form-label" for="newClassDesc">Mô tả lớp học</label>
-            <textarea class="form-control" id="newClassDesc" rows="3" placeholder="Mô tả nội dung, mục tiêu của khóa học..."></textarea>
+            <textarea class="form-control" id="newClassDesc" rows="3"
+              placeholder="Mô tả nội dung, mục tiêu của khóa học..."></textarea>
           </div>
 
           <!-- ============================================================= -->
           <!-- KHỐI BỔ SUNG: LỊCH HỌC CỐ ĐỊNH -->
           <!-- ============================================================= -->
-          <div class="fixed-schedule-card" style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border);">
+          <div class="fixed-schedule-card"
+            style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border);">
             <div style="margin-bottom: 14px;">
-              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch học cố định</h4>
-              <p class="text-caption" style="color: var(--color-text-secondary); margin: 0; font-size: 13px;">Lịch được áp dụng cho các tuần trong khoảng ngày đã chọn.</p>
+              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch
+                học cố định</h4>
+              <p class="text-caption" style="color: var(--color-text-secondary); margin: 0; font-size: 13px;">Lịch được
+                áp dụng cho các tuần trong khoảng ngày đã chọn.</p>
             </div>
 
             <!-- Ngày học trong tuần -->
             <div class="form-group" style="margin-bottom: 14px;">
-              <label class="form-label" style="font-weight: 600;">Ngày học trong tuần <span class="required">*</span></label>
+              <label class="form-label" style="font-weight: 600;">Ngày học trong tuần <span
+                  class="required">*</span></label>
               <div class="weekday-picker">
                 <label class="weekday-label">
-                  <input type="checkbox" name="fixedScheduleWeekday" value="1" checked onchange="onFixedScheduleParamChange()">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="1" checked
+                    onchange="onFixedScheduleParamChange()">
                   <span>T2</span>
                 </label>
                 <label class="weekday-label">
@@ -446,7 +520,8 @@
                   <span>T3</span>
                 </label>
                 <label class="weekday-label">
-                  <input type="checkbox" name="fixedScheduleWeekday" value="3" checked onchange="onFixedScheduleParamChange()">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="3" checked
+                    onchange="onFixedScheduleParamChange()">
                   <span>T4</span>
                 </label>
                 <label class="weekday-label">
@@ -454,7 +529,8 @@
                   <span>T5</span>
                 </label>
                 <label class="weekday-label">
-                  <input type="checkbox" name="fixedScheduleWeekday" value="5" checked onchange="onFixedScheduleParamChange()">
+                  <input type="checkbox" name="fixedScheduleWeekday" value="5" checked
+                    onchange="onFixedScheduleParamChange()">
                   <span>T6</span>
                 </label>
                 <label class="weekday-label">
@@ -469,14 +545,17 @@
             </div>
 
             <!-- Hàng 3 cột: Bắt đầu, Kết thúc, Phòng học -->
-            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
+            <div
+              style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
               <div class="form-group" style="margin-bottom: 0;">
                 <label class="form-label" for="fixedScheduleStart">Bắt đầu <span class="required">*</span></label>
-                <input type="time" class="form-control" id="fixedScheduleStart" value="17:30" required onchange="onFixedScheduleParamChange()">
+                <input type="time" class="form-control" id="fixedScheduleStart" value="17:30" required
+                  onchange="onFixedScheduleParamChange()">
               </div>
               <div class="form-group" style="margin-bottom: 0;">
                 <label class="form-label" for="fixedScheduleEnd">Kết thúc <span class="required">*</span></label>
-                <input type="time" class="form-control" id="fixedScheduleEnd" value="19:00" required onchange="onFixedScheduleParamChange()">
+                <input type="time" class="form-control" id="fixedScheduleEnd" value="19:00" required
+                  onchange="onFixedScheduleParamChange()">
               </div>
               <div class="form-group" style="margin-bottom: 0;">
                 <label class="form-label" for="fixedScheduleRoom">Phòng học <span class="required">*</span></label>
@@ -489,30 +568,42 @@
             <!-- Hàng 2 cột: Ngày bắt đầu, Ngày kết thúc -->
             <div class="class-form-grid equal-columns" style="margin-bottom: 14px;">
               <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" for="fixedScheduleStartDate">Ngày bắt đầu <span class="required">*</span></label>
-                <input type="date" class="form-control" id="fixedScheduleStartDate" required onchange="onFixedScheduleParamChange()">
+                <label class="form-label" for="fixedScheduleStartDate">Ngày bắt đầu <span
+                    class="required">*</span></label>
+                <input type="date" class="form-control" id="fixedScheduleStartDate" required
+                  onchange="onFixedScheduleParamChange()">
               </div>
               <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" for="fixedScheduleEndDate">Ngày kết thúc <span class="required">*</span></label>
-                <input type="date" class="form-control" id="fixedScheduleEndDate" required onchange="onFixedScheduleParamChange()">
+                <label class="form-label" for="fixedScheduleEndDate">Ngày kết thúc <span
+                    class="required">*</span></label>
+                <input type="date" class="form-control" id="fixedScheduleEndDate" required
+                  onchange="onFixedScheduleParamChange()">
               </div>
             </div>
 
             <!-- Khung thông báo kiểm tra trùng lịch (Alert) -->
             <div id="fixedScheduleConflictBox" class="schedule-conflict-box conflict-ok" style="display: flex;">
               <div style="flex-shrink: 0; margin-top: 1px;" id="fixedScheduleConflictIcon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" />
+                </svg>
               </div>
               <div style="flex: 1; min-width: 0;">
-                <div style="font-weight: 600;" id="fixedScheduleConflictTitle">Không có lịch trùng trong khung giờ đã chọn.</div>
-                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 2px;" id="fixedScheduleConflictSummary">Thứ 2, 4, 6 · 17:30–19:00 · Phòng 203</div>
+                <div style="font-weight: 600;" id="fixedScheduleConflictTitle">Không có lịch trùng trong khung giờ đã
+                  chọn.</div>
+                <div style="font-size: 12.5px; opacity: 0.9; margin-top: 2px;" id="fixedScheduleConflictSummary">Thứ 2,
+                  4, 6 · 17:30–19:00 · Phòng 203</div>
               </div>
-              <button type="button" onclick="document.getElementById('fixedScheduleConflictBox').style.display='none'" style="background: none; border: none; cursor: pointer; color: inherit; opacity: 0.6; font-size: 16px; line-height: 1; padding: 0 4px;" title="Đóng">&times;</button>
+              <button type="button" onclick="document.getElementById('fixedScheduleConflictBox').style.display='none'"
+                style="background: none; border: none; cursor: pointer; color: inherit; opacity: 0.6; font-size: 16px; line-height: 1; padding: 0 4px;"
+                title="Đóng">&times;</button>
             </div>
           </div>
           <!-- ============================================================= -->
 
-          <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+          <div class="modal-footer"
+            style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('modalCreateClass')">Hủy bỏ</button>
             <button type="submit" class="btn btn-primary" id="btnSubmitCreateClass">
               Tạo lớp học
@@ -545,7 +636,8 @@
             </div>
             <div class="form-group">
               <label class="form-label">Mã lớp</label>
-              <input type="text" class="form-control" id="editClassCode" disabled style="background:#F1F5F9; font-weight:700;">
+              <input type="text" class="form-control" id="editClassCode" disabled
+                style="background:#F1F5F9; font-weight:700;">
             </div>
           </div>
 
@@ -585,7 +677,8 @@
           <!-- ============================================================= -->
           <div style="margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--color-border);">
             <div style="margin-bottom: 14px;">
-              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch học cố định</h4>
+              <h4 style="font-size: 15.5px; font-weight: 700; color: var(--color-text-main); margin: 0 0 4px 0;">Lịch
+                học cố định</h4>
               <p class="text-caption" style="color: var(--color-text-secondary); margin: 0; font-size: 13px;">
                 Lịch hiện tại của lớp. Lưu thay đổi sẽ thay thế toàn bộ lịch cũ và tạo lại các buổi học tương lai.
               </p>
@@ -600,7 +693,8 @@
             <div id="editScheduleContent" style="display: none;">
               <!-- Ngày học trong tuần -->
               <div class="form-group" style="margin-bottom: 14px;">
-                <label class="form-label" style="font-weight: 600;">Ngày học trong tuần</label>
+                <label class="form-label" style="font-weight: 600;">Ngày học trong tuần <span
+                    class="required">*</span></label>
                 <div class="weekday-picker">
                   <label class="weekday-label">
                     <input type="checkbox" name="editScheduleWeekday" value="1" onchange="onEditScheduleChange()">
@@ -634,14 +728,17 @@
               </div>
 
               <!-- Hàng 3 cột: Bắt đầu, Kết thúc, Phòng học -->
-              <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
+              <div
+                style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 14px;">
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="editScheduleStart">Bắt đầu</label>
-                  <input type="time" class="form-control" id="editScheduleStart" value="17:30" onchange="onEditScheduleChange()">
+                  <label class="form-label" for="editScheduleStart">Bắt đầu <span class="required">*</span></label>
+                  <input type="time" class="form-control" id="editScheduleStart" value="17:30"
+                    onchange="onEditScheduleChange()">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="editScheduleEnd">Kết thúc</label>
-                  <input type="time" class="form-control" id="editScheduleEnd" value="19:00" onchange="onEditScheduleChange()">
+                  <label class="form-label" for="editScheduleEnd">Kết thúc <span class="required">*</span></label>
+                  <input type="time" class="form-control" id="editScheduleEnd" value="19:00"
+                    onchange="onEditScheduleChange()">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label class="form-label" for="editScheduleRoom">Phòng học</label>
@@ -654,19 +751,25 @@
               <!-- Hàng 2 cột: Ngày bắt đầu, Ngày kết thúc -->
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="editScheduleStartDate">Ngày bắt đầu áp dụng</label>
+                  <label class="form-label" for="editScheduleStartDate">Ngày bắt đầu áp dụng <span
+                      class="required">*</span></label>
                   <input type="date" class="form-control" id="editScheduleStartDate" onchange="onEditScheduleChange()">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="editScheduleEndDate">Ngày kết thúc</label>
+                  <label class="form-label" for="editScheduleEndDate">Ngày kết thúc <span
+                      class="required">*</span></label>
                   <input type="date" class="form-control" id="editScheduleEndDate" onchange="onEditScheduleChange()">
                 </div>
               </div>
 
               <!-- Khung kiểm tra trùng lịch -->
-              <div id="editScheduleConflictBox" class="schedule-conflict-box conflict-ok" style="display: none; margin-bottom: 14px;">
+              <div id="editScheduleConflictBox" class="schedule-conflict-box conflict-ok"
+                style="display: none; margin-bottom: 14px;">
                 <div style="flex-shrink: 0; margin-top: 1px;" id="editScheduleConflictIcon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
                 </div>
                 <div style="flex: 1; min-width: 0;">
                   <div style="font-weight: 600;" id="editScheduleConflictTitle"></div>
@@ -677,7 +780,8 @@
           </div>
           <!-- ============================================================= -->
 
-          <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+          <div class="modal-footer"
+            style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('modalEditClass')">Hủy bỏ</button>
             <button type="submit" class="btn btn-primary" id="btnSubmitEditClass">
               Lưu thay đổi
@@ -702,14 +806,18 @@
       </div>
       <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
         <!-- Banner tóm tắt lớp -->
-        <div style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
-          <div><span class="badge badge-neutral" id="detailBadgeStatus">Đang tải</span> · Sĩ số: <strong id="detailStudentCount">—</strong> học sinh</div>
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; background:#F8FAFC; padding:12px 16px; border-radius:8px; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+          <div><span class="badge badge-neutral" id="detailBadgeStatus">Đang tải</span> · Sĩ số: <strong
+              id="detailStudentCount">—</strong> học sinh</div>
           <div>Lịch học: <strong id="detailSchedule">—</strong> · <span id="detailRoom">—</span></div>
           <div>Học phí: <strong id="detailFee">—</strong></div>
         </div>
 
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; flex-wrap:wrap;">
-          <input type="text" id="rosterSearchInput" class="form-control" placeholder="Tìm tên, mã học sinh..." style="max-width:320px;" oninput="filterRoster()">
+        <div
+          style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; flex-wrap:wrap;">
+          <input type="text" id="rosterSearchInput" class="form-control" placeholder="Tìm tên, mã học sinh..."
+            style="max-width:320px;" oninput="filterRoster()">
           <div style="display:flex; gap:8px;">
             <button class="btn btn-secondary btn-sm" onclick="exportRoster()">Tải DS học sinh CSV</button>
           </div>
@@ -738,14 +846,27 @@
           </table>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('modalClassDetail')">Đóng</button>
+      <div class="modal-footer"
+        style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <div>
+          <button type="button" class="btn btn-warning btn-sm" id="btnEndClassFromDetail"
+            onclick="endClassFromDetail()">
+            Kết thúc lớp học
+          </button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn btn-primary btn-sm" id="btnAddScheduleFromDetail"
+            onclick="openAddSessionFromDetail()">
+            Thêm lịch học
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('modalClassDetail')">Đóng</button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL 4: XÁC NHẬN LƯU TRỮ / ĐÓNG LỚP HỌC -->
+  <!-- MODAL 4: XÁC NHẬN LƯU TRỮ LỚP HỌC -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalArchiveClass">
     <div class="modal-container">
@@ -755,23 +876,252 @@
       </div>
       <div class="modal-body">
         <input type="hidden" id="archiveTargetId">
-        <p style="font-weight:700; font-size:15px; margin-bottom:8px;" id="archiveClassTitle">Toán 10 - Nền tảng (TO10A)</p>
+        <p style="font-weight:700; font-size:15px; margin-bottom:8px;" id="archiveClassTitle">Toán 10 - Nền tảng (TO10A)
+        </p>
         <div class="alert alert-warning" style="margin-bottom:12px;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
           <div>
-            <strong>Dữ liệu an toàn:</strong> Toàn bộ dữ liệu học sinh, điểm danh, kết quả bài tập và học phí của lớp được giữ nguyên trong cơ sở dữ liệu. Lớp sẽ được ẩn khỏi danh sách giảng dạy tích cực.
+            <strong>Dữ liệu an toàn:</strong> Toàn bộ dữ liệu học sinh, điểm danh, kết quả bài tập và học phí của lớp
+            được giữ nguyên trong cơ sở dữ liệu. Lớp sẽ được ẩn khỏi danh sách giảng dạy tích cực.
           </div>
         </div>
-        <p class="text-caption">Bạn có thể chọn đóng lớp học (kết thúc khóa học) hoặc chuyển sang lưu trữ dài hạn.</p>
+        <p class="text-caption">Chuyển lớp sang lưu trữ dài hạn.</p>
       </div>
       <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
         <button class="btn btn-secondary" onclick="closeModal('modalArchiveClass')">Hủy bỏ</button>
-        <button class="btn btn-warning" id="btnConfirmClose" onclick="executeClassAction('completed')">
-          Đóng lớp (Hoàn thành)
-        </button>
         <button class="btn btn-danger" id="btnConfirmArchive" onclick="executeClassAction('archived')">
           Lưu trữ lớp
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL 5: KẾT THÚC LỚP HỌC VÀ CẢNH BÁO CÔNG NỢ (UC-03) -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalEndClass">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Kết thúc lớp học</h3>
+        <button class="modal-close" onclick="closeModal('modalEndClass')">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+        <input type="hidden" id="endClassTargetId">
+        <p style="font-weight:700; font-size:16px; margin-bottom:12px;" id="endClassTitle">—</p>
+
+        <!-- Loading indicator -->
+        <div id="endClassLoading" style="padding: 20px; text-align: center; color: var(--color-text-secondary);">
+          <div class="loading-spinner" style="margin: 0 auto 10px auto;"></div>
+          <span>Đang kiểm tra công nợ học phí của lớp...</span>
+        </div>
+
+        <!-- Section: Cảnh báo công nợ -->
+        <div id="endClassDebtWarningSection" style="display: none;">
+          <div class="alert alert-danger"
+            style="margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="flex-shrink:0; margin-top:2px;">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <div>
+              <div style="font-weight: 700; font-size: 14.5px;">Cảnh báo: Lớp học còn học sinh chưa hoàn thành học phí!
+              </div>
+              <div style="font-size: 13px; margin-top: 4px;" id="endClassDebtSummary">Lớp hiện có học sinh chưa thanh
+                toán đủ học phí.</div>
+            </div>
+          </div>
+
+          <p style="font-weight: 600; font-size: 13.5px; margin-bottom: 8px;">Danh sách học sinh còn nợ:</p>
+          <div class="table-container"
+            style="max-height: 220px; overflow-y: auto; margin-bottom: 14px; border: 1px solid var(--color-border); border-radius: 6px;">
+            <table class="table-custom" style="font-size: 12.5px;">
+              <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 1;">
+                <tr>
+                  <th>Mã HS</th>
+                  <th>Tên học sinh</th>
+                  <th>Kỳ học phí</th>
+                  <th style="text-align:right;">Tổng học phí</th>
+                  <th style="text-align:right;">Đã thanh toán</th>
+                  <th style="text-align:right; color: var(--color-danger);">Còn nợ</th>
+                </tr>
+              </thead>
+              <tbody id="endClassDebtTableBody">
+              </tbody>
+            </table>
+          </div>
+
+          <div class="alert alert-info" style="font-size: 12.5px; line-height: 1.5; margin-bottom: 12px;">
+            <strong>Lưu ý:</strong> Bạn vẫn có thể xác nhận kết thúc lớp học sau khi rà soát danh sách trên. Các khoản
+            công nợ này sẽ tiếp tục được lưu trữ và theo dõi tại mục <strong>Học phí</strong>.
+          </div>
+        </div>
+
+        <!-- Section: Sạch nợ (Không có công nợ) -->
+        <div id="endClassCleanSection" style="display: none;">
+          <div class="alert alert-success" style="margin-bottom: 14px; display: flex; gap: 10px; align-items: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="flex-shrink:0;">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <div>Tất cả học sinh trong lớp đã thanh toán đủ học phí. Lớp học không còn công nợ tồn đọng.</div>
+          </div>
+        </div>
+
+        <!-- Lưu ý chung về xử lý lịch và dữ liệu -->
+        <div
+          style="background: #f8fafc; border: 1px solid var(--color-border); border-radius: 8px; padding: 12px 14px; margin-top: 8px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.5;">
+          <div style="font-weight: 600; color: var(--color-text-main); margin-bottom: 4px;">Quy trình khi xác nhận kết
+            thúc lớp:</div>
+          <ul style="margin: 0; padding-left: 18px;">
+            <li>Trạng thái lớp cập nhật thành <strong>Đã kết thúc (Completed)</strong>.</li>
+            <li>Các buổi học trong tương lai (chưa diễn ra) sẽ tự động bị <strong>hủy bỏ</strong>.</li>
+            <li>Không cho phép phát sinh buổi học mới hoặc kỳ học phí mới cho lớp này.</li>
+            <li><strong>Bảo toàn nguyên vẹn:</strong> Lịch sử điểm danh, kết quả bài tập, điểm số, hóa đơn cũ và công
+              nợ.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modalEndClass')">Hủy bỏ</button>
+        <button type="button" class="btn btn-warning" id="btnSubmitEndClass" onclick="executeEndClass()">
+          Xác nhận kết thúc lớp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- MODAL 6: THÊM LỊCH HỌC (UC-04: TC_UC04_001, TC_UC04_002, TC_UC04_005) -->
+  <!-- ============================================================= -->
+  <div class="modal-overlay" id="modalAddSession">
+    <div class="modal-container" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Thêm lịch học</h3>
+        <button class="modal-close" onclick="closeModal('modalAddSession')">&times;</button>
+      </div>
+      <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
+        <div id="addSessionAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
+
+        <form id="formAddSession" onsubmit="handleAddSessionSubmit(event)">
+          <!-- Chọn lớp học -->
+          <div class="form-group">
+            <label class="form-label" for="addSessionClassId">Chọn lớp học <span class="required">*</span></label>
+            <select class="form-control" id="addSessionClassId" required>
+              <option value="">-- Chọn lớp học --</option>
+            </select>
+          </div>
+
+          <!-- Lựa chọn loại lịch -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-weight: 600;">Hình thức lịch học <span
+                class="required">*</span></label>
+            <div style="display: flex; gap: 20px; align-items: center; padding: 6px 0;">
+              <label
+                style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                <input type="radio" name="sessionScheduleType" id="typeSingle" value="single" checked
+                  onchange="toggleSessionTypeFields()">
+                <span>Chỉ một buổi</span>
+              </label>
+              <label
+                style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                <input type="radio" name="sessionScheduleType" id="typeRecurring" value="recurring"
+                  onchange="toggleSessionTypeFields()">
+                <span>Lặp lại hàng tuần</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Khung: Chỉ một buổi -->
+          <div id="sectionSingleSession">
+            <div style="display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap:12px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionDate">Ngày học <span class="required">*</span></label>
+                <input type="date" class="form-control" id="addSessionDate">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionStart">Bắt đầu <span class="required">*</span></label>
+                <input type="time" class="form-control" id="addSessionStart" value="17:30">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionEnd">Kết thúc <span class="required">*</span></label>
+                <input type="time" class="form-control" id="addSessionEnd" value="19:00">
+              </div>
+            </div>
+          </div>
+
+          <!-- Khung: Lặp lại hàng tuần -->
+          <div id="sectionRecurringSession"
+            style="display: none; border-top: 1px dashed var(--color-border); padding-top: 12px; margin-bottom: 14px;">
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" style="font-weight: 600;">Thứ trong tuần <span class="required">*</span></label>
+              <div class="weekday-picker">
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday" value="1"
+                    checked><span>T2</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday"
+                    value="2"><span>T3</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday" value="3"
+                    checked><span>T4</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday"
+                    value="4"><span>T5</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday" value="5"
+                    checked><span>T6</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday"
+                    value="6"><span>T7</span></label>
+                <label class="weekday-label"><input type="checkbox" name="recurringWeekday"
+                    value="7"><span>CN</span></label>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="recurringStart">Giờ bắt đầu <span class="required">*</span></label>
+                <input type="time" class="form-control" id="recurringStart" value="17:30">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="recurringEnd">Giờ kết thúc <span class="required">*</span></label>
+                <input type="time" class="form-control" id="recurringEnd" value="19:00">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 4px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="recurringStartDate">Ngày bắt đầu <span class="required">*</span></label>
+                <input type="date" class="form-control" id="recurringStartDate">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="recurringEndDate">Ngày kết thúc <span class="required">*</span></label>
+                <input type="date" class="form-control" id="recurringEndDate">
+              </div>
+            </div>
+          </div>
+
+          <!-- Các trường dùng chung -->
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" for="addSessionRoom">Phòng học hoặc link học trực tuyến</label>
+            <input type="text" class="form-control" id="addSessionRoom"
+              placeholder="Ví dụ: Phòng 203 hoặc https://meet.google.com/...">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="addSessionTopic">Nội dung bài học / Chuyên đề</label>
+            <input type="text" class="form-control" id="addSessionTopic" placeholder="Ví dụ: Ôn tập chương Hàm số">
+          </div>
+
+          <div class="modal-footer"
+            style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modalAddSession')">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitAddSession">
+              Lưu lịch học
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -780,6 +1130,7 @@
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
   <script src="../../assets/js/modules/teacher/class-management.js"></script>
+  <script src="../../assets/js/modules/teacher/schedule.js"></script>
   <script>
     // Kiểm tra đăng nhập vai trò giáo viên
     const currentUser = AuthService.requireAuth('teacher');
@@ -900,7 +1251,7 @@
         else if (c.status === 'planned') statusBadge = '<span class="badge badge-neutral">Dự kiến</span>';
 
         const scheduleText = c.schedule_summary || 'Chưa có lịch cố định';
-          const roomText = c.room || '—';
+        const roomText = c.room || '—';
         const feeText = formatVND(c.monthly_fee);
         const count = c.student_count || 0;
 
@@ -923,9 +1274,12 @@
                 <button class="btn btn-link btn-sm" onclick="openEditClass('${c.id}')" title="Chỉnh sửa lớp">
                   <i data-feather="edit-2" class="feather-sm"></i>
                 </button>
+                ${c.status === 'active'
+            ? `<button class="btn btn-link btn-sm" style="color:var(--color-warning);" onclick="openEndClassModal('${c.id}')" title="Kết thúc lớp học"><i data-feather="check-circle" class="feather-sm"></i></button>`
+            : ''}
                 ${c.status === 'archived'
-                  ? `<button class="btn btn-link btn-sm" onclick="restoreClass('${c.id}')" title="Khôi phục lớp"><i data-feather="rotate-ccw" class="feather-sm"></i></button>`
-                  : `<button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('${c.id}', '${c.code}', '${escapeHtml(c.name)}')" title="Lưu trữ / Đóng lớp"><i data-feather="archive" class="feather-sm"></i></button>`}
+            ? `<button class="btn btn-link btn-sm" onclick="restoreClass('${c.id}')" title="Khôi phục lớp"><i data-feather="rotate-ccw" class="feather-sm"></i></button>`
+            : `<button class="btn btn-link btn-sm" style="color:var(--color-danger);" onclick="confirmArchiveClass('${c.id}', '${c.code}', '${escapeHtml(c.name)}')" title="Lưu trữ lớp"><i data-feather="archive" class="feather-sm"></i></button>`}
               </div>
             </td>
           </tr>
@@ -942,7 +1296,7 @@
       const status = document.getElementById('classFilterStatus').value;
 
       const filtered = loadedClasses.filter(c => {
-        const matchQuery = !query || 
+        const matchQuery = !query ||
           (c.name && c.name.toLowerCase().includes(query)) ||
           (c.code && c.code.toLowerCase().includes(query)) ||
           (c.description && c.description.toLowerCase().includes(query));
@@ -1109,7 +1463,7 @@
       // Đính kèm cấu hình Khối Lịch học cố định (Fixed Schedule)
       const selectedWeekdays = Array.from(document.querySelectorAll('input[name="fixedScheduleWeekday"]:checked'))
         .map(el => Number(el.value));
-      
+
       if (selectedWeekdays.length > 0) {
         classData.fixed_schedule = {
           weekdays: selectedWeekdays,
@@ -1184,11 +1538,11 @@
       }
 
       const startsAt = document.getElementById('editScheduleStart').value;
-      const endsAt   = document.getElementById('editScheduleEnd').value;
-      const room     = document.getElementById('editScheduleRoom').value;
+      const endsAt = document.getElementById('editScheduleEnd').value;
+      const room = document.getElementById('editScheduleRoom').value;
       const startDate = document.getElementById('editScheduleStartDate').value;
-      const endDate   = document.getElementById('editScheduleEndDate').value;
-      const classId   = document.getElementById('editClassId').value;
+      const endDate = document.getElementById('editScheduleEndDate').value;
+      const classId = document.getElementById('editClassId').value;
 
       conflictBox.style.display = 'flex';
       try {
@@ -1264,9 +1618,9 @@
           // Lấy rule đầu tiên làm đại diện giờ & phòng
           const firstRule = rules[0];
           document.getElementById('editScheduleStart').value = (firstRule.starts_at || '17:30').slice(0, 5);
-          document.getElementById('editScheduleEnd').value   = (firstRule.ends_at   || '19:00').slice(0, 5);
+          document.getElementById('editScheduleEnd').value = (firstRule.ends_at || '19:00').slice(0, 5);
           document.getElementById('editScheduleStartDate').value = firstRule.effective_from || '';
-          document.getElementById('editScheduleEndDate').value   = firstRule.effective_until || '';
+          document.getElementById('editScheduleEndDate').value = firstRule.effective_until || '';
 
           // Chọn phòng
           const room = firstRule.room || '';
@@ -1289,11 +1643,11 @@
         } else {
           // Không có lịch cũ: set mặc định
           document.getElementById('editScheduleStart').value = '17:30';
-          document.getElementById('editScheduleEnd').value   = '19:00';
+          document.getElementById('editScheduleEnd').value = '19:00';
           const today = new Date().toISOString().slice(0, 10);
           const nextYear = new Date().getMonth() >= 5 ? new Date().getFullYear() + 1 : new Date().getFullYear();
           document.getElementById('editScheduleStartDate').value = today;
-          document.getElementById('editScheduleEndDate').value   = `${nextYear}-05-31`;
+          document.getElementById('editScheduleEndDate').value = `${nextYear}-05-31`;
         }
       } catch (e) {
         console.warn('Không tải được lịch học:', e);
@@ -1313,40 +1667,101 @@
       const alertBox = document.getElementById('editClassAlert');
       alertBox.style.display = 'none';
 
-      const payload = {
-        name: document.getElementById('editClassName').value.trim(),
-        subject: document.getElementById('editClassSubject').value.trim(),
-        default_room: document.getElementById('editClassRoom').value.trim() || document.getElementById('editScheduleRoom').value || null,
-        monthly_fee: Number(document.getElementById('editClassFee').value) || 0,
-        status: document.getElementById('editClassStatus').value,
-        description: document.getElementById('editClassDesc').value.trim()
-      };
+      const name = document.getElementById('editClassName').value.trim();
+      const subject = document.getElementById('editClassSubject').value.trim();
+      const feeVal = document.getElementById('editClassFee').value;
+      const status = document.getElementById('editClassStatus').value;
+      const desc = document.getElementById('editClassDesc').value.trim();
+      const defaultRoom = document.getElementById('editClassRoom').value.trim() || document.getElementById('editScheduleRoom').value || null;
 
-      // Thu thập cấu hình lịch học cố định
+      if (!name) {
+        alertBox.innerText = 'Vui lòng nhập tên lớp học.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (!subject) {
+        alertBox.innerText = 'Vui lòng nhập môn học.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (feeVal === '' || Number(feeVal) < 0 || isNaN(Number(feeVal))) {
+        alertBox.innerText = 'Học phí không hợp lệ (phải lớn hơn hoặc bằng 0).';
+        alertBox.style.display = 'block';
+        return;
+      }
+
       const selectedWeekdays = Array.from(document.querySelectorAll('input[name="editScheduleWeekday"]:checked'))
         .map(el => Number(el.value));
+      const startsAt = document.getElementById('editScheduleStart').value;
+      const endsAt = document.getElementById('editScheduleEnd').value;
+      const startDate = document.getElementById('editScheduleStartDate').value;
+      const endDate = document.getElementById('editScheduleEndDate').value;
+
+      if (selectedWeekdays.length === 0) {
+        alertBox.innerText = 'Vui lòng chọn ít nhất một ngày học trong tuần.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (!startsAt) {
+        alertBox.innerText = 'Vui lòng chọn giờ bắt đầu.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (!endsAt) {
+        alertBox.innerText = 'Vui lòng chọn giờ kết thúc.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (endsAt <= startsAt) {
+        alertBox.innerText = 'Giờ kết thúc phải sau giờ bắt đầu.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (!startDate) {
+        alertBox.innerText = 'Vui lòng chọn ngày bắt đầu áp dụng.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (!endDate) {
+        alertBox.innerText = 'Vui lòng chọn ngày kết thúc.';
+        alertBox.style.display = 'block';
+        return;
+      }
+      if (endDate < startDate) {
+        alertBox.innerText = 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.';
+        alertBox.style.display = 'block';
+        return;
+      }
+
+      const payload = {
+        name: name,
+        subject: subject,
+        default_room: defaultRoom,
+        monthly_fee: Number(feeVal),
+        status: status,
+        description: desc
+      };
+
       const schedulePayload = {
         weekdays: selectedWeekdays,
-        starts_at: document.getElementById('editScheduleStart').value || '17:30',
-        ends_at: document.getElementById('editScheduleEnd').value || '19:00',
-        room: document.getElementById('editScheduleRoom').value || null,
-        start_date: document.getElementById('editScheduleStartDate').value || null,
-        end_date: document.getElementById('editScheduleEndDate').value || null
+        starts_at: startsAt,
+        ends_at: endsAt,
+        room: document.getElementById('editScheduleRoom').value || defaultRoom,
+        start_date: startDate,
+        end_date: endDate
       };
 
       btn.disabled = true;
       btn.innerText = 'Đang lưu...';
 
       try {
-        // Lưu thông tin lớp + lịch song song
         await Promise.all([
           ClassManagementModule.updateClass(classId, payload),
           ClassManagementModule.replaceScheduleRules(classId, schedulePayload)
         ]);
         closeModal('modalEditClass');
         await loadClassesList();
-        const schedMsg = selectedWeekdays.length > 0 ? ' Lịch học cố định đã được cập nhật.' : '';
-        alert('Cập nhật thông tin lớp học thành công!' + schedMsg);
+        alert('Cập nhật thông tin lớp học thành công! Lịch học cố định đã được cập nhật.');
       } catch (error) {
         alertBox.innerText = error.message;
         alertBox.style.display = 'block';
@@ -1356,10 +1771,15 @@
       }
     }
 
+    let currentDetailClassId = null;
+    let currentDetailClass = null;
+
     // Mở modal chi tiết lớp học & nạp danh sách học sinh
     async function openClassDetail(classId, classCode) {
       const cls = loadedClasses.find(c => c.id === classId || c.code === classCode || c.code === classId) || {};
-      
+      currentDetailClassId = cls.id || classId;
+      currentDetailClass = cls;
+
       document.getElementById('detailClassName').innerText = cls.name || classCode || 'Chi tiết lớp học';
       document.getElementById('detailClassSubtitle').innerText = `Mã lớp: ${cls.code || classCode || '—'} · Giáo viên: ${cls.teacher_name || '—'}`;
       document.getElementById('detailStudentCount').innerText = cls.student_count ?? '—';
@@ -1371,6 +1791,11 @@
       statusBadge.textContent = statusLabels[cls.status] || 'Chưa rõ trạng thái';
       statusBadge.className = `badge ${cls.status === 'active' ? 'badge-success' : 'badge-neutral'}`;
       currentRosterClassCode = cls.code || classCode || 'lop-hoc';
+
+      const btnEnd = document.getElementById('btnEndClassFromDetail');
+      const btnAddSched = document.getElementById('btnAddScheduleFromDetail');
+      if (btnEnd) btnEnd.style.display = (cls.status === 'active') ? 'inline-block' : 'none';
+      if (btnAddSched) btnAddSched.style.display = (cls.status === 'active') ? 'inline-block' : 'none';
 
       const rosterBody = document.getElementById('detailRosterBody');
       rosterBody.innerHTML = `
@@ -1397,6 +1822,229 @@
             </td>
           </tr>
         `;
+      }
+    }
+
+    function endClassFromDetail() {
+      if (!currentDetailClassId) return;
+      openEndClassModal(currentDetailClassId);
+    }
+
+    async function openEndClassModal(classId) {
+      const cls = loadedClasses.find(c => c.id === classId || c.code === classId) || currentDetailClass || {};
+      document.getElementById('endClassTargetId').value = cls.id || classId;
+      document.getElementById('endClassTitle').innerText = `${cls.name || 'Lớp học'} (${cls.code || '—'})`;
+
+      document.getElementById('endClassLoading').style.display = 'block';
+      document.getElementById('endClassDebtWarningSection').style.display = 'none';
+      document.getElementById('endClassCleanSection').style.display = 'none';
+      openModal('modalEndClass');
+
+      try {
+        const debtRes = await ClassManagementModule.getClassDebts(cls.id || classId);
+        document.getElementById('endClassLoading').style.display = 'none';
+        if (debtRes.has_debt && debtRes.debts && debtRes.debts.length > 0) {
+          document.getElementById('endClassDebtSummary').innerText =
+            `Lớp hiện có ${debtRes.debt_count} khoản nợ chưa thanh toán với tổng số tiền còn nợ là ${formatVND(debtRes.total_debt)}.`;
+          const tbody = document.getElementById('endClassDebtTableBody');
+          tbody.innerHTML = debtRes.debts.map(d => `
+            <tr>
+              <td><strong style="color:var(--color-primary);">${escapeHtml(d.student_code)}</strong></td>
+              <td><strong>${escapeHtml(d.student_name)}</strong></td>
+              <td>Tháng ${d.billing_month}/${d.billing_year}</td>
+              <td style="text-align:right;">${formatVND(d.amount_due)}</td>
+              <td style="text-align:right; color:var(--color-success);">${formatVND(d.amount_paid)}</td>
+              <td style="text-align:right; font-weight:700; color:var(--color-danger);">${formatVND(d.amount_remaining)}</td>
+            </tr>
+          `).join('');
+          document.getElementById('endClassDebtWarningSection').style.display = 'block';
+        } else {
+          document.getElementById('endClassCleanSection').style.display = 'block';
+        }
+      } catch (err) {
+        document.getElementById('endClassLoading').style.display = 'none';
+        document.getElementById('endClassCleanSection').style.display = 'block';
+      }
+    }
+
+    async function executeEndClass() {
+      const classId = document.getElementById('endClassTargetId').value;
+      const btn = document.getElementById('btnSubmitEndClass');
+      btn.disabled = true;
+      btn.innerText = 'Đang xử lý...';
+
+      try {
+        await ClassManagementModule.closeClass(classId);
+        closeModal('modalEndClass');
+        closeModal('modalClassDetail');
+        await loadClassesList();
+        alert('Đã kết thúc lớp học thành công! Các buổi học tương lai chưa diễn ra đã được hủy và toàn bộ dữ liệu lịch sử được bảo toàn.');
+      } catch (error) {
+        alert('Thao tác kết thúc lớp thất bại: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Xác nhận kết thúc lớp';
+      }
+    }
+
+    function openAddSessionFromDetail() {
+      if (!currentDetailClassId) return;
+      openAddSessionForClass(currentDetailClassId);
+    }
+
+    function openAddSessionForClass(classId) {
+      const form = document.getElementById('formAddSession');
+      if (form) form.reset();
+      document.getElementById('addSessionAlert').style.display = 'none';
+
+      // Nạp danh sách lớp đang hoạt động vào select
+      const classSelect = document.getElementById('addSessionClassId');
+      classSelect.innerHTML = '<option value="">-- Chọn lớp học --</option>' +
+        loadedClasses.filter(c => c.status === 'active').map(c =>
+          `<option value="${c.id}" ${c.id === classId ? 'selected' : ''}>${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`
+        ).join('');
+      if (classId) {
+        classSelect.value = classId;
+      }
+
+      const todayStr = new Date().toISOString().slice(0, 10);
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 2);
+      const nextMonthStr = nextMonth.toISOString().slice(0, 10);
+
+      document.getElementById('addSessionDate').value = todayStr;
+      document.getElementById('addSessionStart').value = '17:30';
+      document.getElementById('addSessionEnd').value = '19:00';
+
+      document.getElementById('recurringStartDate').value = todayStr;
+      document.getElementById('recurringEndDate').value = nextMonthStr;
+      document.getElementById('recurringStart').value = '17:30';
+      document.getElementById('recurringEnd').value = '19:00';
+
+      const radioSingle = document.getElementById('typeSingle');
+      if (radioSingle) radioSingle.checked = true;
+      toggleSessionTypeFields();
+
+      openModal('modalAddSession');
+    }
+
+    function toggleSessionTypeFields() {
+      const selected = document.querySelector('input[name="sessionScheduleType"]:checked');
+      const isRecurring = selected && selected.value === 'recurring';
+      const singleSec = document.getElementById('sectionSingleSession');
+      const recurSec = document.getElementById('sectionRecurringSession');
+      if (singleSec) singleSec.style.display = isRecurring ? 'none' : 'block';
+      if (recurSec) recurSec.style.display = isRecurring ? 'block' : 'none';
+    }
+
+    async function handleAddSessionSubmit(event) {
+      event.preventDefault();
+      const alertBox = document.getElementById('addSessionAlert');
+      alertBox.style.display = 'none';
+      const btn = document.getElementById('btnSubmitAddSession');
+
+      const classId = document.getElementById('addSessionClassId').value;
+      if (!classId) {
+        alertBox.innerText = 'Vui lòng chọn lớp học.';
+        alertBox.style.display = 'block';
+        return;
+      }
+
+      const scheduleType = document.querySelector('input[name="sessionScheduleType"]:checked').value;
+      const room = document.getElementById('addSessionRoom').value.trim();
+      const topic = document.getElementById('addSessionTopic').value.trim();
+
+      btn.disabled = true;
+      btn.innerText = 'Đang lưu...';
+
+      try {
+        if (scheduleType === 'single') {
+          const dateVal = document.getElementById('addSessionDate').value;
+          const startVal = document.getElementById('addSessionStart').value;
+          const endVal = document.getElementById('addSessionEnd').value;
+
+          if (!dateVal) {
+            throw new Error('Vui lòng chọn ngày học.');
+          }
+          if (!startVal) {
+            throw new Error('Vui lòng chọn giờ bắt đầu.');
+          }
+          if (!endVal) {
+            throw new Error('Vui lòng chọn giờ kết thúc.');
+          }
+          if (endVal <= startVal) {
+            throw new Error('Giờ kết thúc phải sau giờ bắt đầu.');
+          }
+
+          const startsAt = `${dateVal}T${startVal}:00+07:00`;
+          const endsAt = `${dateVal}T${endVal}:00+07:00`;
+
+          await ScheduleModule.addSchedule({
+            class_id: classId,
+            starts_at: startsAt,
+            ends_at: endsAt,
+            room: room || null,
+            topic: topic || null
+          });
+
+          closeModal('modalAddSession');
+          alert('Tạo buổi học thành công!');
+        } else {
+          // Recurring weekly
+          const selectedWeekdays = Array.from(document.querySelectorAll('input[name="recurringWeekday"]:checked'))
+            .map(el => Number(el.value));
+          const startVal = document.getElementById('recurringStart').value;
+          const endVal = document.getElementById('recurringEnd').value;
+          const startDateVal = document.getElementById('recurringStartDate').value;
+          const endDateVal = document.getElementById('recurringEndDate').value;
+
+          if (!selectedWeekdays.length) {
+            throw new Error('Vui lòng chọn ít nhất một thứ trong tuần.');
+          }
+          if (!startVal) {
+            throw new Error('Vui lòng chọn giờ bắt đầu.');
+          }
+          if (!endVal) {
+            throw new Error('Vui lòng chọn giờ kết thúc.');
+          }
+          if (endVal <= startVal) {
+            throw new Error('Giờ kết thúc phải sau giờ bắt đầu.');
+          }
+          if (!startDateVal) {
+            throw new Error('Vui lòng chọn ngày bắt đầu chuỗi.');
+          }
+          if (!endDateVal) {
+            throw new Error('Vui lòng chọn ngày kết thúc chuỗi.');
+          }
+          if (endDateVal < startDateVal) {
+            throw new Error('Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.');
+          }
+
+          const res = await ScheduleModule.addRecurringSchedule({
+            class_id: classId,
+            weekdays: selectedWeekdays,
+            starts_at: startVal,
+            ends_at: endVal,
+            start_date: startDateVal,
+            end_date: endDateVal,
+            room: room || null,
+            topic: topic || null
+          });
+
+          closeModal('modalAddSession');
+          alert(res.message || 'Tạo chuỗi lịch học lặp lại thành công!');
+        }
+
+        await loadClassesList();
+        if (currentDetailClassId === classId) {
+          await openClassDetail(classId);
+        }
+      } catch (error) {
+        alertBox.innerText = error.message;
+        alertBox.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerText = 'Lưu lịch học';
       }
     }
 
@@ -1535,4 +2183,5 @@
     loadClassesList();
   </script>
 </body>
+
 </html>

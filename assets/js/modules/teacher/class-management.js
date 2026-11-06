@@ -81,6 +81,11 @@ const ClassManagementModule = {
     return AuthService.api(`/classes/${encodeURIComponent(classId)}/close`, { method: 'POST' });
   },
 
+  // Lấy danh sách công nợ của lớp trước khi kết thúc
+  getClassDebts(classId) {
+    return AuthService.api(`/classes/${encodeURIComponent(classId)}/debts`);
+  },
+
   // Lưu trữ lớp học (chuyển sang trạng thái archived)
   archiveClass(classId) {
     return AuthService.api(`/classes/${encodeURIComponent(classId)}/archive`, { method: 'POST' });

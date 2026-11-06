@@ -26,6 +26,7 @@ from .schemas import (
     EnrollmentCreate,
     FixedScheduleCreate,
     ScheduleConflictCheckRequest,
+    RecurringSessionCreate,
     InvoiceGenerate,
     LoginRequest,
     ParentLinkCreate,
@@ -53,10 +54,10 @@ from .security import (
 app = FastAPI(title="Lớp Mình API", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
+    allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 bearer = HTTPBearer(auto_error=False)
@@ -1308,16 +1309,38 @@ def create_class(payload: ClassCreate, connection: Connection, teacher: Teacher)
 @app.patch("/api/classes/{class_id}")
 def update_class(class_id: str, payload: ClassUpdate, connection: Connection, teacher: Teacher):
     cls = require_class_teacher(connection, class_id, teacher["user_id"])
+    if cls["status"] == "completed" and payload.status != "active":
+        raise HTTPException(status_code=400, detail="Không thể chỉnh sửa lớp học đã kết thúc.")
     values = payload.model_dump(exclude_unset=True)
+    fixed_schedule_data = values.pop("fixed_schedule", None)
     values.pop("schedule_info", None)
-    if not values:
+
+    if not values and not fixed_schedule_data:
         raise HTTPException(status_code=400, detail="Không có thông tin cần cập nhật.")
-    columns = ", ".join(f"{key} = %s" for key in values)
-    return fetch_one(
-        connection,
-        f"UPDATE classes SET {columns}, updated_at = NOW() WHERE class_id = %s RETURNING *",
-        (*values.values(), cls["class_id"]),
-    )
+
+    if "name" in values:
+        if not values["name"] or not str(values["name"]).strip():
+            raise HTTPException(status_code=400, detail="Tên lớp không được để trống.")
+        values["name"] = str(values["name"]).strip()
+    if "subject" in values:
+        if not values["subject"] or not str(values["subject"]).strip():
+            raise HTTPException(status_code=400, detail="Môn học không được để trống.")
+        values["subject"] = str(values["subject"]).strip()
+    if "monthly_fee" in values and values["monthly_fee"] is not None and values["monthly_fee"] < 0:
+        raise HTTPException(status_code=400, detail="Học phí phải lớn hơn hoặc bằng 0.")
+
+    updated_cls = cls
+    if values:
+        columns = ", ".join(f"{key} = %s" for key in values)
+        updated_cls = fetch_one(
+            connection,
+            f"UPDATE classes SET {columns}, updated_at = NOW() WHERE class_id = %s RETURNING *",
+            (*values.values(), cls["class_id"]),
+        )
+    if fixed_schedule_data:
+        fs_obj = FixedScheduleCreate(**fixed_schedule_data)
+        replace_class_schedule_rules(cls["class_id"], fs_obj, connection, teacher)
+    return updated_cls
 
 
 @app.get("/api/classes/{class_id}/schedule-rules")
@@ -1344,22 +1367,33 @@ def get_class_schedule_rules(class_id: str, connection: Connection, teacher: Tea
 
 @app.put("/api/classes/{class_id}/schedule-rules", status_code=200)
 def replace_class_schedule_rules(class_id: str, payload: FixedScheduleCreate, connection: Connection, teacher: Teacher):
-    """Thay thế toàn bộ lịch học cố định của lớp.
-    Nếu weekdays rỗng → xoá toàn bộ lịch cũ."""
+    """Thay thế toàn bộ lịch học cố định của lớp."""
     cls = require_class_teacher(connection, class_id, teacher["user_id"])
+    if cls["status"] == "completed":
+        raise HTTPException(status_code=400, detail="Lớp học đã kết thúc, không thể thay đổi lịch học.")
     cid = cls["class_id"]
 
-    # Xóa lịch cũ
-    fetch_one(connection, "DELETE FROM class_schedule_rules WHERE class_id = %s RETURNING class_id", (cid,))
-
     if not payload.weekdays:
-        return {"rules": [], "sessions_created": 0}
+        raise HTTPException(status_code=400, detail="Vui lòng chọn ít nhất một ngày học trong tuần.")
+    if not payload.starts_at or not payload.starts_at.strip():
+        raise HTTPException(status_code=400, detail="Vui lòng chọn giờ bắt đầu.")
+    if not payload.ends_at or not payload.ends_at.strip():
+        raise HTTPException(status_code=400, detail="Vui lòng chọn giờ kết thúc.")
+    if payload.ends_at <= payload.starts_at:
+        raise HTTPException(status_code=400, detail="Giờ kết thúc phải sau giờ bắt đầu.")
+    if not payload.start_date:
+        raise HTTPException(status_code=400, detail="Vui lòng chọn ngày bắt đầu.")
+    if not payload.end_date:
+        raise HTTPException(status_code=400, detail="Vui lòng chọn ngày kết thúc.")
+    if payload.end_date < payload.start_date:
+        raise HTTPException(status_code=400, detail="Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.")
 
-    start_date = payload.start_date or date.today()
-    end_date   = payload.end_date   or (start_date + timedelta(days=180))
-    if end_date < start_date:
-        end_date = start_date + timedelta(days=180)
-    room_val = payload.room
+    start_date = payload.start_date
+    end_date = payload.end_date
+    room_val = payload.room or cls["default_room"]
+
+    # Xóa lịch rules cũ
+    fetch_one(connection, "DELETE FROM class_schedule_rules WHERE class_id = %s RETURNING class_id", (cid,))
 
     for w in payload.weekdays:
         fetch_one(
@@ -1372,17 +1406,23 @@ def replace_class_schedule_rules(class_id: str, payload: FixedScheduleCreate, co
             (cid, w, payload.starts_at, payload.ends_at, room_val, start_date, end_date)
         )
 
-    # Tạo các buổi học tương lai (xóa scheduled cũ, tạo mới)
-    fetch_one(
+    # Chỉ hủy/xóa các buổi học tương lai chưa diễn ra và chưa có điểm danh
+    fetch_all(
         connection,
         """
-        DELETE FROM class_sessions
-        WHERE class_id = %s AND status = 'scheduled' AND starts_at::date >= %s
+        DELETE FROM class_sessions cs
+        WHERE cs.class_id = %s
+          AND cs.status = 'scheduled'
+          AND cs.starts_at >= NOW()
+          AND NOT EXISTS (SELECT 1 FROM attendance_records ar WHERE ar.session_id = cs.session_id)
         RETURNING session_id
         """,
-        (cid, start_date)
+        (cid,)
     )
-    curr = start_date
+
+    # Tạo các buổi học mới từ GREATEST(start_date, CURRENT_DATE) đến end_date
+    gen_start = max(start_date, date.today())
+    curr = gen_start
     sessions_created = 0
     while curr <= end_date and sessions_created < 120:
         if (curr.weekday() + 1) in payload.weekdays:
@@ -1391,16 +1431,22 @@ def replace_class_schedule_rules(class_id: str, payload: FixedScheduleCreate, co
                 e_hour, e_min = [int(p) for p in payload.ends_at[:5].split(":")]
                 starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
                 ends_at_dt   = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
-                fetch_one(
+                dup = fetch_one(
                     connection,
-                    """
-                    INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
-                    VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
-                    RETURNING session_id
-                    """,
-                    (cid, starts_at_dt, ends_at_dt, room_val, "Buổi học theo lịch cố định", teacher["user_id"])
+                    "SELECT 1 FROM class_sessions WHERE class_id = %s AND starts_at = %s AND status <> 'cancelled'",
+                    (cid, starts_at_dt)
                 )
-                sessions_created += 1
+                if not dup:
+                    fetch_one(
+                        connection,
+                        """
+                        INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
+                        VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
+                        RETURNING session_id
+                        """,
+                        (cid, starts_at_dt, ends_at_dt, room_val, "Buổi học theo lịch cố định", teacher["user_id"])
+                    )
+                    sessions_created += 1
             except Exception:
                 pass
         curr += timedelta(days=1)
@@ -1531,11 +1577,70 @@ def archive_class(class_id: str, connection: Connection, teacher: Teacher):
 @app.post("/api/classes/{class_id}/close")
 def close_class(class_id: str, connection: Connection, teacher: Teacher):
     cls = require_class_teacher(connection, class_id, teacher["user_id"])
-    return fetch_one(
+    updated = fetch_one(
         connection,
         "UPDATE classes SET status = 'completed', updated_at = NOW() WHERE class_id = %s RETURNING *",
         (cls["class_id"],),
     )
+    # Hủy tất cả các buổi học tương lai chưa diễn ra và chưa có bản ghi điểm danh
+    fetch_all(
+        connection,
+        """
+        UPDATE class_sessions
+        SET status = 'cancelled', updated_at = NOW()
+        WHERE class_id = %s
+          AND status = 'scheduled'
+          AND starts_at >= NOW()
+          AND NOT EXISTS (SELECT 1 FROM attendance_records ar WHERE ar.session_id = class_sessions.session_id)
+        RETURNING session_id
+        """,
+        (cls["class_id"],),
+    )
+    # Khóa thời hạn lịch cố định đến ngày hiện tại
+    fetch_all(
+        connection,
+        """
+        UPDATE class_schedule_rules
+        SET effective_until = LEAST(COALESCE(effective_until, CURRENT_DATE), CURRENT_DATE)
+        WHERE class_id = %s
+        RETURNING schedule_rule_id
+        """,
+        (cls["class_id"],),
+    )
+    return updated
+
+
+@app.get("/api/classes/{class_id}/debts")
+def get_class_debts(class_id: str, connection: Connection, teacher: Teacher):
+    cls = require_class_teacher(connection, class_id, teacher["user_id"])
+    debts = fetch_all(
+        connection,
+        """
+        SELECT v.invoice_id, s.student_code, u.full_name AS student_name,
+               v.billing_year, v.billing_month,
+               v.amount_due, v.amount_paid, v.amount_remaining, v.payment_status,
+               i.period_start, i.period_end
+        FROM v_tuition_invoice_balances v
+        JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
+        JOIN students s ON s.student_id = i.student_id
+        JOIN users u ON u.user_id = s.user_id
+        WHERE i.status = 'open'
+          AND i.class_id = %s
+          AND v.amount_remaining > 0
+        ORDER BY s.student_code, v.billing_year DESC, v.billing_month DESC
+        """,
+        (cls["class_id"],),
+    )
+    total_debt = sum(float(d["amount_remaining"]) for d in debts) if debts else 0
+    return {
+        "class_id": cls["class_id"],
+        "class_code": cls["class_code"],
+        "class_name": cls["name"],
+        "has_debt": len(debts) > 0,
+        "debt_count": len(debts),
+        "total_debt": total_debt,
+        "debts": debts,
+    }
 
 
 @app.post("/api/classes/{class_id}/restore")
@@ -1744,23 +1849,99 @@ def get_session(
 
 @app.post("/api/sessions", status_code=201)
 def create_session(payload: SessionCreate, connection: Connection, teacher: Teacher):
-    require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    cls = require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    if cls["status"] == "completed":
+        raise HTTPException(status_code=400, detail="Lớp học đã kết thúc, không thể thêm buổi học mới.")
+    if payload.ends_at <= payload.starts_at:
+        raise HTTPException(status_code=400, detail="Giờ kết thúc phải sau giờ bắt đầu.")
+    existing = fetch_one(
+        connection,
+        "SELECT 1 FROM class_sessions WHERE class_id = %s AND starts_at = %s AND status <> 'cancelled'",
+        (payload.class_id, payload.starts_at),
+    )
+    if existing:
+        raise HTTPException(status_code=409, detail="Buổi học vào thời gian này đã tồn tại trong lớp.")
     return fetch_one(
         connection,
         """
-        INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, created_by)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
+        VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
         RETURNING *
         """,
         (
             payload.class_id,
             payload.starts_at,
             payload.ends_at,
-            payload.room,
+            payload.room or cls["default_room"],
             payload.topic,
             teacher["user_id"],
         ),
     )
+
+
+@app.post("/api/sessions/recurring", status_code=201)
+def create_recurring_sessions(payload: RecurringSessionCreate, connection: Connection, teacher: Teacher):
+    cls = require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    if cls["status"] == "completed":
+        raise HTTPException(status_code=400, detail="Lớp học đã kết thúc, không thể thêm buổi học mới.")
+    if payload.ends_at <= payload.starts_at:
+        raise HTTPException(status_code=400, detail="Giờ kết thúc phải sau giờ bắt đầu.")
+    if payload.end_date < payload.start_date:
+        raise HTTPException(status_code=400, detail="Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.")
+    if not payload.weekdays:
+        raise HTTPException(status_code=400, detail="Vui lòng chọn ít nhất một thứ trong tuần.")
+
+    s_hour, s_min = [int(p) for p in payload.starts_at[:5].split(":")]
+    e_hour, e_min = [int(p) for p in payload.ends_at[:5].split(":")]
+    room_val = payload.room or cls["default_room"]
+
+    curr = payload.start_date
+    created_sessions = []
+    while curr <= payload.end_date and len(created_sessions) < 120:
+        if (curr.weekday() + 1) in payload.weekdays:
+            starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
+            ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+            dup = fetch_one(
+                connection,
+                "SELECT 1 FROM class_sessions WHERE class_id = %s AND starts_at = %s AND status <> 'cancelled'",
+                (payload.class_id, starts_at_dt),
+            )
+            if not dup:
+                sess = fetch_one(
+                    connection,
+                    """
+                    INSERT INTO class_sessions (class_id, starts_at, ends_at, room, topic, status, created_by)
+                    VALUES (%s, %s, %s, %s, %s, 'scheduled', %s)
+                    RETURNING session_id, class_id, starts_at, ends_at, room, topic, status
+                    """,
+                    (payload.class_id, starts_at_dt, ends_at_dt, room_val, payload.topic or "Buổi học theo lịch lặp", teacher["user_id"]),
+                )
+                if sess:
+                    created_sessions.append(sess)
+        curr += timedelta(days=1)
+
+    for w in payload.weekdays:
+        existing_rule = fetch_one(
+            connection,
+            "SELECT 1 FROM class_schedule_rules WHERE class_id = %s AND weekday = %s AND starts_at = %s::TIME AND ends_at = %s::TIME",
+            (payload.class_id, w, payload.starts_at, payload.ends_at),
+        )
+        if not existing_rule:
+            fetch_one(
+                connection,
+                """
+                INSERT INTO class_schedule_rules (class_id, weekday, starts_at, ends_at, room, effective_from, effective_until)
+                VALUES (%s, %s, %s::TIME, %s::TIME, %s, %s, %s)
+                RETURNING schedule_rule_id
+                """,
+                (payload.class_id, w, payload.starts_at, payload.ends_at, room_val, payload.start_date, payload.end_date),
+            )
+
+    return {
+        "message": f"Đã tạo thành công {len(created_sessions)} buổi học.",
+        "sessions_created": len(created_sessions),
+        "sessions": created_sessions,
+    }
 
 
 @app.patch("/api/sessions/{session_id}")
@@ -1784,7 +1965,7 @@ def update_session(
     starts = values.get("starts_at", existing["starts_at"])
     ends = values.get("ends_at", existing["ends_at"])
     if ends <= starts:
-        raise HTTPException(status_code=400, detail="Thời điểm kết thúc phải sau thời điểm bắt đầu.")
+        raise HTTPException(status_code=400, detail="Giờ kết thúc phải sau giờ bắt đầu.")
     if not values:
         return existing
     columns = ", ".join(f"{key} = %s" for key in values)
@@ -2809,6 +2990,8 @@ def generate_invoices(
     teacher: Teacher,
 ):
     class_row = require_class_teacher(connection, payload.class_id, teacher["user_id"])
+    if class_row["status"] == "completed":
+        raise HTTPException(status_code=400, detail="Lớp học đã kết thúc, không thể phát sinh học phí mới.")
     enrolled = fetch_all(
         connection,
         """

@@ -22,11 +22,21 @@ const AuthService = {
 
     let response;
     try {
-      response = await fetch(`${this.API_BASE_URL}${path}`, {
-        ...options,
-        headers
-      });
-    } catch {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), options.timeout || 10000);
+      try {
+        response = await fetch(`${this.API_BASE_URL}${path}`, {
+          ...options,
+          headers,
+          signal: options.signal || controller.signal
+        });
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        throw new Error('Máy chủ phản hồi quá lâu (hết thời gian chờ). Vui lòng thử lại.');
+      }
       throw new Error('Chưa thể kết nối để tải dữ liệu. Vui lòng thử lại sau.');
     }
 

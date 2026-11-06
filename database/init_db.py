@@ -50,6 +50,22 @@ def init_postgres():
         users = cur.fetchall()
         print("Users in database:", users)
 
+        cur.execute("SELECT count(*) FROM classes")
+        class_cnt = cur.fetchone()[0]
+        if class_cnt == 0:
+            print("Seeding initial classes, students, and sessions...")
+            try:
+                import importlib.util
+                seed_script = Path(__file__).parent / "seed_classes_and_sessions.py"
+                if seed_script.exists():
+                    spec = importlib.util.spec_from_file_location("seed_mod", str(seed_script))
+                    seed_mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(seed_mod)
+                    seed_mod.seed_data()
+                    print("Initial classes and sessions seeded successfully!")
+            except Exception as e:
+                print(f"Note: Seeding classes encountered: {e}")
+
     conn_lopminh.close()
 
 if __name__ == "__main__":

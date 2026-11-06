@@ -54,6 +54,35 @@
       background: #E2E8F0;
       color: #475569;
     }
+    .weekday-picker {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .weekday-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      background: var(--color-surface);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .weekday-label:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .weekday-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: var(--color-primary);
+    }
   </style>
 </head>
 <body class="schedule-page teacher-schedule-page">
@@ -247,54 +276,110 @@
   </div>
 
   <!-- ============================================================= -->
-  <!-- MODAL 2: THÊM BUỔI HỌC MỚI -->
+  <!-- MODAL 2: THÊM LỊCH HỌC (UC-04: TC_UC04_001, TC_UC04_002, TC_UC04_005) -->
   <!-- ============================================================= -->
   <div class="modal-overlay" id="modalAddSession">
-    <div class="modal-container" style="max-width: 580px;">
+    <div class="modal-container" style="max-width: 600px;">
       <div class="modal-header">
-        <h3 class="modal-title">Thêm buổi học mới</h3>
+        <h3 class="modal-title">Thêm lịch học</h3>
         <button class="modal-close" onclick="closeModal('modalAddSession')">&times;</button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
         <div id="addSessionAlert" class="alert alert-danger" style="display:none; margin-bottom:16px;"></div>
 
         <form id="formAddSession" onsubmit="handleAddSession(event)">
           <div class="form-group">
-            <label class="form-label">Chọn lớp học <span class="required">*</span></label>
+            <label class="form-label" for="addSessionClassId">Chọn lớp học <span class="required">*</span></label>
             <select class="form-control" id="addSessionClassId" required>
               <option value="">-- Chọn lớp học --</option>
             </select>
           </div>
 
-          <div style="display:grid; grid-template-columns: 1.5fr 1fr 1fr; gap:12px;">
-            <div class="form-group">
-              <label class="form-label">Ngày học <span class="required">*</span></label>
-              <input type="date" class="form-control" id="addSessionDate" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Bắt đầu <span class="required">*</span></label>
-              <input type="time" class="form-control" id="addSessionStart" value="17:30" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Kết thúc <span class="required">*</span></label>
-              <input type="time" class="form-control" id="addSessionEnd" value="19:00" required>
+          <!-- Lựa chọn loại lịch: Chỉ một buổi vs Lặp lại hàng tuần -->
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" style="font-weight: 600;">Hình thức lịch học <span class="required">*</span></label>
+            <div style="display: flex; gap: 20px; align-items: center; padding: 6px 0;">
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                <input type="radio" name="sessionScheduleType" id="schedTypeSingle" value="single" checked onchange="toggleScheduleTypeFields()">
+                <span>Chỉ một buổi</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                <input type="radio" name="sessionScheduleType" id="schedTypeRecurring" value="recurring" onchange="toggleScheduleTypeFields()">
+                <span>Lặp lại hàng tuần</span>
+              </label>
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Phòng học</label>
-            <input type="text" class="form-control" id="addSessionRoom" placeholder="Phòng học (không bắt buộc)">
+          <!-- Khung: Chỉ một buổi -->
+          <div id="schedSectionSingle">
+            <div style="display:grid; grid-template-columns: 1.4fr 1fr 1fr; gap:12px; margin-bottom: 14px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionDate">Ngày học <span class="required">*</span></label>
+                <input type="date" class="form-control" id="addSessionDate">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionStart">Giờ bắt đầu <span class="required">*</span></label>
+                <input type="time" class="form-control" id="addSessionStart" value="17:30">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="addSessionEnd">Giờ kết thúc <span class="required">*</span></label>
+                <input type="time" class="form-control" id="addSessionEnd" value="19:00">
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Nội dung bài học / Chuyên đề</label>
+          <!-- Khung: Lặp lại hàng tuần -->
+          <div id="schedSectionRecurring" style="display: none; border-top: 1px dashed var(--color-border); padding-top: 12px; margin-bottom: 14px;">
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" style="font-weight: 600;">Thứ trong tuần <span class="required">*</span></label>
+              <div class="weekday-picker">
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="1" checked><span>T2</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="2"><span>T3</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="3" checked><span>T4</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="4"><span>T5</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="5" checked><span>T6</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="6"><span>T7</span></label>
+                <label class="weekday-label"><input type="checkbox" name="schedRecurringWeekday" value="7"><span>CN</span></label>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 12px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="schedRecurringStart">Giờ bắt đầu <span class="required">*</span></label>
+                <input type="time" class="form-control" id="schedRecurringStart" value="17:30">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="schedRecurringEnd">Giờ kết thúc <span class="required">*</span></label>
+                <input type="time" class="form-control" id="schedRecurringEnd" value="19:00">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom: 4px;">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="schedRecurringStartDate">Ngày bắt đầu chuỗi <span class="required">*</span></label>
+                <input type="date" class="form-control" id="schedRecurringStartDate">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="schedRecurringEndDate">Ngày kết thúc chuỗi <span class="required">*</span></label>
+                <input type="date" class="form-control" id="schedRecurringEndDate">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label class="form-label" for="addSessionRoom">Phòng học hoặc link học trực tuyến</label>
+            <input type="text" class="form-control" id="addSessionRoom" placeholder="Ví dụ: Phòng 203 hoặc https://meet.google.com/...">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="addSessionTopic">Nội dung bài học / Chuyên đề</label>
             <input type="text" class="form-control" id="addSessionTopic" placeholder="Ví dụ: Ôn tập chương Hàm số">
           </div>
 
           <div class="modal-footer" style="padding: 16px 0 0 0; border-top: 1px solid var(--color-border); margin-top: 16px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('modalAddSession')">Hủy bỏ</button>
             <button type="submit" class="btn btn-primary" id="btnSubmitAddSession">
-              Tạo buổi học
+              Lưu lịch học
             </button>
           </div>
         </form>
@@ -626,7 +711,7 @@
       const alertBox = document.getElementById('rescheduleSessionAlert');
       const button = document.getElementById('btnSubmitRescheduleSession');
       if (end <= start) {
-        alertBox.textContent = 'Thời gian kết thúc phải sau thời gian bắt đầu.';
+        alertBox.textContent = 'Giờ kết thúc phải sau giờ bắt đầu.';
         alertBox.hidden = false;
         return;
       }
@@ -652,13 +737,38 @@
       }
     }
 
+    function toggleScheduleTypeFields() {
+      const selected = document.querySelector('input[name="sessionScheduleType"]:checked');
+      const isRecurring = selected && selected.value === 'recurring';
+      const singleSec = document.getElementById('schedSectionSingle');
+      const recurSec = document.getElementById('schedSectionRecurring');
+      if (singleSec) singleSec.style.display = isRecurring ? 'none' : 'block';
+      if (recurSec) recurSec.style.display = isRecurring ? 'block' : 'none';
+    }
+
     // Mở modal thêm buổi học
     function openAddSessionModal() {
       document.getElementById('formAddSession').reset();
-      document.getElementById('addSessionDate').value = formatDateISO(new Date());
+      const today = formatDateISO(new Date());
+      const nextMonth = new Date();
+      nextMonth.setMonth(nextMonth.getMonth() + 2);
+      const nextMonthStr = formatDateISO(nextMonth);
+
+      document.getElementById('addSessionDate').value = today;
       document.getElementById('addSessionStart').value = '17:30';
       document.getElementById('addSessionEnd').value = '19:00';
+
+      document.getElementById('schedRecurringStartDate').value = today;
+      document.getElementById('schedRecurringEndDate').value = nextMonthStr;
+      document.getElementById('schedRecurringStart').value = '17:30';
+      document.getElementById('schedRecurringEnd').value = '19:00';
+
+      const typeSingleRadio = document.getElementById('schedTypeSingle');
+      if (typeSingleRadio) typeSingleRadio.checked = true;
+      toggleScheduleTypeFields();
+
       document.getElementById('addSessionRoom').value = '';
+      document.getElementById('addSessionTopic').value = '';
       document.getElementById('addSessionAlert').style.display = 'none';
       openModal('modalAddSession');
     }
@@ -671,41 +781,104 @@
       alertBox.style.display = 'none';
 
       const classId = document.getElementById('addSessionClassId').value;
-      const dateVal = document.getElementById('addSessionDate').value;
-      const startVal = document.getElementById('addSessionStart').value;
-      const endVal = document.getElementById('addSessionEnd').value;
-      const room = document.getElementById('addSessionRoom').value.trim();
-      const topic = document.getElementById('addSessionTopic').value.trim();
-
-      if (!classId || !dateVal || !startVal || !endVal) {
-        alertBox.innerText = 'Vui lòng điền đầy đủ lớp học, ngày và thời gian.';
+      if (!classId) {
+        alertBox.innerText = 'Vui lòng chọn lớp học.';
         alertBox.style.display = 'block';
         return;
       }
 
-      const startsAt = `${dateVal}T${startVal}:00+07:00`;
-      const endsAt = `${dateVal}T${endVal}:00+07:00`;
+      const scheduleType = document.querySelector('input[name="sessionScheduleType"]:checked').value;
+      const room = document.getElementById('addSessionRoom').value.trim();
+      const topic = document.getElementById('addSessionTopic').value.trim();
 
       btn.disabled = true;
-      btn.innerText = 'Đang tạo...';
+      btn.innerText = 'Đang lưu...';
 
       try {
-        await ScheduleModule.addSchedule({
-          class_id: classId,
-          starts_at: startsAt,
-          ends_at: endsAt,
-          room: room || null,
-          topic: topic || null
-        });
-        closeModal('modalAddSession');
-        await loadSchedule();
-        alert('Tạo buổi học thành công!');
+        if (scheduleType === 'single') {
+          const dateVal = document.getElementById('addSessionDate').value;
+          const startVal = document.getElementById('addSessionStart').value;
+          const endVal = document.getElementById('addSessionEnd').value;
+
+          if (!dateVal) {
+            throw new Error('Vui lòng chọn ngày học.');
+          }
+          if (!startVal) {
+            throw new Error('Vui lòng chọn giờ bắt đầu.');
+          }
+          if (!endVal) {
+            throw new Error('Vui lòng chọn giờ kết thúc.');
+          }
+          if (endVal <= startVal) {
+            throw new Error('Giờ kết thúc phải sau giờ bắt đầu.');
+          }
+
+          const startsAt = `${dateVal}T${startVal}:00+07:00`;
+          const endsAt = `${dateVal}T${endVal}:00+07:00`;
+
+          await ScheduleModule.addSchedule({
+            class_id: classId,
+            starts_at: startsAt,
+            ends_at: endsAt,
+            room: room || null,
+            topic: topic || null
+          });
+
+          closeModal('modalAddSession');
+          await loadSchedule();
+          alert('Tạo buổi học thành công!');
+        } else {
+          // Recurring weekly
+          const selectedWeekdays = Array.from(document.querySelectorAll('input[name="schedRecurringWeekday"]:checked'))
+            .map(el => Number(el.value));
+          const startVal = document.getElementById('schedRecurringStart').value;
+          const endVal = document.getElementById('schedRecurringEnd').value;
+          const startDateVal = document.getElementById('schedRecurringStartDate').value;
+          const endDateVal = document.getElementById('schedRecurringEndDate').value;
+
+          if (!selectedWeekdays.length) {
+            throw new Error('Vui lòng chọn ít nhất một thứ trong tuần.');
+          }
+          if (!startVal) {
+            throw new Error('Vui lòng chọn giờ bắt đầu.');
+          }
+          if (!endVal) {
+            throw new Error('Vui lòng chọn giờ kết thúc.');
+          }
+          if (endVal <= startVal) {
+            throw new Error('Giờ kết thúc phải sau giờ bắt đầu.');
+          }
+          if (!startDateVal) {
+            throw new Error('Vui lòng chọn ngày bắt đầu chuỗi.');
+          }
+          if (!endDateVal) {
+            throw new Error('Vui lòng chọn ngày kết thúc chuỗi.');
+          }
+          if (endDateVal < startDateVal) {
+            throw new Error('Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.');
+          }
+
+          const res = await ScheduleModule.addRecurringSchedule({
+            class_id: classId,
+            weekdays: selectedWeekdays,
+            starts_at: startVal,
+            ends_at: endVal,
+            start_date: startDateVal,
+            end_date: endDateVal,
+            room: room || null,
+            topic: topic || null
+          });
+
+          closeModal('modalAddSession');
+          await loadSchedule();
+          alert(res.message || 'Tạo chuỗi lịch học lặp lại thành công!');
+        }
       } catch (error) {
         alertBox.innerText = error.message;
         alertBox.style.display = 'block';
       } finally {
         btn.disabled = false;
-        btn.innerText = 'Tạo buổi học';
+        btn.innerText = 'Lưu lịch học';
       }
     }
 
