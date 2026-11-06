@@ -236,6 +236,202 @@ const StudentListPage = {
     } finally { this.state.busy = false; this.render(); }
   },
   
+  escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
+  // Hiển thị hộp thoại xác nhận bớt học sinh / cảnh báo nợ học phí đẹp mắt
+  promptUnenrollConfirmation(student, invoices) {
+    const modal = this.el('modalConfirmUnenroll');
+    if (!modal) {
+      // Fallback khi chạy kiểm thử hoặc không có modal trong DOM
+      const msg = this.buildUnenrollConfirmation(student, invoices);
+      return Promise.resolve(window.confirm(msg));
+    }
+
+    const outstanding = (Array.isArray(invoices) ? invoices : []).filter(invoice => {
+      const remaining = Number(invoice.amount_remaining);
+      return Number.isFinite(remaining) && remaining > 0 && invoice.payment_status !== 'void';
+    });
+
+    const hasDebt = outstanding.length > 0;
+    const titleEl = this.el('unenrollModalTitle');
+    const iconEl = this.el('unenrollModalIcon');
+    const bodyEl = this.el('unenrollModalBody');
+    const confirmBtn = this.el('btnUnenrollConfirm');
+    const cancelBtn = this.el('btnUnenrollCancel');
+    const closeBtn = this.el('btnUnenrollClose');
+
+    const studentLabel = `${student.full_name} (${student.student_code})`;
+
+    if (hasDebt) {
+      const total = outstanding.reduce((sum, inv) => sum + Number(inv.amount_remaining), 0);
+      titleEl.textContent = 'CẢNH BÁO: HỌC SINH CÒN NỢ HỌC PHÍ!';
+      titleEl.style.color = '#B91C1C';
+      iconEl.style.background = '#FEE2E2';
+      iconEl.style.color = '#DC2626';
+      iconEl.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      `;
+
+      const invoiceRows = outstanding.map(inv => {
+        const month = String(inv.billing_month).padStart(2, '0');
+        return `
+          <tr style="border-bottom: 1px solid #F1F5F9;">
+            <td style="padding: 10px 12px; color: var(--color-text-main); font-weight: 500;">
+              • Học phí tháng ${month}/${inv.billing_year}
+            </td>
+            <td style="padding: 10px 12px; text-align: right; font-weight: 700; color: #DC2626; white-space: nowrap;">
+              còn ${this.formatCurrency(inv.amount_remaining)}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      bodyEl.innerHTML = `
+        <div class="alert alert-danger" style="margin-bottom: 16px; border-radius: 8px; font-size: 13px; line-height: 1.5;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:1px;">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <div>
+            <strong>Chú ý:</strong> Học sinh này hiện còn hóa đơn học phí chưa thanh toán đủ. Vui lòng kiểm tra kỹ trước khi bớt khỏi danh sách lớp.
+          </div>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <div>
+              <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Học sinh</div>
+              <div style="font-weight: 700; font-size: 15px; color: var(--color-text-main); margin-top: 2px;">
+                ${this.escapeHtml(student.full_name)} <span style="font-weight: 500; color: var(--color-text-secondary);">(${this.escapeHtml(student.student_code)})</span>
+              </div>
+            </div>
+            <span class="badge badge-danger" style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px;">
+              ${outstanding.length} hóa đơn nợ
+            </span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px dashed var(--color-border);">
+            <span style="font-size: 13px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.3px;">TỔNG CÒN NỢ:</span>
+            <span style="font-size: 20px; font-weight: 800; color: #DC2626; letter-spacing: -0.5px;">
+              ${this.formatCurrency(total)}
+            </span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 14px;">
+          <div style="font-size: 13px; font-weight: 600; color: var(--color-text-main); margin-bottom: 6px;">
+            Chi tiết các khoản học phí còn nợ:
+          </div>
+          <div style="max-height: 150px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 6px; background: #FFFFFF;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+              <thead style="background: #F1F5F9; position: sticky; top: 0; z-index: 1;">
+                <tr>
+                  <th style="text-align: left; padding: 8px 12px; font-weight: 600; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border);">Khoản thu</th>
+                  <th style="text-align: right; padding: 8px 12px; font-weight: 600; color: var(--color-text-secondary); border-bottom: 1px solid var(--color-border);">Còn nợ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${invoiceRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="padding: 10px 12px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; font-size: 12px; color: #1E40AF; line-height: 1.45;">
+          <strong style="color: #1E3A8A;">Bạn vẫn muốn bớt học sinh khỏi lớp?</strong><br>
+          Tài khoản và các hóa đơn học phí của học sinh sẽ không bị xóa; hệ thống chỉ hủy ghi danh khỏi lớp này.
+        </div>
+      `;
+
+      confirmBtn.className = 'btn btn-danger';
+      confirmBtn.textContent = 'Vẫn bớt khỏi lớp';
+    } else {
+      titleEl.textContent = 'Xác nhận bớt học sinh khỏi lớp';
+      titleEl.style.color = 'var(--color-text-main)';
+      iconEl.style.background = '#EFF6FF';
+      iconEl.style.color = '#1D4ED8';
+      iconEl.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="8.5" cy="7" r="4"/>
+          <line x1="18" y1="11" x2="23" y2="11"/>
+        </svg>
+      `;
+
+      bodyEl.innerHTML = `
+        <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Học sinh</div>
+              <div style="font-weight: 700; font-size: 15px; color: var(--color-text-main); margin-top: 2px;">
+                ${this.escapeHtml(student.full_name)} <span style="font-weight: 500; color: var(--color-text-secondary);">(${this.escapeHtml(student.student_code)})</span>
+              </div>
+            </div>
+            <span class="badge badge-success" style="font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px;">
+              Đã hoàn thành học phí
+            </span>
+          </div>
+        </div>
+
+        <p style="font-size: 14px; color: var(--color-text-main); margin-bottom: 12px; line-height: 1.5;">
+          Bạn có chắc chắn muốn bớt <strong>${this.escapeHtml(studentLabel)}</strong> khỏi lớp không?
+        </p>
+
+        <div style="padding: 10px 12px; background: #F1F5F9; border: 1px solid var(--color-border); border-radius: 6px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.45;">
+          Tài khoản học sinh sẽ không bị xóa; lịch học hiện hành của học sinh sẽ không còn các buổi thuộc lớp này.
+        </div>
+      `;
+
+      confirmBtn.className = 'btn btn-danger';
+      confirmBtn.textContent = 'Xác nhận bớt';
+    }
+
+    return new Promise(resolve => {
+      let resolved = false;
+
+      const finish = (result) => {
+        if (resolved) return;
+        resolved = true;
+        modal.classList.remove('active');
+        document.removeEventListener('keydown', onKeyDown);
+        modal.removeEventListener('click', onBackdropClick);
+        confirmBtn.removeEventListener('click', onConfirm);
+        cancelBtn.removeEventListener('click', onCancel);
+        closeBtn.removeEventListener('click', onCancel);
+        resolve(result);
+      };
+
+      const onConfirm = () => finish(true);
+      const onCancel = () => finish(false);
+      const onKeyDown = (e) => {
+        if (e.key === 'Escape') finish(false);
+      };
+      const onBackdropClick = (e) => {
+        if (e.target === modal) finish(false);
+      };
+
+      confirmBtn.addEventListener('click', onConfirm);
+      cancelBtn.addEventListener('click', onCancel);
+      closeBtn.addEventListener('click', onCancel);
+      document.addEventListener('keydown', onKeyDown);
+      modal.addEventListener('click', onBackdropClick);
+
+      modal.classList.add('active');
+      cancelBtn.focus();
+    });
+  },
+
   // Định dạng số tiền học phí
   formatCurrency(value) {
     return `${Math.round(Number(value)).toLocaleString('vi-VN')} ₫`;
@@ -306,11 +502,12 @@ const StudentListPage = {
     this.state.busy = true;
     this.render();
 
-    let confirmation;
+    let confirmation = '';
+    let invoices = [];
 
     // Kiểm tra học phí trước khi xác nhận
     try {
-      const invoices =
+      invoices =
         await StudentListModule.getStudentTuitionInvoices(
           classId,
           student.student_code
@@ -335,11 +532,19 @@ const StudentListPage = {
       this.render();
     }
 
-    // Giáo viên chọn Cancel thì không bớt học sinh
-    if (
-      this.state.classId !== classId ||
-      !confirm(confirmation)
-    ) {
+    if (this.state.classId !== classId) return;
+
+    // Hiển thị hộp thoại xác nhận bớt học sinh / cảnh báo nợ học phí đẹp mắt
+    let confirmed = false;
+    try {
+      confirmed = await this.promptUnenrollConfirmation(student, invoices);
+    } catch (err) {
+      console.error('Lỗi hiển thị modal cảnh báo:', err);
+      confirmed = window.confirm(confirmation || this.buildUnenrollConfirmation(student, invoices));
+    }
+
+    // Giáo viên chọn Hủy thì không bớt học sinh
+    if (!confirmed || this.state.classId !== classId) {
       return;
     }
 

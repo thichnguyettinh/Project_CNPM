@@ -13,6 +13,21 @@
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/dashboard.css">
   <link rel="stylesheet" href="../../assets/css/pdf-mockup-styles.css">
+  <style>
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+  </style>
 </head>
 <body>
 
@@ -166,9 +181,29 @@
     </main>
   </div>
 
+  <!-- MODAL XÁC NHẬN BỚT HỌC SINH KHỎI LỚP / CẢNH BÁO NỢ HỌC PHÍ -->
+  <div class="modal-overlay" id="modalConfirmUnenroll" role="dialog" aria-modal="true" aria-labelledby="unenrollModalTitle">
+    <div class="modal-container" style="max-width: 520px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div id="unenrollModalIcon" style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: #FEF3C7; color: #D97706; flex-shrink: 0;"></div>
+          <h3 class="modal-title" id="unenrollModalTitle" style="font-size: 16px; font-weight: 700;">Xác nhận bớt học sinh</h3>
+        </div>
+        <button type="button" class="modal-close" id="btnUnenrollClose" aria-label="Đóng">&times;</button>
+      </div>
+
+      <div class="modal-body" id="unenrollModalBody" style="padding: 20px;"></div>
+
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px;">
+        <button type="button" class="btn btn-secondary" id="btnUnenrollCancel">Hủy bỏ</button>
+        <button type="button" class="btn btn-danger" id="btnUnenrollConfirm">Xác nhận bớt</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
   <script src="../../assets/js/auth.js?v=20261102-3"></script>
-  <script src="../../assets/js/modules/teacher/student-list.js"></script>
+  <script src="../../assets/js/modules/teacher/student-list.js?v=20261106-2"></script>
   <script>
     if (window.feather) feather.replace();
     document.addEventListener('DOMContentLoaded', () => StudentListPage.init());
