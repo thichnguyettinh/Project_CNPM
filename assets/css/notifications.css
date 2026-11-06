@@ -59,6 +59,10 @@
   background: #FFFFFF;
 }
 
+.notification-item[hidden] {
+  display: none !important;
+}
+
 .notification-item:last-child {
   border-bottom: 0;
 }

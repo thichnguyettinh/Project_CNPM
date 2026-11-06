@@ -118,6 +118,9 @@ const StudentSchedulePage = {
       event.preventDefault();
       this.submitAbsence();
     });
+    this.el('studentAbsenceSessionSelect').addEventListener('change', event => {
+      this.el('studentAbsenceOpen').disabled = !event.target.value;
+    });
     this.el('studentAbsenceOpen').addEventListener('click', () => {
       const sessionId = this.el('studentAbsenceSessionSelect').value;
       if (sessionId) this.showDetail(sessionId, { focusAbsence: true });

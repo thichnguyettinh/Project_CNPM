@@ -1,8 +1,8 @@
 \babel@toc {vietnamese}{}\relax 
-\contentsline {chapter}{Lời nói đầu}{v}{chapter*.2}%
-\contentsline {chapter}{Phân công thành viên trong nhóm}{vi}{chapter*.3}%
-\contentsline {chapter}{Danh mục hình ảnh}{xi}{chapter*.4}%
-\contentsline {chapter}{Danh mục bảng}{xiii}{chapter*.5}%
+\contentsline {chapter}{Lời nói đầu}{iv}{chapter*.2}%
+\contentsline {chapter}{Phân công thành viên trong nhóm}{v}{chapter*.3}%
+\contentsline {chapter}{Danh mục hình ảnh}{x}{chapter*.4}%
+\contentsline {chapter}{Danh mục bảng}{xii}{chapter*.5}%
 \contentsline {chapter}{\numberline {1}KHẢO SÁT BÀI TOÁN}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Mô tả yêu cầu bài toán}{1}{section.1.1}%
 \contentsline {section}{\numberline {1.2}Khảo sát bài toán}{1}{section.1.2}%
@@ -158,69 +158,62 @@
 \contentsline {subsubsection}{\numberline {4.4.3.2}Giao diện Lịch học}{148}{subsubsection.4.4.3.2}%
 \contentsline {subsubsection}{\numberline {4.4.3.3}Giao diện Lịch sử điểm danh}{150}{subsubsection.4.4.3.3}%
 \contentsline {subsubsection}{\numberline {4.4.3.4}Giao diện Kết quả học tập}{151}{subsubsection.4.4.3.4}%
-\contentsline {subsubsection}{\numberline {4.4.3.5}Giao diện Bài tập}{153}{subsubsection.4.4.3.5}%
-\contentsline {subsubsection}{\numberline {4.4.3.6}Giao diện thông báo}{155}{subsubsection.4.4.3.6}%
-\contentsline {subsubsection}{\numberline {4.4.3.7}Giao diện Hồ sơ cá nhân}{156}{subsubsection.4.4.3.7}%
-\contentsline {subsubsection}{\numberline {4.4.3.8}Giao diện Đổi mật khẩu}{157}{subsubsection.4.4.3.8}%
-\contentsline {chapter}{\numberline {5}XÂY DỰNG CHƯƠNG TRÌNH MINH HỌA}{159}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Thư viện và công cụ sử dụng}{159}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Kết quả chương trình minh họa}{162}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Giao diện minh hoạ các chức năng của chương trình}{163}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Giao diện Đăng nhập}{163}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Giao diện Tổng quan}{164}{subsection.5.3.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.1}Giáo viên}{164}{subsubsection.5.3.2.1}%
-\contentsline {subsubsection}{\numberline {5.3.2.2}Học sinh}{165}{subsubsection.5.3.2.2}%
-\contentsline {subsubsection}{\numberline {5.3.2.3}Phụ huynh}{165}{subsubsection.5.3.2.3}%
-\contentsline {subsection}{\numberline {5.3.3}Giao diện Lớp học}{166}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}Giao diện Tài khoản}{166}{subsection.5.3.4}%
-\contentsline {subsection}{\numberline {5.3.5}Giao diện Lịch học}{167}{subsection.5.3.5}%
-\contentsline {subsubsection}{\numberline {5.3.5.1}Giáo viên}{167}{subsubsection.5.3.5.1}%
-\contentsline {subsubsection}{\numberline {5.3.5.2}Học sinh}{167}{subsubsection.5.3.5.2}%
-\contentsline {subsubsection}{\numberline {5.3.5.3}Phụ huynh}{168}{subsubsection.5.3.5.3}%
-\contentsline {subsection}{\numberline {5.3.6}Giao diện Điểm danh}{168}{subsection.5.3.6}%
-\contentsline {subsubsection}{\numberline {5.3.6.1}Giáo viên}{168}{subsubsection.5.3.6.1}%
-\contentsline {subsubsection}{\numberline {5.3.6.2}Học sinh}{169}{subsubsection.5.3.6.2}%
-\contentsline {subsubsection}{\numberline {5.3.6.3}Phụ huynh}{169}{subsubsection.5.3.6.3}%
-\contentsline {subsection}{\numberline {5.3.7}Giao diện Điểm số}{170}{subsection.5.3.7}%
-\contentsline {subsubsection}{\numberline {5.3.7.1}Giáo viên}{170}{subsubsection.5.3.7.1}%
-\contentsline {subsubsection}{\numberline {5.3.7.2}Giao diện Kết quả học tập và Bài tập (Không gian của Học sinh)}{170}{subsubsection.5.3.7.2}%
-\contentsline {subsubsection}{\numberline {5.3.7.3}Giao diện Kết quả học tập (Không gian của phụ huynh)}{171}{subsubsection.5.3.7.3}%
-\contentsline {subsection}{\numberline {5.3.8}Giao diện Học phí}{172}{subsection.5.3.8}%
-\contentsline {subsubsection}{\numberline {5.3.8.1}Giáo viên}{172}{subsubsection.5.3.8.1}%
-\contentsline {subsubsection}{\numberline {5.3.8.2}Phụ huynh}{172}{subsubsection.5.3.8.2}%
-\contentsline {subsection}{\numberline {5.3.9}Giao diện Thông báo}{173}{subsection.5.3.9}%
-\contentsline {subsubsection}{\numberline {5.3.9.1}Giáo viên}{173}{subsubsection.5.3.9.1}%
-\contentsline {subsubsection}{\numberline {5.3.9.2}Học sinh}{173}{subsubsection.5.3.9.2}%
-\contentsline {subsubsection}{\numberline {5.3.9.3}Phụ huynh}{174}{subsubsection.5.3.9.3}%
-\contentsline {subsection}{\numberline {5.3.10}Giao diện Hồ sơ cá nhân}{174}{subsection.5.3.10}%
-\contentsline {subsubsection}{\numberline {5.3.10.1}Giáo viên}{174}{subsubsection.5.3.10.1}%
-\contentsline {subsubsection}{\numberline {5.3.10.2}Học sinh}{175}{subsubsection.5.3.10.2}%
-\contentsline {subsubsection}{\numberline {5.3.10.3}Phụ huynh}{175}{subsubsection.5.3.10.3}%
-\contentsline {subsection}{\numberline {5.3.11}Giao diện Đổi mật khẩu}{176}{subsection.5.3.11}%
-\contentsline {subsection}{\numberline {5.3.12}Giao diện Trung tâm hướng dẫn}{176}{subsection.5.3.12}%
-\contentsline {subsubsection}{\numberline {5.3.12.1}Giáo viên}{176}{subsubsection.5.3.12.1}%
-\contentsline {subsubsection}{\numberline {5.3.12.2}Học sinh}{177}{subsubsection.5.3.12.2}%
-\contentsline {subsubsection}{\numberline {5.3.12.3}Phụ huynh}{177}{subsubsection.5.3.12.3}%
-\contentsline {chapter}{\numberline {6}KIỂM THỬ CHƯƠNG TRÌNH}{178}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Kiểm thử các chức năng đã thực hiện}{178}{section.6.1}%
-\contentsline {subsection}{\numberline {6.1.1}Kiểm thử cho chức năng 1}{178}{subsection.6.1.1}%
-\contentsline {subsection}{\numberline {6.1.2}Kiểm thử cho chức năng 2}{178}{subsection.6.1.2}%
-\contentsline {subsection}{\numberline {6.1.3}Kiểm thử cho chức năng 3}{178}{subsection.6.1.3}%
-\contentsline {subsection}{\numberline {6.1.4}Kiểm thử cho chức năng 4}{178}{subsection.6.1.4}%
-\contentsline {subsection}{\numberline {6.1.5}Kiểm thử cho chức năng 5 - Quản lý danh sách học sinh}{178}{subsection.6.1.5}%
-\contentsline {subsection}{\numberline {6.1.6}Kiểm thử cho chức năng 6 - Chức năng điểm danh}{181}{subsection.6.1.6}%
-\contentsline {subsection}{\numberline {6.1.7}Kiểm thử cho chức năng 7}{184}{subsection.6.1.7}%
-\contentsline {subsection}{\numberline {6.1.8}Kiểm thử cho chức năng 8}{184}{subsection.6.1.8}%
-\contentsline {subsection}{\numberline {6.1.9}Kiểm thử cho chức năng 9 - Quản lý học phí}{184}{subsection.6.1.9}%
-\contentsline {subsection}{\numberline {6.1.10}Kiểm thử cho chức năng 10}{187}{subsection.6.1.10}%
-\contentsline {subsection}{\numberline {6.1.11}Kiểm thử cho chức năng 11}{187}{subsection.6.1.11}%
-\contentsline {subsection}{\numberline {6.1.12}Kiểm thử cho chức năng 12 - Tra cứu học phí}{187}{subsection.6.1.12}%
-\contentsline {section}{\numberline {6.2}Kiểm thử yêu cầu phi chức năng}{189}{section.6.2}%
-\contentsline {chapter}{\numberline {7}HƯỚNG DẪN CÀI ĐẶT VÀ SỬ DỤNG}{190}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Hướng dẫn cài đặt}{190}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Đối tượng, phạm vi sử dụng}{190}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Xác định các yêu cầu cài đặt}{190}{section.7.3}%
-\contentsline {section}{\numberline {7.4}Hướng dẫn chi tiết các bước cài đặt}{190}{section.7.4}%
-\contentsline {section}{\numberline {7.5}Hướng dẫn sử dụng phần mềm}{191}{section.7.5}%
-\contentsline {chapter}{Kết luận và hướng phát triển}{193}{chapter*.71}%
-\contentsline {chapter}{Phụ lục}{195}{chapter*.72}%
+\contentsline {subsubsection}{\numberline {4.4.3.5}Giao diện Bài tập}{152}{subsubsection.4.4.3.5}%
+\contentsline {subsubsection}{\numberline {4.4.3.6}Giao diện thông báo}{154}{subsubsection.4.4.3.6}%
+\contentsline {subsubsection}{\numberline {4.4.3.7}Giao diện Hồ sơ cá nhân}{155}{subsubsection.4.4.3.7}%
+\contentsline {subsubsection}{\numberline {4.4.3.8}Giao diện Đổi mật khẩu}{156}{subsubsection.4.4.3.8}%
+\contentsline {chapter}{\numberline {5}XÂY DỰNG CHƯƠNG TRÌNH MINH HỌA}{158}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Thư viện và công cụ sử dụng}{158}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Kết quả chương trình minh họa}{161}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Giao diện minh hoạ các chức năng của chương trình}{162}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Giao diện Đăng nhập}{162}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Giao diện Tổng quan}{163}{subsection.5.3.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.1}Giáo viên}{163}{subsubsection.5.3.2.1}%
+\contentsline {subsubsection}{\numberline {5.3.2.2}Học sinh}{164}{subsubsection.5.3.2.2}%
+\contentsline {subsubsection}{\numberline {5.3.2.3}Phụ huynh}{164}{subsubsection.5.3.2.3}%
+\contentsline {subsection}{\numberline {5.3.3}Giao diện Lớp học}{165}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Giao diện Tài khoản}{165}{subsection.5.3.4}%
+\contentsline {subsection}{\numberline {5.3.5}Giao diện Lịch học}{166}{subsection.5.3.5}%
+\contentsline {subsubsection}{\numberline {5.3.5.1}Giáo viên}{166}{subsubsection.5.3.5.1}%
+\contentsline {subsubsection}{\numberline {5.3.5.2}Học sinh}{166}{subsubsection.5.3.5.2}%
+\contentsline {subsubsection}{\numberline {5.3.5.3}Phụ huynh}{167}{subsubsection.5.3.5.3}%
+\contentsline {subsection}{\numberline {5.3.6}Giao diện Điểm danh}{167}{subsection.5.3.6}%
+\contentsline {subsubsection}{\numberline {5.3.6.1}Giáo viên}{167}{subsubsection.5.3.6.1}%
+\contentsline {subsubsection}{\numberline {5.3.6.2}Học sinh}{168}{subsubsection.5.3.6.2}%
+\contentsline {subsubsection}{\numberline {5.3.6.3}Phụ huynh}{168}{subsubsection.5.3.6.3}%
+\contentsline {subsection}{\numberline {5.3.7}Giao diện Điểm số}{169}{subsection.5.3.7}%
+\contentsline {subsubsection}{\numberline {5.3.7.1}Giáo viên}{169}{subsubsection.5.3.7.1}%
+\contentsline {subsubsection}{\numberline {5.3.7.2}Giao diện Kết quả học tập và Bài tập (Không gian của Học sinh)}{169}{subsubsection.5.3.7.2}%
+\contentsline {subsubsection}{\numberline {5.3.7.3}Giao diện Kết quả học tập (Không gian của phụ huynh)}{170}{subsubsection.5.3.7.3}%
+\contentsline {subsection}{\numberline {5.3.8}Giao diện Học phí}{171}{subsection.5.3.8}%
+\contentsline {subsubsection}{\numberline {5.3.8.1}Giáo viên}{171}{subsubsection.5.3.8.1}%
+\contentsline {subsubsection}{\numberline {5.3.8.2}Phụ huynh}{171}{subsubsection.5.3.8.2}%
+\contentsline {subsection}{\numberline {5.3.9}Giao diện Thông báo}{172}{subsection.5.3.9}%
+\contentsline {subsubsection}{\numberline {5.3.9.1}Giáo viên}{172}{subsubsection.5.3.9.1}%
+\contentsline {subsubsection}{\numberline {5.3.9.2}Học sinh}{172}{subsubsection.5.3.9.2}%
+\contentsline {subsubsection}{\numberline {5.3.9.3}Phụ huynh}{173}{subsubsection.5.3.9.3}%
+\contentsline {subsection}{\numberline {5.3.10}Giao diện Hồ sơ cá nhân}{173}{subsection.5.3.10}%
+\contentsline {subsubsection}{\numberline {5.3.10.1}Giáo viên}{173}{subsubsection.5.3.10.1}%
+\contentsline {subsubsection}{\numberline {5.3.10.2}Học sinh}{174}{subsubsection.5.3.10.2}%
+\contentsline {subsubsection}{\numberline {5.3.10.3}Phụ huynh}{174}{subsubsection.5.3.10.3}%
+\contentsline {subsection}{\numberline {5.3.11}Giao diện Đổi mật khẩu}{175}{subsection.5.3.11}%
+\contentsline {subsection}{\numberline {5.3.12}Giao diện Trung tâm hướng dẫn}{175}{subsection.5.3.12}%
+\contentsline {subsubsection}{\numberline {5.3.12.1}Giáo viên}{175}{subsubsection.5.3.12.1}%
+\contentsline {subsubsection}{\numberline {5.3.12.2}Học sinh}{176}{subsubsection.5.3.12.2}%
+\contentsline {subsubsection}{\numberline {5.3.12.3}Phụ huynh}{176}{subsubsection.5.3.12.3}%
+\contentsline {chapter}{\numberline {6}KIỂM THỬ CHƯƠNG TRÌNH}{177}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Kiểm thử các chức năng đã thực hiện}{177}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Kiểm thử cho chức năng 1}{177}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Kiểm thử cho chức năng 2}{177}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Kiểm thử cho chức năng 3}{177}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Kiểm thử cho chức năng 4}{177}{subsection.6.1.4}%
+\contentsline {subsection}{\numberline {6.1.5}Kiểm thử cho chức năng 5 - Quản lý danh sách học sinh}{177}{subsection.6.1.5}%
+\contentsline {subsection}{\numberline {6.1.6}Kiểm thử cho chức năng 6 - Chức năng điểm danh}{180}{subsection.6.1.6}%
+\contentsline {chapter}{\numberline {7}HƯỚNG DẪN CÀI ĐẶT VÀ SỬ DỤNG}{184}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Hướng dẫn cài đặt}{184}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Đối tượng, phạm vi sử dụng}{184}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Xác định các yêu cầu cài đặt}{184}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Hướng dẫn chi tiết các bước cài đặt}{184}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Hướng dẫn sử dụng phần mềm}{185}{section.7.5}%
+\contentsline {chapter}{Kết luận và hướng phát triển}{187}{chapter*.71}%
+\contentsline {chapter}{Phụ lục}{189}{chapter*.72}%

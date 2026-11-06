@@ -166,10 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
         || (activeFilter === 'read' && !unread);
       const matchesCategory = category === 'all' || notification.category === category;
       const visible = matchesFilter && matchesCategory;
-      const item = createNotificationItem(notification);
-      item.hidden = !visible;
-      list.append(item);
-      if (visible) visibleCount += 1;
+      if (visible) {
+        const item = createNotificationItem(notification);
+        list.append(item);
+        visibleCount += 1;
+      }
     });
 
     if (emptyState) {
