@@ -286,7 +286,26 @@
             badge.textContent = session.status === 'completed' ? 'Đã học' : isNow ? 'Đang diễn ra' : 'Sắp diễn ra';
             card.append(title, meta, badge);
             card.addEventListener('click', () => selectSession(session));
-            cell.append(card);
+
+            if (session.status === 'scheduled' && Number.isFinite(start) && start > Date.now()) {
+              const wrapper = document.createElement('div');
+              wrapper.className = 'parent-calendar-session-with-absence';
+              wrapper.append(card);
+
+              const absenceButton = document.createElement('button');
+              absenceButton.type = 'button';
+              absenceButton.className = 'parent-calendar-absence-link';
+              absenceButton.textContent = 'Xin vắng';
+
+              absenceButton.addEventListener('click', () => {
+                selectSession(session, { focusAbsence: true });
+              });
+
+              wrapper.append(absenceButton);
+              cell.append(wrapper);
+            } else {
+              cell.append(card);
+            }
           });
         }
         grid.append(cell);
@@ -294,7 +313,7 @@
     });
   }
 
-  function selectSession(session) {
+  function selectSession(session, { focusAbsence = false } = {}) {
     state.selectedSession = session;
     const serial = ++state.absenceSerial;
     $('parentAbsenceForm').hidden = true;
@@ -316,7 +335,22 @@
     if ($('detailSessionTopicAlert')) $('detailSessionTopicAlert').textContent = session.topic
       ? `Nội dung buổi học: ${session.topic}`
       : 'Buổi học chưa có nội dung được cập nhật.';
-    void loadAbsenceState(session, serial);
+    if (focusAbsence) {
+      $('parentSessionDetailCard')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+
+    void loadAbsenceState(session, serial).then(() => {
+      if (
+        focusAbsence &&
+        serial === state.absenceSerial &&
+        !$('parentAbsenceForm').hidden
+      ) {
+        $('parentAbsenceReason').focus({ preventScroll: true });
+      }
+    });
   }
 
   async function loadAbsenceState(session, serial) {
