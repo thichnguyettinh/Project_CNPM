@@ -1,13 +1,149 @@
 
-
 % ==================== CHƯƠNG 6 ====================
 \chapter{KIỂM THỬ CHƯƠNG TRÌNH}
 
 \section{Kiểm thử các chức năng đã thực hiện}
 \subsection{Kiểm thử cho chức năng 1}
 \subsection{Kiểm thử cho chức năng 2}
-\subsection{Kiểm thử cho chức năng 3}
-\subsection{Kiểm thử cho chức năng 4}
+\subsection{Kiểm thử cho chức năng 3 - Quản lý lớp học}
+
+\hspace*{1em}Chức năng Quản lý lớp học cho phép Giáo viên tạo mới, cập nhật thông tin, theo dõi sĩ số và kết thúc lớp học. Việc kiểm thử tập trung vào tính chính xác của dữ liệu lớp học, khả năng kiểm tra thông tin đầu vào, xử lý các thao tác kết thúc lớp và kiểm soát quyền truy cập giữa các vai trò người dùng.
+
+\vspace{0.4em}
+\begin{longtable}{|>{\centering\arraybackslash}p{0.055\textwidth}|>{\raggedright\arraybackslash}p{0.285\textwidth}|>{\raggedright\arraybackslash}p{0.215\textwidth}|>{\raggedright\arraybackslash}p{0.275\textwidth}|>{\centering\arraybackslash}p{0.07\textwidth}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endfirsthead
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+1 & \textbf{Tạo lớp học mới với dữ liệu hợp lệ}\newline
+Mã: TC\_UC03\_001\newline
+ĐK: Giáo viên đã đăng nhập.\newline
+HĐ: Mở Danh sách lớp học $\rightarrow$ Tạo lớp học mới $\rightarrow$ Nhập tên lớp Toán 10A, môn Toán, học phí 100.000 và ngày bắt đầu 01/11/2026 $\rightarrow$ Lưu. &
+Lớp được tạo ở trạng thái Đang hoạt động; sĩ số ban đầu bằng 0; thông tin hiển thị trong danh sách lớp. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+2 & \textbf{Kiểm tra lớp mới có sĩ số ban đầu bằng 0}\newline
+Mã: TC\_UC03\_002\newline
+ĐK: Đã tạo thành công lớp học mới chưa có học sinh.\newline
+HĐ: Mở chi tiết lớp vừa tạo và quan sát sĩ số hiện tại. &
+Sĩ số hiển thị bằng 0 và không tự phát sinh học sinh. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+3 & \textbf{Chỉnh sửa thông tin lớp học}\newline
+Mã: TC\_UC03\_003\newline
+ĐK: Lớp đang ở trạng thái Đang hoạt động.\newline
+HĐ: Chọn lớp $\rightarrow$ Chỉnh sửa $\rightarrow$ Đổi tên thành Toán 10A nâng cao, cập nhật mô tả/học phí $\rightarrow$ Lưu $\rightarrow$ Mở lại chi tiết lớp. &
+Thông tin mới được lưu và hiển thị chính xác; dữ liệu lớp không bị nhân đôi. &
+Thông tin được lưu và hiển thị đúng, không bị nhân đôi. Tuy nhiên, các trường Ngày học, Giờ học, Ngày bắt đầu, Ngày kết thúc chưa được thiết lập bắt buộc; hệ thống vẫn cho phép lưu khi bỏ trống. & \textbf{FAIL} \\
+\hline
+4 & \textbf{Từ chối tạo lớp khi thiếu trường bắt buộc}\newline
+Mã: TC\_UC03\_004\newline
+ĐK: Giáo viên đang ở biểu mẫu tạo lớp.\newline
+HĐ: Bỏ trống Tên lớp hoặc Môn học hoặc Ngày bắt đầu $\rightarrow$ Nhấn Lưu. &
+Hệ thống chỉ rõ trường thông tin còn thiếu và không tạo lớp học. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+5 & \textbf{Từ chối học phí cơ bản sai định dạng hoặc âm}\newline
+Mã: TC\_UC03\_005\newline
+ĐK: Giáo viên đang nhập thông tin lớp học.\newline
+HĐ: Nhập học phí không hợp lệ như ``abc'' hoặc -100000 $\rightarrow$ Nhấn Lưu. &
+Hệ thống thông báo lỗi định dạng hoặc giá trị không hợp lệ; không lưu thay đổi. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+6 & \textbf{Kết thúc lớp học và xác nhận thao tác}\newline
+Mã: TC\_UC03\_006\newline
+ĐK: Lớp đang hoạt động và không còn khoản nợ chưa xử lý.\newline
+HĐ: Chọn lớp $\rightarrow$ Kết thúc lớp học $\rightarrow$ Kiểm tra hộp thoại xác nhận $\rightarrow$ Xác nhận. &
+Trạng thái lớp chuyển thành Đã kết thúc; hệ thống không tiếp tục phát sinh kỳ thu học phí mới. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+7 & \textbf{Hủy thao tác kết thúc lớp học}\newline
+Mã: TC\_UC03\_007\newline
+ĐK: Lớp đang hoạt động.\newline
+HĐ: Chọn Kết thúc lớp học $\rightarrow$ Chọn Hủy/Đóng tại hộp thoại $\rightarrow$ Mở lại chi tiết lớp. &
+Lớp vẫn ở trạng thái Đang hoạt động; lịch học và dữ liệu không bị thay đổi. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+8 & \textbf{Giữ lịch sử và hủy buổi học tương lai khi kết thúc lớp}\newline
+Mã: TC\_UC03\_008\newline
+ĐK: Lớp có buổi học tương lai, lịch sử điểm danh, điểm số và công nợ cũ.\newline
+HĐ: Kết thúc lớp $\rightarrow$ Kiểm tra lịch các buổi tương lai $\rightarrow$ Tra cứu lịch sử điểm danh, điểm số và công nợ. &
+Buổi học chưa diễn ra trong tương lai bị hủy; lịch sử điểm danh, điểm số và công nợ cũ vẫn được giữ lại để tra cứu. &
+Sau khi kết thúc lớp, các buổi học tương lai vẫn còn. Ngoài ra, thời gian và thứ trong tuần hiển thị không khớp với thông tin lớp học. & \textbf{FAIL} \\
+\hline
+9 & \textbf{Cảnh báo công nợ trước khi kết thúc lớp}\newline
+Mã: TC\_UC03\_009\newline
+ĐK: Lớp có ít nhất một hóa đơn chưa thanh toán hết.\newline
+HĐ: Chọn Kết thúc lớp $\rightarrow$ Quan sát cảnh báo công nợ $\rightarrow$ Kiểm tra danh sách học sinh còn nợ. &
+Hệ thống hiển thị danh sách học sinh còn nợ trước khi Giáo viên xác nhận kết thúc lớp. &
+Khi kết thúc lớp học còn công nợ, hệ thống không hiển thị danh sách học sinh còn nợ mà vẫn cho phép hoàn tất thao tác đóng lớp. & \textbf{FAIL} \\
+\hline
+10 & \textbf{Ngăn Học sinh/Phụ huynh sửa thông tin lớp}\newline
+Mã: TC\_UC03\_010\newline
+ĐK: Đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh.\newline
+HĐ: Thử truy cập chức năng quản lý lớp học hoặc URL tạo, sửa, kết thúc lớp. &
+Yêu cầu bị từ chối; thông tin lớp không bị thay đổi. &
+Không thể truy cập chức năng Quản lý lớp học từ giao diện bằng tài khoản Học sinh/Phụ huynh. & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\vspace{0.8em}
+\subsection{Kiểm thử cho chức năng 4 - Lập thời khóa biểu}
+
+\hspace*{1em}Chức năng Lập thời khóa biểu cho phép Giáo viên thiết lập lịch học cho các lớp, bao gồm thời gian, địa điểm và hình thức tổ chức buổi học. Việc kiểm thử tập trung vào khả năng tạo lịch học, thiết lập lịch lặp, kiểm tra tính hợp lệ của thời gian và dữ liệu đầu vào, đồng thời đảm bảo Học sinh và Phụ huynh không có quyền thay đổi thời khóa biểu.
+
+\vspace{0.4em}
+\begin{longtable}{|>{\centering\arraybackslash}p{0.055\textwidth}|>{\raggedright\arraybackslash}p{0.285\textwidth}|>{\raggedright\arraybackslash}p{0.215\textwidth}|>{\raggedright\arraybackslash}p{0.275\textwidth}|>{\centering\arraybackslash}p{0.07\textwidth}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endfirsthead
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+1 & \textbf{Tạo lịch học một buổi hợp lệ}\newline
+Mã: TC\_UC04\_001\newline
+ĐK: Lớp học đã được tạo và đang hoạt động.\newline
+HĐ: Chọn lớp $\rightarrow$ Thêm lịch học $\rightarrow$ Nhập ngày 05/11/2026, giờ 18:00--19:30, phòng 203 $\rightarrow$ Chọn Chỉ một buổi $\rightarrow$ Lưu. &
+Một buổi học được tạo thành công và xuất hiện trong danh sách lịch học của lớp. &
+Chức năng Thêm lịch học hiện nằm ở tab Lịch học thay vì Chi tiết lớp. Không có lựa chọn Chỉ một buổi. Hệ thống vẫn tạo thành công một buổi học bổ sung. & \textbf{FAIL} \\
+\hline
+2 & \textbf{Tạo lịch học lặp lại hàng tuần}\newline
+Mã: TC\_UC04\_002\newline
+ĐK: Lớp học đang hoạt động.\newline
+HĐ: Chọn Thêm lịch học $\rightarrow$ Nhập thứ Hai, 18:00--19:30, phòng 203 $\rightarrow$ Chọn Lặp lại hàng tuần $\rightarrow$ Lưu $\rightarrow$ Kiểm tra danh sách lịch. &
+Hệ thống tự động tạo các buổi học định kỳ theo cấu hình; từng buổi được gắn đúng lớp và thời gian. &
+Chức năng Thêm lịch học nằm ở tab Lịch học thay vì Chi tiết lớp. Không có lựa chọn Lặp lại hàng tuần. Hệ thống chỉ tạo thành công một buổi học bổ sung, không tạo lịch lặp định kỳ. & \textbf{FAIL} \\
+\hline
+3 & \textbf{Từ chối lưu khi thiếu ngày, giờ hoặc địa điểm}\newline
+Mã: TC\_UC04\_004\newline
+ĐK: Lớp học đã tồn tại.\newline
+HĐ: Mở biểu mẫu Thêm lịch học $\rightarrow$ Lần lượt bỏ trống ngày, giờ bắt đầu/kết thúc hoặc phòng học/đường dẫn $\rightarrow$ Nhấn Lưu. &
+Hệ thống yêu cầu bổ sung các thông tin bắt buộc; không tạo buổi học khi thiếu dữ liệu. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+4 & \textbf{Kiểm tra giờ kết thúc phải sau giờ bắt đầu}\newline
+Mã: TC\_UC04\_005\newline
+ĐK: Lớp học đã tồn tại.\newline
+HĐ: Nhập giờ bắt đầu 19:30 và giờ kết thúc 18:00 $\rightarrow$ Nhấn Lưu. &
+Hệ thống từ chối khoảng thời gian không hợp lệ, hiển thị thông báo lỗi rõ ràng và không tạo lịch học. &
+Hệ thống không cho phép tạo lịch học khi giờ kết thúc sớm hơn giờ bắt đầu. Tuy nhiên, chưa hiển thị thông báo lỗi tường minh để người dùng nhận biết nguyên nhân. & \textbf{FAIL} \\
+\hline
+5 & \textbf{Ngăn Học sinh/Phụ huynh lập hoặc sửa thời khóa biểu}\newline
+Mã: TC\_UC04\_007\newline
+ĐK: Đăng nhập bằng tài khoản Học sinh hoặc Phụ huynh.\newline
+HĐ: Mở trang Lịch học $\rightarrow$ Thử thao tác thêm/sửa lịch hoặc truy cập URL quản lý lịch. &
+Người dùng chỉ được phép tra cứu lịch; không thể tạo mới hoặc thay đổi thời khóa biểu. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\vspace{0.8em}
 \subsection{Kiểm thử cho chức năng 5 - Quản lý danh sách học sinh}
 Chức năng quản lý danh sách học sinh cho phép giáo viên thực hiện các nghiệp vụ như thêm học sinh vào lớp, đồng bộ thời khóa biểu, xử lý cho học sinh nghỉ học và kiểm soát phân quyền truy cập, được kiểm tra qua các trường hợp chính để bao quát các tình huống hợp lệ và ngoại lệ.
 
@@ -125,7 +261,7 @@ Chức năng điểm danh cho phép giáo viên quản lý và ghi nhận trạn
 
 \end{longtable}
 
-\subsection{Kiểm thử cho chức năng 7 - Quản lý bài tập và kiểm tra
+\subsection{Kiểm thử cho chức năng 7 - Quản lý bài tập và kiểm tra}
 
 Chức năng cho phép giáo viên tạo bài tập, bài kiểm tra, lựa chọn loại đánh giá, thiết lập ngày giao và hạn chót, chỉnh sửa nội dung và quản lý quyền truy cập.
 
@@ -226,8 +362,80 @@ Dữ liệu quan sát thực tế từ các ảnh kiểm thử: lớp \textbf{TH
 \noindent\textit{Quy ước: BE -- kiểm thử backend; MP -- kiểm thử mô phỏng; UI -- kiểm thử giao diện; JS -- kiểm thử JavaScript. Các trạng thái ``Đạt logic'' và ``Đạt thiết kế'' không tương đương với PASS tích hợp.}\par\medskip
 
 \noindent\textbf{Nhận xét.} Các chức năng tạo khoản thu, lưu trạng thái công nợ và giới hạn quyền truy cập đã có cơ chế xử lý trong mã nguồn. Kiểm tra mô hình dữ liệu thanh toán đã xác nhận việc từ chối số âm, số 0 và chuỗi ký tự. Điểm cần tiếp tục kiểm tra là khả năng đồng bộ dữ liệu giữa Điểm danh và Học phí: hệ thống chỉ đếm những buổi học có trạng thái đã hoàn thành và phù hợp điều kiện điểm danh; đồng thời câu lệnh tạo hóa đơn hiện bỏ qua kỳ đã tồn tại, không tự cập nhật số tiền của hóa đơn trước đó. Vì vậy, \textbf{TC\_UC09\_001 được ghi nhận là hiện tượng nghi vấn}, cần đối chiếu lại điều kiện đầu vào trước khi xác định PASS hoặc FAIL chính thức.
-\subsection{Kiểm thử cho chức năng 10}
-\subsection{Kiểm thử cho chức năng 11 - Tra cưu tiến độ học tập và điểm danh}
+\subsection{Kiểm thử cho chức năng 10 - Tra cứu lịch học}
+
+\hspace*{1em}Chức năng Tra cứu lịch học cho phép Học sinh và Phụ huynh theo dõi thời khóa biểu, xem thông tin chi tiết từng buổi học và tra cứu lịch theo từng khoảng thời gian. Việc kiểm thử tập trung vào tính chính xác của dữ liệu hiển thị, khả năng chuyển đổi tuần, lọc lịch theo lớp, xử lý trạng thái không có lịch và đảm bảo quyền riêng tư giữa các tài khoản.
+
+\vspace{0.4em}
+\begin{longtable}{|>{\centering\arraybackslash}p{0.055\textwidth}|>{\raggedright\arraybackslash}p{0.285\textwidth}|>{\raggedright\arraybackslash}p{0.215\textwidth}|>{\raggedright\arraybackslash}p{0.275\textwidth}|>{\centering\arraybackslash}p{0.07\textwidth}|}
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endfirsthead
+\hline
+\textbf{STT} & \textbf{Tên Test Case \& Mô tả} & \textbf{Đầu ra (Output) mong đợi} & \textbf{Ngoại lệ / Thực tế} & \textbf{Kết quả} \\
+\hline
+\endhead
+1 & \textbf{Học sinh xem lịch học tuần của bản thân}\newline
+Mã: TC\_UC10\_001\newline
+ĐK: Học sinh đã đăng nhập và được ghi danh vào lớp có lịch học.\newline
+HĐ: Đăng nhập hs01 $\rightarrow$ Mở Lịch học $\rightarrow$ Chọn tuần 02--08/11/2026. &
+Hệ thống hiển thị lịch học theo tuần của học sinh, chính xác về ngày, giờ, lớp và địa điểm. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+2 & \textbf{Phụ huynh xem lịch học của con đã liên kết}\newline
+Mã: TC\_UC10\_002\newline
+ĐK: Tài khoản ph01 đã liên kết với hs01; hs01 có lịch học.\newline
+HĐ: Đăng nhập ph01 $\rightarrow$ Chọn hồ sơ hs01 $\rightarrow$ Mở Lịch học và chọn tuần cần xem. &
+Hệ thống hiển thị đúng lịch học của hs01; không hiển thị nhầm lịch của học sinh khác. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+3 & \textbf{Chuyển tuần trước, tuần sau và về tuần hiện tại}\newline
+Mã: TC\_UC10\_003\newline
+ĐK: Tài khoản có quyền tra cứu và lịch học có dữ liệu ở các tuần khác nhau.\newline
+HĐ: Mở Lịch học tuần $\rightarrow$ Chọn tuần trước $\rightarrow$ Chọn tuần sau $\rightarrow$ Nhấn Hôm nay/tuần hiện tại nếu có. &
+Khoảng thời gian và danh sách buổi học thay đổi tương ứng; không giữ lại dữ liệu của tuần cũ. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+4 & \textbf{Lọc lịch theo lớp học}\newline
+Mã: TC\_UC10\_004\newline
+ĐK: Người dùng có quyền xem lịch của nhiều lớp hoặc nhiều học sinh thuộc Phụ huynh.\newline
+HĐ: Mở Lịch học $\rightarrow$ Chọn bộ lọc lớp Toán 10A $\rightarrow$ Quan sát danh sách buổi học. &
+Hệ thống chỉ hiển thị các buổi học thuộc lớp được lựa chọn. &
+Đối với tài khoản Học sinh, chức năng lọc hoạt động tốt. Tuy nhiên, tài khoản Phụ huynh chưa có lựa chọn lọc lịch theo lớp. & \textbf{FAIL} \\
+\hline
+5 & \textbf{Xem chi tiết một buổi học}\newline
+Mã: TC\_UC10\_005\newline
+ĐK: Buổi học có đầy đủ dữ liệu chi tiết.\newline
+HĐ: Chọn buổi học Toán 10A ngày 05/11/2026 $\rightarrow$ Nhấn Chi tiết $\rightarrow$ Kiểm tra ngày, giờ, thời lượng, phòng, giáo viên và nội dung buổi học. &
+Hệ thống hiển thị đầy đủ thông tin chính xác của buổi học; có liên kết quay lại lịch tuần. &
+Thông tin buổi học được hiển thị đầy đủ. Tuy nhiên, giao diện và thao tác giữa tài khoản Học sinh và Phụ huynh có sự khác biệt. & \textbf{PASS} \\
+\hline
+6 & \textbf{Hiển thị trạng thái rỗng khi không có lịch trong khoảng thời gian}\newline
+Mã: TC\_UC10\_006\newline
+ĐK: Người dùng có quyền tra cứu lịch học.\newline
+HĐ: Chọn tuần 01--07/01/2027 không có buổi học $\rightarrow$ Quan sát giao diện. &
+Hệ thống hiển thị thông báo không có lịch/buổi học phù hợp; không hiển thị dữ liệu của tuần khác. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+7 & \textbf{Ngăn Học sinh xem lịch của học sinh khác}\newline
+Mã: TC\_UC10\_007\newline
+ĐK: hs01 đã đăng nhập; hs02 không thuộc tài khoản hs01.\newline
+HĐ: Đăng nhập hs01 $\rightarrow$ Thử thay mã học sinh trên URL/tham số thành hs02 $\rightarrow$ Tải dữ liệu. &
+Hệ thống từ chối truy cập hoặc chỉ trả về dữ liệu lịch học của hs01. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+8 & \textbf{Ngăn Phụ huynh xem lịch của học sinh chưa liên kết}\newline
+Mã: TC\_UC10\_008\newline
+ĐK: ph01 chỉ liên kết với hs01; hs02 chưa được liên kết.\newline
+HĐ: Đăng nhập ph01 $\rightarrow$ Thử chọn hoặc truy cập URL lịch học của hs02. &
+Hệ thống từ chối truy cập; không tiết lộ thông tin lịch học của hs02. &
+Kết quả thực tế đạt mong đợi, không ghi nhận ngoại lệ. & \textbf{PASS} \\
+\hline
+\end{longtable}
+
+\endgroup
+\subsection{Kiểm thử cho chức năng 11 - Tra cứu tiến độ học tập và điểm danh}
 Chức năng cho phép học sinh, phụ huynh tra cứu điểm số, nhận xét, biểu đồ kết quả, lịch sử điểm danh và dữ liệu theo bộ lọc; đồng thời bảo vệ dữ liệu cá nhân giữa các tài khoản.
 
 Các thử nghiệm gồm kiểm tra dữ liệu hiển thị, lọc theo nhiều tiêu chí, đối chiếu biểu đồ với bảng điểm và kiểm tra quyền truy cập bằng giao diện hoặc API.
@@ -246,7 +454,7 @@ Các thử nghiệm gồm kiểm tra dữ liệu hiển thị, lọc theo nhiề
 \hline
 \caption{Kết quả kiểm thử chức năng tra cứu tiến độ học tập và điểm danh (UC-11)}\label{tab:report-uc11}\\
 \endlastfoot
-1 & \textbf{TC\_UC11\_001}\par \textit{Học sinh xem bảng điểm và nhận xét cá nhân}\par Đăng nhập HS01, mở Kết quả học tập, chọn lớp/kỳ và kiểm tra điểm cùng nhận xét. & Hiển thị đúng bảng điểm, tổng hợp và nhận xét của chính học sinh. & Ô kết quả thực tế trong ảnh còn phần nội dung sau từ “Tuy nhiên” bị khuất; chưa thể xác định đầy đủ hạn chế cuối dòng. & \parbox[t]{1.53cm}{\centering\fontsize{7.1}{8.4}\selectfont\bfseries CẦN ĐỐI CHIẾU} \\ \hline
+1 & \textbf{TC\_UC11\_001}\par \textit{Học sinh xem bảng điểm và nhận xét cá nhân}\par Đăng nhập HS01, mở Kết quả học tập, chọn lớp/kỳ và kiểm tra điểm cùng nhận xét. & Hiển thị đúng bảng điểm, tổng hợp và nhận xét của chính học sinh. & Ô kết quả thực tế trong ảnh còn phần nội dung sau từ “Tuy nhiên” bị khuất; chưa thể xác định đầy đủ hạn chế cuối dòng. & \parbox[t]{1.53cm}{\centering\fontsize{7.1}{8.4}\selectfont\bfseries FAIL} \\ \hline
 2 & \textbf{TC\_UC11\_002}\par \textit{Học sinh xem chi tiết bài kiểm tra}\par Mở danh sách Kết quả học tập, chọn một bài đã chấm, xem chi tiết. & Hiển thị đúng bài, loại, điểm và nhận xét; thông tin lịch sử sửa điểm nếu có theo đặc tả. & Giao diện học sinh chưa hiển thị đầy đủ điểm trước/sau, lý do và thời điểm chỉnh sửa; cần xác nhận đây có phải yêu cầu bắt buộc. & \parbox[t]{1.53cm}{\centering\fontsize{7.1}{8.4}\selectfont\bfseries ĐẠT 1 PHẦN} \\ \hline
 3 & \textbf{TC\_UC11\_003}\par \textit{Học sinh tra cứu lịch sử điểm danh và bộ lọc}\par Đăng nhập học sinh; mở lịch sử Điểm danh; chọn lớp, tháng, trạng thái Có mặt/Vắng/Trễ/Có phép. & Danh sách và số liệu thống kê sau lọc trùng khớp dữ liệu điểm danh. & Không ghi nhận sai lệch. & \parbox[t]{1.53cm}{\centering\fontsize{7.1}{8.4}\selectfont\bfseries PASS} \\ \hline
 4 & \textbf{TC\_UC11\_004}\par \textit{Phụ huynh xem điểm và nhận xét của con liên kết}\par Đăng nhập PH01 liên kết HS01; chọn HS01, mở Kết quả học tập. & Hiển thị đúng điểm, nhận xét và biểu đồ tiến bộ của HS01; chỉ đọc. & Không ghi nhận sai lệch. & \parbox[t]{1.53cm}{\centering\fontsize{7.1}{8.4}\selectfont\bfseries PASS} \\ \hline
@@ -307,4 +515,7 @@ Nhóm sử dụng \textit{kiểm thử phân quyền} cho các tài khoản ph�
 % \end{enumerate}
 
 % \noindent\textbf{Kết luận.} UC-09 và UC-12 đã triển khai các nghiệp vụ cốt lõi và vượt qua các kiểm tra thành phần được thực hiện. Tuy nhiên, số liệu học phí 0 đồng trong các kỳ có dữ liệu buổi học là một điểm bất thường cần làm rõ. Báo cáo giữ nguyên phạm vi bằng chứng thực tế, tránh tự suy diễn kết quả PASS/FAIL cho các thao tác chưa có minh chứng đầy đủ.
+
+
 \section{Kiểm thử yêu cầu phi chức năng}
+
