@@ -23,3 +23,38 @@
 .absence-quick-actions select { flex: 1 1 300px; min-width: 180px; }
 .absence-quick-actions button { flex: 0 0 auto; }
 .absence-quick-card .text-caption { margin-top: 10px; }
+
+/* UC-06: Nut xin vang tren lich phu huynh */
+
+.parent-schedule-page .parent-calendar-session-with-absence {
+  margin-bottom: 6px;
+  padding-bottom: 8px;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.parent-schedule-page .parent-calendar-session-with-absence .cal-class-card {
+  border-left: 0;
+  padding-bottom: 6px;
+}
+
+.parent-schedule-page .parent-calendar-absence-link {
+  display: block;
+  margin: 0 10px;
+  padding: 4px 9px;
+  border: 1px solid #2563eb;
+  border-radius: 6px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.parent-schedule-page .parent-calendar-absence-link:hover,
+.parent-schedule-page .parent-calendar-absence-link:focus-visible {
+  background: #dbeafe;
+  outline-offset: 2px;
+}
