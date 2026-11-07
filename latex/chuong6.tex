@@ -493,24 +493,50 @@ Nhóm sử dụng \textit{kiểm thử phân quyền} cho các tài khoản ph�
 8 & \textbf{TC\_UC12\_008}\par Đăng nhập phụ huynh, kiểm tra nút sửa hóa đơn/thanh toán; kiểm tra các tuyến API ghi nhận thu. & Giao diện không có chức năng chỉnh sửa; các API thay đổi khoản thu sử dụng cơ chế yêu cầu vai trò giáo viên. & Cần gửi yêu cầu POST thực tế bằng phiên phụ huynh để xác nhận lớp bảo vệ phía máy chủ. & \parbox[t]{1.50cm}{\centering\fontsize{7}{8.5}\selectfont\bfseries PASS} \\ \hline
 \end{longtable}
 
-\noindent\textbf{Nhận xét.} Kết quả kiểm thử ở mức mô phỏng cho thấy việc lấy chi tiết, lịch sử thanh toán, lọc theo kỳ và giới hạn dữ liệu theo quan hệ phụ huynh -- học sinh phù hợp với logic đã xây dựng. Đối với \textbf{TC\_UC12\_007}, ảnh thao tác cho thấy tài khoản học sinh không vào được trang tra cứu dành riêng cho phụ huynh, do đó được đánh giá đạt ở mức giao diện. Tuy nhiên, học sinh vẫn có thể truy cập API chung để xem thông tin học phí của chính mình; đây là phạm vi quyền riêng cần đối chiếu với đặc tả. Các kiểm thử dùng mô phỏng cần được thực hiện lại trên cơ sở dữ liệu thực trước khi công bố kết quả tích hợp.
-
-% \subsection{Tổng hợp và đánh giá kết quả kiểm thử UC-09, UC-12}
-
-% Đối với hai chức năng, nhóm ghi nhận ba mức bằng chứng: (i) quan sát trực tiếp trên website do người kiểm thử cung cấp; (ii) chạy kiểm thử tự động/mô phỏng thành phần; và (iii) kiểm tra cấu trúc mã nguồn. Kết quả \textbf{đạt ở mức mô phỏng hoặc logic} không được hiểu là đã đạt toàn bộ quy trình nghiệp vụ trên website có kết nối cơ sở dữ liệu.
-
-% Bộ kiểm thử tự động có sẵn \texttt{test\_tuition\_uc09\_uc12.py} được chạy lại với kết quả \textbf{9/9 bài PASS}; ngoài ra, các kiểm thử bổ sung về giao diện JavaScript và backend mô phỏng cho UC-12 cũng hoàn tất, lần lượt \textbf{7/7} và \textbf{6/6} kiểm tra PASS. Những bộ test này không tương ứng một--một với toàn bộ test case trong bảng và chưa thay thế kiểm thử tích hợp.
-
-% \noindent\textbf{Các vấn đề cần hoàn thiện:}
-% \begin{enumerate}
-%   \item Bổ sung phương án tính lại khoản thu chưa thanh toán khi lịch học, điểm danh hoặc đơn giá thay đổi; cần lưu lịch sử điều chỉnh khi khoản thu đã có giao dịch.
-%   \item Làm rõ quy tắc xử lý hóa đơn 0 đồng và trường hợp buổi học chưa hoàn thành, tránh đánh giá sai công nợ.
-%   \item Kiểm tra việc phát hành thông báo tới đúng tài khoản phụ huynh liên kết bằng ít nhất hai tài khoản độc lập.
-%   \item Thực hiện kiểm thử quyền truy cập và ghi nhận thanh toán qua API trong phiên đăng nhập thật, đồng thời đối chiếu dữ liệu PostgreSQL.
-% \end{enumerate}
-
-% \noindent\textbf{Kết luận.} UC-09 và UC-12 đã triển khai các nghiệp vụ cốt lõi và vượt qua các kiểm tra thành phần được thực hiện. Tuy nhiên, số liệu học phí 0 đồng trong các kỳ có dữ liệu buổi học là một điểm bất thường cần làm rõ. Báo cáo giữ nguyên phạm vi bằng chứng thực tế, tránh tự suy diễn kết quả PASS/FAIL cho các thao tác chưa có minh chứng đầy đủ.
-
 
 \section{Kiểm thử yêu cầu phi chức năng}
 
+\section{Kiểm thử lại (Re-test)}
+Phần này tổng hợp kết quả kiểm thử lại (Re-test) sau khi hệ thống đã tiến hành khắc phục, hoàn thiện các chức năng và sửa chữa các lỗi phát sinh ở giai đoạn trước.
+
+\begin{longtable}{|c|p{2.2cm}|p{4.5cm}|p{3.2cm}|c|p{5cm}|}
+\hline
+\textbf{STT} & \textbf{Mã TC} & \textbf{Tên Test Case} & \textbf{Chức năng / Use-Case} & \textbf{Kết quả Re-test} & \textbf{Ghi chú sau khi sửa} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+1 & TC\_UC02\_001 & Tạo tài khoản Học sinh hợp lệ & Quản lý người dùng & \textcolor{blue}{\textbf{PASS}} & Đã chuẩn hóa quy chế bắt buộc liên kết tài khoản Phụ huynh khi tạo học sinh. \\ \hline
+
+2 & TC\_UC02\_002 & Tạo tài khoản Phụ huynh \& liên kết HS & Quản lý người dùng & \textcolor{blue}{\textbf{PASS}} & Liên kết dữ liệu phụ huynh -- học sinh hoạt động chính xác. \\ \hline
+
+3 & TC\_UC03\_003 & Chỉnh sửa thông tin lớp học & Quản lý lớp học & \textcolor{blue}{\textbf{PASS}} & Đã bổ sung các ràng buộc bắt buộc tại các trường Ngày học, Giờ học, Ngày bắt đầu/kết thúc. \\ \hline
+
+4 & TC\_UC03\_008 & Giữ lịch sử và hủy buổi học tương lai khi kết thúc lớp & Quản lý lớp học & \textcolor{blue}{\textbf{PASS}} & Đã khắc phục lỗi hiển thị sai thời gian và tự động gỡ bỏ lịch tương lai chính xác khi kết thúc lớp. \\ \hline
+
+5 & TC\_UC03\_009 & Cảnh báo công nợ trước khi kết thúc lớp & Quản lý lớp học & \textcolor{blue}{\textbf{PASS}} & Hệ thống hiển thị danh sách học sinh còn nợ học phí và yêu cầu xử lý trước khi cho phép đóng lớp. \\ \hline
+
+6 & TC\_UC04\_001 & Tạo lịch học một buổi hợp lệ & Lập thời khóa biểu & \textcolor{blue}{\textbf{PASS}} & Đã bổ sung đầy đủ nút Thêm lịch học ở mục Chi tiết lớp và tùy chọn phân biệt Chỉ một buổi / Lặp lại. \\ \hline
+
+7 & TC\_UC04\_002 & Tạo lịch học lặp lại hàng tuần & Lập thời khóa biểu & \textcolor{blue}{\textbf{PASS}} & Tùy chọn lặp lại hằng tuần sinh tự động các buổi định kỳ đúng hạn. \\ \hline
+
+8 & TC\_UC04\_005 & Kiểm tra giờ kết thúc phải sau giờ bắt đầu & Lập thời khóa biểu & \textcolor{blue}{\textbf{PASS}} & Đã thêm thông báo lỗi tường minh khi người dùng nhập sai khung giờ. \\ \hline
+
+9 & TC\_UC05\_006 & Cảnh báo khoản học phí còn nợ khi cho học sinh nghỉ & Quản lý danh sách học sinh & \textcolor{blue}{\textbf{PASS}} & Popup cảnh báo công nợ hiển thị rõ ràng trước khi xác nhận cho học sinh nghỉ học. \\ \hline
+
+10 & TC\_UC06\_009 & Gửi yêu cầu xin vắng từ Học sinh/Phụ huynh & Điểm danh & \textcolor{blue}{\textbf{PASS}} & Đã tích hợp giao diện gửi đơn xin vắng trực quan cho học sinh/phụ huynh và màn hình duyệt của giáo viên. \\ \hline
+
+11 & TC\_UC09\_001 & Tự động tính khoản học phí từ số buổi và đơn giá & Quản lý học phí & \textcolor{blue}{\textbf{PASS}} & Đã cập nhật lại luồng tính toán tự động học phí theo dữ liệu điểm danh thực tế (bao gồm quy tắc tính buổi). \\ \hline
+
+12 & TC\_UC10\_004 & Lọc lịch theo lớp học & Tra cứu lịch học & \textcolor{blue}{\textbf{PASS}} & Đã tích hợp thành công bộ lọc chọn lớp cho tài khoản Phụ huynh trên giao diện lịch học tuần. \\ \hline
+
+13 & TC\_UC11\_001 & Học sinh xem bảng điểm và nhận xét của bản thân & Tra cứu tiến độ học tập & \textcolor{blue}{\textbf{PASS}} & Đã bổ sung thêm phần hiển thị lịch sử chỉnh sửa điểm và tối ưu hóa biểu đồ thống kê. \\ \hline
+
+14 & TC\_UC11\_002 & Học sinh xem chi tiết một bài kiểm tra & Tra cứu tiến độ học tập & \textcolor{blue}{\textbf{PASS}} & Giao diện đã hiển thị đầy đủ điểm trước/sau khi sửa, lý do và thời gian chỉnh sửa từ phía giáo viên. \\ \hline
+
+15 & TC\_UC11\_006 & Kiểm tra bộ lọc theo thời gian, lớp và loại đánh giá & Tra cứu tiến độ học tập & \textcolor{blue}{\textbf{PASS}} & Đã đồng bộ bộ lọc đầy đủ cho cả giao diện Học sinh và Phụ huynh. \\ \hline
+
+16 & TC\_UC12\_001 & Phụ huynh xem chi tiết khoản phí của con & Tra cứu học phí & \textcolor{blue}{\textbf{PASS}} & Đã xử lý triệt để lỗi hiển thị hóa đơn 0 đồng thành "Chưa đóng" và loại bỏ các giá trị cứng HTML ban đầu. \\ \hline
+
+\end{longtable}
