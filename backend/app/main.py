@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -18,8 +20,6 @@ def read_root():
     return FileResponse(os.path.join(BASE_DIR, "index.html"))
 
 # (Giữ nguyên các route API hiện tại của bạn ở đây...)
-
-from __future__ import annotations
 
 import uuid
 from io import BytesIO
