@@ -420,7 +420,12 @@ const ParentTuitionInvoiceModule = {
 
       // 3 thẻ thống kê tài chính (Trang 27 PDF)
       setEl('parentStatTotalDue', this.formatCurrency(rec.amountDue));
-      setEl('parentStatPeriodDesc', `Kỳ học: ${this.formatPeriodRange(inv.period_start, inv.period_end)}`);
+      setEl(
+        'parentStatPeriodDesc',
+        Number(inv.sessions_count || 0) > 0
+          ? `Kỳ học: ${this.formatPeriodRange(inv.period_start, inv.period_end)} · ${Number(inv.sessions_count)} buổi tính phí`
+          : `Kỳ học: ${this.formatPeriodRange(inv.period_start, inv.period_end)}`
+      );
 
       setEl('parentStatTotalPaid', this.formatCurrency(rec.amountPaid));
       setEl('parentStatPaymentCountDesc', `${payments.length} lần đóng đã được xác nhận`);
@@ -442,44 +447,49 @@ const ParentTuitionInvoiceModule = {
       if (infoRows) {
         const sessCount = Number(inv.sessions_count || 0);
         const amtDue = Number(inv.amount_due || 0);
-        const chargePerSession = inv.charge_per_session != null ? Number(inv.charge_per_session) : null;
-        // Xây dựng block công thức tính học phí
+        const unitPrice = (inv.charge_per_session != null && Number(inv.charge_per_session) > 0)
+          ? Number(inv.charge_per_session)
+          : (sessCount > 0 ? Math.round(amtDue / sessCount) : 0);
+
         let formulaHtml = '';
-        if (sessCount > 0 && chargePerSession != null) {
+        if (sessCount > 0) {
           formulaHtml = `
           <div class="tuition-formula-block">
-            <div class="tuition-formula-title">Công thức tính học phí</div>
+            <div class="tuition-formula-title">Chi tiết công thức tính học phí</div>
             <div class="tuition-formula-row">
               <span class="tuition-formula-label">Số buổi đi học (tính phí):</span>
-              <span class="tuition-formula-value">${sessCount} buổi</span>
+              <span class="tuition-formula-value"><strong>${sessCount} buổi</strong></span>
             </div>
             <div class="tuition-formula-row">
-              <span class="tuition-formula-label">Đơn giá mỗi buổi:</span>
-              <span class="tuition-formula-value">${this.escapeHtml(this.formatCurrency(chargePerSession))} / buổi</span>
+              <span class="tuition-formula-label">Đơn giá học phí mỗi buổi:</span>
+              <span class="tuition-formula-value"><strong>${this.escapeHtml(this.formatCurrency(unitPrice))} / buổi</strong></span>
             </div>
             <div class="tuition-formula-eq">
-              ${sessCount} buổi &times; ${this.escapeHtml(this.formatCurrency(chargePerSession))} = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
+              Công thức: ${sessCount} buổi &times; ${this.escapeHtml(this.formatCurrency(unitPrice))} = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
             </div>
           </div>`;
         } else if (amtDue > 0) {
           formulaHtml = `
           <div class="tuition-formula-block">
-            <div class="tuition-formula-title">📐 Công thức tính học phí</div>
+            <div class="tuition-formula-title">📐 Chi tiết công thức tính học phí</div>
             <div class="tuition-formula-row">
-              <span class="tuition-formula-label">Loại học phí:</span>
-              <span class="tuition-formula-value">Trọn gói cố định${sessCount > 0 ? ` (${sessCount} buổi trong kỳ)` : ''}</span>
+              <span class="tuition-formula-label">Hình thức tính phí:</span>
+              <span class="tuition-formula-value">Trọn gói cố định theo kỳ</span>
             </div>
             <div class="tuition-formula-eq">
-              Mức cố định = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
+              Mức trọn gói kỳ = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
             </div>
           </div>`;
         }
+
         infoRows.innerHTML = `
           <div class="tuition-kv-row"><span>Mã phiếu thu:</span><strong>${this.escapeHtml(inv.invoice_id)}</strong></div>
           <div class="tuition-kv-row"><span>Học sinh:</span><strong>${this.escapeHtml(inv.student_name)} (${this.escapeHtml(inv.student_code)})</strong></div>
           <div class="tuition-kv-row"><span>Lớp học:</span><span>${this.escapeHtml(inv.class_name)} (${this.escapeHtml(inv.class_code)})</span></div>
           <div class="tuition-kv-row"><span>Giáo viên phụ trách:</span><span>${this.escapeHtml(inv.teacher_name || '—')}</span></div>
           <div class="tuition-kv-row"><span>Kỳ học phí:</span><span>${this.escapeHtml(this.formatPeriodRange(inv.period_start, inv.period_end))}</span></div>
+          <div class="tuition-kv-row"><span>Số buổi tính phí:</span><strong style="color:var(--color-primary); font-size:13.5px;">${sessCount > 0 ? `${sessCount} buổi` : 'Trọn gói kỳ'}</strong></div>
+          ${sessCount > 0 ? `<div class="tuition-kv-row"><span>Đơn giá mỗi buổi:</span><strong style="color:var(--color-primary);">${this.escapeHtml(this.formatCurrency(unitPrice))} / buổi</strong></div>` : ''}
           <div class="tuition-kv-row"><span>Hạn thanh toán:</span><strong>${this.escapeHtml(this.formatDate(inv.period_end))}</strong></div>
           <div class="tuition-kv-row"><span>Ghi chú khoản thu:</span><span>${this.escapeHtml(inv.note || 'Thu theo kỳ học tháng')}</span></div>
           ${formulaHtml}
@@ -487,7 +497,6 @@ const ParentTuitionInvoiceModule = {
         `;
       }
 
-      // Khối phải: Tình trạng đối soát & Thanh tiến độ (66,7% trên Trang 27 PDF)
       const verifyBadge = document.getElementById('parentReconcileVerifyBadge');
       if (verifyBadge) {
         verifyBadge.className = `badge ${rec.verifyBadgeClass}`;
@@ -552,6 +561,79 @@ const ParentTuitionInvoiceModule = {
             <td style="color:var(--color-success); font-size:15px;">${this.escapeHtml(this.formatCurrency(rec.amountPaid))}</td>
           `;
           tbody.appendChild(totalRow);
+        }
+      }
+
+      // Bảng đối chiếu buổi học & điểm danh trong kỳ của con
+      const sessions = Array.isArray(detail.sessions) ? detail.sessions : [];
+      const sessTbody = document.getElementById('parentSessionsTbody');
+      const sessSummary = document.getElementById('parentSessionsSummary');
+      if (sessTbody) {
+        sessTbody.replaceChildren();
+        const sessCount = Number(inv.sessions_count || 0);
+        const amtDue = Number(inv.amount_due || 0);
+        const unitPrice = (inv.charge_per_session != null && Number(inv.charge_per_session) > 0)
+          ? Number(inv.charge_per_session)
+          : (sessCount > 0 ? Math.round(amtDue / sessCount) : 0);
+
+        if (sessions.length === 0) {
+          sessTbody.innerHTML = `
+            <tr>
+              <td colspan="5" style="text-align:center; padding:24px; color:var(--color-text-secondary);">
+                ${sessCount > 0 ? `Kỳ thu ghi nhận ${sessCount} buổi học tính phí (${this.formatCurrency(unitPrice)}/buổi).` : 'Khoản thu áp dụng mức trọn gói cố định theo kỳ.'}
+              </td>
+            </tr>
+          `;
+          if (sessSummary) {
+            sessSummary.textContent = sessCount > 0
+              ? `Tổng ${sessCount} buổi tính phí · Đơn giá: ${this.formatCurrency(unitPrice)}/buổi · Tổng tiền: ${this.formatCurrency(amtDue)}`
+              : 'Khoản thu học phí trọn gói cố định';
+          }
+        } else {
+          const attLabel = st => {
+            if (st === 'present') return '<span class="badge badge-success">Có mặt</span>';
+            if (st === 'late') return '<span class="badge badge-warning">Đi trễ</span>';
+            if (st === 'absent') return '<span class="badge badge-danger">Vắng</span>';
+            if (st === 'excused') return '<span class="badge badge-info">Có phép</span>';
+            return '<span class="badge badge-neutral">Chưa điểm danh</span>';
+          };
+          const isPerSession = sessCount > 0;
+
+          let countedCount = 0;
+          sessions.forEach(s => {
+            const st = s.attendance_status;
+            let feeCell = '';
+            if (isPerSession) {
+              if (st === 'present' || st === 'late') {
+                countedCount++;
+                feeCell = `<strong style="color:var(--color-success);">${this.escapeHtml(this.formatCurrency(unitPrice))}</strong>`;
+              } else if (st === 'absent') {
+                feeCell = `<span style="color:var(--color-danger); text-decoration:line-through;">${this.escapeHtml(this.formatCurrency(unitPrice))}</span> <span class="badge badge-danger" style="font-size:11px;">Vắng (0 ₫)</span>`;
+              } else if (st === 'excused') {
+                feeCell = `<span style="color:var(--color-info); text-decoration:line-through;">${this.escapeHtml(this.formatCurrency(unitPrice))}</span> <span class="badge badge-info" style="font-size:11px;">Có phép (0 ₫)</span>`;
+              } else {
+                feeCell = `<span class="badge badge-neutral" style="font-size:11px;">Chưa học / Chưa tính</span>`;
+              }
+            } else {
+              feeCell = '<span class="badge badge-neutral">Trọn gói tháng</span>';
+            }
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td><strong>${this.escapeHtml(this.formatDateTime(s.starts_at))}</strong></td>
+              <td>${this.escapeHtml(s.topic || 'Buổi học định kỳ')}</td>
+              <td>${this.escapeHtml(s.room || '—')}</td>
+              <td>${attLabel(st)}</td>
+              <td style="text-align:right;">${feeCell}</td>
+            `;
+            sessTbody.appendChild(tr);
+          });
+
+          if (sessSummary) {
+            sessSummary.textContent = isPerSession
+              ? `Đã đi học ${countedCount}/${sessions.length} buổi tính phí · Đơn giá: ${this.formatCurrency(unitPrice)}/buổi · Tổng tiền: ${this.formatCurrency(amtDue)}`
+              : `Học phí thu trọn gói theo tháng (tổng ${sessions.length} buổi trong kỳ) · Mức phí: ${this.formatCurrency(amtDue)}`;
+          }
         }
       }
 

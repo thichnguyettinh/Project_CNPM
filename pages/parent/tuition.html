@@ -216,6 +216,36 @@
           </div>
         </div>
 
+        <!-- Bảng đối chiếu buổi học trong kỳ thu (minh bạch số buổi tính phí) -->
+        <div class="card" style="padding:20px; margin-bottom:20px;" id="parentSessionsCard">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+            <div>
+              <h4 style="font-size:14px; font-weight:700;">Chi tiết buổi học & điểm danh trong kỳ</h4>
+              <p class="text-caption" id="parentSessionsSummary">Chi tiết số buổi tham gia thực tế để tính tổng tiền học phí</p>
+            </div>
+          </div>
+          <div class="table-container" style="box-shadow:none;">
+            <table class="table-custom">
+              <thead>
+                <tr>
+                  <th>Thời gian buổi học</th>
+                  <th>Chủ đề / Nội dung</th>
+                  <th>Phòng học</th>
+                  <th>Điểm danh</th>
+                  <th style="text-align:right;">Tính phí</th>
+                </tr>
+              </thead>
+              <tbody id="parentSessionsTbody">
+                <tr>
+                  <td colspan="5" style="text-align:center; padding:24px; color:var(--color-text-secondary);">
+                    Đang tải danh sách buổi học đối chiếu...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
     </main>
   </div>

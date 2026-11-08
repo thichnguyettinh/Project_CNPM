@@ -2971,7 +2971,11 @@ def list_invoices(
         connection,
         f"""
         SELECT v.*, s.student_code, u.full_name AS student_name, c.class_code, c.name AS class_name,
-               i.period_start, i.period_end, i.sessions_count
+               i.period_start, i.period_end, i.sessions_count,
+               CASE
+                 WHEN i.sessions_count > 0 THEN ROUND((v.amount_due / i.sessions_count)::numeric, 2)
+                 ELSE NULL
+               END AS charge_per_session
         FROM v_tuition_invoice_balances v
         JOIN tuition_invoices i ON i.invoice_id = v.invoice_id
         JOIN students s ON s.student_id = i.student_id
@@ -3005,25 +3009,27 @@ def generate_invoices(
     invoices = []
     with transaction(connection):
         for student in enrolled:
-            session_count = fetch_one(
-                connection,
-                """
-                SELECT COUNT(*) AS count
-                FROM class_sessions cs
-                LEFT JOIN attendance_records ar
-                  ON ar.session_id = cs.session_id AND ar.student_id = %s
-                WHERE cs.class_id = %s
-                  AND (cs.status = 'completed' OR (cs.status IN ('scheduled', 'ongoing') AND cs.starts_at < NOW()))
-                  AND cs.starts_at::date BETWEEN %s AND %s
-                  AND (ar.status IS NULL OR ar.status IN ('present', 'late'))
-                """,
-                (student["student_id"], payload.class_id, payload.period_start, payload.period_end),
-            )["count"]
-            amount = (
-                payload.amount_due
-                if payload.amount_due is not None
-                else payload.charge_per_session * session_count
-            )
+            if payload.amount_due is not None:
+                # Thu theo thang tron goi: so buoi luu la 0 (tron goi ca ky)
+                session_count = 0
+                amount = payload.amount_due
+            else:
+                # Tinh theo buoi hoc thuc te: chi tinh nhung buoi hoc sinh thuc su di hoc (co mat hoac tre)
+                session_count = fetch_one(
+                    connection,
+                    """
+                    SELECT COUNT(*) AS count
+                    FROM class_sessions cs
+                    JOIN attendance_records ar
+                      ON ar.session_id = cs.session_id AND ar.student_id = %s
+                    WHERE cs.class_id = %s
+                      AND cs.status <> 'cancelled'
+                      AND cs.starts_at::date BETWEEN %s AND %s
+                      AND ar.status IN ('present', 'late')
+                    """,
+                    (student["student_id"], payload.class_id, payload.period_start, payload.period_end),
+                )["count"]
+                amount = payload.charge_per_session * session_count
             invoice_id = f"INV-{payload.billing_year}-{payload.billing_month:02d}-{uuid.uuid4().hex[:8].upper()}"
             invoice = fetch_one(
                 connection,
