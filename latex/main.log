@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  8 NOV 2026 01:37
+This is XeTeX, Version 3.141592653-2.6-0.999998 (MiKTeX 26.5) (preloaded format=xelatex 2026.11.3)  8 NOV 2026 09:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -978,4 +978,1476 @@ LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 71.
 LaTeX Font Info:    Redeclaring math symbol \Phi on input line 71.
 LaTeX Font Info:    Redeclaring math symbol \Psi on input line 71.
 LaTeX Font Info:    Redeclaring math symbol \Omega on input line 71.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar o
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 71.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 71.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `normal' on input line 71.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 7
+1.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `bold' on input line 71.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
+71.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
+input line 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
+ 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
+71.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 71.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
+input line 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
+e 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 71.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 71.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+*geometry* verbose mode - [ preamble ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(85.35826pt, 455.24411pt, 56.9055pt)
+* v-part:(T,H,B)=(56.9055pt, 731.23584pt, 56.9055pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=455.24411pt
+* \textheight=731.23584pt
+* \oddsidemargin=13.08827pt
+* \evensidemargin=13.08827pt
+* \topmargin=-56.36449pt
+* \headheight=16.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=35.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package hyperref Info: Link coloring OFF on input line 71.
+(main.out) (main.out)
+\@outlinefile=\write4
+\openout4 = `main.out'.
+
+Package babel Info: Main language set to 'vietnamese'.
+File: khung.jpg Graphic file (type bmp)
+<khung.jpg>
+File: picC1/Logo_HCMUE.png Graphic file (type bmp)
+<picC1/Logo_HCMUE.png>
+LaTeX Font Info:    Trying to load font information for U+msa on input line 104
+.
+
+(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 104
+.
+
+(C:\Users\NgocThanh\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+[1
+
+] (main.toc [1
+
+] [2] [3])
+\tf@toc=\write5
+\openout5 = `main.toc'.
+
+ [4] (phancong.tex [5
+
+]
+Underfull \hbox (badness 1735) in paragraph at lines 8--21
+\TU/TimesNewRoman(0)/m/n/12 – Cài đặt kiến trúc, backend dùng
+ []
+
+[6
+
+]) [7] (main.lof [8
+
+] [9]
+Overfull \hbox (20.39542pt too wide) in paragraph at lines 81--81
+ [][] [][]\TU/TimesNewRoman(0)/m/n/12 Sơ đồ phân rã gói tầng Persistence (11 Re
+positories) và tầng Infrastructure (Database, 
+ []
+
+[10])
+\tf@lof=\write6
+\openout6 = `main.lof'.
+
+ [11] (main.lot [12
+
+])
+\tf@lot=\write7
+\openout7 = `main.lot'.
+
+ [13] (chuong1.tex
+Chương 1.
+[1
+
+]
+File: picC1/diem-danh-as-is.png Graphic file (type bmp)
+<picC1/diem-danh-as-is.png>
+ [2]
+Underfull \hbox (badness 2735) in paragraph at lines 60--60
+\TU/TimesNewRoman(0)/m/n/12 soạn tin nhắn riêng; dễ gửi nhầm
+ []
+
+
+Underfull \hbox (badness 2237) in paragraph at lines 62--62
+[]|\TU/TimesNewRoman(0)/m/n/12 Phụ huynh thụ động trong
+ []
+
+File: picC1/diem-danh-to-be.png Graphic file (type bmp)
+<picC1/diem-danh-to-be.png>
+[3] [4]
+File: picC1/nhap-tra-kq-as-is.png Graphic file (type bmp)
+<picC1/nhap-tra-kq-as-is.png>
+
+Overfull \hbox (2.1085pt too wide) in paragraph at lines 117--118
+[]\TU/TimesNewRoman(0)/b/n/12 Bước 5 – Gửi kết quả: \TU/TimesNewRoman(0)/m/n/12
+ Sử dụng Zalo/Messenger nhắn tin thủ công cho từng phụ huynh/học
+ []
+
+[5
+
+]
+File: picC1/nhap-tra-kq-to-be.png Graphic file (type bmp)
+<picC1/nhap-tra-kq-to-be.png>
+ [6] [7]
+File: picC1/thu-hoc-phi-as-is.png Graphic file (type bmp)
+<picC1/thu-hoc-phi-as-is.png>
+ [8
+
+]
+Underfull \hbox (badness 6094) in paragraph at lines 203--203
+[]|\TU/TimesNewRoman(0)/m/n/12 Ghi nhận thanh toán phụ
+ []
+
+
+Underfull \hbox (badness 4673) in paragraph at lines 203--203
+\TU/TimesNewRoman(0)/m/n/12 thuộc hoàn toàn vào giáo
+ []
+
+File: picC1/thu-hoc-phi-to-be.png Graphic file (type bmp)
+<picC1/thu-hoc-phi-to-be.png>
+[9] [10] [11] [12]
+Overfull \hbox (3.45673pt too wide) in alignment at lines 312--316
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 316--320
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 320--323
+ [] [] [] 
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 323--326
+ [] [] [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 329--329
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin người dùng,
+ []
+
+
+Underfull \hbox (badness 2418) in paragraph at lines 329--329
+\TU/TimesNewRoman(0)/m/n/12 sinh, Phụ huynh), thông
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 331--331
+[]|\TU/TimesNewRoman(0)/m/n/12 Tài khoản người dùng
+ []
+
+
+Underfull \hbox (badness 1859) in paragraph at lines 335--335
+[]|\TU/TimesNewRoman(0)/m/n/12 Xác thực thông tin đăng nhập,
+ []
+
+
+Underfull \hbox (badness 2277) in paragraph at lines 344--344
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, thông tin thời
+ []
+
+
+Underfull \hbox (badness 2158) in paragraph at lines 354--354
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, buổi học hiện
+ []
+
+
+Underfull \hbox (badness 1325) in paragraph at lines 356--356
+[]|\TU/TimesNewRoman(0)/m/n/12 Dữ liệu điểm danh buổi
+ []
+
+
+Underfull \hbox (badness 1286) in paragraph at lines 356--356
+\TU/TimesNewRoman(0)/m/n/12 số liệu thống kê chuyên
+ []
+
+
+Underfull \hbox (badness 1902) in paragraph at lines 359--359
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin học sinh, lớp
+ []
+
+
+Underfull \hbox (badness 1377) in paragraph at lines 369--369
+\TU/TimesNewRoman(0)/m/n/12 điểm (Bài tập, Kiểm tra
+ []
+
+
+Underfull \hbox (badness 1320) in paragraph at lines 371--371
+[]|\TU/TimesNewRoman(0)/m/n/12 Đầu điểm mới được tạo
+ []
+
+
+Underfull \hbox (badness 4108) in paragraph at lines 374--374
+[]|\TU/TimesNewRoman(0)/m/n/12 Lớp học, cột điểm cần
+ []
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 381--381
+[]|\TU/TimesNewRoman(0)/m/n/12 Hiển thị bảng điểm trực
+ []
+
+
+Underfull \hbox (badness 3449) in paragraph at lines 381--381
+\TU/TimesNewRoman(0)/m/n/12 tuyến, lịch sử điểm số,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 384--384
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin học sinh,
+ []
+
+
+Underfull \hbox (badness 8170) in paragraph at lines 384--384
+\TU/TimesNewRoman(0)/m/n/12 kỳ/tháng, dữ liệu điểm
+ []
+
+
+Underfull \hbox (badness 1107) in paragraph at lines 384--384
+\TU/TimesNewRoman(0)/m/n/12 danh, số tiền phải đóng,
+ []
+
+
+Underfull \hbox (badness 2285) in paragraph at lines 386--386
+[]|\TU/TimesNewRoman(0)/m/n/12 Khoản thu học phí mới
+ []
+
+
+Underfull \hbox (badness 4205) in paragraph at lines 386--386
+\TU/TimesNewRoman(0)/m/n/12 được tạo thành công ở
+ []
+
+
+Underfull \hbox (badness 2351) in paragraph at lines 386--386
+\TU/TimesNewRoman(0)/m/n/12 trạng thái “Chưa đóng”,
+ []
+
+
+Underfull \hbox (badness 1189) in paragraph at lines 389--389
+[]|\TU/TimesNewRoman(0)/m/n/12 Thông tin khoản thu, số
+ []
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 389--389
+\TU/TimesNewRoman(0)/m/n/12 tiền thực nhận (tiền mặt
+ []
+
+
+Underfull \hbox (badness 1199) in paragraph at lines 389--389
+\TU/TimesNewRoman(0)/m/n/12 hệ thống), xác nhận của
+ []
+
+
+Underfull \hbox (badness 2435) in paragraph at lines 396--396
+\TU/TimesNewRoman(0)/m/n/12 khoản thu và trạng thái
+ []
+
+
+Overfull \hbox (3.45673pt too wide) in alignment at lines 326--397
+ [] [] [] 
+ []
+
+[13] [14]
+File: picC1/QuanLyLopHocThem.jpg Graphic file (type bmp)
+<picC1/QuanLyLopHocThem.jpg>
+File: picC1/TheoDoiLichHoc.jpg Graphic file (type bmp)
+<picC1/TheoDoiLichHoc.jpg>
+ [15]
+File: picC1/DiemDanh.jpg Graphic file (type bmp)
+<picC1/DiemDanh.jpg>
+File: picC1/NhapTraKQHT.jpg Graphic file (type bmp)
+<picC1/NhapTraKQHT.jpg>
+File: picC1/ThuHocPhi.jpg Graphic file (type bmp)
+<picC1/ThuHocPhi.jpg>
+ [16] [17]
+File: picC1/Bieu-do-phan-cap-chuc-nang.png Graphic file (type bmp)
+<picC1/Bieu-do-phan-cap-chuc-nang.png>
+
+Overfull \hbox (23.37357pt too wide) in paragraph at lines 444--472
+ [][] 
+ []
+
+[18
+
+]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) (chuong2.tex [19] [20]
+Chương 2.
+
+Underfull \hbox (badness 2205) in paragraph at lines 39--39
+\TU/TimesNewRoman(0)/m/n/12 cấp quyền tài khoản cho
+ []
+
+
+Underfull \hbox (badness 2005) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Thêm, sửa, xóa học sinh
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Ghi nhận trạng thái có
+ []
+
+
+Underfull \hbox (badness 3803) in paragraph at lines 39--39
+\TU/TimesNewRoman(0)/m/n/12 mặt/vắng mặt trong buổi
+ []
+
+
+Underfull \hbox (badness 1448) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Nhập, chỉnh sửa điểm số
+ []
+
+
+Underfull \hbox (badness 2617) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Lập khoản thu, cập nhật
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Xem lịch học theo
+ []
+
+
+Underfull \hbox (badness 4181) in paragraph at lines 39--39
+[]|\TU/TimesNewRoman(0)/m/n/12 Xem các khoản phí cần
+ []
+
+[21
+
+] [22]
+File: picC2/UC_Tongquan.png Graphic file (type bmp)
+<picC2/UC_Tongquan.png>
+ [23]
+File: picC2/UC1.png Graphic file (type bmp)
+<picC2/UC1.png>
+File: picC2/UC2.png Graphic file (type bmp)
+<picC2/UC2.png>
+File: picC2/UC3.png Graphic file (type bmp)
+<picC2/UC3.png>
+File: picC2/UC4.png Graphic file (type bmp)
+<picC2/UC4.png>
+File: picC2/UC5.png Graphic file (type bmp)
+<picC2/UC5.png>
+File: picC2/UC6.png Graphic file (type bmp)
+<picC2/UC6.png>
+File: picC2/UC7.png Graphic file (type bmp)
+<picC2/UC7.png>
+File: picC2/UC8.png Graphic file (type bmp)
+<picC2/UC8.png>
+File: picC2/UC9.png Graphic file (type bmp)
+<picC2/UC9.png>
+File: picC2/UC10,11,12.png Graphic file (type bmp)
+<picC2/UC10,11,12.png>
+ [24
+
+] [25] [26] [27] [28] [29] [30]
+File: picC2/AD1.jpg Graphic file (type bmp)
+<picC2/AD1.jpg>
+ [31
+
+]
+File: picC2/AD2.jpg Graphic file (type bmp)
+<picC2/AD2.jpg>
+ [32
+
+]
+File: picC2/AD3.jpg Graphic file (type bmp)
+<picC2/AD3.jpg>
+ [33
+
+] [34]
+File: picC2/AD4.jpg Graphic file (type bmp)
+<picC2/AD4.jpg>
+ [35
+
+]
+File: picC2/AD5.jpg Graphic file (type bmp)
+<picC2/AD5.jpg>
+
+[36
+
+]
+File: picC2/AD6.jpg Graphic file (type bmp)
+<picC2/AD6.jpg>
+ [37
+
+]
+File: picC2/AD7.jpg Graphic file (type bmp)
+<picC2/AD7.jpg>
+ [38
+
+] [39
+
+] [40
+
+] [41
+
+] [42
+
+] [43
+
+] [44
+
+]) (chuong3.tex [45
+
+] [46]
+Chương 3.
+File: picC3/C3_3_1_UC01_Lop_DangNhap.png Graphic file (type bmp)
+<picC3/C3_3_1_UC01_Lop_DangNhap.png>
+File: picC3/C3_3_1_UC02_Lop_QuanLyNguoiDung.png Graphic file (type bmp)
+<picC3/C3_3_1_UC02_Lop_QuanLyNguoiDung.png>
+[47
+
+]
+File: picC3/C3_3_1_UC03_Lop_QuanLyLopHoc.png Graphic file (type bmp)
+<picC3/C3_3_1_UC03_Lop_QuanLyLopHoc.png>
+ [48]
+Overfull \hbox (4.98552pt too wide) in paragraph at lines 37--38
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienQuanLyLop cho phép giáo viên khai báo, đi
+ều chỉnh và kết thúc lớp học. DieuKhien-
+ []
+
+File: picC3/C3_3_1_UC04_Lop_LapThoiKhoaBieu.png Graphic file (type bmp)
+<picC3/C3_3_1_UC04_Lop_LapThoiKhoaBieu.png>
+
+Overfull \hbox (6.3556pt too wide) in paragraph at lines 47--48
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienThoiKhoaBieu tiếp nhận thông tin thời gia
+n và hỗ trợ xem lịch theo tuần. DieuKhien-
+ []
+
+File: picC3/C3_3_1_UC05_Lop_DanhSachHocSinh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC05_Lop_DanhSachHocSinh.png>
+[49]
+File: picC3/C3_3_1_UC06_Lop_DiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC06_Lop_DiemDanh.png>
+ [50]
+File: picC3/C3_3_1_UC07_Lop_BaiTapKiemTra.png Graphic file (type bmp)
+<picC3/C3_3_1_UC07_Lop_BaiTapKiemTra.png>
+File: picC3/C3_3_1_UC08_Lop_CapNhatDiemSo.png Graphic file (type bmp)
+<picC3/C3_3_1_UC08_Lop_CapNhatDiemSo.png>
+ [51]
+Overfull \hbox (43.48647pt too wide) in paragraph at lines 87--88
+[]\TU/TimesNewRoman(0)/m/n/12 GiaoDienNhapDiem cho phép giáo viên nhập điểm và 
+nhận xét theo từng học sinh. DieuKhienDiemSo
+ []
+
+File: picC3/C3_3_1_UC09_Lop_QuanLyHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_1_UC09_Lop_QuanLyHocPhi.png>
+[52]
+File: picC3/C3_3_1_UC10_Lop_TraCuuLichHoc.png Graphic file (type bmp)
+<picC3/C3_3_1_UC10_Lop_TraCuuLichHoc.png>
+ [53]
+File: picC3/C3_3_1_UC11_Lop_TraCuuKetQuaDiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_1_UC11_Lop_TraCuuKetQuaDiemDanh.png>
+ [54]
+File: picC3/C3_3_1_UC12_Lop_TraCuuHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_1_UC12_Lop_TraCuuHocPhi.png>
+ [55]
+File: picC3/C3_3_2_UC01_TrinhTu_DangNhap.png Graphic file (type bmp)
+<picC3/C3_3_2_UC01_TrinhTu_DangNhap.png>
+File: picC3/C3_3_2_UC02_TrinhTu_QuanLyNguoiDung.png Graphic file (type bmp)
+<picC3/C3_3_2_UC02_TrinhTu_QuanLyNguoiDung.png>
+ [56]
+File: picC3/C3_3_2_UC03_TrinhTu_TaoLop.png Graphic file (type bmp)
+<picC3/C3_3_2_UC03_TrinhTu_TaoLop.png>
+ [57]
+File: picC3/C3_3_2_UC03_TrinhTu_SuaKetThucLop.png Graphic file (type bmp)
+<picC3/C3_3_2_UC03_TrinhTu_SuaKetThucLop.png>
+ [58]
+File: picC3/C3_3_2_UC04_TrinhTu_LapThoiKhoaBieu.png Graphic file (type bmp)
+<picC3/C3_3_2_UC04_TrinhTu_LapThoiKhoaBieu.png>
+ [59]
+File: picC3/C3_3_2_UC05_TrinhTu_ThemHocSinh.png Graphic file (type bmp)
+<picC3/C3_3_2_UC05_TrinhTu_ThemHocSinh.png>
+ [60]
+File: picC3/C3_3_2_UC05_TrinhTu_ChoHocSinhNghi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC05_TrinhTu_ChoHocSinhNghi.png>
+ [61]
+File: picC3/C3_3_2_UC06_TrinhTu_DiemDanh.png Graphic file (type bmp)
+<picC3/C3_3_2_UC06_TrinhTu_DiemDanh.png>
+ [62]
+File: picC3/C3_3_2_UC07_TrinhTu_BaiTapKiemTra.png Graphic file (type bmp)
+<picC3/C3_3_2_UC07_TrinhTu_BaiTapKiemTra.png>
+ [63]
+File: picC3/C3_3_2_UC08_TrinhTu_CapNhatDiemSo.png Graphic file (type bmp)
+<picC3/C3_3_2_UC08_TrinhTu_CapNhatDiemSo.png>
+ [64]
+File: picC3/C3_3_2_UC09_TrinhTu_LapBaoPhi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC09_TrinhTu_LapBaoPhi.png>
+ [65]
+File: picC3/C3_3_2_UC09_TrinhTu_GhiNhanThanhToan.png Graphic file (type bmp)
+<picC3/C3_3_2_UC09_TrinhTu_GhiNhanThanhToan.png>
+ [66]
+File: picC3/C3_3_2_UC10_TrinhTu_TraCuuLichHoc.png Graphic file (type bmp)
+<picC3/C3_3_2_UC10_TrinhTu_TraCuuLichHoc.png>
+
+[67]
+File: picC3/C3_3_2_UC11_TrinhTu_TraCuuKetQuaDiemDanh.png Graphic file (type bmp
+)
+<picC3/C3_3_2_UC11_TrinhTu_TraCuuKetQuaDiemDanh.png>
+ [68]
+File: picC3/C3_3_2_UC12_TrinhTu_TraCuuHocPhi.png Graphic file (type bmp)
+<picC3/C3_3_2_UC12_TrinhTu_TraCuuHocPhi.png>
+ [69] [70]
+Overfull \hbox (11.6559pt too wide) in paragraph at lines 285--286
+[]\TU/TimesNewRoman(0)/m/n/12 Từ các lớp biên (\TU/lmtt/m/n/12 <<boundary>>\TU/
+TimesNewRoman(0)/m/n/12 ), lớp điều khiển (\TU/lmtt/m/n/12 <<control>>\TU/Times
+NewRoman(0)/m/n/12 ) và lớp thực thể (\TU/lmtt/m/n/12 <<entity>>\TU/TimesNewRom
+an(0)/m/n/12 )
+ []
+
+[71
+
+]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 349.
+File: picC3/DFD_Muc0.png Graphic file (type bmp)
+<picC3/DFD_Muc0.png>
+ [72]
+File: picC3/DFD_Muc1.png Graphic file (type bmp)
+<picC3/DFD_Muc1.png>
+ [73]
+File: picC3/DFD_Muc2_DiemDanh.png Graphic file (type bmp)
+<picC3/DFD_Muc2_DiemDanh.png>
+File: picC3/DFD_Muc2_QLHocPhi.png Graphic file (type bmp)
+<picC3/DFD_Muc2_QLHocPhi.png>
+ [74] [75] [76]
+Overfull \hbox (11.85672pt too wide) in paragraph at lines 393--394
+\TU/TimesNewRoman(0)/m/n/12 (\TU/lmtt/m/n/12 HoTen\TU/TimesNewRoman(0)/m/n/12 )
+, số điện thoại (\TU/lmtt/m/n/12 SoDienThoai\TU/TimesNewRoman(0)/m/n/12 ), emai
+l (\TU/lmtt/m/n/12 Email\TU/TimesNewRoman(0)/m/n/12 ), trạng thái hoạt động (\T
+U/lmtt/m/n/12 TrangThaiHoatDong\TU/TimesNewRoman(0)/m/n/12 )
+ []
+
+
+Overfull \hbox (14.37291pt too wide) in paragraph at lines 398--399
+\TU/TimesNewRoman(0)/m/n/12 học (\TU/lmtt/m/n/12 TruongDangHoc\TU/TimesNewRoman
+(0)/m/n/12 ), ghi chú học lực (\TU/lmtt/m/n/12 GhiChuHocLuc\TU/TimesNewRoman(0)
+/m/n/12 ) và trạng thái học tập (\TU/lmtt/m/n/12 TrangThaiHocTap\TU/TimesNewRom
+an(0)/m/n/12 ). 
+ []
+
+
+Overfull \hbox (31.24179pt too wide) in paragraph at lines 408--409
+\TU/TimesNewRoman(0)/m/n/12 thị (\TU/lmtt/m/n/12 MaCodeLop\TU/TimesNewRoman(0)/
+m/n/12 ), tên lớp học (\TU/lmtt/m/n/12 TenLopHoc\TU/TimesNewRoman(0)/m/n/12 ), 
+môn học (\TU/lmtt/m/n/12 MonHoc\TU/TimesNewRoman(0)/m/n/12 ), hình thức tính ph
+í (\TU/lmtt/m/n/12 HinhThucTinhPhi\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+[77]
+Overfull \hbox (9.71371pt too wide) in paragraph at lines 418--419
+[]\TU/TimesNewRoman(0)/b/n/12 Các thông tin chính: \TU/TimesNewRoman(0)/m/n/12 
+mã buổi học (\TU/lmtt/m/n/12 MaBuoiHoc\TU/TimesNewRoman(0)/m/n/12 ), mã lớp học
+ (\TU/lmtt/m/n/12 MaLopHoc\TU/TimesNewRoman(0)/m/n/12 ), ngày học (\TU/lmtt/m/n
+/12 NgayHoc\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+[78]
+Overfull \hbox (48.45758pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 (\TU/lmtt/m/n/12 MaHocSinh\TU/TimesNewRoman(0)/m/n/
+12 ), người cập nhật (\TU/lmtt/m/n/12 NguoiCapNhat\TU/TimesNewRoman(0)/m/n/12 )
+, kỳ thu phí (\TU/lmtt/m/n/12 KyThuPhi\TU/TimesNewRoman(0)/m/n/12 ), số buổi tí
+nh phí (\TU/lmtt/m/n/12 SoBuoiTinhPhi\TU/TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Overfull \hbox (60.2333pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 số tiền phải đóng (\TU/lmtt/m/n/12 SoTienPhaiDong\T
+U/TimesNewRoman(0)/m/n/12 ), số tiền đã đóng (\TU/lmtt/m/n/12 SoTienDaDong\TU/T
+imesNewRoman(0)/m/n/12 ), số tiền còn thiếu (\TU/lmtt/m/n/12 SoTienConThieu\TU/
+TimesNewRoman(0)/m/n/12 ),
+ []
+
+
+Overfull \hbox (26.88658pt too wide) in paragraph at lines 438--439
+\TU/TimesNewRoman(0)/m/n/12 toán (\TU/lmtt/m/n/12 HanThanhToan\TU/TimesNewRoman
+(0)/m/n/12 ), ngày thanh toán (\TU/lmtt/m/n/12 NgayThanhToan\TU/TimesNewRoman(0
+)/m/n/12 ) và thời điểm cập nhật (\TU/lmtt/m/n/12 ThoiDiemCapNhat\TU/TimesNewRo
+man(0)/m/n/12 ). 
+ []
+
+[79] [80]
+Overfull \hbox (18.26369pt too wide) in paragraph at lines 513--514
+[]\TU/lmtt/m/n/12 TrangThaiGhiDanh\TU/TimesNewRoman(0)/m/n/12 : phản ánh học si
+nh đang theo học (\TU/lmtt/m/n/12 DANG_HOC\TU/TimesNewRoman(0)/m/n/12 ) hay đã 
+nghỉ học (\TU/lmtt/m/n/12 DA_NGHI\TU/TimesNewRoman(0)/m/n/12 )
+ []
+
+
+Overfull \hbox (21.2925pt too wide) in paragraph at lines 523--524
+[]\TU/lmtt/m/n/12 GioKetThuc\TU/TimesNewRoman(0)/m/n/12 : thời điểm kết thúc bu
+ổi học (bắt buộc thỏa mãn ràng buộc nghiệp vụ \TU/lmtt/m/n/12 GioKetThuc
+ []
+
+[81] [82] [83] [84] [85] [86]
+File: picC3/ERD.jpg Graphic file (type bmp)
+<picC3/ERD.jpg>
+
+Overfull \hbox (8.93994pt too wide) in paragraph at lines 720--720
+[]|\TU/lmtt/m/n/10 MaBaiKiemTra|  
+ []
+
+[87] [88]
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 744--744
+[]|\TU/lmtt/m/n/10 LienKetPHHS|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 745--745
+[]|\TU/lmtt/m/n/10 LienKetPHHS|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 755--755
+[]|\TU/lmtt/m/n/10 KhoanHocPhi|  
+ []
+
+
+Overfull \hbox (0.8445pt too wide) in paragraph at lines 756--756
+[]|\TU/lmtt/m/n/10 KhoanHocPhi|  
+ []
+
+[89]) (chuong4.tex [90]
+Chương 4.
+[91
+
+] [92]
+File: picC4/Hinh_4_1_Kien_truc_tong_quan.png Graphic file (type bmp)
+<picC4/Hinh_4_1_Kien_truc_tong_quan.png>
+ [93]
+File: picC4/Hinh_4_2_Presentation_View.png Graphic file (type bmp)
+<picC4/Hinh_4_2_Presentation_View.png>
+ [94]
+File: picC4/Hinh_4_3_Service_Business_Controller.png Graphic file (type bmp)
+<picC4/Hinh_4_3_Service_Business_Controller.png>
+ [95] [96]
+File: picC4/Hinh_4_4_Data_Model.png Graphic file (type bmp)
+<picC4/Hinh_4_4_Data_Model.png>
+ [97]
+Overfull \hbox (4.1436pt too wide) in paragraph at lines 177--178
+\TU/lmtt/m/n/12 UUID\TU/TimesNewRoman(0)/m/n/12 ; dữ liệu tiền tệ sử dụng \TU/l
+mtt/m/n/12 NUMERIC(12,2)\TU/TimesNewRoman(0)/m/n/12 ; dữ liệu ngày giờ có múi g
+iờ sử dụng \TU/lmtt/m/n/12 TIMESTAMPTZ\TU/TimesNewRoman(0)/m/n/12 .
+ []
+
+[98] [99]
+File: picC4/Hinh_4_5_So_do_quan_he_tong_quan.png Graphic file (type bmp)
+<picC4/Hinh_4_5_So_do_quan_he_tong_quan.png>
+ [100]
+File: picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png Graphic file (type bmp)
+<picC4/Hinh_4_6_Tai_khoan_Lop_hoc_Diem_danh.png>
+File: picC4/Hinh_4_7_Ket_qua_hoc_tap.png Graphic file (type bmp)
+<picC4/Hinh_4_7_Ket_qua_hoc_tap.png>
+File: picC4/Hinh_4_8_Hoc_phi_Thong_bao.png Graphic file (type bmp)
+<picC4/Hinh_4_8_Hoc_phi_Thong_bao.png>
+ [101
+
+
+] [102]
+LaTeX Font Info:    Calculating math sizes for size <9.2> on input line 280.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <6.43996> not available
+(Font)              size <6> substituted on input line 280.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <4.59999> not available
+(Font)              size <5> substituted on input line 280.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <6.43996> not available
+(Font)              size <6> substituted on input line 280.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <4.59999> not available
+(Font)              size <5> substituted on input line 280.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <6.43996> not available
+(Font)              size <6> substituted on input line 280.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <4.59999> not available
+(Font)              size <5> substituted on input line 280.
+
+[103] [104] [105] [106] [107] [108]
+Overfull \hbox (22.4343pt too wide) in paragraph at lines 675--676
+[]\TU/TimesNewRoman(0)/b/n/12 Thời khóa biểu (UC-04): \TU/TimesNewRoman(0)/m/n/
+12 một lịch \TU/lmtt/m/n/12 WEEKLY \TU/TimesNewRoman(0)/m/n/12 cần có \TU/lmtt/
+m/n/12 weekday\TU/TimesNewRoman(0)/m/n/12 ; lịch \TU/lmtt/m/n/12 ONCE \TU/Times
+NewRoman(0)/m/n/12 cần có \TU/lmtt/m/n/12 specific_date\TU/TimesNewRoman(0)/m/n
+/12 .
+ []
+
+
+Overfull \hbox (3.23189pt too wide) in paragraph at lines 678--679
+[]\TU/TimesNewRoman(0)/b/n/12 Học phí (UC-09): \TU/TimesNewRoman(0)/m/n/12 mỗi 
+khoản thu gắn với một lớp, một học sinh và một kỳ thu. \TU/lmtt/m/n/12 amount_d
+ue
+ []
+
+[109] [110] [111]
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <6.8> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 1052.
+
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <6.2> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 1052.
+
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <6.5> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 1052.
+
+ [112]
+LaTeX Font Info:    Font shape `TU/lmss/m/it' in size <6> not available
+(Font)              Font shape `TU/lmss/m/sl' tried instead on input line 1254.
+
+ [113]
+Underfull \hbox (badness 1371) in paragraph at lines 1447--1447
+[]\TU/TimesNewRoman(0)/m/n/12 Hình 4.11: []Sơ đồ phân rã gói tầng Application, 
+ánh xạ 10 lớp Control vào UC-01..UC-12 và quan hệ với Domain, Repository Interf
+aces
+ []
+
+[114] [115]
+Underfull \hbox (badness 5260) in paragraph at lines 1849--1849
+[]\TU/TimesNewRoman(0)/m/n/12 Hình 4.13: []Sơ đồ phân rã gói tầng Persistence (
+11 Repositories) và tầng Infrastructure (Database, Security, NotificationInfras
+tructure)
+ []
+
+[116]
+File: picC4/C4_46101_DangNhap_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46101_DangNhap_GiaoVien.jpg>
+ [117
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]
+File: picC4/C4_46102_TongQuan_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46102_TongQuan_GiaoVien.jpg>
+ [118]
+File: picC4/C4_46103_DanhSach_LopHoc.jpg Graphic file (type bmp)
+<picC4/C4_46103_DanhSach_LopHoc.jpg>
+ [119]
+File: picC4/C4_46103_ChiTiet_LopHoc.jpg Graphic file (type bmp)
+<picC4/C4_46103_ChiTiet_LopHoc.jpg>
+File: picC4/C4_46103_Tao_LopHoc.jpg Graphic file (type bmp)
+<picC4/C4_46103_Tao_LopHoc.jpg>
+ [120]
+File: picC4/C4_46103_ChinhSua_LopHoc.jpg Graphic file (type bmp)
+<picC4/C4_46103_ChinhSua_LopHoc.jpg>
+ [121]
+File: picC4/C4_46103_XacNhan_LuuTru.jpg Graphic file (type bmp)
+<picC4/C4_46103_XacNhan_LuuTru.jpg>
+ [122]
+File: picC4/C4_46104_QuanLy_TaiKhoan.jpg Graphic file (type bmp)
+<picC4/C4_46104_QuanLy_TaiKhoan.jpg>
+ [123]
+File: picC4/C4_46104_Tao_TaiKhoan.jpg Graphic file (type bmp)
+<picC4/C4_46104_Tao_TaiKhoan.jpg>
+ [124]
+File: picC4/C4_46105_LichHoc_Tuan.jpg Graphic file (type bmp)
+<picC4/C4_46105_LichHoc_Tuan.jpg>
+ [125]
+File: picC4/C4_46105_ChiTiet_BuoiHoc.jpg Graphic file (type bmp)
+<picC4/C4_46105_ChiTiet_BuoiHoc.jpg>
+ [126]
+File: picC4/C4_46106_DiemDanh_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46106_DiemDanh_GiaoVien.jpg>
+ [127]
+[128]
+File: picC4/C4_46107_QuanLy_DiemSo.jpg Graphic file (type bmp)
+<picC4/C4_46107_QuanLy_DiemSo.jpg>
+File: picC4/C4_46107_NhapDiem_NhanXet.jpg Graphic file (type bmp)
+<picC4/C4_46107_NhapDiem_NhanXet.jpg>
+ [129]
+File: picC4/C4_46107_TienBo_HocSinh.jpg Graphic file (type bmp)
+<picC4/C4_46107_TienBo_HocSinh.jpg>
+ [130]
+File: picC4/C4_46108_QuanLy_HocPhi.jpg Graphic file (type bmp)
+<picC4/C4_46108_QuanLy_HocPhi.jpg>
+ [131]
+File: picC4/C4_46108_ChiTiet_HocPhi.jpg Graphic file (type bmp)
+<picC4/C4_46108_ChiTiet_HocPhi.jpg>
+ [132]
+File: picC4/C4_46108_GhiNhan_ThanhToan.jpg Graphic file (type bmp)
+<picC4/C4_46108_GhiNhan_ThanhToan.jpg>
+ [133]
+File: picC4/C4_46109_ThongBao_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46109_ThongBao_GiaoVien.jpg>
+ [134] [135]
+File: picC4/C4_46110_HoSo_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46110_HoSo_GiaoVien.jpg>
+ [136]
+File: picC4/C4_46111_DoiMatKhau_GiaoVien.jpg Graphic file (type bmp)
+<picC4/C4_46111_DoiMatKhau_GiaoVien.jpg>
+ [137]
+File: picC4/C4_46201_TongQuan_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46201_TongQuan_PhuHuynh.jpg>
+ [138]
+File: picC4/C4_46202_LichHoc_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46202_LichHoc_PhuHuynh.jpg>
+ [139]
+File: picC4/C4_46203_DiemDanh_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46203_DiemDanh_PhuHuynh.jpg>
+
+[140] [141]
+File: picC4/C4_46204_KQHT_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46204_KQHT_PhuHuynh.jpg>
+ [142]
+File: picC4/C4_46205_HocPhi_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46205_HocPhi_PhuHuynh.jpg>
+ [143] [144]
+File: picC4/C4_46206_ThongBao_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46206_ThongBao_PhuHuynh.jpg>
+ [145]
+File: picC4/C4_46207_HoSo_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46207_HoSo_PhuHuynh.jpg>
+ [146]
+File: picC4/C4_46208_CaiDatMatKhau_PhuHuynh.jpg Graphic file (type bmp)
+<picC4/C4_46208_CaiDatMatKhau_PhuHuynh.jpg>
+ [147]
+File: picC4/C4_46301_TongQuan_HocSinh.png Graphic file (type bmp)
+<picC4/C4_46301_TongQuan_HocSinh.png>
+File: picC4/C4_46302_LichHoc_Tuan.png Graphic file (type bmp)
+<picC4/C4_46302_LichHoc_Tuan.png>
+ [148]
+File: picC4/C4_46302_ChiTiet_BuoiHoc.jpg Graphic file (type bmp)
+<picC4/C4_46302_ChiTiet_BuoiHoc.jpg>
+ [149]
+File: picC4/C4_46303_LichSu_DiemDanh.png Graphic file (type bmp)
+<picC4/C4_46303_LichSu_DiemDanh.png>
+ [150]
+File: picC4/C4_46304_KetQua_HocTap.png Graphic file (type bmp)
+<picC4/C4_46304_KetQua_HocTap.png>
+File: picC4/C4_46304_ChiTiet_BaiKiemTra.png Graphic file (type bmp)
+<picC4/C4_46304_ChiTiet_BaiKiemTra.png>
+ [151]
+[152]
+File: picC4/C4_46305_DanhSach_BaiTap.png Graphic file (type bmp)
+<picC4/C4_46305_DanhSach_BaiTap.png>
+File: picC4/C4_46305_ChiTiet_BaiTap.png Graphic file (type bmp)
+<picC4/C4_46305_ChiTiet_BaiTap.png>
+ [153]
+File: picC4/C4_46306_ThongBao.png Graphic file (type bmp)
+<picC4/C4_46306_ThongBao.png>
+ [154]
+File: picC4/C4_46307_HoSo_CaNhan.png Graphic file (type bmp)
+<picC4/C4_46307_HoSo_CaNhan.png>
+ [155]
+File: picC4/C4_46308_DoiMatKhau.png Graphic file (type bmp)
+<picC4/C4_46308_DoiMatKhau.png>
+ [156]) (chuong5.tex [157]
+Chương 5.
+
+Overfull \hbox (2.83765pt too wide) in alignment at lines 10--14
+ [] [] [] 
+ []
+
+
+Overfull \hbox (2.83765pt too wide) in alignment at lines 14--19
+ [] [] [] 
+ []
+
+
+Overfull \hbox (2.83765pt too wide) in alignment at lines 19--23
+ [] [] [] 
+ []
+
+
+Overfull \hbox (2.83765pt too wide) in alignment at lines 23--26
+ [] [] [] 
+ []
+
+
+Overfull \hbox (2.83765pt too wide) in alignment at lines 26--65
+ [] [] [] 
+ []
+
+[158
+
+] [159] [160] [161] [162]
+File: picC5/C5_01_DangNhap.png Graphic file (type bmp)
+<picC5/C5_01_DangNhap.png>
+File: picC5/C5_02_TongQuan_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_02_TongQuan_GiaoVien.png>
+File: picC5/C5_03_TongQuan_HocSinh.png Graphic file (type bmp)
+<picC5/C5_03_TongQuan_HocSinh.png>
+ [163]
+File: picC5/C5_04_TongQuan_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_04_TongQuan_PhuHuynh.png>
+File: picC5/C5_05_QuanLyLopHoc.png Graphic file (type bmp)
+<picC5/C5_05_QuanLyLopHoc.png>
+ [164]
+File: picC5/C5_06_QuanLyTaiKhoan.png Graphic file (type bmp)
+<picC5/C5_06_QuanLyTaiKhoan.png>
+File: picC5/C5_07_LichHoc_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_07_LichHoc_GiaoVien.png>
+ [165]
+File: picC5/C5_08_LichHoc_HocSinh.png Graphic file (type bmp)
+<picC5/C5_08_LichHoc_HocSinh.png>
+File: picC5/C5_09_LichHoc_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_09_LichHoc_PhuHuynh.png>
+ [166]
+File: picC5/C5_10_DiemDanh_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_10_DiemDanh_GiaoVien.png>
+File: picC5/C5_11_DiemDanh_HocSinh.png Graphic file (type bmp)
+<picC5/C5_11_DiemDanh_HocSinh.png>
+ [167]
+File: picC5/C5_12_DiemDanh_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_12_DiemDanh_PhuHuynh.png>
+File: picC5/C5_13_DiemSo_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_13_DiemSo_GiaoVien.png>
+ [168]
+File: picC5/C5_14_KetQuaHocTap_HocSinh.png Graphic file (type bmp)
+<picC5/C5_14_KetQuaHocTap_HocSinh.png>
+File: picC5/C5_15_BaiTap_HocSinh.png Graphic file (type bmp)
+<picC5/C5_15_BaiTap_HocSinh.png>
+ [169]
+File: picC5/C5_16_KetQuaHocTap_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_16_KetQuaHocTap_PhuHuynh.png>
+File: picC5/C5_17_HocPhi_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_17_HocPhi_GiaoVien.png>
+
+[170]
+File: picC5/C5_18_HocPhi_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_18_HocPhi_PhuHuynh.png>
+File: picC5/C5_19_ThongBao_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_19_ThongBao_GiaoVien.png>
+ [171]
+File: picC5/C5_20_ThongBao_HocSinh.png Graphic file (type bmp)
+<picC5/C5_20_ThongBao_HocSinh.png>
+File: picC5/C5_21_ThongBao_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_21_ThongBao_PhuHuynh.png>
+ [172]
+File: picC5/C5_22_HoSo_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_22_HoSo_GiaoVien.png>
+File: picC5/C5_23_HoSo_HocSinh.png Graphic file (type bmp)
+<picC5/C5_23_HoSo_HocSinh.png>
+ [173]
+File: picC5/C5_24_HoSo_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_24_HoSo_PhuHuynh.png>
+File: picC5/C5_25_DoiMatKhau.png Graphic file (type bmp)
+<picC5/C5_25_DoiMatKhau.png>
+ [174]
+File: picC5/C5_26_HuongDan_GiaoVien.png Graphic file (type bmp)
+<picC5/C5_26_HuongDan_GiaoVien.png>
+File: picC5/C5_27_HuongDan_HocSinh.png Graphic file (type bmp)
+<picC5/C5_27_HuongDan_HocSinh.png>
+ [175]
+File: picC5/C5_28_HuongDan_PhuHuynh.png Graphic file (type bmp)
+<picC5/C5_28_HuongDan_PhuHuynh.png>
+) (chuong6.tex [176]
+Chương 6.
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 14--19
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 19--23
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (6.49606pt too wide) in paragraph at lines 38--41
+\TU/TimesNewRoman(0)/m/n/12 phuhuynh@lopminh.edu.vn, 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 23--80
+ [] [] [] [] [] 
+ []
+
+[177
+
+] [178] [179]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 88--93
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 93--97
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (16.0527pt too wide) in paragraph at lines 147--150
+\TU/TimesNewRoman(0)/m/n/12 (/pages/teacher/accounts.html) 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 97--161
+ [] [] [] [] [] 
+ []
+
+[180] [181] [182]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 169--174
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 174--178
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 178--249
+ [] [] [] [] [] 
+ []
+
+[183] [184] [185]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 257--262
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 262--266
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 266--302
+ [] [] [] [] [] 
+ []
+
+[186] [187]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 309--314
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 314--318
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 318--362
+ [] [] [] [] [] 
+ []
+
+[188] [189] [190]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 367--372
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 372--376
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 376--432
+ [] [] [] [] [] 
+ []
+
+[191] [192] [193]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 440--444
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 444--447
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 447--449
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 449--451
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 451--459
+ [] [] [] [] [] 
+ []
+
+[194] [195] [196]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 467--471
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 471--474
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 474--476
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 476--478
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 478--489
+ [] [] [] [] [] 
+ []
+
+[197] [198] [199]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 502--506
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 506--509
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 509--511
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 511--513
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 513--523
+ [] [] [] [] [] 
+ []
+
+[200] [201]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 531--536
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 536--540
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 540--597
+ [] [] [] [] [] 
+ []
+
+[202] [203] [204]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 605--609
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 609--612
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 612--614
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 614--616
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 616--627
+ [] [] [] [] [] 
+ []
+
+[205] [206] [207] [208]
+Overfull \hbox (4.72119pt too wide) in alignment at lines 637--641
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 641--644
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 644--646
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 646--648
+ [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (4.72119pt too wide) in alignment at lines 648--657
+ [] [] [] [] [] 
+ []
+
+[209]
+Overfull \hbox (5.60982pt too wide) in paragraph at lines 667--667
+ []|\TU/TimesNewRoman(0)/b/n/12 STT| 
+ []
+
+
+Overfull \hbox (42.57352pt too wide) in alignment at lines 664--669
+ [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (5.60982pt too wide) in paragraph at lines 671--671
+ []|\TU/TimesNewRoman(0)/b/n/12 STT| 
+ []
+
+
+Overfull \hbox (42.57352pt too wide) in alignment at lines 669--673
+ [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (42.57352pt too wide) in alignment at lines 673--681
+ [] [] [] [] [] [] 
+ []
+
+[210]
+Overfull \hbox (5.60982pt too wide) in paragraph at lines 691--691
+ []|\TU/TimesNewRoman(0)/b/n/12 STT| 
+ []
+
+
+Overfull \hbox (11.27574pt too wide) in alignment at lines 688--692
+ [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (5.60982pt too wide) in paragraph at lines 694--694
+ []|\TU/TimesNewRoman(0)/b/n/12 STT| 
+ []
+
+
+Overfull \hbox (11.27574pt too wide) in alignment at lines 692--695
+ [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (11.27574pt too wide) in alignment at lines 695--698
+ [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 700--700
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC02_001| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 702--702
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC02_002| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 704--704
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC03_003| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 706--706
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC03_008| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 708--708
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC03_009| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 710--710
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC04_001| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 712--712
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC04_002| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 714--714
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC04_005| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 716--716
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC05_006| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 718--718
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC06_009| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 720--720
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC09_001| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 722--722
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC10_004| 
+ []
+
+
+Overfull \hbox (2.42671pt too wide) in paragraph at lines 724--724
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC11_001| 
+ []
+
+
+Overfull \hbox (2.42671pt too wide) in paragraph at lines 726--726
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC11_002| 
+ []
+
+
+Overfull \hbox (2.42671pt too wide) in paragraph at lines 728--728
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC11_006| 
+ []
+
+
+Overfull \hbox (2.87202pt too wide) in paragraph at lines 730--730
+ []|\TU/TimesNewRoman(0)/m/n/12 TC_UC12_001| 
+ []
+
+
+Overfull \hbox (11.27574pt too wide) in alignment at lines 698--732
+ [] [] [] [] [] [] 
+ []
+
+[211] [212] [213]) (chuong7.tex [214]
+Chương 7.
+
+Overfull \hbox (50.2769pt too wide) in paragraph at lines 25--26
+\TU/TimesNewRoman(0)/m/n/12 trường ảo và cài đặt thư viện: \TU/lmtt/m/n/12 py -
+m venv .venv\TU/TimesNewRoman(0)/m/n/12 , kích hoạt bằng \TU/lmtt/m/n/12 .venv/
+Scripts/Activate.ps1\TU/TimesNewRoman(0)/m/n/12 ,
+ []
+
+[215
+
+]
+Overfull \hbox (41.25586pt too wide) in paragraph at lines 27--29
+\TU/lmtt/m/n/12 $env:DATABASE_URL = 'postgresql://postgres:password@localhost:5
+432/lopminh'\TU/TimesNewRoman(0)/m/n/12 . 
+ []
+
+
+Overfull \hbox (56.79585pt too wide) in paragraph at lines 31--34
+\TU/lmtt/m/n/12 psql '$env:DATABASE_URL' -v ON_ERROR_STOP=1 -f database/seed_te
+st_accounts.sql 
+ []
+
+
+Overfull \hbox (93.10045pt too wide) in paragraph at lines 31--34
+\TU/TimesNewRoman(0)/m/n/12 (Giáo viên có thể khởi tạo tài khoản riêng bằng lện
+h: \TU/lmtt/m/n/12 python -m backend.scripts.bootstrap_teacher\TU/TimesNewRoman
+(0)/m/n/12 ). 
+ []
+
+
+Overfull \hbox (7.35587pt too wide) in paragraph at lines 34--36
+\TU/lmtt/m/n/12 python -m uvicorn backend.app.main:app --env-file backend.env -
+-reload
+ []
+
+[216]) [217] [218
+
+] [219] [220
+
+] (main.aux)
+ ***********
+LaTeX2e <2026-06-01>
+L3 programming layer <2026-09-09>
+ ***********
+
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 1.1pt have occurred.
+
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 398EBED73171ACEA57D795778B5281A9;27908.
+ ) 
+Here is how much of TeX's memory you used:
+ 28416 strings out of 402511
+ 594973 string characters out of 5435150
+ 1237793 words of memory out of 5000000
+ 56961 multiletter control sequences out of 15000+600000
+ 642069 words of font info for 164 fonts, out of 8000000 for 9000
+ 1348 hyphenation exceptions out of 8191
+ 92i,13n,104p,1539b,832s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+Output written on main.pdf (234 pages).
