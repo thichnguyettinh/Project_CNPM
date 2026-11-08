@@ -3012,7 +3012,8 @@ def generate_invoices(
                 FROM class_sessions cs
                 LEFT JOIN attendance_records ar
                   ON ar.session_id = cs.session_id AND ar.student_id = %s
-                WHERE cs.class_id = %s AND cs.status = 'completed'
+                WHERE cs.class_id = %s
+                  AND (cs.status = 'completed' OR (cs.status IN ('scheduled', 'ongoing') AND cs.starts_at < NOW()))
                   AND cs.starts_at::date BETWEEN %s AND %s
                   AND (ar.status IS NULL OR ar.status IN ('present', 'late'))
                 """,

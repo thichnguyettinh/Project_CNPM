@@ -124,7 +124,7 @@
           <div class="stat-card" style="padding:16px;">
             <div>
               <div class="stat-label">Tổng học phí phải đóng</div>
-              <div class="stat-value" id="parentStatTotalDue" style="font-size:22px;">1.800.000 ₫</div>
+              <div class="stat-value" id="parentStatTotalDue" style="font-size:22px;">&#8211;</div>
               <div class="stat-desc" id="parentStatPeriodDesc">Kỳ học: 01/10–28/10/2026</div>
             </div>
             <div class="stat-icon primary">
@@ -134,7 +134,7 @@
           <div class="stat-card" style="padding:16px;">
             <div>
               <div class="stat-label">Đã đóng ngoài hệ thống</div>
-              <div class="stat-value" id="parentStatTotalPaid" style="font-size:22px; color:var(--color-success);">1.200.000 ₫</div>
+              <div class="stat-value" id="parentStatTotalPaid" style="font-size:22px; color:var(--color-success);">&#8211;</div>
               <div class="stat-desc" id="parentStatPaymentCountDesc">2 lần đóng đã được xác nhận</div>
             </div>
             <div class="stat-icon success">
@@ -144,7 +144,7 @@
           <div class="stat-card" style="padding:16px;">
             <div>
               <div class="stat-label">Số tiền còn thiếu</div>
-              <div class="stat-value" id="parentStatRemaining" style="font-size:22px; color:var(--color-danger);">600.000 ₫</div>
+              <div class="stat-value" id="parentStatRemaining" style="font-size:22px; color:var(--color-danger);">&#8211;</div>
               <div class="stat-desc" id="parentStatDueDateDesc">Hạn đóng: 28/10/2026</div>
             </div>
             <div class="stat-icon warning">
@@ -173,7 +173,7 @@
               <div id="parentReconcileBarFill" style="width:66.7%; height:100%; background:#15803D; border-radius:999px; transition:width 250ms ease;"></div>
             </div>
             <div id="parentReconcileCaption" style="font-size:12.5px; color:#64748B; margin-bottom:16px;">
-              Đã đóng: <strong>1.200.000 ₫</strong> / 1.800.000 ₫
+              Đã đóng: <strong id="parentReconcilePaid">&#8211;</strong> / <span id="parentReconcileDue">&#8211;</span>
             </div>
 
             <div class="alert alert-info" style="margin:0; font-size:12px;">

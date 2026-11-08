@@ -312,6 +312,7 @@ SELECT
   GREATEST(i.amount_due - COALESCE(SUM(p.amount), 0), 0)::NUMERIC(12,2) AS amount_remaining,
   CASE
     WHEN i.status = 'void' THEN 'void'
+    WHEN i.amount_due = 0 THEN 'paid'
     WHEN COALESCE(SUM(p.amount), 0) = 0 THEN 'unpaid'
     WHEN COALESCE(SUM(p.amount), 0) < i.amount_due THEN 'partial'
     ELSE 'paid'
