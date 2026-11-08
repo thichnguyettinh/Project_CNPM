@@ -1,5 +1,5 @@
-/* UC-11 hotfix TC002+TC006 - 2026-11-06
- * Tương thích HTML cũ chỉ có lọc lớp; luôn kiểm soát quyền qua backend.
+﻿/* UC-11 hotfix TC002+TC006 - 2026-11-06
+ * TÆ°Æ¡ng thÃ­ch HTML cÅ© chá»‰ cÃ³ lá»c lá»›p; luÃ´n kiá»ƒm soÃ¡t quyá»n qua backend.
  */
 (() => {
   'use strict';
@@ -26,16 +26,16 @@
     const select = document.createElement('select');
     select.className = 'form-control';
     select.id = id;
-    select.setAttribute('aria-label', `Lọc theo ${labelText.toLowerCase()}`);
+    select.setAttribute('aria-label', `Lá»c theo ${labelText.toLowerCase()}`);
     select.add(new Option(defaultText, ''));
     label.appendChild(select);
     return label;
   }
 
-  // Tự nâng cấp HTML cũ: bản gốc của nhóm chỉ có select chọn lớp.
+  // Tá»± nÃ¢ng cáº¥p HTML cÅ©: báº£n gá»‘c cá»§a nhÃ³m chá»‰ cÃ³ select chá»n lá»›p.
   function ensureMarkup() {
     if (!C || typeof AuthService === 'undefined') {
-      notice('Không tải được module UC-11 hoặc xác thực. Kiểm tra thứ tự script ở cuối trang.', true);
+      notice('KhÃ´ng táº£i Ä‘Æ°á»£c module UC-11 hoáº·c xÃ¡c thá»±c. Kiá»ƒm tra thá»© tá»± script á»Ÿ cuá»‘i trang.', true);
       return false;
     }
     // Node unit-test mocks may expose only getElementById; the real browser always has querySelector.
@@ -43,20 +43,20 @@
     const toolbar = document.querySelector('.uc11-toolbar');
     const classInput = $('uc11-student-class');
     if (!toolbar || !classInput) {
-      notice('Không tìm thấy khung kết quả UC-11. Kiểm tra đúng trang pages/student/grades.html.', true);
+      notice('KhÃ´ng tÃ¬m tháº¥y khung káº¿t quáº£ UC-11. Kiá»ƒm tra Ä‘Ãºng trang pages/student/grades.html.', true);
       return false;
     }
-    // HTML gốc chứa label và select độc lập; đưa chúng vào một nhãn duy nhất.
+    // HTML gá»‘c chá»©a label vÃ  select Ä‘á»™c láº­p; Ä‘Æ°a chÃºng vÃ o má»™t nhÃ£n duy nháº¥t.
     const classLabel = document.querySelector('label[for="uc11-student-class"]');
     if (classLabel && !classLabel.contains(classInput)) classLabel.appendChild(classInput);
     if (!$('uc11-student-month')) {
-      toolbar.insertBefore(makeFilter('uc11-student-month', 'Tháng', 'Tất cả tháng'), toolbar.firstChild);
+      toolbar.insertBefore(makeFilter('uc11-student-month', 'ThÃ¡ng', 'Táº¥t cáº£ thÃ¡ng'), toolbar.firstChild);
     }
     if (!$('uc11-student-type')) {
-      toolbar.appendChild(makeFilter('uc11-student-type', 'Loại đánh giá', 'Tất cả bài đánh giá'));
+      toolbar.appendChild(makeFilter('uc11-student-type', 'Loáº¡i Ä‘Ã¡nh giÃ¡', 'Táº¥t cáº£ bÃ i Ä‘Ã¡nh giÃ¡'));
     }
     toolbar.classList.add('uc11-filters');
-    // CSS dự phòng khi người dùng vẫn sử dụng assets/css/uc11.css cũ.
+    // CSS dá»± phÃ²ng khi ngÆ°á»i dÃ¹ng váº«n sá»­ dá»¥ng assets/css/uc11.css cÅ©.
     toolbar.style.display = 'grid';
     toolbar.style.gridTemplateColumns = 'repeat(auto-fit, minmax(175px, 1fr))';
     toolbar.style.gap = '14px';
@@ -72,16 +72,16 @@
       reset.id = 'uc11-student-reset-filters';
       reset.type = 'button';
       reset.className = 'btn btn-secondary btn-sm';
-      reset.textContent = 'Xóa bộ lọc';
+      reset.textContent = 'XÃ³a bá»™ lá»c';
       toolbar.after(reset);
     }
     if (!$('uc11-student-history')) {
       const section = document.createElement('section');
       section.className = 'card uc11-panel';
       section.id = 'uc11-student-history-section';
-      section.innerHTML = '<h3 class="title-card">Lịch sử chỉnh sửa điểm</h3>' +
-        '<p class="text-caption">Hiển thị điểm trước, điểm sau, lý do và thời gian giáo viên thay đổi điểm.</p>' +
-        '<div id="uc11-student-history" aria-live="polite">Đang tải lịch sử...</div>';
+      section.innerHTML = '<h3 class="title-card">Lá»‹ch sá»­ chá»‰nh sá»­a Ä‘iá»ƒm</h3>' +
+        '<p class="text-caption">Hiá»ƒn thá»‹ Ä‘iá»ƒm trÆ°á»›c, Ä‘iá»ƒm sau, lÃ½ do vÃ  thá»i gian giÃ¡o viÃªn thay Ä‘á»•i Ä‘iá»ƒm.</p>' +
+        '<div id="uc11-student-history" aria-live="polite">Äang táº£i lá»‹ch sá»­...</div>';
       const detailBox = $('uc11-student-detail');
       if (detailBox && detailBox.parentElement) detailBox.before(section);
       else toolbar.parentElement.appendChild(section);
@@ -90,18 +90,8 @@
       const actions = document.createElement('div');
       actions.className = 'uc11-history-actions';
       actions.innerHTML = '<span id="uc11-student-history-status" role="status"></span>' +
-        '<button id="uc11-student-retry-history" type="button" class="btn btn-secondary btn-sm">Tải lại lịch sử</button>';
+        '<button id="uc11-student-retry-history" type="button" class="btn btn-secondary btn-sm">Táº£i láº¡i lá»‹ch sá»­</button>';
       $('uc11-student-history').before(actions);
-    }
-    if (!$('uc11-student-build')) {
-      const marker = document.createElement('small');
-      marker.id = 'uc11-student-build';
-      marker.className = 'uc11-build-marker';
-      marker.textContent = `UC-11 ${BUILD} · Lọc tháng / lớp / loại bài · Lịch sử sửa điểm`;
-      marker.style.cssText = 'display:block;margin:6px 0 10px;color:#64748b;font-size:12px';
-      const identity = $('uc11-student-identity');
-      if (identity) identity.after(marker);
-      else toolbar.before(marker);
     }
     return true;
   }
@@ -114,12 +104,12 @@
     const status = $('uc11-student-history-status');
     const related = C.historyFor(state.history, state.visible);
     if (state.historyLoading) {
-      container.innerHTML = '<p class="uc11-empty">Đang tải lịch sử sửa điểm từ máy chủ...</p>';
-      if (status) status.textContent = 'Đang kết nối API lịch sử...';
+      container.innerHTML = '<p class="uc11-empty">Äang táº£i lá»‹ch sá»­ sá»­a Ä‘iá»ƒm tá»« mÃ¡y chá»§...</p>';
+      if (status) status.textContent = 'Äang káº¿t ná»‘i API lá»‹ch sá»­...';
     } else if (state.historyError) {
-      container.innerHTML = '<p class="uc11-empty">Chưa thể hiển thị lịch sử chỉnh sửa điểm. Dùng nút “Tải lại lịch sử” sau khi kiểm tra backend.</p>';
+      container.innerHTML = '<p class="uc11-empty">ChÆ°a thá»ƒ hiá»ƒn thá»‹ lá»‹ch sá»­ chá»‰nh sá»­a Ä‘iá»ƒm. DÃ¹ng nÃºt â€œTáº£i láº¡i lá»‹ch sá»­â€ sau khi kiá»ƒm tra backend.</p>';
       if (status) {
-        status.textContent = `Lỗi API lịch sử: ${state.historyError}. Kiểm tra backend đã cập nhật và bảng grade_change_logs.`;
+        status.textContent = `Lá»—i API lá»‹ch sá»­: ${state.historyError}. Kiá»ƒm tra backend Ä‘Ã£ cáº­p nháº­t vÃ  báº£ng grade_change_logs.`;
         status.style.color = '#b91c1c';
       }
     } else {
@@ -127,16 +117,16 @@
       if (status) {
         status.style.color = '#475569';
         status.textContent = related.length
-          ? `${related.length} lần điều chỉnh điểm khớp với bộ lọc hiện tại.`
-          : 'Không có lịch sử trong bộ lọc. Lưu ý: nhập điểm lần đầu không phải chỉnh sửa điểm.';
+          ? `${related.length} láº§n Ä‘iá»u chá»‰nh Ä‘iá»ƒm khá»›p vá»›i bá»™ lá»c hiá»‡n táº¡i.`
+          : 'KhÃ´ng cÃ³ lá»‹ch sá»­ trong bá»™ lá»c. LÆ°u Ã½: nháº­p Ä‘iá»ƒm láº§n Ä‘áº§u khÃ´ng pháº£i chá»‰nh sá»­a Ä‘iá»ƒm.';
       }
     }
     const details = $('uc11-student-detail-history');
     if (details && state.selectedId !== null) {
       if (state.historyLoading) {
-        details.textContent = 'Đang tải lịch sử...';
+        details.textContent = 'Äang táº£i lá»‹ch sá»­...';
       } else if (state.historyError) {
-        details.textContent = `Không tải được lịch sử: ${state.historyError}`;
+        details.textContent = `KhÃ´ng táº£i Ä‘Æ°á»£c lá»‹ch sá»­: ${state.historyError}`;
       } else {
         details.innerHTML = C.historyHtml(
           state.history.filter(item => String(item.assignment_id) === String(state.selectedId)),
@@ -157,19 +147,19 @@
     $('uc11-student-chart').innerHTML = C.chartHtml(rows);
     const last = C.latestComment(rows);
     $('uc11-student-comment').textContent = last
-      ? `${last.teacher_comment}\n\n${last.title} · ${C.date(last.graded_at || last.assigned_at, true)}`
-      : 'Chưa có nhận xét giáo viên trong bộ lọc này.';
+      ? `${last.teacher_comment}\n\n${last.title} Â· ${C.date(last.graded_at || last.assigned_at, true)}`
+      : 'ChÆ°a cÃ³ nháº­n xÃ©t giÃ¡o viÃªn trong bá»™ lá»c nÃ y.';
     const ordered = C.sorted(rows).reverse();
     $('uc11-student-results').innerHTML = ordered.length ? ordered.map(r => `<tr>
       <td><strong>${C.safe(r.title)}</strong><div class="text-caption">${C.safe(C.typ(r.assignment_type))}</div></td>
-      <td>${C.safe(r.class_name || r.class_code || '—')}</td>
+      <td>${C.safe(r.class_name || r.class_code || 'â€”')}</td>
       <td>${C.date(r.assigned_at)}</td>
       <td><strong>${C.score(r.score)}</strong></td>
-      <td>${C.safe(r.teacher_comment || '—')}</td>
+      <td>${C.safe(r.teacher_comment || 'â€”')}</td>
       <td>${C.valid(r.score)
-        ? `<button type="button" class="btn btn-secondary btn-sm" data-uc11-detail="${C.safe(r.assignment_id)}">Chi tiết & lịch sử</button>`
-        : '—'}</td></tr>`).join('')
-      : '<tr><td colspan="6">Không có kết quả phù hợp. Thử chọn “Xóa bộ lọc”.</td></tr>';
+        ? `<button type="button" class="btn btn-secondary btn-sm" data-uc11-detail="${C.safe(r.assignment_id)}">Chi tiáº¿t & lá»‹ch sá»­</button>`
+        : 'â€”'}</td></tr>`).join('')
+      : '<tr><td colspan="6">KhÃ´ng cÃ³ káº¿t quáº£ phÃ¹ há»£p. Thá»­ chá»n â€œXÃ³a bá»™ lá»câ€.</td></tr>';
     const detail = $('uc11-student-detail');
     if (detail) detail.hidden = true;
     state.selectedId = null;
@@ -192,13 +182,13 @@
     try {
       const response = await AuthService.api(`/students/${encodeURIComponent(code)}/grade-changes`);
       if (req !== state.historyReq || currentLoad !== state.req) return;
-      if (!Array.isArray(response)) throw new Error('API không trả về danh sách JSON');
+      if (!Array.isArray(response)) throw new Error('API khÃ´ng tráº£ vá» danh sÃ¡ch JSON');
       state.history = response;
     } catch (error) {
       if (req !== state.historyReq || currentLoad !== state.req) return;
       state.history = [];
-      state.historyError = error?.message || 'Lỗi kết nối không xác định';
-      console.error('[UC11] Không thể tải lịch sử sửa điểm:', error);
+      state.historyError = error?.message || 'Lá»—i káº¿t ná»‘i khÃ´ng xÃ¡c Ä‘á»‹nh';
+      console.error('[UC11] KhÃ´ng thá»ƒ táº£i lá»‹ch sá»­ sá»­a Ä‘iá»ƒm:', error);
     } finally {
       if (req === state.historyReq && currentLoad === state.req) {
         state.historyLoading = false;
@@ -213,38 +203,38 @@
     state.history = [];
     state.historyLoading = false;
     state.historyError = '';
-    notice('Đang tải kết quả học tập...');
+    notice('Äang táº£i káº¿t quáº£ há»c táº­p...');
     try {
       const me = await AuthService.api('/students/me');
       if (req !== state.req) return;
-      if (!me?.student_code) throw new Error('Tài khoản chưa có mã học sinh.');
+      if (!me?.student_code) throw new Error('TÃ i khoáº£n chÆ°a cÃ³ mÃ£ há»c sinh.');
       state.user = me;
-      $('uc11-student-sidebar-name').textContent = me.full_name || 'Học sinh';
-      $('uc11-student-top-name').textContent = `${me.full_name || 'Học sinh'} · Học sinh`;
+      $('uc11-student-sidebar-name').textContent = me.full_name || 'Há»c sinh';
+      $('uc11-student-top-name').textContent = `${me.full_name || 'Há»c sinh'} Â· Há»c sinh`;
       const rows = await AuthService.api(`/students/${encodeURIComponent(me.student_code)}/progress`);
       if (req !== state.req) return;
-      if (!Array.isArray(rows)) throw new Error('API kết quả học tập trả về dữ liệu không hợp lệ.');
+      if (!Array.isArray(rows)) throw new Error('API káº¿t quáº£ há»c táº­p tráº£ vá» dá»¯ liá»‡u khÃ´ng há»£p lá»‡.');
       state.rows = rows;
-      $('uc11-student-identity').textContent = `${me.full_name || 'Học sinh'} · ${me.student_code}`;
+      $('uc11-student-identity').textContent = `${me.full_name || 'Há»c sinh'} Â· ${me.student_code}`;
       const classes = [...new Map(rows.filter(r => r.class_code).map(r => [r.class_code, {code:r.class_code, name:r.class_name}])).values()];
-      populate($('uc11-student-class'), classes.map(c => c.code), 'Tất cả các lớp', code => {
+      populate($('uc11-student-class'), classes.map(c => c.code), 'Táº¥t cáº£ cÃ¡c lá»›p', code => {
         const found = classes.find(c => c.code === code);
         return `${found?.name || code} (${code})`;
       });
       const months = [...new Set(rows.map(r => C.monthKey(C.dateValue(r))).filter(Boolean))].sort().reverse();
-      populate($('uc11-student-month'), months, 'Tất cả tháng', C.monthLabel);
+      populate($('uc11-student-month'), months, 'Táº¥t cáº£ thÃ¡ng', C.monthLabel);
       const types = [...new Set(rows.map(r => r.assignment_type).filter(Boolean))];
-      populate($('uc11-student-type'), types, 'Tất cả bài đánh giá', C.typ);
+      populate($('uc11-student-type'), types, 'Táº¥t cáº£ bÃ i Ä‘Ã¡nh giÃ¡', C.typ);
       render();
-      notice(`Đã tải ${rows.length} bài, trong đó ${C.graded(rows).length} bài đã chấm. Dùng bộ lọc tháng, lớp, loại bài để thu hẹp kết quả.`);
-      // Dữ liệu điểm và lịch sử là hai request độc lập: lỗi lịch sử không làm mất điểm/bộ lọc.
+      notice(`ÄÃ£ táº£i ${rows.length} bÃ i, trong Ä‘Ã³ ${C.graded(rows).length} bÃ i Ä‘Ã£ cháº¥m. DÃ¹ng bá»™ lá»c thÃ¡ng, lá»›p, loáº¡i bÃ i Ä‘á»ƒ thu háº¹p káº¿t quáº£.`);
+      // Dá»¯ liá»‡u Ä‘iá»ƒm vÃ  lá»‹ch sá»­ lÃ  hai request Ä‘á»™c láº­p: lá»—i lá»‹ch sá»­ khÃ´ng lÃ m máº¥t Ä‘iá»ƒm/bá»™ lá»c.
       await loadHistory(me.student_code, req);
-      if (req === state.req && state.historyError) notice(`Đã tải bảng điểm nhưng không tải được lịch sử sửa điểm: ${state.historyError}`, true);
+      if (req === state.req && state.historyError) notice(`ÄÃ£ táº£i báº£ng Ä‘iá»ƒm nhÆ°ng khÃ´ng táº£i Ä‘Æ°á»£c lá»‹ch sá»­ sá»­a Ä‘iá»ƒm: ${state.historyError}`, true);
     } catch (error) {
       if (req !== state.req) return;
-      console.error('[UC11] Không tải được kết quả học tập:', error);
-      notice(`Không thể tải kết quả học tập: ${error?.message || 'Lỗi không xác định'}`, true);
-      $('uc11-student-results').innerHTML = '<tr><td colspan="6">Không tải được dữ liệu. Kiểm tra backend rồi thử “Tải lại kết quả”.</td></tr>';
+      console.error('[UC11] KhÃ´ng táº£i Ä‘Æ°á»£c káº¿t quáº£ há»c táº­p:', error);
+      notice(`KhÃ´ng thá»ƒ táº£i káº¿t quáº£ há»c táº­p: ${error?.message || 'Lá»—i khÃ´ng xÃ¡c Ä‘á»‹nh'}`, true);
+      $('uc11-student-results').innerHTML = '<tr><td colspan="6">KhÃ´ng táº£i Ä‘Æ°á»£c dá»¯ liá»‡u. Kiá»ƒm tra backend rá»“i thá»­ â€œTáº£i láº¡i káº¿t quáº£â€.</td></tr>';
     }
   }
 
@@ -257,29 +247,29 @@
     if (!pane) return;
     pane.hidden = false;
     const area = $('uc11-student-detail-content');
-    area.innerHTML = `<p><strong>${C.safe(row.title)}</strong> · ${C.safe(row.class_name || row.class_code || '')} · ${C.date(row.assigned_at)}</p>
-      <div class="uc11-stats"><div class="uc11-stat"><span>Điểm tổng</span><strong>${C.score(row.score)} / 10</strong></div>
-      <div class="uc11-stat"><span>Loại bài</span><strong>${C.safe(C.typ(row.assignment_type))}</strong></div></div>
-      <p><strong>Nhận xét của giáo viên:</strong> ${C.safe(row.teacher_comment || 'Chưa có nhận xét.')}</p>
-      <h4 class="uc11-subtitle">Lịch sử điều chỉnh điểm: trước / sau / lý do / thời gian</h4>
+    area.innerHTML = `<p><strong>${C.safe(row.title)}</strong> Â· ${C.safe(row.class_name || row.class_code || '')} Â· ${C.date(row.assigned_at)}</p>
+      <div class="uc11-stats"><div class="uc11-stat"><span>Äiá»ƒm tá»•ng</span><strong>${C.score(row.score)} / 10</strong></div>
+      <div class="uc11-stat"><span>Loáº¡i bÃ i</span><strong>${C.safe(C.typ(row.assignment_type))}</strong></div></div>
+      <p><strong>Nháº­n xÃ©t cá»§a giÃ¡o viÃªn:</strong> ${C.safe(row.teacher_comment || 'ChÆ°a cÃ³ nháº­n xÃ©t.')}</p>
+      <h4 class="uc11-subtitle">Lá»‹ch sá»­ Ä‘iá»u chá»‰nh Ä‘iá»ƒm: trÆ°á»›c / sau / lÃ½ do / thá»i gian</h4>
       <div id="uc11-student-detail-history"></div>
-      <h4 class="uc11-subtitle">Phân tích điểm từng câu</h4>
-      <div id="uc11-student-question-scores">Đang tải điểm từng câu...</div>`;
+      <h4 class="uc11-subtitle">PhÃ¢n tÃ­ch Ä‘iá»ƒm tá»«ng cÃ¢u</h4>
+      <div id="uc11-student-question-scores">Äang táº£i Ä‘iá»ƒm tá»«ng cÃ¢u...</div>`;
     renderHistory();
-    // Đưa người dùng đến khu vực chi tiết, tránh bỏ sót lịch sử ở cuối trang.
+    // ÄÆ°a ngÆ°á»i dÃ¹ng Ä‘áº¿n khu vá»±c chi tiáº¿t, trÃ¡nh bá» sÃ³t lá»‹ch sá»­ á»Ÿ cuá»‘i trang.
     pane.scrollIntoView?.({block:'start', behavior:'smooth'});
     try {
       const parts = await AuthService.api(`/assignments/${encodeURIComponent(id)}/my-question-scores`);
       if (req !== state.detailReq) return;
-      if (!Array.isArray(parts)) throw new Error('Dữ liệu điểm từng câu không hợp lệ.');
+      if (!Array.isArray(parts)) throw new Error('Dá»¯ liá»‡u Ä‘iá»ƒm tá»«ng cÃ¢u khÃ´ng há»£p lá»‡.');
       const target = $('uc11-student-question-scores');
       if (target) target.innerHTML = parts.length
-        ? `<div class="table-container"><table class="table-custom uc11-table"><thead><tr><th>Câu</th><th>Điểm đạt</th><th>Điểm tối đa</th></tr></thead><tbody>${parts.map(q => `<tr><td>Câu ${C.safe(q.question_no)}</td><td>${C.score(q.earned_score)}</td><td>${C.score(q.max_score)}</td></tr>`).join('')}</tbody></table></div>`
-        : '<p class="uc11-empty">Giáo viên chưa nhập điểm từng câu cho bài này.</p>';
+        ? `<div class="table-container"><table class="table-custom uc11-table"><thead><tr><th>CÃ¢u</th><th>Äiá»ƒm Ä‘áº¡t</th><th>Äiá»ƒm tá»‘i Ä‘a</th></tr></thead><tbody>${parts.map(q => `<tr><td>CÃ¢u ${C.safe(q.question_no)}</td><td>${C.score(q.earned_score)}</td><td>${C.score(q.max_score)}</td></tr>`).join('')}</tbody></table></div>`
+        : '<p class="uc11-empty">GiÃ¡o viÃªn chÆ°a nháº­p Ä‘iá»ƒm tá»«ng cÃ¢u cho bÃ i nÃ y.</p>';
     } catch (error) {
       if (req !== state.detailReq) return;
       const target = $('uc11-student-question-scores');
-      if (target) target.textContent = `Không tải được điểm từng câu: ${error?.message || 'Lỗi không xác định'}. Lịch sử sửa điểm vẫn xem được ở phía trên.`;
+      if (target) target.textContent = `KhÃ´ng táº£i Ä‘Æ°á»£c Ä‘iá»ƒm tá»«ng cÃ¢u: ${error?.message || 'Lá»—i khÃ´ng xÃ¡c Ä‘á»‹nh'}. Lá»‹ch sá»­ sá»­a Ä‘iá»ƒm váº«n xem Ä‘Æ°á»£c á»Ÿ phÃ­a trÃªn.`;
     }
   }
 
@@ -290,7 +280,7 @@
       weekday:'long', day:'2-digit', month:'2-digit', year:'numeric'
     });
     if (!AuthService.getToken() || AuthService.getCurrentUser()?.role !== 'student') {
-      notice('Vui lòng đăng nhập bằng tài khoản học sinh để xem kết quả học tập.', true);
+      notice('Vui lÃ²ng Ä‘Äƒng nháº­p báº±ng tÃ i khoáº£n há»c sinh Ä‘á»ƒ xem káº¿t quáº£ há»c táº­p.', true);
       return;
     }
     ['uc11-student-month', 'uc11-student-class', 'uc11-student-type'].forEach(id => $(id)?.addEventListener('change', render));
@@ -301,7 +291,7 @@
     $('uc11-student-refresh')?.addEventListener('click', load);
     $('uc11-student-retry-history')?.addEventListener('click', () => {
       if (state.user?.student_code) loadHistory(state.user.student_code);
-      else notice('Hãy tải kết quả học tập trước khi xem lịch sử.', true);
+      else notice('HÃ£y táº£i káº¿t quáº£ há»c táº­p trÆ°á»›c khi xem lá»‹ch sá»­.', true);
     });
     $('uc11-student-results')?.addEventListener('click', e => {
       const button = e.target.closest('[data-uc11-detail]');
