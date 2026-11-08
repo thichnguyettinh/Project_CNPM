@@ -8,9 +8,9 @@ app = FastAPI()
 def read_root():
     return """
     <html>
-        <head><title>Project CNPM API</title></head>
+        <head><title>Project CNPM</title></head>
         <body style="font-family: Arial; text-align: center; margin-top: 50px;">
-            <h1>Hệ thống Quản lý Lớp học - Backend API đang hoạt động!</h1>
+            <h1>Hệ thống Quản lý Lớp học đang hoạt động!</h1>
             <p>Truy cập tài liệu API tại: <a href="/docs">/docs</a></p>
         </body>
     </html>
