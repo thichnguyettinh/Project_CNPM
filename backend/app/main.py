@@ -1,3 +1,24 @@
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+app = FastAPI()
+
+# Xác định đường dẫn tuyệt đối đến thư mục gốc của dự án
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Mount các thư mục tài nguyên giao diện
+app.mount("/assets", StaticFiles(directory=os.path.join(BASE_DIR, "assets")), name="assets")
+app.mount("/pages", StaticFiles(directory=os.path.join(BASE_DIR, "pages")), name="pages")
+
+# Định nghĩa trang chủ (truy cập đường dẫn gốc sẽ mở trang index.html)
+@app.get("/")
+def read_root():
+    return FileResponse(os.path.join(BASE_DIR, "index.html"))
+
+# (Giữ nguyên các route API hiện tại của bạn ở đây...)
+
 from __future__ import annotations
 
 import uuid
