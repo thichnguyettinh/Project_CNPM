@@ -5,6 +5,7 @@ from io import BytesIO
 from zipfile import BadZipFile, ZipFile
 from contextlib import contextmanager
 from datetime import date, datetime, timezone, timedelta
+TZ_VN = timezone(timedelta(hours=7))
 from pathlib import Path
 from typing import Annotated, Any, Callable
 
@@ -1260,8 +1261,8 @@ def create_class(payload: ClassCreate, connection: Connection, teacher: Teacher)
                 try:
                     s_hour, s_min = [int(p) for p in fs.starts_at[:5].split(":")]
                     e_hour, e_min = [int(p) for p in fs.ends_at[:5].split(":")]
-                    starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
-                    ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+                    starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=TZ_VN)
+                    ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=TZ_VN)
                     fetch_one(
                         connection,
                         """
@@ -1429,8 +1430,8 @@ def replace_class_schedule_rules(class_id: str, payload: FixedScheduleCreate, co
             try:
                 s_hour, s_min = [int(p) for p in payload.starts_at[:5].split(":")]
                 e_hour, e_min = [int(p) for p in payload.ends_at[:5].split(":")]
-                starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
-                ends_at_dt   = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+                starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=TZ_VN)
+                ends_at_dt   = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=TZ_VN)
                 dup = fetch_one(
                     connection,
                     "SELECT 1 FROM class_sessions WHERE class_id = %s AND starts_at = %s AND status <> 'cancelled'",
@@ -1899,8 +1900,8 @@ def create_recurring_sessions(payload: RecurringSessionCreate, connection: Conne
     created_sessions = []
     while curr <= payload.end_date and len(created_sessions) < 120:
         if (curr.weekday() + 1) in payload.weekdays:
-            starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=timezone.utc)
-            ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=timezone.utc)
+            starts_at_dt = datetime(curr.year, curr.month, curr.day, s_hour, s_min, tzinfo=TZ_VN)
+            ends_at_dt = datetime(curr.year, curr.month, curr.day, e_hour, e_min, tzinfo=TZ_VN)
             dup = fetch_one(
                 connection,
                 "SELECT 1 FROM class_sessions WHERE class_id = %s AND starts_at = %s AND status <> 'cancelled'",

@@ -423,6 +423,14 @@ class UC04ScheduleTests(unittest.TestCase):
                 for d in session_dates:
                     self.assertIn(d.weekday(), [0, 2])
 
+                # Kiem tra gio va mui gio Viet Nam (+07:00)
+                for s in inserted_sessions:
+                    self.assertEqual(s["starts_at"].hour, 17)
+                    self.assertEqual(s["starts_at"].minute, 30)
+                    self.assertEqual(s["ends_at"].hour, 19)
+                    self.assertEqual(s["ends_at"].minute, 0)
+                    self.assertEqual(s["starts_at"].utcoffset(), timedelta(hours=7))
+
     def test_tc_uc04_002_recurring_no_duplicate_on_repeated_clicks(self):
         """TC_UC04_002: Không tạo buổi trùng khi giáo viên lưu nhiều lần."""
         call_count = 0

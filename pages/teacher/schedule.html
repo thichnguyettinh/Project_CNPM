@@ -290,9 +290,10 @@
         <form id="formAddSession" onsubmit="handleAddSession(event)">
           <div class="form-group">
             <label class="form-label" for="addSessionClassId">Chọn lớp học <span class="required">*</span></label>
-            <select class="form-control" id="addSessionClassId" required>
+            <select class="form-control" id="addSessionClassId" required onchange="onAddSessionClassChange()">
               <option value="">-- Chọn lớp học --</option>
             </select>
+            <div id="addSessionScheduleHint" style="font-size: 12.5px; color: var(--color-primary); margin-top: 6px; display: none; background: #EFF6FF; padding: 6px 10px; border-radius: 4px; border: 1px solid #BFDBFE;"></div>
           </div>
 
           <!-- Lựa chọn loại lịch: Chỉ một buổi vs Lặp lại hàng tuần -->
@@ -541,6 +542,41 @@
       }
     }
 
+    // Helper: Định dạng ngày giờ theo múi giờ Việt Nam (+07:00)
+    function getSessionDateTimeParts(iso) {
+      if (!iso) return { dateStr: '', timeStr: '' };
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) {
+        return {
+          dateStr: String(iso).slice(0, 10),
+          timeStr: String(iso).slice(11, 16)
+        };
+      }
+      try {
+        const vnFormatter = new Intl.DateTimeFormat('en-CA', {
+          timeZone: 'Asia/Ho_Chi_Minh',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const parts = vnFormatter.formatToParts(d);
+        const val = {};
+        parts.forEach(p => { val[p.type] = p.value; });
+        return {
+          dateStr: `${val.year}-${val.month}-${val.day}`,
+          timeStr: `${val.hour}:${val.minute}`
+        };
+      } catch (e) {
+        return {
+          dateStr: String(iso).slice(0, 10),
+          timeStr: String(iso).slice(11, 16)
+        };
+      }
+    }
+
     // Render lưới tuần
     function renderWeekGrid(weekStart, sessions) {
       const grid = document.getElementById('calendarWeekGrid');
@@ -549,8 +585,8 @@
       const standardSlots = ['08:00', '17:30', '19:15'];
       const TIME_SLOTS = [...new Set([
         ...standardSlots,
-        ...sessions.map(session => session.starts_at.slice(11, 16))
-      ])].sort();
+        ...sessions.map(session => getSessionDateTimeParts(session.starts_at).timeStr)
+      ])].filter(Boolean).sort();
 
       // Header hàng 1: Cột trống góc trái trên
       const cornerHeader = document.createElement('div');
@@ -600,14 +636,13 @@
 
           // Tìm các buổi học thuộc ngày và khung giờ này
           const matchedSessions = sessions.filter(s => {
-            const sDate = s.starts_at.slice(0, 10);
-            const sTime = s.starts_at.slice(11, 16);
+            const { dateStr: sDate, timeStr: sTime } = getSessionDateTimeParts(s.starts_at);
             return sDate === dateStr && sTime === slotTime;
           });
 
           matchedSessions.forEach(s => {
-            const startTime = s.starts_at.slice(11, 16);
-            const endTime = s.ends_at.slice(11, 16);
+            const startTime = getSessionDateTimeParts(s.starts_at).timeStr;
+            const endTime = getSessionDateTimeParts(s.ends_at).timeStr;
             const isCompleted = s.status === 'completed';
             const isActiveNow = isFocusDay && startTime === new Date().toTimeString().slice(0, 5);
 
@@ -650,9 +685,8 @@
       document.getElementById('sessionModalTitle').innerText = session.class_name;
       document.getElementById('sessionModalTeacher').innerText = `${session.class_code} · ${session.teacher_name || 'Giáo viên'}`;
 
-      const sDate = session.starts_at.slice(0, 10);
-      const startTime = session.starts_at.slice(11, 16);
-      const endTime = session.ends_at.slice(11, 16);
+      const { dateStr: sDate, timeStr: startTime } = getSessionDateTimeParts(session.starts_at);
+      const endTime = getSessionDateTimeParts(session.ends_at).timeStr;
       
       const parts = sDate.split('-');
       const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
@@ -692,9 +726,11 @@
           return;
         }
       }
-      document.getElementById('rescheduleSessionDate').value = session.starts_at.slice(0, 10);
-      document.getElementById('rescheduleSessionStart').value = session.starts_at.slice(11, 16);
-      document.getElementById('rescheduleSessionEnd').value = session.ends_at.slice(11, 16);
+      const { dateStr: reschedDate, timeStr: reschedStart } = getSessionDateTimeParts(session.starts_at);
+      const reschedEnd = getSessionDateTimeParts(session.ends_at).timeStr;
+      document.getElementById('rescheduleSessionDate').value = reschedDate;
+      document.getElementById('rescheduleSessionStart').value = reschedStart;
+      document.getElementById('rescheduleSessionEnd').value = reschedEnd;
       document.getElementById('rescheduleSessionRoom').value = session.room || '';
       document.getElementById('rescheduleSessionTopic').value = session.topic || '';
       document.getElementById('rescheduleSessionAlert').hidden = true;
@@ -746,6 +782,63 @@
       if (recurSec) recurSec.style.display = isRecurring ? 'block' : 'none';
     }
 
+    // Tự động đồng bộ thời khóa biểu cố định của lớp khi chọn lớp học
+    async function onAddSessionClassChange() {
+      const classId = document.getElementById('addSessionClassId').value;
+      const hintEl = document.getElementById('addSessionScheduleHint');
+      if (hintEl) hintEl.style.display = 'none';
+      if (!classId) return;
+
+      const cls = teacherClasses.find(c => String(c.id) === String(classId));
+      if (cls && cls.room) {
+        const roomInput = document.getElementById('addSessionRoom');
+        if (roomInput && !roomInput.value) {
+          roomInput.value = cls.room;
+        }
+      }
+
+      if (cls && cls.schedule_summary && hintEl) {
+        hintEl.innerHTML = `<strong>Thời khóa biểu lớp:</strong> ${escapeHtml(cls.schedule_summary)}`;
+        hintEl.style.display = 'block';
+      }
+
+      try {
+        const rules = await ClassManagementModule.getScheduleRules(classId);
+        if (Array.isArray(rules) && rules.length > 0) {
+          const weekdays = rules.map(r => Number(r.weekday));
+          document.querySelectorAll('input[name="schedRecurringWeekday"]').forEach(cb => {
+            cb.checked = weekdays.includes(Number(cb.value));
+          });
+
+          const firstRule = rules[0];
+          if (firstRule.starts_at) {
+            const startVal = firstRule.starts_at.slice(0, 5);
+            document.getElementById('schedRecurringStart').value = startVal;
+            document.getElementById('addSessionStart').value = startVal;
+          }
+          if (firstRule.ends_at) {
+            const endVal = firstRule.ends_at.slice(0, 5);
+            document.getElementById('schedRecurringEnd').value = endVal;
+            document.getElementById('addSessionEnd').value = endVal;
+          }
+          if (firstRule.room) {
+            document.getElementById('addSessionRoom').value = firstRule.room;
+          }
+
+          if (hintEl) {
+            const dayNamesMap = { 1: 'Thứ 2', 2: 'Thứ 3', 3: 'Thứ 4', 4: 'Thứ 5', 5: 'Thứ 6', 6: 'Thứ 7', 7: 'Chủ nhật' };
+            const daysText = weekdays.sort((a,b)=>a-b).map(w => dayNamesMap[w] || `T${w}`).join(', ');
+            const timeText = `${firstRule.starts_at.slice(0, 5)}–${firstRule.ends_at.slice(0, 5)}`;
+            const roomText = firstRule.room ? ` · ${firstRule.room}` : '';
+            hintEl.innerHTML = `<strong>Thời khóa biểu lớp:</strong> ${daysText} · ${timeText}${roomText}`;
+            hintEl.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        console.warn('Không thể nạp lịch học cố định của lớp:', err);
+      }
+    }
+
     // Mở modal thêm buổi học
     function openAddSessionModal() {
       document.getElementById('formAddSession').reset();
@@ -770,6 +863,17 @@
       document.getElementById('addSessionRoom').value = '';
       document.getElementById('addSessionTopic').value = '';
       document.getElementById('addSessionAlert').style.display = 'none';
+
+      const hintEl = document.getElementById('addSessionScheduleHint');
+      if (hintEl) hintEl.style.display = 'none';
+
+      // Nếu bộ lọc lịch hiện đang chọn một lớp cụ thể, tự động chọn lớp đó và đồng bộ thời khóa biểu
+      const currentFilteredClass = document.getElementById('classSelectFilter').value;
+      if (currentFilteredClass) {
+        document.getElementById('addSessionClassId').value = currentFilteredClass;
+        onAddSessionClassChange();
+      }
+
       openModal('modalAddSession');
     }
 

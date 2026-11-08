@@ -1013,9 +1013,10 @@
           <!-- Chọn lớp học -->
           <div class="form-group">
             <label class="form-label" for="addSessionClassId">Chọn lớp học <span class="required">*</span></label>
-            <select class="form-control" id="addSessionClassId" required>
+            <select class="form-control" id="addSessionClassId" required onchange="onAddSessionClassChange()">
               <option value="">-- Chọn lớp học --</option>
             </select>
+            <div id="addSessionScheduleHint" style="font-size: 12.5px; color: var(--color-primary); margin-top: 6px; display: none; background: #EFF6FF; padding: 6px 10px; border-radius: 4px; border: 1px solid #BFDBFE;"></div>
           </div>
 
           <!-- Lựa chọn loại lịch -->
@@ -1892,10 +1893,70 @@
       openAddSessionForClass(currentDetailClassId);
     }
 
+    // Tự động đồng bộ thời khóa biểu cố định của lớp khi chọn lớp học
+    async function onAddSessionClassChange() {
+      const classId = document.getElementById('addSessionClassId').value;
+      const hintEl = document.getElementById('addSessionScheduleHint');
+      if (hintEl) hintEl.style.display = 'none';
+      if (!classId) return;
+
+      const cls = loadedClasses.find(c => String(c.id) === String(classId));
+      if (cls && cls.room) {
+        const roomInput = document.getElementById('addSessionRoom');
+        if (roomInput && !roomInput.value) {
+          roomInput.value = cls.room;
+        }
+      }
+
+      if (cls && cls.schedule_summary && hintEl) {
+        hintEl.innerHTML = `<strong>Thời khóa biểu lớp:</strong> ${escapeHtml(cls.schedule_summary)}`;
+        hintEl.style.display = 'block';
+      }
+
+      try {
+        const rules = await ClassManagementModule.getScheduleRules(classId);
+        if (Array.isArray(rules) && rules.length > 0) {
+          const weekdays = rules.map(r => Number(r.weekday));
+          document.querySelectorAll('input[name="recurringWeekday"]').forEach(cb => {
+            cb.checked = weekdays.includes(Number(cb.value));
+          });
+
+          const firstRule = rules[0];
+          if (firstRule.starts_at) {
+            const startVal = firstRule.starts_at.slice(0, 5);
+            document.getElementById('recurringStart').value = startVal;
+            document.getElementById('addSessionStart').value = startVal;
+          }
+          if (firstRule.ends_at) {
+            const endVal = firstRule.ends_at.slice(0, 5);
+            document.getElementById('recurringEnd').value = endVal;
+            document.getElementById('addSessionEnd').value = endVal;
+          }
+          if (firstRule.room) {
+            document.getElementById('addSessionRoom').value = firstRule.room;
+          }
+
+          if (hintEl) {
+            const dayNamesMap = { 1: 'Thứ 2', 2: 'Thứ 3', 3: 'Thứ 4', 4: 'Thứ 5', 5: 'Thứ 6', 6: 'Thứ 7', 7: 'Chủ nhật' };
+            const daysText = weekdays.sort((a,b)=>a-b).map(w => dayNamesMap[w] || `T${w}`).join(', ');
+            const timeText = `${firstRule.starts_at.slice(0, 5)}–${firstRule.ends_at.slice(0, 5)}`;
+            const roomText = firstRule.room ? ` · ${firstRule.room}` : '';
+            hintEl.innerHTML = `<strong>Thời khóa biểu lớp:</strong> ${daysText} · ${timeText}${roomText}`;
+            hintEl.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        console.warn('Không thể nạp lịch học cố định của lớp:', err);
+      }
+    }
+
     function openAddSessionForClass(classId) {
       const form = document.getElementById('formAddSession');
       if (form) form.reset();
       document.getElementById('addSessionAlert').style.display = 'none';
+
+      const hintEl = document.getElementById('addSessionScheduleHint');
+      if (hintEl) hintEl.style.display = 'none';
 
       // Nạp danh sách lớp đang hoạt động vào select
       const classSelect = document.getElementById('addSessionClassId');
@@ -1905,6 +1966,7 @@
         ).join('');
       if (classId) {
         classSelect.value = classId;
+        onAddSessionClassChange();
       }
 
       const todayStr = new Date().toISOString().slice(0, 10);
