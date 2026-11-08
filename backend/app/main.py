@@ -3955,10 +3955,15 @@ def get_tuition_invoice_detail(
     paid_val = float(row["amount_paid"] or 0)
     progress_pct = round((paid_val / due_val) * 100, 1) if due_val > 0 else 100.0
 
+    # Tinh don gia buoi hoc de hien thi cong thuc tinh phi
+    sessions_count = int(row["sessions_count"] or 0)
+    charge_per_session = round(due_val / sessions_count, 2) if sessions_count > 0 else None
+
     invoice_data = dict(row)
     invoice_data.pop("teacher_user_id", None)
     invoice_data["progress_percent"] = progress_pct
     invoice_data["payment_count"] = len(payments)
+    invoice_data["charge_per_session"] = charge_per_session
 
     return {
         "invoice": invoice_data,

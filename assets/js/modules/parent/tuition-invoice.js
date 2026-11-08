@@ -440,14 +440,49 @@ const ParentTuitionInvoiceModule = {
       // Khối trái: Thông tin khoản thu
       const infoRows = document.getElementById('parentInvoiceInfoRows');
       if (infoRows) {
+        const sessCount = Number(inv.sessions_count || 0);
+        const amtDue = Number(inv.amount_due || 0);
+        const chargePerSession = inv.charge_per_session != null ? Number(inv.charge_per_session) : null;
+        // Xây dựng block công thức tính học phí
+        let formulaHtml = '';
+        if (sessCount > 0 && chargePerSession != null) {
+          formulaHtml = `
+          <div class="tuition-formula-block">
+            <div class="tuition-formula-title">Công thức tính học phí</div>
+            <div class="tuition-formula-row">
+              <span class="tuition-formula-label">Số buổi đi học (tính phí):</span>
+              <span class="tuition-formula-value">${sessCount} buổi</span>
+            </div>
+            <div class="tuition-formula-row">
+              <span class="tuition-formula-label">Đơn giá mỗi buổi:</span>
+              <span class="tuition-formula-value">${this.escapeHtml(this.formatCurrency(chargePerSession))} / buổi</span>
+            </div>
+            <div class="tuition-formula-eq">
+              ${sessCount} buổi &times; ${this.escapeHtml(this.formatCurrency(chargePerSession))} = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
+            </div>
+          </div>`;
+        } else if (amtDue > 0) {
+          formulaHtml = `
+          <div class="tuition-formula-block">
+            <div class="tuition-formula-title">📐 Công thức tính học phí</div>
+            <div class="tuition-formula-row">
+              <span class="tuition-formula-label">Loại học phí:</span>
+              <span class="tuition-formula-value">Trọn gói cố định${sessCount > 0 ? ` (${sessCount} buổi trong kỳ)` : ''}</span>
+            </div>
+            <div class="tuition-formula-eq">
+              Mức cố định = <strong>${this.escapeHtml(this.formatCurrency(amtDue))}</strong>
+            </div>
+          </div>`;
+        }
         infoRows.innerHTML = `
           <div class="tuition-kv-row"><span>Mã phiếu thu:</span><strong>${this.escapeHtml(inv.invoice_id)}</strong></div>
           <div class="tuition-kv-row"><span>Học sinh:</span><strong>${this.escapeHtml(inv.student_name)} (${this.escapeHtml(inv.student_code)})</strong></div>
           <div class="tuition-kv-row"><span>Lớp học:</span><span>${this.escapeHtml(inv.class_name)} (${this.escapeHtml(inv.class_code)})</span></div>
           <div class="tuition-kv-row"><span>Giáo viên phụ trách:</span><span>${this.escapeHtml(inv.teacher_name || '—')}</span></div>
-          <div class="tuition-kv-row"><span>Kỳ học phí:</span><span>${this.escapeHtml(this.formatPeriodRange(inv.period_start, inv.period_end))} (${Number(inv.sessions_count || 0)} buổi)</span></div>
+          <div class="tuition-kv-row"><span>Kỳ học phí:</span><span>${this.escapeHtml(this.formatPeriodRange(inv.period_start, inv.period_end))}</span></div>
           <div class="tuition-kv-row"><span>Hạn thanh toán:</span><strong>${this.escapeHtml(this.formatDate(inv.period_end))}</strong></div>
           <div class="tuition-kv-row"><span>Ghi chú khoản thu:</span><span>${this.escapeHtml(inv.note || 'Thu theo kỳ học tháng')}</span></div>
+          ${formulaHtml}
           <div class="tuition-kv-row is-total"><span>Tổng phải đóng:</span><span>${this.escapeHtml(this.formatCurrency(rec.amountDue))}</span></div>
         `;
       }
